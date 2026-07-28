@@ -584,6 +584,8 @@
       "add": "추가",
       "publishing": "게시 중...",
       "publishTodo": "Todo 게시",
+      "expand": "펼치기",
+      "collapse": "접기",
       "claimTitle": "작업 점유",
       "done": "완료",
       "reopen": "다시 열기",
@@ -595,6 +597,11 @@
     },
     "assignee": {
       "unassigned": "미지정"
+    },
+    "all": {
+      "kicker": "All Todos",
+      "title": "전체 Todo 요약",
+      "progress": "{{ done }}/{{ total }} 완료"
     },
     "projects": {
       "kicker": "Project Categories",

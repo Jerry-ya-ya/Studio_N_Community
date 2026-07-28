@@ -584,6 +584,8 @@
       "add": "追加",
       "publishing": "公開中...",
       "publishTodo": "Todo を公開",
+      "expand": "展開",
+      "collapse": "折りたたむ",
       "claimTitle": "タスクを確保",
       "done": "完了",
       "reopen": "再開",
@@ -595,6 +597,11 @@
     },
     "assignee": {
       "unassigned": "未指定"
+    },
+    "all": {
+      "kicker": "All Todos",
+      "title": "すべての Todo 一覧",
+      "progress": "{{ done }}/{{ total }} 完了"
     },
     "projects": {
       "kicker": "Project Categories",

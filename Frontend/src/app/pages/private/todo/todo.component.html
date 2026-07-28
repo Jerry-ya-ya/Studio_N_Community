@@ -3,54 +3,74 @@
     {{ 'privateTodo.header.title' | translate }}
   </h2>
 
-  <input [(ngModel)]="newTodoText" [placeholder]="'privateTodo.form.placeholder' | translate" />
+  <div class="todo-create-row">
+    <input [(ngModel)]="newTodoText" [placeholder]="'privateTodo.form.placeholder' | translate" />
 
-  <button (click)="addTodo()">
-    {{ 'privateTodo.actions.add' | translate }}
-  </button>
+    <button type="button" (click)="addTodo()">
+      {{ 'privateTodo.actions.add' | translate }}
+    </button>
+  </div>
 
   @if (statusMessage) {
     <p class="status-message">{{ statusMessage }}</p>
   }
 
-  <ul>
-    @for (todo of todos; track todo.id) {
-      <li [class.is-claimed]="todo.claimed_by_id" [class.is-done]="todo.done">
-        <input
-          type="checkbox"
-          [checked]="!!todo.claimed_by_id"
-          [disabled]="!canToggleClaim(todo)"
-          (change)="toggleClaim(todo)"
-          [title]="'privateTodo.actions.claimTitle' | translate">
-        <strong
-          class="priority-badge"
-          [style.background]="getPriorityColor(getTodoPriority(todo))">
-          P{{ getTodoPriority(todo) }}
-        </strong>
-        <span>
-          {{ todo.text }}
-        </span>
-        <small class="claim-badge">
-          @if (todo.claimed_by_name) {
-            {{ 'privateTodo.claim.claimedBy' | translate: { name: todo.claimed_by_name } }}
-          } @else {
-            {{ 'privateTodo.claim.unclaimed' | translate }}
-          }
-        </small>
-        @if (todo.project_title) {
-          <small>
-            {{ todo.project_title }} · {{ todo.assignee_name }}
-          </small>
+  <section class="all-todo-section" [class.is-open]="isAllTodosOpen">
+    <button
+      class="all-todo-toggle"
+      type="button"
+      (click)="toggleAllTodos()"
+      [attr.aria-expanded]="isAllTodosOpen"
+      aria-controls="allTodoList">
+      <span>
+        <small>{{ 'privateTodo.all.kicker' | translate }}</small>
+        <strong>{{ 'privateTodo.all.title' | translate }}</strong>
+      </span>
+      <em>{{ 'privateTodo.all.progress' | translate: { done: completedTodoCount, total: todos.length } }}</em>
+      <b>{{ (isAllTodosOpen ? 'privateTodo.actions.collapse' : 'privateTodo.actions.expand') | translate }}</b>
+    </button>
+
+    @if (isAllTodosOpen) {
+      <ul id="allTodoList" class="all-todo-list">
+        @for (todo of todos; track todo.id) {
+          <li [class.is-claimed]="todo.claimed_by_id" [class.is-done]="todo.done">
+            <input
+              type="checkbox"
+              [checked]="!!todo.claimed_by_id"
+              [disabled]="!canToggleClaim(todo)"
+              (change)="toggleClaim(todo)"
+              [title]="'privateTodo.actions.claimTitle' | translate">
+            <strong
+              class="priority-badge"
+              [style.background]="getPriorityColor(getTodoPriority(todo))">
+              P{{ getTodoPriority(todo) }}
+            </strong>
+            <span>
+              {{ todo.text }}
+            </span>
+            <small class="claim-badge">
+              @if (todo.claimed_by_name) {
+                {{ 'privateTodo.claim.claimedBy' | translate: { name: todo.claimed_by_name } }}
+              } @else {
+                {{ 'privateTodo.claim.unclaimed' | translate }}
+              }
+            </small>
+            @if (todo.project_title) {
+              <small>
+                {{ todo.project_title }} · {{ todo.assignee_name }}
+              </small>
+            }
+            <button class="done-button" (click)="toggleDone(todo)">
+              {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
+            </button>
+            <button (click)="deleteTodo(todo.id)">
+              {{ 'privateTodo.actions.delete' | translate }}
+            </button>
+          </li>
         }
-        <button class="done-button" (click)="toggleDone(todo)">
-          {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
-        </button>
-        <button (click)="deleteTodo(todo.id)">
-          {{ 'privateTodo.actions.delete' | translate }}
-        </button>
-      </li>
+      </ul>
     }
-  </ul>
+  </section>
 
   <section class="project-workspace-section">
     <div class="project-todo-section__header">

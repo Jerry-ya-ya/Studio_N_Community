@@ -584,6 +584,8 @@
       "add": "Add",
       "publishing": "Publishing...",
       "publishTodo": "Publish Todo",
+      "expand": "Expand",
+      "collapse": "Collapse",
       "claimTitle": "Claim task",
       "done": "Done",
       "reopen": "Reopen",
@@ -595,6 +597,11 @@
     },
     "assignee": {
       "unassigned": "Unassigned"
+    },
+    "all": {
+      "kicker": "All Todos",
+      "title": "All Todo Summary",
+      "progress": "{{ done }}/{{ total }} done"
     },
     "projects": {
       "kicker": "Project Categories",

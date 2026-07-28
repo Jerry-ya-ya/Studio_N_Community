@@ -30,6 +30,7 @@ export class ContentComponent implements OnInit {
   content: HomeNewsContent;
   members: MemberContentItem[];
   private syncingMemberScroll = false;
+  private memberScrollFrame: number | null = null;
 
   constructor(
     private homeContent: HomeContentService,
@@ -117,17 +118,22 @@ export class ContentComponent implements OnInit {
       return;
     }
 
-    const sourceScrollableHeight = source.scrollHeight - source.clientHeight;
-    const targetScrollableHeight = target.scrollHeight - target.clientHeight;
-    if (sourceScrollableHeight <= 0 || targetScrollableHeight <= 0) {
+    if (this.memberScrollFrame !== null) {
       return;
     }
 
-    this.syncingMemberScroll = true;
-    const scrollRatio = source.scrollTop / sourceScrollableHeight;
-    target.scrollTop = scrollRatio * targetScrollableHeight;
+    this.memberScrollFrame = requestAnimationFrame(() => {
+      this.memberScrollFrame = null;
 
-    requestAnimationFrame(() => {
+      const sourceScrollableHeight = source.scrollHeight - source.clientHeight;
+      const targetScrollableHeight = target.scrollHeight - target.clientHeight;
+      if (sourceScrollableHeight <= 0 || targetScrollableHeight <= 0) {
+        return;
+      }
+
+      this.syncingMemberScroll = true;
+      const scrollRatio = source.scrollTop / sourceScrollableHeight;
+      target.scrollTop = scrollRatio * targetScrollableHeight;
       this.syncingMemberScroll = false;
     });
   }

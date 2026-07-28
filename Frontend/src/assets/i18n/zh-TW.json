@@ -584,6 +584,8 @@
       "add": "新增",
       "publishing": "發布中...",
       "publishTodo": "發布 Todo",
+      "expand": "展開",
+      "collapse": "收合",
       "claimTitle": "佔領任務",
       "done": "完成",
       "reopen": "重新開啟",
@@ -595,6 +597,11 @@
     },
     "assignee": {
       "unassigned": "未指定"
+    },
+    "all": {
+      "kicker": "All Todos",
+      "title": "全部待辦事項統整",
+      "progress": "{{ done }}/{{ total }} 完成"
     },
     "projects": {
       "kicker": "Project Categories",

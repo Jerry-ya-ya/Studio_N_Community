@@ -71,6 +71,7 @@ export class TodoComponent implements OnInit {
   todoTexts: Record<number, string> = {};
   todoTargets: Record<number, string> = {};
   todoPriorities: Record<number, number> = {};
+  isAllTodosOpen = false;
   statusMessage = '';
   
   constructor(
@@ -259,6 +260,14 @@ export class TodoComponent implements OnInit {
 
   canToggleClaim(todo: Todo) {
     return !todo.done && (!todo.claimed_by_id || todo.claimed_by_id === this.currentUserId);
+  }
+
+  toggleAllTodos() {
+    this.isAllTodosOpen = !this.isAllTodosOpen;
+  }
+
+  get completedTodoCount() {
+    return this.todos.filter(todo => todo.done).length;
   }
 
   get ownedProjects() {

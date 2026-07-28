@@ -20,15 +20,23 @@ h2 {
   text-transform: uppercase;
 }
 
-input[type="text"], input[ngmodel], input[placeholder] {
-  width: 70%;
+.todo-create-row {
+  display: flex;
+  gap: 10px;
+}
+
+.todo-create-row input {
+  flex: 1;
   padding: 8px 12px;
   border: 1px solid var(--studio-line);
   border-radius: 6px;
   font-size: 1rem;
   color: var(--studio-text);
   background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
-  margin-right: 8px;
+}
+
+.todo-create-row button {
+  margin-left: auto;
 }
 
 button {
@@ -41,12 +49,10 @@ button {
   font-weight: 600;
   cursor: pointer;
   margin-left: 4px;
-  transition: background 0.2s;
 }
 button:hover {
   color: var(--studio-bg);
   background: var(--studio-accent);
-  box-shadow: 0 12px 24px color-mix(in srgb, var(--studio-accent) 20%, transparent);
 }
 
 ul {
@@ -90,8 +96,6 @@ input[type="checkbox"]:disabled {
   color: #fff;
   font-size: 0.78rem;
   font-weight: 900;
-  letter-spacing: 0.4px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 }
 
 span {
@@ -131,14 +135,45 @@ button:last-child:hover {
   text-align: center;
 }
 
+.all-todo-section {
+  margin-top: 22px;
+}
+
+.all-todo-toggle,
+.all-todo-toggle:last-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 12px 16px;
+  border-color: var(--studio-line);
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-panel-strong) 74%, transparent);
+  text-align: left;
+}
+
+.all-todo-toggle:hover,
+.all-todo-toggle:last-child:hover {
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-accent) 12%, transparent);
+  box-shadow: none;
+}
+
+.all-todo-list {
+  margin: 0;
+  padding: 0 14px 14px;
+}
+
 .done-button {
-  border-color: color-mix(in srgb, var(--studio-success, #42d392) 70%, var(--studio-line));
-  background: color-mix(in srgb, var(--studio-success, #42d392) 78%, var(--studio-accent));
+  border-color: color-mix(in srgb, var(--studio-success) 70%, var(--studio-line));
+  background: color-mix(in srgb, var(--studio-success) 78%, var(--studio-accent));
   color: #062015;
 }
 
 .done-button:hover {
-  color: color-mix(in srgb, var(--studio-success, #42d392) 82%, #fff);
+  color: color-mix(in srgb, var(--studio-success) 82%, #fff);
   background: transparent;
 }
 
@@ -157,12 +192,6 @@ li.is-done span {
 .claim-badge {
   color: var(--studio-warm);
   background: color-mix(in srgb, var(--studio-warm) 16%, transparent);
-}
-
-.project-todo-section {
-  margin-top: 34px;
-  padding-top: 26px;
-  border-top: 1px solid var(--studio-line);
 }
 
 .project-workspace-section {
@@ -218,7 +247,6 @@ li.is-done span {
 }
 
 .project-empty--compact {
-  margin-top: 14px;
   padding: 14px;
 }
 
@@ -230,7 +258,6 @@ li.is-done span {
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--studio-accent) 12%, transparent), transparent 58%),
     color-mix(in srgb, var(--studio-panel-strong) 80%, transparent);
-  box-shadow: 0 3px 14px rgba(38, 71, 112, 0.08);
 }
 
 .project-dispatch-card__summary {
@@ -372,7 +399,6 @@ li.is-done span {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--studio-accent), var(--studio-warm));
-  transition: width 0.2s ease;
 }
 
 .project-task-list {
@@ -394,9 +420,13 @@ li.is-done span {
   .todo-container {
     padding: 12px 2px 24px 2px;
   }
-  input[type="text"], input[ngmodel], input[placeholder] {
-    width: 60%;
-    font-size: 0.98rem;
+  .todo-create-row {
+    flex-direction: column;
+  }
+  .todo-create-row button { margin-left: 0; }
+  .all-todo-toggle,
+  .all-todo-toggle:last-child {
+    grid-template-columns: 1fr;
   }
   li {
     padding: 8px 4px;

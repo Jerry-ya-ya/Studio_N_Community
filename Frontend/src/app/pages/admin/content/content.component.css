@@ -18,8 +18,12 @@
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 36%),
     color-mix(in srgb, var(--studio-panel) 88%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 18px 48px var(--eden-shadow);
-  backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 28px var(--eden-shadow);
+}
+
+.content-hero,
+.content-workspace {
+  backdrop-filter: blur(10px);
 }
 
 .content-hero {
@@ -207,6 +211,8 @@
 .member-editor .preview-panel {
   max-height: var(--member-editor-scroll-height);
   overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .member-editor .news-list {
@@ -228,6 +234,7 @@
   display: grid;
   gap: 14px;
   padding: 18px;
+  contain: paint;
 }
 
 .card-toolbar button {
@@ -287,10 +294,12 @@ select:focus {
   max-height: calc(100vh - 120px);
   overflow: auto;
   padding: 18px;
+  contain: layout paint;
 }
 
 .preview-card {
   padding: 18px;
+  contain: paint;
 }
 
 .preview-card span {
