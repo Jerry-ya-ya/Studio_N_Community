@@ -1,194 +1,141 @@
-<div class="post-wall-container">
-  <!-- 頁面標題區域 -->
-  <div class="page-header">
-    <div class="header-content">
-      <h1 class="main-title">
-        <span class="title-icon">📝</span>
-        {{ 'postWall.header.title' | translate }}
-      </h1>
-      <p class="subtitle">{{ 'postWall.header.subtitle' | translate }}</p>
+<main class="post-wall-container">
+  <section class="page-header">
+    <div>
+      <p class="post-kicker">Post Wall</p>
+      <h1>{{ 'postWall.header.title' | translate }}</h1>
+      <p>{{ 'postWall.header.subtitle' | translate }}</p>
     </div>
-    <div class="header-decoration">
-      <div class="floating-elements">
-        <div class="floating-icon">✨</div>
-        <div class="floating-icon">💭</div>
-        <div class="floating-icon">🌟</div>
-      </div>
+    <div class="header-metric">
+      <span>{{ 'postWall.posts.countLabel' | translate }}</span>
+      <strong>{{ posts.length }}</strong>
     </div>
-  </div>
+  </section>
 
-  <!-- 發文區域 -->
-  <div class="post-creation-section">
-    <div class="creation-card">
-      <div class="card-header">
+  <section class="post-creation-section">
+    <article class="creation-card">
+      <header class="card-header">
         <div class="user-info">
-          <div class="avatar-container">
-            <div class="user-avatar">
-              @if (user?.avatar_url) {
-                <img
-                  [src]="apiRoot + '/' + user.avatar_url"
-                  [alt]="'postWall.creation.userAvatar' | translate" />
-              } @else {
-                <span>{{ getAvatarInitial(user) }}</span>
-              }
-            </div>
-            <div class="avatar-ring"></div>
+          <div class="user-avatar">
+            @if (user?.avatar_url) {
+              <img
+                [src]="apiRoot + '/' + user.avatar_url"
+                [alt]="'postWall.creation.userAvatar' | translate" />
+            } @else {
+              <span>{{ getAvatarInitial(user) }}</span>
+            }
           </div>
           <div class="user-details">
-            <h3 class="username">{{ user?.username || ('postWall.creation.defaultUsername' | translate) }}</h3>
-            <span class="post-status">{{ 'postWall.creation.status' | translate }}</span>
+            <h2>{{ user?.username || ('postWall.creation.defaultUsername' | translate) }}</h2>
+            <span>{{ 'postWall.creation.status' | translate }}</span>
           </div>
         </div>
-      </div>
+      </header>
 
       <div class="post-form">
-        <div class="textarea-container">
-          <textarea
-            [(ngModel)]="content"
-            rows="4"
-            [placeholder]="'postWall.creation.placeholder' | translate"
-            class="post-textarea"
-            maxlength="500">
-          </textarea>
-          <div class="textarea-decoration">
-            <div class="decoration-line"></div>
-            <div class="decoration-dots">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-        </div>
+        <textarea
+          [(ngModel)]="content"
+          rows="4"
+          [placeholder]="'postWall.creation.placeholder' | translate"
+          class="post-textarea"
+          maxlength="500">
+        </textarea>
+
         <div class="form-actions">
           <div class="character-count">
-            <span class="count-text">{{ content.length || 0 }}/500</span>
+            <span>{{ content.length || 0 }}/500</span>
             <div class="progress-bar">
-              <div class="progress-fill" [style.width.%]="(content.length || 0) / 5"></div>
+              <div [style.width.%]="(content.length || 0) / 5"></div>
             </div>
           </div>
           <button
+            type="button"
             (click)="submitPost()"
             class="submit-btn"
-            [disabled]="!content.trim()"
-            [class.active]="content.trim()">
-            <span class="btn-icon">🚀</span>
-            <span class="btn-text">{{ 'postWall.creation.submit' | translate }}</span>
+            [disabled]="!content.trim()">
+            {{ 'postWall.creation.submit' | translate }}
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </article>
+  </section>
 
-  <!-- 訊息提示 -->
   @if (message) {
     <div class="message-container">
-      <div class="message success">
-        <span class="message-icon">✓</span>
-        <span class="message-text">{{ message | translate }}</span>
+      <div class="message">
+        <span>{{ message | translate }}</span>
       </div>
     </div>
   }
 
-  <!-- 貼文列表 -->
-  <div class="posts-section">
+  <section class="posts-section">
     <div class="section-header">
-      <h2 class="section-title">
-        <span class="title-icon">📋</span>
-        {{ 'postWall.posts.title' | translate }}
-      </h2>
+      <div>
+        <p class="post-kicker">Archive</p>
+        <h2>{{ 'postWall.posts.title' | translate }}</h2>
+      </div>
       <div class="post-count">
-        <span class="count-number">{{ posts.length }}</span>
-        <span class="count-label">{{ 'postWall.posts.countLabel' | translate }}</span>
+        <strong>{{ posts.length }}</strong>
+        <span>{{ 'postWall.posts.countLabel' | translate }}</span>
       </div>
     </div>
 
-    <div class="posts-grid">
-      @for (post of posts; track post; let i = $index) {
-        <div class="post-card" [style.animation-delay]="i * 0.1 + 's'">
-          <!-- 卡片背景裝飾 -->
-          <div class="card-decoration">
-            <div class="decoration-pattern"></div>
-            <div class="decoration-corner"></div>
-          </div>
-          <!-- 貼文內容 -->
-          <div class="post-content">
-            <div class="post-header">
-              <div class="post-meta">
-                <div class="post-author">
-                  <div class="author-avatar">
-                    @if (user?.avatar_url) {
-                      <img
-                        [src]="apiRoot + '/' + user.avatar_url"
-                        [alt]="'postWall.posts.authorAvatar' | translate" />
-                    } @else {
-                      <span>{{ getAvatarInitial(user) }}</span>
-                    }
-                  </div>
-                  <span class="author-name">{{ user?.username || ('postWall.posts.me' | translate) }}</span>
-                </div>
-                <div class="post-time">
-                  <span class="time-icon">🕒</span>
-                  <span class="time-text">{{ post.created_at }}</span>
-                </div>
-              </div>
-              <div class="post-actions">
-                <button class="action-btn like-btn" (click)="enableEdit(post)">
-                  <span class="action-icon">✏️</span>
-                </button>
-                <button class="action-btn share-btn" (click)="deletePost(post.id)">
-                  <span class="action-icon">🗑️</span>
-                </button>
-              </div>
-            </div>
-            <div class="post-body">
-              @if (editMode[post.id]) {
-                <textarea
-                  [(ngModel)]="editContent[post.id]"
-                  rows="4"
-                  class="post-textarea"
-                maxlength="500"></textarea>
-                <div class="form-actions" style="margin-top:8px; display:flex; gap:8px;">
-                  <button class="submit-btn" (click)="updatePost(post.id)">
-                    <span class="btn-icon">💾</span>
-                    <span class="btn-text">{{ 'postWall.edit.save' | translate }}</span>
-                  </button>
-                  <button class="submit-btn" (click)="cancelEdit(post.id)">
-                    <span class="btn-icon">✖️</span>
-                    <span class="btn-text">{{ 'postWall.edit.cancel' | translate }}</span>
-                  </button>
-                </div>
-              } @else {
-                <p class="post-text">{{ post.content }}</p>
-              }
-            </div>
-            <div class="post-footer">
-              <div class="post-stats">
-                <span class="stat-item">
-                  <span class="stat-icon">👁️</span>
-                  <span class="stat-number">0</span>
-                </span>
-                <span class="stat-item">
-                  <span class="stat-icon">💬</span>
-                  <span class="stat-number">0</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-
-    <!-- 空狀態 -->
     @if (posts.length === 0) {
       <div class="empty-state">
-        <div class="empty-icon">📝</div>
-        <h3 class="empty-title">{{ 'postWall.empty.title' | translate }}</h3>
-        <p class="empty-description">{{ 'postWall.empty.description' | translate }}</p>
-        <div class="empty-decoration">
-          <div class="floating-element">✨</div>
-          <div class="floating-element">💭</div>
-        </div>
+        <h3>{{ 'postWall.empty.title' | translate }}</h3>
+        <p>{{ 'postWall.empty.description' | translate }}</p>
       </div>
     }
-  </div>
-</div>
+
+    <div class="posts-grid">
+      @for (post of posts; track post.id) {
+        <article class="post-card">
+          <header class="post-header">
+            <div class="post-author">
+              <div class="author-avatar">
+                @if (user?.avatar_url) {
+                  <img
+                    [src]="apiRoot + '/' + user.avatar_url"
+                    [alt]="'postWall.posts.authorAvatar' | translate" />
+                } @else {
+                  <span>{{ getAvatarInitial(user) }}</span>
+                }
+              </div>
+              <div>
+                <strong>{{ user?.username || ('postWall.posts.me' | translate) }}</strong>
+                <span>{{ post.created_at }}</span>
+              </div>
+            </div>
+            <div class="post-actions">
+              <button type="button" class="action-btn" (click)="enableEdit(post)">
+                {{ 'postWall.edit.edit' | translate }}
+              </button>
+              <button type="button" class="action-btn action-btn--danger" (click)="deletePost(post.id)">
+                {{ 'postWall.edit.delete' | translate }}
+              </button>
+            </div>
+          </header>
+
+          <div class="post-body">
+            @if (editMode[post.id]) {
+              <textarea
+                [(ngModel)]="editContent[post.id]"
+                rows="4"
+                class="post-textarea"
+                maxlength="500"></textarea>
+              <div class="edit-actions">
+                <button type="button" class="submit-btn" (click)="updatePost(post.id)">
+                  {{ 'postWall.edit.save' | translate }}
+                </button>
+                <button type="button" class="submit-btn submit-btn--ghost" (click)="cancelEdit(post.id)">
+                  {{ 'postWall.edit.cancel' | translate }}
+                </button>
+              </div>
+            } @else {
+              <p>{{ post.content }}</p>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+</main>

@@ -408,8 +408,10 @@
       "me": "我"
     },
     "edit": {
+      "edit": "編輯",
       "save": "儲存",
-      "cancel": "取消"
+      "cancel": "取消",
+      "delete": "刪除"
     },
     "empty": {
       "title": "還沒有貼文",

@@ -459,3 +459,5 @@
 ## 2026/07/29
 
 - Optimize content scrolling and todo summary layout.
+
+- Restyle post wall without emoji decorations.

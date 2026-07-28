@@ -408,8 +408,10 @@
       "me": "Me"
     },
     "edit": {
+      "edit": "Edit",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "delete": "Delete"
     },
     "empty": {
       "title": "No posts yet",

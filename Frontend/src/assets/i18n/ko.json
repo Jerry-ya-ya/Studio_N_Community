@@ -408,8 +408,10 @@
       "me": "나"
     },
     "edit": {
+      "edit": "편집",
       "save": "저장",
-      "cancel": "취소"
+      "cancel": "취소",
+      "delete": "삭제"
     },
     "empty": {
       "title": "아직 게시글이 없습니다",
