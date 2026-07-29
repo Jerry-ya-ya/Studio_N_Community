@@ -475,3 +475,7 @@
 - Float top controls and align public home hero.
 
 - Use rotating cycle icon for world automation.
+
+## 2026/07/30
+
+- Fix sidebar rail icon sizing with collapsed scrollbars.

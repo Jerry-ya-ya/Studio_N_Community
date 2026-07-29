@@ -6,6 +6,8 @@
 .sidebar {
   --rail-width: 76px;
   --drawer-width: 268px;
+  --rail-gutter: 10px;
+  --rail-item-size: 54px;
   --nav-shell-bg: color-mix(in srgb, var(--studio-panel-strong) 92%, transparent);
   --nav-shell-line: color-mix(in srgb, var(--studio-accent) 34%, transparent);
   --nav-item-bg: color-mix(in srgb, var(--studio-panel) 68%, transparent);
@@ -37,9 +39,9 @@
 }
 
 .sidebar-toggle {
-  width: 48px;
-  height: 48px;
-  margin: 12px 0 4px 14px;
+  width: var(--rail-item-size);
+  height: var(--rail-item-size);
+  margin: 10px 0 4px var(--rail-gutter);
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--nav-shell-line);
@@ -68,7 +70,7 @@
 
 .nav-sections {
   min-height: 0;
-  padding: 8px 12px 18px;
+  padding: 8px 12px 18px var(--rail-gutter);
   display: grid;
   align-content: start;
   gap: 12px;
@@ -79,7 +81,15 @@
 }
 
 .sidebar--collapsed .nav-sections {
-  padding-inline: 10px;
+  padding-inline: var(--rail-gutter);
+  overflow-y: auto;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+
+.sidebar--collapsed .nav-sections::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .nav-section {
@@ -109,9 +119,9 @@
 .nav-item {
   position: relative;
   min-width: 0;
-  min-height: 48px;
+  min-height: var(--rail-item-size);
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-columns: var(--rail-item-size) minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   border: 1px solid color-mix(in srgb, var(--section-color) 24%, transparent);
@@ -128,7 +138,8 @@
 }
 
 .sidebar--collapsed .nav-item {
-  grid-template-columns: 48px;
+  width: var(--rail-item-size);
+  grid-template-columns: var(--rail-item-size);
   justify-content: center;
 }
 
@@ -202,11 +213,11 @@
   .sidebar {
     --rail-width: 64px;
     --drawer-width: min(82vw, 260px);
+    --rail-gutter: 8px;
+    --rail-item-size: 48px;
   }
 
   .sidebar-toggle {
-    width: 42px;
-    height: 42px;
     margin-top: 10px;
   }
 
@@ -215,11 +226,10 @@
   }
 
   .nav-item {
-    min-height: 44px;
-    grid-template-columns: 44px minmax(0, 1fr);
+    grid-template-columns: var(--rail-item-size) minmax(0, 1fr);
   }
 
   .sidebar--collapsed .nav-item {
-    grid-template-columns: 44px;
+    grid-template-columns: var(--rail-item-size);
   }
 }
