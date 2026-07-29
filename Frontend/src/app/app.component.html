@@ -5,73 +5,75 @@
     </app-navbar>
   </div>
 
-  <div class="world-actions" [class.world-actions--night]="theme.isNightMode" [class.world-actions--cycle-on]="!theme.isWorldLocked">
-    <button
-      class="world-logo-toggle"
-      type="button"
-      (click)="theme.toggleWorldMode()"
-      [attr.aria-label]="worldLogoAriaKey | translate"
-    >
-      <span class="world-logo-toggle__glow"></span>
-      <img [src]="worldLogoSrc" [alt]="worldLogoName + ' logo'">
-      <span>{{ worldLogoName }}</span>
-    </button>
-
-    <button
-      class="world-cycle-switch"
-      type="button"
-      role="switch"
-      (click)="theme.toggleWorldLock()"
-      [class.world-cycle-switch--active]="!theme.isWorldLocked"
-      [attr.aria-checked]="!theme.isWorldLocked"
-      [attr.aria-label]="worldCycleAriaKey | translate"
-    >
-      <span class="world-cycle-switch__label">{{ 'world.cycle.label' | translate }}</span>
-      <span class="world-cycle-switch__track">
-        <span class="world-cycle-switch__thumb"></span>
-      </span>
-      <span class="world-cycle-switch__state">{{ worldCycleStateKey | translate }}</span>
-      <span class="world-cycle-switch__timer">{{ theme.isWorldLocked ? ('world.status.locked' | translate) : theme.countdownLabel }}</span>
-    </button>
-  </div>
-
-  <div class="global-actions">
-    <div class="language-switcher" [class.language-switcher--open]="languageMenuOpen">
+  <main class="app-main">
+    <div class="world-actions" [class.world-actions--night]="theme.isNightMode" [class.world-actions--cycle-on]="!theme.isWorldLocked">
       <button
-        class="language-trigger"
+        class="world-logo-toggle"
         type="button"
-        (click)="toggleLanguageMenu()"
-        aria-haspopup="listbox"
-        [attr.aria-expanded]="languageMenuOpen"
-        aria-label="Language selector"
+        (click)="theme.toggleWorldMode()"
+        [attr.aria-label]="worldLogoAriaKey | translate"
       >
-        <span class="language-trigger__mark">LANG</span>
-        <span class="language-trigger__value">{{ currentLanguageLabel }}</span>
-        <span class="language-trigger__chevron"></span>
+        <span class="world-logo-toggle__glow"></span>
+        <img [src]="worldLogoSrc" [alt]="worldLogoName + ' logo'">
+        <span>{{ worldLogoName }}</span>
       </button>
 
-      @if (languageMenuOpen) {
-        <div class="language-menu" role="listbox">
-          @for (language of languages; track language.code) {
-            <button
-              type="button"
-              role="option"
-              [class.active]="currentLanguage === language.code"
-              [attr.aria-selected]="currentLanguage === language.code"
-              (click)="switchLanguage(language.code)"
-            >
-              <span>{{ language.label }}</span>
-              <small>{{ language.name }}</small>
-            </button>
-          }
-        </div>
-      }
+      <button
+        class="world-cycle-switch"
+        type="button"
+        role="switch"
+        (click)="theme.toggleWorldLock()"
+        [class.world-cycle-switch--active]="!theme.isWorldLocked"
+        [attr.aria-checked]="!theme.isWorldLocked"
+        [attr.aria-label]="worldCycleAriaKey | translate"
+      >
+        <span class="world-cycle-switch__label">{{ 'world.cycle.label' | translate }}</span>
+        <span class="world-cycle-switch__track">
+          <span class="world-cycle-switch__thumb"></span>
+        </span>
+        <span class="world-cycle-switch__state">{{ worldCycleStateKey | translate }}</span>
+        <span class="world-cycle-switch__timer">{{ theme.isWorldLocked ? ('world.status.locked' | translate) : theme.countdownLabel }}</span>
+      </button>
     </div>
 
-    <a class="login-link" [routerLink]="['/' + path.login]">{{ 'nav.public.login' | translate }}</a>
-  </div>
+    <div class="global-actions">
+      <div class="language-switcher" [class.language-switcher--open]="languageMenuOpen">
+        <button
+          class="language-trigger"
+          type="button"
+          (click)="toggleLanguageMenu()"
+          aria-haspopup="listbox"
+          [attr.aria-expanded]="languageMenuOpen"
+          aria-label="Language selector"
+        >
+          <span class="language-trigger__mark">LANG</span>
+          <span class="language-trigger__value">{{ currentLanguageLabel }}</span>
+          <span class="language-trigger__chevron"></span>
+        </button>
 
-  <div class="spa">
-    <router-outlet></router-outlet>
-  </div>
+        @if (languageMenuOpen) {
+          <div class="language-menu" role="listbox">
+            @for (language of languages; track language.code) {
+              <button
+                type="button"
+                role="option"
+                [class.active]="currentLanguage === language.code"
+                [attr.aria-selected]="currentLanguage === language.code"
+                (click)="switchLanguage(language.code)"
+              >
+                <span>{{ language.label }}</span>
+                <small>{{ language.name }}</small>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <a class="login-link" [routerLink]="['/' + path.login]">{{ 'nav.public.login' | translate }}</a>
+    </div>
+
+    <div class="spa">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 </div>

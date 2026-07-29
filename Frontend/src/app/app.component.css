@@ -5,14 +5,29 @@
 
 .view {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   color: var(--studio-text);
   background: var(--studio-page-bg);
   transition: background 0.3s, color 0.3s;
 }
 
 .navbar {
-  position: relative;
+  position: sticky;
+  top: 0;
+  height: 100vh;
   z-index: 20;
+}
+
+.navbar app-navbar {
+  display: block;
+  height: 100%;
+}
+
+.app-main {
+  position: relative;
+  min-width: 0;
+  min-height: 100vh;
 }
 
 .spa {
@@ -22,7 +37,7 @@
 }
 
 .global-actions {
-  position: fixed;
+  position: absolute;
   top: 38px;
   right: 38px;
   z-index: 30;
@@ -32,9 +47,9 @@
 }
 
 .world-actions {
-  position: fixed;
+  position: absolute;
   top: 38px;
-  left: 96px;
+  left: 20px;
   z-index: 30;
   display: inline-flex;
   align-items: stretch;
@@ -211,7 +226,7 @@
 @media (max-width: 760px) {
   .world-actions {
     top: 22px;
-    left: 76px;
+    left: 12px;
     gap: 8px;
   }
 

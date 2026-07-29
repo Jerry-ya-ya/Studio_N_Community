@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
 .sidebar {
   --rail-width: 76px;
   --drawer-width: 268px;
@@ -11,10 +16,10 @@
   --nav-admin: color-mix(in srgb, var(--studio-accent) 72%, var(--studio-warm));
   --nav-superadmin: var(--studio-warm);
 
-  position: fixed;
-  inset: 0 auto 0 0;
+  position: relative;
   z-index: 30;
   width: var(--drawer-width);
+  height: 100%;
   display: grid;
   grid-template-rows: 64px minmax(0, 1fr);
   border-right: 1px solid var(--nav-shell-line);
@@ -34,7 +39,7 @@
 .sidebar-toggle {
   width: 48px;
   height: 48px;
-  margin: 12px auto 4px;
+  margin: 12px 0 4px 14px;
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--nav-shell-line);

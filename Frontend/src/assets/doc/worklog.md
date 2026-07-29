@@ -469,3 +469,5 @@
 - Replace world toggle with logo mode switch and cycle control.
 
 - Redesign sidebar navigation as an icon rail.
+
+- Separate app shell layout from sidebar rail.
