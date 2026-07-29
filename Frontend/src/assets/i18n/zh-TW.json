@@ -90,6 +90,13 @@
       "on": "開",
       "off": "關"
     },
+    "cycle": {
+      "label": "循環",
+      "aria": {
+        "enable": "開啟自動日夜循環",
+        "disable": "關閉自動日夜循環"
+      }
+    },
     "aria": {
       "switchToDay": "切換到白日模式",
       "switchToNight": "切換到夜晚模式",

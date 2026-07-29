@@ -465,3 +465,5 @@
 - Add home news background image management.
 
 - Lock world cycling by default and align login register link.
+
+- Replace world toggle with logo mode switch and cycle control.

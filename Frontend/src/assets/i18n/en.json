@@ -90,6 +90,13 @@
       "on": "ON",
       "off": "OFF"
     },
+    "cycle": {
+      "label": "CYCLE",
+      "aria": {
+        "enable": "Enable automatic day and night cycling",
+        "disable": "Disable automatic day and night cycling"
+      }
+    },
     "aria": {
       "switchToDay": "Switch to day mode",
       "switchToNight": "Switch to night mode",

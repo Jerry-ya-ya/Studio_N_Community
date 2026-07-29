@@ -5,48 +5,37 @@
     </app-navbar>
   </div>
 
+  <div class="world-actions" [class.world-actions--night]="theme.isNightMode" [class.world-actions--cycle-on]="!theme.isWorldLocked">
+    <button
+      class="world-logo-toggle"
+      type="button"
+      (click)="theme.toggleWorldMode()"
+      [attr.aria-label]="worldLogoAriaKey | translate"
+    >
+      <span class="world-logo-toggle__glow"></span>
+      <img [src]="worldLogoSrc" [alt]="worldLogoName + ' logo'">
+      <span>{{ worldLogoName }}</span>
+    </button>
+
+    <button
+      class="world-cycle-switch"
+      type="button"
+      role="switch"
+      (click)="theme.toggleWorldLock()"
+      [class.world-cycle-switch--active]="!theme.isWorldLocked"
+      [attr.aria-checked]="!theme.isWorldLocked"
+      [attr.aria-label]="worldCycleAriaKey | translate"
+    >
+      <span class="world-cycle-switch__label">{{ 'world.cycle.label' | translate }}</span>
+      <span class="world-cycle-switch__track">
+        <span class="world-cycle-switch__thumb"></span>
+      </span>
+      <span class="world-cycle-switch__state">{{ worldCycleStateKey | translate }}</span>
+      <span class="world-cycle-switch__timer">{{ theme.isWorldLocked ? ('world.status.locked' | translate) : theme.countdownLabel }}</span>
+    </button>
+  </div>
+
   <div class="global-actions">
-    <div class="world-control" [class.world-control--night]="theme.isNightMode" [class.world-control--locked]="theme.isWorldLocked">
-      <button
-        class="world-slider"
-        type="button"
-        (click)="toggleWorldFromClick($event)"
-        (pointerdown)="beginWorldSlide($event)"
-        (pointermove)="moveWorldSlide($event)"
-        (pointerup)="finishWorldSlide($event)"
-        [attr.aria-label]="worldSliderAriaKey | translate"
-      >
-        <span class="world-slider__label world-slider__label--day">{{ 'world.mode.day' | translate }}</span>
-        <span class="world-slider__label world-slider__label--night">{{ 'world.mode.night' | translate }}</span>
-        <span class="world-slider__thumb">
-          <span class="world-toggle__orbit">
-            <span class="world-toggle__sun"></span>
-            <span class="world-toggle__moon"></span>
-          </span>
-        </span>
-        <span class="world-toggle__meta">
-          <span>{{ theme.isWorldLocked ? (worldCountdownKey | translate) : theme.countdownLabel }}</span>
-          <span>{{ worldNextModeKey | translate }}</span>
-        </span>
-      </button>
-
-      <button
-        class="world-lock"
-        type="button"
-        role="switch"
-        (click)="theme.toggleWorldLock()"
-        [class.world-lock--active]="theme.isWorldLocked"
-        [attr.aria-checked]="theme.isWorldLocked"
-        [attr.aria-label]="worldLockAriaKey | translate"
-      >
-        <span class="world-lock__label">{{ 'world.lock.label' | translate }}</span>
-        <span class="world-lock__track">
-          <span class="world-lock__thumb"></span>
-        </span>
-        <span class="world-lock__state">{{ worldLockStateKey | translate }}</span>
-      </button>
-    </div>
-
     <div class="language-switcher" [class.language-switcher--open]="languageMenuOpen">
       <button
         class="language-trigger"

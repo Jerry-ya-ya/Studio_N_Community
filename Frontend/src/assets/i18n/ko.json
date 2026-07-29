@@ -90,6 +90,13 @@
       "on": "ON",
       "off": "OFF"
     },
+    "cycle": {
+      "label": "순환",
+      "aria": {
+        "enable": "자동 낮밤 순환 켜기",
+        "disable": "자동 낮밤 순환 끄기"
+      }
+    },
     "aria": {
       "switchToDay": "낮 모드로 전환",
       "switchToNight": "밤 모드로 전환",

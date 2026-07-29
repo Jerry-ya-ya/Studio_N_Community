@@ -21,49 +21,12 @@ export class AppComponent {
   ];
   currentLanguage = localStorage.getItem('language') || 'zh-TW';
   languageMenuOpen = false;
-  private worldPointerStartX = 0;
-  private worldPointerMoved = false;
-  private suppressWorldClick = false;
 
   constructor(
     public theme: ThemeService,
     private translate: TranslateService
   ) {
     this.translate.use(this.currentLanguage);
-  }
-
-  beginWorldSlide(event: PointerEvent) {
-    this.worldPointerStartX = event.clientX;
-    this.worldPointerMoved = false;
-    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-  }
-
-  moveWorldSlide(event: PointerEvent) {
-    if (Math.abs(event.clientX - this.worldPointerStartX) > 8) {
-      this.worldPointerMoved = true;
-    }
-  }
-
-  finishWorldSlide(event: PointerEvent) {
-    if (!this.worldPointerMoved) {
-      return;
-    }
-
-    const control = event.currentTarget as HTMLElement;
-    const rect = control.getBoundingClientRect();
-    const ratio = (event.clientX - rect.left) / rect.width;
-    this.theme.setWorldMode(ratio >= 0.5);
-    this.suppressWorldClick = true;
-  }
-
-  toggleWorldFromClick(event: MouseEvent) {
-    if (this.suppressWorldClick) {
-      event.preventDefault();
-      this.suppressWorldClick = false;
-      return;
-    }
-
-    this.theme.toggleWorldMode();
   }
 
   switchLanguage(language: string) {
@@ -81,27 +44,23 @@ export class AppComponent {
     return this.languages.find(language => language.code === this.currentLanguage)?.label || '繁中';
   }
 
-  get worldSliderAriaKey() {
+  get worldLogoSrc() {
+    return this.theme.isNightMode ? 'icons/eden.png' : 'icons/cmenstudio.png';
+  }
+
+  get worldLogoName() {
+    return this.theme.isNightMode ? 'EDEN' : 'CMEN';
+  }
+
+  get worldLogoAriaKey() {
     return this.theme.isNightMode ? 'world.aria.switchToDay' : 'world.aria.switchToNight';
   }
 
-  get worldNextModeKey() {
-    if (this.theme.isWorldLocked) {
-      return this.theme.isNightMode ? 'world.status.edenLock' : 'world.status.cmenLock';
-    }
-
-    return this.theme.isNightMode ? 'world.status.cmenDay' : 'world.status.edenNight';
+  get worldCycleAriaKey() {
+    return this.theme.isWorldLocked ? 'world.cycle.aria.enable' : 'world.cycle.aria.disable';
   }
 
-  get worldCountdownKey() {
-    return this.theme.isWorldLocked ? 'world.status.locked' : '';
-  }
-
-  get worldLockAriaKey() {
-    return this.theme.isWorldLocked ? 'world.aria.unlock' : 'world.aria.lock';
-  }
-
-  get worldLockStateKey() {
-    return this.theme.isWorldLocked ? 'world.lock.on' : 'world.lock.off';
+  get worldCycleStateKey() {
+    return this.theme.isWorldLocked ? 'world.lock.off' : 'world.lock.on';
   }
 }

@@ -90,6 +90,13 @@
       "on": "ON",
       "off": "OFF"
     },
+    "cycle": {
+      "label": "循環",
+      "aria": {
+        "enable": "自動昼夜循環をオンにする",
+        "disable": "自動昼夜循環をオフにする"
+      }
+    },
     "aria": {
       "switchToDay": "昼モードに切り替え",
       "switchToNight": "夜モードに切り替え",
