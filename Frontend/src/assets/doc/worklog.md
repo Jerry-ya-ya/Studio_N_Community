@@ -467,3 +467,5 @@
 - Lock world cycling by default and align login register link.
 
 - Replace world toggle with logo mode switch and cycle control.
+
+- Redesign sidebar navigation as an icon rail.

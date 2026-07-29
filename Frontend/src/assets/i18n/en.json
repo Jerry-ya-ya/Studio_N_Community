@@ -38,6 +38,11 @@
     }
   },
   "nav": {
+    "aria": {
+      "main": "Main navigation",
+      "expand": "Expand navigation menu",
+      "collapse": "Collapse navigation menu"
+    },
     "public": {
       "home": "Home",
       "member": "Member",

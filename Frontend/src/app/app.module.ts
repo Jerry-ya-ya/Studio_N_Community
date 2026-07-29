@@ -9,6 +9,7 @@ import { AuthInterceptor } from './core/services/interceptors/auth-interceptor.s
 import { provideTranslateService, TranslatePipe } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatIconModule } from '@angular/material/icon';
 
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 
@@ -21,6 +22,7 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
     BrowserModule,
     HttpClientModule,
     TranslatePipe,
+    MatIconModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(), // 只在生產模式下啟用 Service Worker

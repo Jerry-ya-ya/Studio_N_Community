@@ -38,6 +38,11 @@
     }
   },
   "nav": {
+    "aria": {
+      "main": "主要導覽",
+      "expand": "展開導覽選單",
+      "collapse": "收合導覽選單"
+    },
     "public": {
       "home": "主頁",
       "member": "成員",
