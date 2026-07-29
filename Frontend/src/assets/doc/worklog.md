@@ -473,3 +473,5 @@
 - Separate app shell layout from sidebar rail.
 
 - Float top controls and align public home hero.
+
+- Use rotating cycle icon for world automation.

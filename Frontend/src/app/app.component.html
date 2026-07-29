@@ -27,12 +27,13 @@
         [attr.aria-checked]="!theme.isWorldLocked"
         [attr.aria-label]="worldCycleAriaKey | translate"
       >
-        <span class="world-cycle-switch__label">{{ 'world.cycle.label' | translate }}</span>
-        <span class="world-cycle-switch__track">
-          <span class="world-cycle-switch__thumb"></span>
+        <span class="world-cycle-switch__icon">
+          <mat-icon>autorenew</mat-icon>
         </span>
-        <span class="world-cycle-switch__state">{{ worldCycleStateKey | translate }}</span>
-        <span class="world-cycle-switch__timer">{{ theme.isWorldLocked ? ('world.status.locked' | translate) : theme.countdownLabel }}</span>
+        <span class="world-cycle-switch__meta">
+          <span>{{ 'world.cycle.label' | translate }} {{ worldCycleStateKey | translate }}</span>
+          <span>{{ theme.isWorldLocked ? ('world.status.locked' | translate) : theme.countdownLabel }}</span>
+        </span>
       </button>
     </div>
 

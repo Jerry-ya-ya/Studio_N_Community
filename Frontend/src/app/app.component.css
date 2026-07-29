@@ -148,84 +148,82 @@
 }
 
 .world-cycle-switch {
-  min-width: 116px;
+  min-width: 126px;
   min-height: 46px;
-  display: grid;
-  grid-template-columns: 1fr 42px;
-  grid-template-rows: repeat(2, auto);
-  align-content: center;
-  column-gap: 8px;
-  row-gap: 2px;
-  padding: 6px 8px 6px 10px;
+  display: inline-grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 6px;
 }
 
-.world-cycle-switch__label,
-.world-cycle-switch__state,
-.world-cycle-switch__timer {
+.world-cycle-switch__icon {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 86%, transparent);
+  border-radius: 50%;
+  color: var(--studio-muted);
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.14), transparent 34%),
+    color-mix(in srgb, var(--studio-panel-strong) 84%, transparent);
+}
+
+.world-cycle-switch__icon mat-icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  line-height: 22px;
+}
+
+.world-cycle-switch__meta {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
   line-height: 1;
+  text-align: left;
   text-transform: uppercase;
 }
 
-.world-cycle-switch__label {
-  color: var(--studio-muted);
-  font-size: 10px;
-  font-weight: 900;
-}
-
-.world-cycle-switch__state {
+.world-cycle-switch__meta span:first-child {
   color: var(--studio-text);
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 900;
 }
 
-.world-cycle-switch__timer {
-  grid-column: 1 / -1;
+.world-cycle-switch__meta span:last-child {
   color: color-mix(in srgb, var(--studio-muted) 86%, transparent);
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 1px;
 }
 
-.world-cycle-switch__track {
-  grid-column: 2;
-  grid-row: 1 / 3;
-  position: relative;
-  align-self: center;
-  width: 42px;
-  height: 22px;
-  border: 1px solid var(--studio-line);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
-}
-
-.world-cycle-switch__thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--studio-muted);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
 .world-cycle-switch--active {
   border-color: var(--studio-accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 26px rgba(0, 0, 0, 0.22), 0 0 0 1px color-mix(in srgb, var(--studio-accent) 22%, transparent);
 }
 
-.world-cycle-switch--active .world-cycle-switch__track {
-  border-color: var(--studio-accent);
-  background: color-mix(in srgb, var(--studio-accent) 24%, var(--studio-panel-strong));
-}
-
-.world-cycle-switch--active .world-cycle-switch__thumb {
-  transform: translateX(20px);
-  background: var(--studio-accent);
-}
-
-.world-cycle-switch--active .world-cycle-switch__state {
+.world-cycle-switch--active .world-cycle-switch__icon {
+  border-color: color-mix(in srgb, var(--studio-accent) 74%, transparent);
   color: var(--studio-accent);
+  background:
+    radial-gradient(circle at 34% 26%, color-mix(in srgb, var(--studio-warm) 24%, transparent), transparent 34%),
+    color-mix(in srgb, var(--studio-accent) 18%, var(--studio-panel-strong));
+}
+
+.world-cycle-switch--active .world-cycle-switch__icon mat-icon {
+  animation: cycle-spin 1.4s linear infinite;
+}
+
+.world-cycle-switch--active .world-cycle-switch__meta span:first-child {
+  color: var(--studio-accent);
+}
+
+@keyframes cycle-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 760px) {
@@ -266,14 +264,13 @@
   }
 
   .world-cycle-switch {
-    min-width: 78px;
+    min-width: 42px;
     min-height: 42px;
     grid-template-columns: 1fr;
-    padding: 6px 8px;
+    padding: 4px;
   }
 
-  .world-cycle-switch__track,
-  .world-cycle-switch__timer {
+  .world-cycle-switch__meta {
     display: none;
   }
 
@@ -293,5 +290,11 @@
     right: 12px;
     transform: scale(0.9);
     transform-origin: top right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-cycle-switch--active .world-cycle-switch__icon mat-icon {
+    animation: none;
   }
 }
