@@ -21,6 +21,7 @@ export class AppComponent {
   ];
   currentLanguage = localStorage.getItem('language') || 'zh-TW';
   languageMenuOpen = false;
+  navCollapsed = true;
 
   constructor(
     public theme: ThemeService,

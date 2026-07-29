@@ -471,3 +471,5 @@
 - Redesign sidebar navigation as an icon rail.
 
 - Separate app shell layout from sidebar rail.
+
+- Float top controls and align public home hero.

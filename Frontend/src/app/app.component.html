@@ -1,6 +1,6 @@
-<div class="view" [class.day-mode]="!theme.isNightMode">
+<div class="view" [class.day-mode]="!theme.isNightMode" [class.sidebar-collapsed]="navCollapsed">
   <div class="navbar">
-    <app-navbar>
+    <app-navbar (collapsedChange)="navCollapsed = $event">
       <!--  -->
     </app-navbar>
   </div>

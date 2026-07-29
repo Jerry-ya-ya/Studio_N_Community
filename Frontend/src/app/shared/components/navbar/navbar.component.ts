@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Injector } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Injector, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { appPath } from '../../../path/app-path-const';
@@ -27,6 +27,8 @@ interface NavSection {
 })
 export class NavbarComponent {
   path = appPath; // 將 appPath 物件賦值給 path 屬性
+
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
   collapsed = true;
   readonly sections: NavSection[] = [
@@ -89,6 +91,7 @@ export class NavbarComponent {
 
   toggleSidebar() {
     this.collapsed = !this.collapsed;
+    this.collapsedChange.emit(this.collapsed);
   }
 
   isSectionVisible(section: NavSection) {
@@ -110,6 +113,7 @@ export class NavbarComponent {
     localStorage.removeItem('role');
     localStorage.removeItem('username');
     this.collapsed = true;
+    this.collapsedChange.emit(this.collapsed);
     this.openLogoutSnack();
     this.router.navigate([appPath.login]);
   }
