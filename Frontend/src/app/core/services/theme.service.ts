@@ -31,14 +31,16 @@ export class ThemeService implements OnDestroy {
     }
   ];
 
-  isNightMode = true;
-  isWorldLocked = false;
-  remainingSeconds = 300;
-  activeTheme: StudioThemeId = 'eden';
-
   private readonly cycleSeconds = 300;
+  private readonly defaultWorldModeIsNight = true;
+  private readonly defaultWorldLocked = true;
   private readonly storageKey = 'studio-theme';
   private timerId: ReturnType<typeof setInterval> | null = null;
+
+  isNightMode = this.defaultWorldModeIsNight;
+  isWorldLocked = this.defaultWorldLocked;
+  remainingSeconds = this.cycleSeconds;
+  activeTheme: StudioThemeId = 'eden';
 
   constructor(@Inject(DOCUMENT) private document: Document) {
     this.activeTheme = this.readStoredTheme();

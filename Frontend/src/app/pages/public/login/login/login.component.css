@@ -141,12 +141,19 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 20%, transparent);
 }
 
-.login-tools,
-.register-link {
+.login-tools {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: center;
+  color: var(--studio-muted);
+}
+
+.register-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
   color: var(--studio-muted);
 }
 
@@ -214,9 +221,12 @@
     padding: 22px;
   }
 
-  .login-tools,
-  .register-link {
+  .login-tools {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .register-link {
+    flex-wrap: wrap;
   }
 }

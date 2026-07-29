@@ -463,3 +463,5 @@
 - Restyle post wall without emoji decorations.
 
 - Add home news background image management.
+
+- Lock world cycling by default and align login register link.
