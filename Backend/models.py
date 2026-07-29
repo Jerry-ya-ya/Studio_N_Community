@@ -97,6 +97,7 @@ class HomeNewsItem(db.Model):
     title = db.Column(db.String(120), nullable=False)
     summary = db.Column(db.Text, nullable=False)
     tag = db.Column(db.String(40), nullable=False)
+    background_url = db.Column(db.String(255))
     sort_order = db.Column(db.Integer, default=0, nullable=False)
     created_at = db.Column(db.DateTime, default=taipei_now)
     updated_at = db.Column(db.DateTime, default=taipei_now, onupdate=taipei_now)

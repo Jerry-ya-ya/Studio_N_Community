@@ -461,3 +461,5 @@
 - Optimize content scrolling and todo summary layout.
 
 - Restyle post wall without emoji decorations.
+
+- Add home news background image management.

@@ -1,4 +1,8 @@
-from flask import Blueprint, jsonify, request
+import os
+import uuid
+
+from flask import Blueprint, current_app, jsonify, request
+from werkzeug.utils import secure_filename
 
 from models import db, HomeNewsItem, User
 from routes.admin.decorators import admin_required
@@ -8,6 +12,7 @@ content_bp = Blueprint('content', __name__)
 
 VALID_THEMES = {'cmen', 'eden'}
 VALID_MEMBER_ROLES = {'superadmin', 'admin', 'member', 'user'}
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 DEFAULT_HOME_NEWS = {
     'cmen': [
@@ -63,6 +68,7 @@ def serialize_home_news(item):
         'title': item.title,
         'summary': item.summary,
         'tag': item.tag,
+        'backgroundUrl': item.background_url,
         'sort_order': item.sort_order,
         'created_at': to_taipei_iso(item.created_at),
         'updated_at': to_taipei_iso(item.updated_at),
@@ -91,6 +97,7 @@ def serialize_defaults():
                 **item,
                 'id': None,
                 'theme': theme,
+                'backgroundUrl': None,
                 'sort_order': index,
                 'created_at': None,
                 'updated_at': None,
@@ -141,6 +148,7 @@ def read_item_payload(data, default_theme=None, default_order=0):
     title = (data.get('title') or '').strip()
     summary = (data.get('summary') or '').strip()
     tag = (data.get('tag') or '').strip()
+    background_url = (data.get('backgroundUrl') or data.get('background_url') or '').strip()
     sort_order = data.get('sort_order', default_order)
 
     if theme not in VALID_THEMES:
@@ -162,8 +170,13 @@ def read_item_payload(data, default_theme=None, default_order=0):
         'title': title[:120],
         'summary': summary,
         'tag': tag[:40],
+        'background_url': background_url[:255] or None,
         'sort_order': sort_order,
     }, None
+
+
+def is_allowed_image(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
 @content_bp.route('/content/home-news', methods=['GET'])
@@ -253,6 +266,34 @@ def update_home_news_item(item_id):
 
     for key, value in payload.items():
         setattr(item, key, value)
+    db.session.commit()
+
+    return jsonify(serialize_home_news(item))
+
+
+@content_bp.route('/admin/content/home-news/items/<int:item_id>/background', methods=['POST'])
+@admin_required
+def upload_home_news_background(item_id):
+    item = HomeNewsItem.query.get_or_404(item_id)
+    uploaded_file = request.files.get('file') or request.files.get('image') or request.files.get('background')
+
+    if not uploaded_file:
+        return jsonify({'error': 'No file part'}), 400
+    if uploaded_file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if not is_allowed_image(uploaded_file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+
+    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'home-news')
+    os.makedirs(upload_folder, exist_ok=True)
+
+    original_name = secure_filename(uploaded_file.filename)
+    extension = original_name.rsplit('.', 1)[1].lower()
+    filename = f'{item.id}_{uuid.uuid4().hex}.{extension}'
+    filepath = os.path.join(upload_folder, filename)
+    uploaded_file.save(filepath)
+
+    item.background_url = f'/static/uploads/home-news/{filename}'
     db.session.commit()
 
     return jsonify(serialize_home_news(item))

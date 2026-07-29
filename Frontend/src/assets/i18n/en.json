@@ -840,7 +840,9 @@
     "form": {
       "tag": "Tag",
       "title": "Title",
-      "summary": "Summary"
+      "summary": "Summary",
+      "background": "Background image",
+      "backgroundHint": "Save new cards first so they get a database ID before uploading a background."
     },
     "preview": {
       "label": "Live Preview",
@@ -854,6 +856,7 @@
       "remove": "Remove",
       "addCard": "Add Card",
       "addMember": "Add Member",
+      "removeBackground": "Remove Background",
       "resetDefaults": "Reset Defaults",
       "saving": "Saving...",
       "saveNews": "Save News",
@@ -871,6 +874,9 @@
       "loadMemberFailure": "Failed to load member content.",
       "saveMemberSuccess": "Member content saved to database.",
       "saveMemberFailure": "Failed to save member content.",
+      "backgroundUploadSuccess": "News background uploaded.",
+      "backgroundUploadFailure": "Failed to upload news background.",
+      "saveBeforeBackgroundUpload": "Save this news card before uploading a background image.",
       "defaultsLoaded": "Defaults loaded. Save to publish them."
     }
   }

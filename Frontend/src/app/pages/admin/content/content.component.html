@@ -70,6 +70,29 @@
                   <span>{{ 'adminContent.form.summary' | translate }}</span>
                   <textarea [(ngModel)]="item.summary" name="summary-{{ activeTheme }}-{{ i }}" rows="4" maxlength="180"></textarea>
                 </label>
+
+                <label>
+                  <span>{{ 'adminContent.form.background' | translate }}</span>
+                  <div class="background-upload-row">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      (change)="uploadNewsBackground($event, item)"
+                      [disabled]="!item.id || (item.id ? uploadingBackground[item.id] : false)">
+                    <button
+                      type="button"
+                      class="ghost danger"
+                      (click)="removeNewsBackground(item)"
+                      [disabled]="!item.backgroundUrl">
+                      {{ 'adminContent.actions.removeBackground' | translate }}
+                    </button>
+                  </div>
+                  <small>{{ 'adminContent.form.backgroundHint' | translate }}</small>
+                </label>
+
+                @if (getNewsBackgroundUrl(item)) {
+                  <div class="background-thumb" [style.background-image]="getNewsBackgroundStyle(item)"></div>
+                }
               </article>
             }
           </div>
@@ -82,10 +105,15 @@
 
             <div class="preview-stack">
               @for (item of activeNews; track item) {
-                <article class="preview-card">
-                  <span>{{ item.tag || ('adminContent.preview.tagFallback' | translate) }}</span>
-                  <h3>{{ item.title || ('adminContent.preview.titleFallback' | translate) }}</h3>
-                  <p>{{ item.summary || ('adminContent.preview.summaryFallback' | translate) }}</p>
+                <article
+                  class="preview-card"
+                  [class.has-background]="!!item.backgroundUrl"
+                  [style.background-image]="getNewsBackgroundStyle(item)">
+                  <div class="preview-card__glass">
+                    <span>{{ item.tag || ('adminContent.preview.tagFallback' | translate) }}</span>
+                    <h3>{{ item.title || ('adminContent.preview.titleFallback' | translate) }}</h3>
+                    <p>{{ item.summary || ('adminContent.preview.summaryFallback' | translate) }}</p>
+                  </div>
                 </article>
               }
             </div>

@@ -39,7 +39,10 @@
 
     <div class="news-grid">
       @for (item of communityNews; track item) {
-        <article class="news-card">
+        <article
+          class="news-card"
+          [class.has-background]="!!item.backgroundUrl"
+          [style.background-image]="getNewsBackgroundStyle(item)">
           <div class="news-card__media">
             <img [src]="studioLogo" [alt]="'home.logoAlt' | translate:{ studioName: studioName }">
           </div>

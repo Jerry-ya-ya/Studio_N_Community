@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { HomeContentService } from '../../../core/services/home-content.service';
+import { CommunityNewsItem, HomeContentService } from '../../../core/services/home-content.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,8 @@ import { ThemeService } from '../../../core/services/theme.service';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+  private readonly assetBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
+
   readonly cmenSubtitleKeys = [
     'home.hero.cmen.subtitle.computing',
     'home.hero.cmen.subtitle.mathematics',
@@ -68,5 +71,25 @@ export class HomeComponent implements OnInit {
 
   get communityNewsIntroKey() {
     return this.isNightMode ? 'home.news.edenIntro' : 'home.news.cmenIntro';
+  }
+
+  getNewsBackgroundUrl(item: CommunityNewsItem) {
+    const url = item.backgroundUrl?.trim();
+    if (!url) {
+      return '';
+    }
+
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+
+    return `${this.assetBaseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+  }
+
+  getNewsBackgroundStyle(item: CommunityNewsItem) {
+    const url = this.getNewsBackgroundUrl(item);
+    return url
+      ? `linear-gradient(180deg, rgba(4, 10, 22, 0.1), rgba(4, 10, 22, 0.76)), url("${url}")`
+      : '';
   }
 }

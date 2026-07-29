@@ -840,7 +840,9 @@
     "form": {
       "tag": "Tag",
       "title": "Title",
-      "summary": "Summary"
+      "summary": "Summary",
+      "background": "배경 이미지",
+      "backgroundHint": "새 카드는 먼저 저장해서 데이터베이스 ID를 받은 뒤 배경을 업로드하세요."
     },
     "preview": {
       "label": "Live Preview",
@@ -854,6 +856,7 @@
       "remove": "Remove",
       "addCard": "Add Card",
       "addMember": "Add Member",
+      "removeBackground": "배경 제거",
       "resetDefaults": "Reset Defaults",
       "saving": "Saving...",
       "saveNews": "Save News",
@@ -871,6 +874,9 @@
       "loadMemberFailure": "멤버 콘텐츠를 불러오지 못했습니다.",
       "saveMemberSuccess": "멤버 콘텐츠를 데이터베이스에 저장했습니다.",
       "saveMemberFailure": "멤버 콘텐츠 저장에 실패했습니다.",
+      "backgroundUploadSuccess": "뉴스 배경을 업로드했습니다.",
+      "backgroundUploadFailure": "뉴스 배경을 업로드하지 못했습니다.",
+      "saveBeforeBackgroundUpload": "배경 이미지를 업로드하기 전에 이 뉴스 카드를 먼저 저장하세요.",
       "defaultsLoaded": "기본값을 불러왔습니다. 게시하려면 저장하세요."
     }
   }

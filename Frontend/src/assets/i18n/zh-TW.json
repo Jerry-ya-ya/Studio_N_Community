@@ -840,7 +840,9 @@
     "form": {
       "tag": "Tag",
       "title": "Title",
-      "summary": "Summary"
+      "summary": "Summary",
+      "background": "背景圖片",
+      "backgroundHint": "新卡片請先儲存，取得資料庫 ID 後再上傳背景。"
     },
     "preview": {
       "label": "Live Preview",
@@ -854,6 +856,7 @@
       "remove": "Remove",
       "addCard": "Add Card",
       "addMember": "Add Member",
+      "removeBackground": "移除背景",
       "resetDefaults": "Reset Defaults",
       "saving": "Saving...",
       "saveNews": "Save News",
@@ -871,6 +874,9 @@
       "loadMemberFailure": "無法載入成員內容。",
       "saveMemberSuccess": "成員內容已儲存到資料庫。",
       "saveMemberFailure": "無法儲存成員內容。",
+      "backgroundUploadSuccess": "新聞背景已上傳。",
+      "backgroundUploadFailure": "無法上傳新聞背景。",
+      "saveBeforeBackgroundUpload": "請先儲存這張新聞卡，再上傳背景圖片。",
       "defaultsLoaded": "已載入預設值。請儲存以發布。"
     }
   }

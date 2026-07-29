@@ -375,6 +375,68 @@ body.cmen-day-theme :is(.view) > :is(.box) {
   backdrop-filter: blur(12px);
 }
 
+.content-admin .background-upload-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.content-admin .background-upload-row input[type="file"] {
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.content-admin .background-upload-row button {
+  min-height: 44px;
+  border: 1px solid color-mix(in srgb, var(--studio-danger) 46%, transparent);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: color-mix(in srgb, var(--studio-danger) 88%, var(--studio-text));
+  background: color-mix(in srgb, var(--studio-danger) 10%, transparent);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.content-admin label small {
+  color: color-mix(in srgb, var(--studio-muted) 82%, transparent);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.content-admin .background-thumb {
+  min-height: 132px;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 42%, transparent);
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--studio-panel-strong) 86%, transparent);
+  background-position: center;
+  background-size: cover;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.content-admin .preview-card.has-background {
+  display: flex;
+  align-items: flex-end;
+  min-height: 260px;
+  padding: 12px;
+  background-color: var(--studio-panel);
+  background-position: center;
+  background-size: cover;
+}
+
+.content-admin .preview-card__glass {
+  width: 100%;
+}
+
+.content-admin .preview-card.has-background .preview-card__glass {
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 78%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--studio-panel) 74%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 16px 30px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px) saturate(1.18);
+}
+
 .language-switcher {
   position: relative;
   color: var(--studio-text);
@@ -519,6 +581,10 @@ body.cmen-day-theme .language-menu button.active small {
 
   .language-menu {
     width: 184px;
+  }
+
+  .content-admin .background-upload-row {
+    grid-template-columns: 1fr;
   }
 
   body.eden-night-theme :is(

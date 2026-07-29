@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CommunityNewsItem, HomeContentService, HomeNewsContent } from '../../../core/services/home-content.service';
 import { MemberContentItem, MemberContentService } from '../../../core/services/member-content.service';
+import { environment } from '../../../../environments/environment';
 
 type ContentSection = 'home-news' | 'member' | 'tutorial' | 'about' | 'system';
 
@@ -29,8 +30,10 @@ export class ContentComponent implements OnInit {
 
   content: HomeNewsContent;
   members: MemberContentItem[];
+  uploadingBackground: Record<number, boolean> = {};
   private syncingMemberScroll = false;
   private memberScrollFrame: number | null = null;
+  private readonly assetBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
 
   constructor(
     private homeContent: HomeContentService,
@@ -111,6 +114,65 @@ export class ContentComponent implements OnInit {
     const [item] = this.activeNews.splice(index, 1);
     this.activeNews.splice(targetIndex, 0, item);
     this.savedMessage = '';
+  }
+
+  getNewsBackgroundUrl(item: CommunityNewsItem) {
+    const url = item.backgroundUrl?.trim();
+    if (!url) {
+      return '';
+    }
+
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+
+    return `${this.assetBaseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+  }
+
+  getNewsBackgroundStyle(item: CommunityNewsItem) {
+    const url = this.getNewsBackgroundUrl(item);
+    return url
+      ? `linear-gradient(180deg, rgba(4, 10, 22, 0.12), rgba(4, 10, 22, 0.72)), url("${url}")`
+      : '';
+  }
+
+  uploadNewsBackground(event: Event, item: CommunityNewsItem) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (!item.id) {
+      this.errorMessage = this.translate.instant('adminContent.feedback.saveBeforeBackgroundUpload');
+      input.value = '';
+      return;
+    }
+
+    this.uploadingBackground[item.id] = true;
+    this.errorMessage = '';
+    this.savedMessage = '';
+
+    this.homeContent.uploadNewsBackground(item.id, file).subscribe({
+      next: updatedItem => {
+        item.backgroundUrl = updatedItem.backgroundUrl ?? null;
+        item.updated_at = updatedItem.updated_at ?? item.updated_at;
+        this.savedMessage = this.translate.instant('adminContent.feedback.backgroundUploadSuccess');
+        this.uploadingBackground[item.id!] = false;
+        input.value = '';
+      },
+      error: error => {
+        this.errorMessage = error?.error?.error || this.translate.instant('adminContent.feedback.backgroundUploadFailure');
+        this.uploadingBackground[item.id!] = false;
+        input.value = '';
+      }
+    });
+  }
+
+  removeNewsBackground(item: CommunityNewsItem) {
+    item.backgroundUrl = null;
+    this.savedMessage = '';
+    this.errorMessage = '';
   }
 
   syncMemberScroll(source: HTMLElement, target: HTMLElement) {

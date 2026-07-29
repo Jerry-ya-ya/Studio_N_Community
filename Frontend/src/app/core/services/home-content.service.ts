@@ -3,9 +3,15 @@ import { Observable, tap } from 'rxjs';
 import { ApiService } from './api.service';
 
 export interface CommunityNewsItem {
+  id?: number | null;
+  theme?: keyof HomeNewsContent;
   title: string;
   summary: string;
   tag: string;
+  backgroundUrl?: string | null;
+  sort_order?: number;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface HomeNewsContent {
@@ -88,6 +94,17 @@ export class HomeContentService {
     );
   }
 
+  uploadNewsBackground(itemId: number, file: File): Observable<CommunityNewsItem> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.apiService.post<CommunityNewsItem>(
+      `/admin/content/home-news/items/${itemId}/background`,
+      formData,
+      this.apiService.createAuthHeaders()
+    );
+  }
+
   getDefaultContent(): HomeNewsContent {
     return this.clone(defaultHomeNewsContent);
   }
@@ -107,9 +124,15 @@ export class HomeContentService {
     return items.map(item => {
       const newsItem = item as Partial<CommunityNewsItem>;
       return {
+        id: newsItem.id ?? null,
+        theme: newsItem.theme,
         title: String(newsItem.title ?? ''),
         summary: String(newsItem.summary ?? ''),
-        tag: String(newsItem.tag ?? '')
+        tag: String(newsItem.tag ?? ''),
+        backgroundUrl: newsItem.backgroundUrl ?? null,
+        sort_order: newsItem.sort_order,
+        created_at: newsItem.created_at ?? null,
+        updated_at: newsItem.updated_at ?? null
       };
     }).filter(item => item.title.trim() || item.summary.trim() || item.tag.trim());
   }
