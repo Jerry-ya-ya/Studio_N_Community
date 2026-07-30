@@ -801,6 +801,11 @@
       "status": "Status",
       "pointsLabel": "Points"
     },
+    "week": {
+      "kicker": "Weekly Trace",
+      "title": "Last 7 Days",
+      "progress": "{{ checked }} / {{ total }} days"
+    },
     "status": {
       "checked": "Checked In",
       "ready": "Ready"

@@ -485,3 +485,5 @@
 - Align top controls with sidebar toggle.
 
 - Add daily check-in rewards with immediate UI updates.
+
+- Add seven-day check-in progress card.

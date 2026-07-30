@@ -801,6 +801,11 @@
       "status": "상태",
       "pointsLabel": "포인트"
     },
+    "week": {
+      "kicker": "Weekly Trace",
+      "title": "최근 7일 출석",
+      "progress": "{{ checked }} / {{ total }}일"
+    },
     "status": {
       "checked": "출석 완료",
       "ready": "출석 가능"

@@ -42,6 +42,26 @@
         </article>
       </div>
 
+      <div class="week-card">
+        <div class="week-card__summary">
+          <div>
+            <p class="check-in-kicker">{{ 'checkIn.week.kicker' | translate }}</p>
+            <h2>{{ 'checkIn.week.title' | translate }}</h2>
+          </div>
+          <strong>{{ 'checkIn.week.progress' | translate: { checked: status?.lastSevenDays?.checkedDays ?? 0, total: status?.lastSevenDays?.totalDays ?? 7 } }}</strong>
+        </div>
+
+        <div class="week-days">
+          @for (day of status?.lastSevenDays?.days; track day.date) {
+            <article class="week-day" [class.week-day--checked]="day.checked">
+              <span>{{ day.date | date:'MM/dd' }}</span>
+              <mat-icon>{{ day.checked ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+              <small>+{{ day.points }}</small>
+            </article>
+          }
+        </div>
+      </div>
+
       <button class="check-in-button" type="button" (click)="checkIn()" [disabled]="status?.checkedInToday || checkingIn">
         <mat-icon>{{ status?.checkedInToday ? 'lock' : 'stars' }}</mat-icon>
         <span>{{ (checkingIn ? 'checkIn.actions.checking' : (status?.checkedInToday ? 'checkIn.actions.done' : 'checkIn.actions.checkIn')) | translate }}</span>

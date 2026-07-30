@@ -8,6 +8,15 @@ export interface CheckInStatus {
   todayPoints: number;
   isWeekend: boolean;
   totalPoints: number;
+  lastSevenDays: {
+    checkedDays: number;
+    totalDays: number;
+    days: {
+      date: string;
+      checked: boolean;
+      points: number;
+    }[];
+  };
   lastCheckIn: string | null;
   earnedPoints?: number;
   message?: string;

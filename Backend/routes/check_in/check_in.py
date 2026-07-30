@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
 
@@ -21,6 +23,31 @@ def get_total_points(user_id):
     return int(total or 0)
 
 
+def get_last_seven_days(user_id, today):
+    start_date = today - timedelta(days=6)
+    check_ins = DailyCheckIn.query.filter(
+        DailyCheckIn.user_id == user_id,
+        DailyCheckIn.checkin_date >= start_date,
+        DailyCheckIn.checkin_date <= today,
+    ).all()
+    checked_dates = {check_in.checkin_date for check_in in check_ins}
+
+    days = []
+    for day_offset in range(7):
+        date = start_date + timedelta(days=day_offset)
+        days.append({
+            'date': date.isoformat(),
+            'checked': date in checked_dates,
+            'points': 5 if date.weekday() >= 5 else 1,
+        })
+
+    return {
+        'checkedDays': len(checked_dates),
+        'totalDays': 7,
+        'days': days,
+    }
+
+
 def serialize_status(user, today=None, is_weekend=None, today_points=None):
     today = today or taipei_now().date()
     if is_weekend is None or today_points is None:
@@ -35,6 +62,7 @@ def serialize_status(user, today=None, is_weekend=None, today_points=None):
         'isWeekend': is_weekend,
         'totalPoints': get_total_points(user.id),
         'lastCheckIn': to_taipei_iso(check_in.created_at) if check_in else None,
+        'lastSevenDays': get_last_seven_days(user.id, today),
     }
 
 

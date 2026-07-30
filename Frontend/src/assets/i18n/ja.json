@@ -801,6 +801,11 @@
       "status": "状態",
       "pointsLabel": "ポイント"
     },
+    "week": {
+      "kicker": "Weekly Trace",
+      "title": "直近 7 日間",
+      "progress": "{{ checked }} / {{ total }} 日"
+    },
     "status": {
       "checked": "チェックイン済み",
       "ready": "受け取り可能"

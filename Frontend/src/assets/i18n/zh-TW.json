@@ -801,6 +801,11 @@
       "status": "狀態",
       "pointsLabel": "點數"
     },
+    "week": {
+      "kicker": "Weekly Trace",
+      "title": "近 7 天簽到",
+      "progress": "{{ checked }} / {{ total }} 天"
+    },
     "status": {
       "checked": "已簽到",
       "ready": "可簽到"
