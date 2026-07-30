@@ -60,6 +60,7 @@
       "recruit": "招募",
       "friend": "好友",
       "todo": "待辦",
+      "checkIn": "簽到",
       "setting": "設定",
       "profile": "個人資料",
       "crawler": "爬蟲",
@@ -775,6 +776,45 @@
     },
     "feedback": {
       "fetchFailure": "爬蟲失敗"
+    }
+  },
+  "checkIn": {
+    "hero": {
+      "kicker": "Reward System",
+      "title": "每日簽到",
+      "subtitle": "每天回來領取點數。平日簽到獲得 1 point，週末假日簽到獲得 5 point。"
+    },
+    "state": {
+      "loading": "正在載入簽到狀態..."
+    },
+    "reward": {
+      "weekday": "Weekday Reward",
+      "weekend": "Weekend Reward",
+      "readyTitle": "今日獎勵已準備",
+      "doneTitle": "今日已完成簽到",
+      "description": "今天簽到可以獲得 {{ points }} point。"
+    },
+    "stats": {
+      "total": "總點數",
+      "today": "今日獎勵",
+      "date": "今日日期",
+      "status": "狀態",
+      "pointsLabel": "點數"
+    },
+    "status": {
+      "checked": "已簽到",
+      "ready": "可簽到"
+    },
+    "actions": {
+      "checkIn": "領取今日點數",
+      "checking": "簽到中...",
+      "done": "今日已領取"
+    },
+    "feedback": {
+      "loadFailure": "無法載入簽到狀態。",
+      "checkInSuccess": "簽到成功，獲得 {{ points }} point。",
+      "alreadyCheckedIn": "今天已經簽到過了。",
+      "checkInFailure": "簽到失敗。"
     }
   },
   "adminContent": {

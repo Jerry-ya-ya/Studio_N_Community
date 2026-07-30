@@ -55,6 +55,11 @@ const routes: Routes = [
       import('../pages/private/todo/todo.module').then(m => m.TodoModule)
   },
   {
+    path: appPath.checkIn,
+    loadChildren: () =>
+      import('../pages/private/check-in/check-in.module').then(m => m.CheckInModule)
+  },
+  {
     path: appPath.promote,
     loadChildren: () =>
       import('../pages/superadmin/promote/promote.module').then(m => m.PromoteModule)

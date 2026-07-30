@@ -60,6 +60,7 @@
       "recruit": "Recruit",
       "friend": "Friend",
       "todo": "Todo",
+      "checkIn": "Check In",
       "setting": "Setting",
       "profile": "Profile",
       "crawler": "Crawler",
@@ -775,6 +776,45 @@
     },
     "feedback": {
       "fetchFailure": "Crawler failed."
+    }
+  },
+  "checkIn": {
+    "hero": {
+      "kicker": "Reward System",
+      "title": "Daily Check-In",
+      "subtitle": "Come back every day to collect points. Weekdays grant 1 point, while weekends grant 5 points."
+    },
+    "state": {
+      "loading": "Loading check-in status..."
+    },
+    "reward": {
+      "weekday": "Weekday Reward",
+      "weekend": "Weekend Reward",
+      "readyTitle": "Today's reward is ready",
+      "doneTitle": "Checked in for today",
+      "description": "Checking in today grants {{ points }} point."
+    },
+    "stats": {
+      "total": "Total Points",
+      "today": "Today Reward",
+      "date": "Today Date",
+      "status": "Status",
+      "pointsLabel": "Points"
+    },
+    "status": {
+      "checked": "Checked In",
+      "ready": "Ready"
+    },
+    "actions": {
+      "checkIn": "Claim Today",
+      "checking": "Checking in...",
+      "done": "Claimed Today"
+    },
+    "feedback": {
+      "loadFailure": "Failed to load check-in status.",
+      "checkInSuccess": "Check-in complete. You earned {{ points }} point.",
+      "alreadyCheckedIn": "You already checked in today.",
+      "checkInFailure": "Failed to check in."
     }
   },
   "adminContent": {

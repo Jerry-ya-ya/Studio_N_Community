@@ -161,6 +161,19 @@ class ProjectRecruitmentMember(db.Model):
     project = db.relationship('ProjectRecruitment', back_populates='members')
     user = db.relationship('User', backref='project_recruitment_memberships')
 
+class DailyCheckIn(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'checkin_date', name='uq_daily_check_in_user_date'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    checkin_date = db.Column(db.Date, nullable=False)
+    points = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=taipei_now)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='daily_check_ins')
+
 
 def load_models():
     """Keep all table models registered from one place before schema creation."""
@@ -175,4 +188,5 @@ def load_models():
         Post,
         ProjectRecruitment,
         ProjectRecruitmentMember,
+        DailyCheckIn,
     )

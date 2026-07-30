@@ -483,3 +483,5 @@
 - Add sidebar brand wordmark home entry.
 
 - Align top controls with sidebar toggle.
+
+- Add daily check-in rewards with immediate UI updates.

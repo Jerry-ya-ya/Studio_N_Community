@@ -60,6 +60,7 @@
       "recruit": "募集",
       "friend": "友達",
       "todo": "Todo",
+      "checkIn": "チェックイン",
       "setting": "設定",
       "profile": "プロフィール",
       "crawler": "クローラー",
@@ -775,6 +776,45 @@
     },
     "feedback": {
       "fetchFailure": "クローラーに失敗しました。"
+    }
+  },
+  "checkIn": {
+    "hero": {
+      "kicker": "Reward System",
+      "title": "デイリーチェックイン",
+      "subtitle": "毎日戻ってポイントを受け取れます。平日は 1 point、週末は 5 point を獲得できます。"
+    },
+    "state": {
+      "loading": "チェックイン状態を読み込み中..."
+    },
+    "reward": {
+      "weekday": "Weekday Reward",
+      "weekend": "Weekend Reward",
+      "readyTitle": "今日の報酬を受け取れます",
+      "doneTitle": "今日はチェックイン済み",
+      "description": "今日チェックインすると {{ points }} point を獲得できます。"
+    },
+    "stats": {
+      "total": "合計ポイント",
+      "today": "今日の報酬",
+      "date": "今日の日付",
+      "status": "状態",
+      "pointsLabel": "ポイント"
+    },
+    "status": {
+      "checked": "チェックイン済み",
+      "ready": "受け取り可能"
+    },
+    "actions": {
+      "checkIn": "今日のポイントを受け取る",
+      "checking": "チェックイン中...",
+      "done": "本日受け取り済み"
+    },
+    "feedback": {
+      "loadFailure": "チェックイン状態を読み込めませんでした。",
+      "checkInSuccess": "チェックイン完了。{{ points }} point を獲得しました。",
+      "alreadyCheckedIn": "今日はすでにチェックイン済みです。",
+      "checkInFailure": "チェックインに失敗しました。"
     }
   },
   "adminContent": {

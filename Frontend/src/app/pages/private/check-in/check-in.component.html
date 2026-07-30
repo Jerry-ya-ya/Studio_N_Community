@@ -1,0 +1,59 @@
+<main class="check-in-page">
+  <section class="check-in-hero">
+    <div>
+      <p class="check-in-kicker">{{ 'checkIn.hero.kicker' | translate }}</p>
+      <h1>{{ 'checkIn.hero.title' | translate }}</h1>
+      <p>{{ 'checkIn.hero.subtitle' | translate }}</p>
+    </div>
+    <div class="point-badge">
+      <span>{{ 'checkIn.stats.total' | translate }}</span>
+      <strong>{{ status?.totalPoints ?? 0 }}</strong>
+      <small>{{ 'checkIn.stats.pointsLabel' | translate }}</small>
+    </div>
+  </section>
+
+  <section class="check-in-panel">
+    @if (loading) {
+      <p class="state-message">{{ 'checkIn.state.loading' | translate }}</p>
+    } @else {
+      <div class="reward-card">
+        <div class="reward-card__icon">
+          <mat-icon>{{ status?.checkedInToday ? 'verified' : 'redeem' }}</mat-icon>
+        </div>
+        <div>
+          <p class="check-in-kicker">{{ status?.isWeekend ? ('checkIn.reward.weekend' | translate) : ('checkIn.reward.weekday' | translate) }}</p>
+          <h2>{{ status?.checkedInToday ? ('checkIn.reward.doneTitle' | translate) : ('checkIn.reward.readyTitle' | translate) }}</h2>
+          <p>{{ 'checkIn.reward.description' | translate: { points: status?.todayPoints ?? 1 } }}</p>
+        </div>
+      </div>
+
+      <div class="reward-stats">
+        <article>
+          <span>{{ 'checkIn.stats.today' | translate }}</span>
+          <strong>+{{ status?.todayPoints ?? 1 }} {{ 'checkIn.stats.pointsLabel' | translate }}</strong>
+        </article>
+        <article>
+          <span>{{ 'checkIn.stats.date' | translate }}</span>
+          <strong>{{ status?.today }}</strong>
+        </article>
+        <article>
+          <span>{{ 'checkIn.stats.status' | translate }}</span>
+          <strong>{{ (status?.checkedInToday ? 'checkIn.status.checked' : 'checkIn.status.ready') | translate }}</strong>
+        </article>
+      </div>
+
+      <button class="check-in-button" type="button" (click)="checkIn()" [disabled]="status?.checkedInToday || checkingIn">
+        <mat-icon>{{ status?.checkedInToday ? 'lock' : 'stars' }}</mat-icon>
+        <span>{{ (checkingIn ? 'checkIn.actions.checking' : (status?.checkedInToday ? 'checkIn.actions.done' : 'checkIn.actions.checkIn')) | translate }}</span>
+      </button>
+    }
+
+    @if (successMessage) {
+      <p class="save-message">{{ successMessage | translate: { points: status?.earnedPoints ?? status?.todayPoints ?? 0 } }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error-message">{{ errorMessage | translate }}</p>
+    }
+  </section>
+</main>

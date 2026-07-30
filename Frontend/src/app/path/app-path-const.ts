@@ -17,6 +17,8 @@ export const appPath = {
     square: 'square',
     //todo
     todo: 'todo',
+    //check in
+    checkIn: 'check-in',
     //promote
     promote: 'promote',
     //admin content

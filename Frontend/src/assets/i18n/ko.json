@@ -60,6 +60,7 @@
       "recruit": "모집",
       "friend": "친구",
       "todo": "Todo",
+      "checkIn": "출석",
       "setting": "설정",
       "profile": "프로필",
       "crawler": "크롤러",
@@ -775,6 +776,45 @@
     },
     "feedback": {
       "fetchFailure": "크롤러 실행에 실패했습니다."
+    }
+  },
+  "checkIn": {
+    "hero": {
+      "kicker": "Reward System",
+      "title": "일일 출석",
+      "subtitle": "매일 돌아와 포인트를 받을 수 있습니다. 평일 출석은 1 point, 주말 출석은 5 point를 얻습니다."
+    },
+    "state": {
+      "loading": "출석 상태를 불러오는 중..."
+    },
+    "reward": {
+      "weekday": "Weekday Reward",
+      "weekend": "Weekend Reward",
+      "readyTitle": "오늘 보상이 준비되었습니다",
+      "doneTitle": "오늘 출석 완료",
+      "description": "오늘 출석하면 {{ points }} point를 얻습니다."
+    },
+    "stats": {
+      "total": "총 포인트",
+      "today": "오늘 보상",
+      "date": "오늘 날짜",
+      "status": "상태",
+      "pointsLabel": "포인트"
+    },
+    "status": {
+      "checked": "출석 완료",
+      "ready": "출석 가능"
+    },
+    "actions": {
+      "checkIn": "오늘 포인트 받기",
+      "checking": "출석 중...",
+      "done": "오늘 수령 완료"
+    },
+    "feedback": {
+      "loadFailure": "출석 상태를 불러오지 못했습니다.",
+      "checkInSuccess": "출석 완료. {{ points }} point를 얻었습니다.",
+      "alreadyCheckedIn": "오늘은 이미 출석했습니다.",
+      "checkInFailure": "출석에 실패했습니다."
     }
   },
   "adminContent": {

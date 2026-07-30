@@ -55,6 +55,7 @@ export class NavbarComponent {
         { labelKey: 'nav.private.recruit', icon: 'campaign', route: appPath.projectRecruitment },
         { labelKey: 'nav.private.friend', icon: 'diversity_3', route: appPath.friend },
         { labelKey: 'nav.private.todo', icon: 'task_alt', route: appPath.todo },
+        { labelKey: 'nav.private.checkIn', icon: 'redeem', route: appPath.checkIn },
         { labelKey: 'nav.private.setting', icon: 'settings', route: appPath.setting },
         { labelKey: 'nav.private.profile', icon: 'account_circle', route: appPath.profile },
         { labelKey: 'nav.private.crawler', icon: 'travel_explore', route: appPath.crawler },

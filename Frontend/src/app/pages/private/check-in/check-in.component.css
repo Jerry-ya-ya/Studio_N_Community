@@ -1,0 +1,207 @@
+:host {
+  display: block;
+}
+
+.check-in-page {
+  min-height: 100vh;
+  padding: 116px clamp(16px, 4vw, 48px) 48px;
+  color: var(--studio-text);
+  background: var(--studio-grid-bg);
+  background-size: 68px 68px, 68px 68px, auto;
+}
+
+.check-in-hero,
+.check-in-panel {
+  max-width: 980px;
+  margin: 0 auto;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 36%),
+    color-mix(in srgb, var(--studio-panel) 88%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 18px 48px var(--eden-shadow);
+  backdrop-filter: blur(14px);
+}
+
+.check-in-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.check-in-kicker {
+  margin: 0 0 8px;
+  color: var(--studio-accent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.check-in-hero h1,
+.reward-card h2 {
+  margin: 0;
+  color: var(--studio-text);
+  letter-spacing: 0;
+}
+
+.check-in-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  text-transform: uppercase;
+  text-shadow:
+    2px 2px 0 var(--studio-danger),
+    -2px -2px 0 color-mix(in srgb, var(--studio-accent) 38%, transparent);
+}
+
+.check-in-hero p:last-child,
+.reward-card p:last-child {
+  max-width: 620px;
+  margin: 12px 0 0;
+  color: var(--studio-muted);
+  line-height: 1.7;
+}
+
+.point-badge {
+  min-width: 148px;
+  min-height: 148px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 44%, transparent);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 34% 24%, color-mix(in srgb, var(--studio-warm) 24%, transparent), transparent 38%),
+    color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+}
+
+.point-badge span,
+.point-badge small,
+.reward-stats span {
+  color: var(--studio-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.point-badge strong {
+  color: var(--studio-warm);
+  font-size: 3.2rem;
+  line-height: 0.9;
+}
+
+.check-in-panel {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.reward-card {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.reward-card__icon {
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 44%, transparent);
+  border-radius: 8px;
+  color: var(--studio-accent);
+  background: color-mix(in srgb, var(--studio-accent) 12%, transparent);
+}
+
+.reward-card__icon mat-icon {
+  width: 34px;
+  height: 34px;
+  font-size: 34px;
+  line-height: 34px;
+}
+
+.reward-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.reward-stats article {
+  min-height: 86px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 70%, transparent);
+  border-radius: 8px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+}
+
+.reward-stats strong {
+  color: var(--studio-text);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+}
+
+.check-in-button {
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--studio-accent);
+  border-radius: 8px;
+  color: var(--studio-bg);
+  background: var(--studio-accent);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.check-in-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.state-message,
+.save-message,
+.error-message {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.state-message,
+.save-message {
+  color: var(--studio-accent);
+  background: color-mix(in srgb, var(--studio-accent) 10%, transparent);
+}
+
+.error-message {
+  color: var(--studio-danger);
+  background: color-mix(in srgb, var(--studio-danger) 10%, transparent);
+}
+
+@media (max-width: 760px) {
+  .check-in-page {
+    padding: 92px 12px 28px;
+  }
+
+  .check-in-hero,
+  .reward-card {
+    grid-template-columns: 1fr;
+  }
+
+  .check-in-hero {
+    display: grid;
+  }
+
+  .point-badge {
+    width: 100%;
+    min-height: 116px;
+  }
+
+  .reward-stats {
+    grid-template-columns: 1fr;
+  }
+}
