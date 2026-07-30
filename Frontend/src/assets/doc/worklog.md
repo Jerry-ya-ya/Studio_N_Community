@@ -479,3 +479,5 @@
 ## 2026/07/30
 
 - Fix sidebar rail icon sizing with collapsed scrollbars.
+
+- Add sidebar brand wordmark home entry.

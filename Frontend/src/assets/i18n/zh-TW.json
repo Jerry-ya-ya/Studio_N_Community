@@ -41,7 +41,8 @@
     "aria": {
       "main": "主要導覽",
       "expand": "展開導覽選單",
-      "collapse": "收合導覽選單"
+      "collapse": "收合導覽選單",
+      "brandHome": "前往 {{ brand }} 首頁入口"
     },
     "public": {
       "home": "主頁",

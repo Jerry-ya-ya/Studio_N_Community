@@ -41,7 +41,8 @@
     "aria": {
       "main": "Main navigation",
       "expand": "Expand navigation menu",
-      "collapse": "Collapse navigation menu"
+      "collapse": "Collapse navigation menu",
+      "brandHome": "Go to {{ brand }} home entry"
     },
     "public": {
       "home": "Home",

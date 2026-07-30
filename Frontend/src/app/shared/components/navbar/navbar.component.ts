@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, EventEmitter, Injector, Output } fr
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { appPath } from '../../../path/app-path-const';
+import { ThemeService } from '../../../core/services/theme.service';
 
 type NavSectionKey = 'public' | 'private' | 'admin' | 'superadmin';
 
@@ -86,7 +87,8 @@ export class NavbarComponent {
   constructor(
     private router: Router,
     private injector: Injector,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public theme: ThemeService
   ) {}
 
   toggleSidebar() {
@@ -106,6 +108,14 @@ export class NavbarComponent {
     }
 
     return true;
+  }
+
+  get brandName() {
+    return this.theme.isNightMode ? 'EDEN' : 'CMENStudio';
+  }
+
+  goToHomeEntry() {
+    this.router.navigate([this.isLoggedIn() ? appPath.userhome : appPath.home]);
   }
 
   logout() {

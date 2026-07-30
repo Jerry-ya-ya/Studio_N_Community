@@ -41,7 +41,8 @@
     "aria": {
       "main": "주요 내비게이션",
       "expand": "내비게이션 메뉴 펼치기",
-      "collapse": "내비게이션 메뉴 접기"
+      "collapse": "내비게이션 메뉴 접기",
+      "brandHome": "{{ brand }} 홈 입구로 이동"
     },
     "public": {
       "home": "홈",

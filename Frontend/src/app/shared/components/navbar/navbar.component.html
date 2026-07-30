@@ -1,13 +1,25 @@
 <nav class="sidebar" [class.sidebar--collapsed]="collapsed" [attr.aria-label]="'nav.aria.main' | translate">
-  <button
-    class="sidebar-toggle"
-    type="button"
-    (click)="toggleSidebar()"
-    [attr.aria-expanded]="!collapsed"
-    [attr.aria-label]="(collapsed ? 'nav.aria.expand' : 'nav.aria.collapse') | translate"
-  >
-    <mat-icon>menu</mat-icon>
-  </button>
+  <header class="sidebar-header">
+    <button
+      class="sidebar-toggle"
+      type="button"
+      (click)="toggleSidebar()"
+      [attr.aria-expanded]="!collapsed"
+      [attr.aria-label]="(collapsed ? 'nav.aria.expand' : 'nav.aria.collapse') | translate"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <button
+      class="brand-wordmark"
+      type="button"
+      (click)="goToHomeEntry()"
+      [attr.aria-label]="'nav.aria.brandHome' | translate: { brand: brandName }"
+    >
+      <span class="brand-wordmark__text brand-wordmark__text--cmen">CMENStudio</span>
+      <span class="brand-wordmark__text brand-wordmark__text--eden">EDEN</span>
+    </button>
+  </header>
 
   <div class="nav-sections">
     @for (section of sections; track section.key) {
