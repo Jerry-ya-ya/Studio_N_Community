@@ -444,7 +444,7 @@ body.cmen-day-theme :is(.view) > :is(.box) {
 
 .language-trigger {
   min-width: 112px;
-  height: 46px;
+  height: var(--top-control-height, 54px);
   padding: 0 12px;
   display: inline-flex;
   align-items: center;
@@ -567,7 +567,7 @@ body.cmen-day-theme .language-menu button.active small {
 
   .language-trigger {
     min-width: 86px;
-    height: 42px;
+    height: var(--top-control-height, 48px);
     padding: 0 10px;
   }
 

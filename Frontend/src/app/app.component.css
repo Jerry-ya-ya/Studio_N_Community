@@ -5,6 +5,7 @@
 
 .view {
   --app-sidebar-width: 268px;
+  --top-control-height: 54px;
   min-height: 100vh;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -43,7 +44,7 @@
 
 .global-actions {
   position: fixed;
-  top: 38px;
+  top: 10px;
   right: 38px;
   z-index: 40;
   display: flex;
@@ -53,7 +54,7 @@
 
 .world-actions {
   position: fixed;
-  top: 38px;
+  top: 10px;
   left: calc(var(--app-sidebar-width) + 20px);
   z-index: 40;
   display: inline-flex;
@@ -67,7 +68,7 @@
   align-items: center;
   justify-content: center;
   min-width: 82px;
-  min-height: 46px;
+  min-height: var(--top-control-height);
   padding: 0 16px;
   border: 1px solid var(--studio-line);
   border-radius: 6px;
@@ -102,7 +103,7 @@
 .world-logo-toggle {
   position: relative;
   width: 88px;
-  min-height: 46px;
+  min-height: var(--top-control-height);
   display: grid;
   grid-template-columns: 34px 1fr;
   align-items: center;
@@ -149,7 +150,7 @@
 
 .world-cycle-switch {
   min-width: 126px;
-  min-height: 46px;
+  min-height: var(--top-control-height);
   display: inline-grid;
   grid-template-columns: 34px minmax(0, 1fr);
   align-items: center;
@@ -229,6 +230,7 @@
 @media (max-width: 760px) {
   .view {
     --app-sidebar-width: min(82vw, 260px);
+    --top-control-height: 48px;
   }
 
   .view.sidebar-collapsed {
@@ -236,20 +238,20 @@
   }
 
   .world-actions {
-    top: 22px;
+    top: 10px;
     left: calc(var(--app-sidebar-width) + 12px);
     gap: 8px;
   }
 
   .global-actions {
-    top: 22px;
+    top: 10px;
     right: 22px;
     gap: 8px;
   }
 
   .world-logo-toggle {
     width: 76px;
-    height: 42px;
+    height: var(--top-control-height);
     grid-template-columns: 30px 1fr;
     gap: 5px;
   }
@@ -264,8 +266,8 @@
   }
 
   .world-cycle-switch {
-    min-width: 42px;
-    min-height: 42px;
+    min-width: var(--top-control-height);
+    min-height: var(--top-control-height);
     grid-template-columns: 1fr;
     padding: 4px;
   }
@@ -276,6 +278,7 @@
 
   .login-link {
     min-width: 74px;
+    min-height: var(--top-control-height);
     padding: 0 12px;
   }
 }

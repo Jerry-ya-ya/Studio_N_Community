@@ -45,6 +45,18 @@ export class AppComponent {
     return this.languages.find(language => language.code === this.currentLanguage)?.label || '繁中';
   }
 
+  get isLoggedIn() {
+    return !!localStorage.getItem('token');
+  }
+
+  get topActionPath() {
+    return this.isLoggedIn ? appPath.todo : appPath.login;
+  }
+
+  get topActionLabelKey() {
+    return this.isLoggedIn ? 'nav.private.todo' : 'nav.public.login';
+  }
+
   get worldLogoSrc() {
     return this.theme.isNightMode ? 'icons/eden.png' : 'icons/cmenstudio.png';
   }
