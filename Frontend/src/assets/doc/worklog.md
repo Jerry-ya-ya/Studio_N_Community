@@ -487,3 +487,7 @@
 - Add daily check-in rewards with immediate UI updates.
 
 - Add seven-day check-in progress card.
+
+## 2026/08/01
+
+- Add superadmin point totals and split user list layout.

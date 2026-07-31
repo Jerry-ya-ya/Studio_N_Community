@@ -11,6 +11,8 @@ interface User {
   email_verified: boolean;
   avatar_url?: string;
   created_at: string;
+  total_points?: number;
+  totalPoints?: number;
 }
 
 @Component({

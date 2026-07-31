@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import User
+from models import DailyCheckIn, User
 from models import db
 from routes.admin.decorators import superadmin_required
 from routes.auth.utils import get_current_user_from_token
@@ -27,7 +27,21 @@ def get_users():
     else:
         users = User.query.order_by(sort_column.asc()).all()
 
-    return jsonify([user.to_dict() for user in users])
+    point_rows = db.session.query(
+        DailyCheckIn.user_id,
+        db.func.coalesce(db.func.sum(DailyCheckIn.points), 0).label('total_points')
+    ).group_by(DailyCheckIn.user_id).all()
+    point_map = {user_id: int(total_points or 0) for user_id, total_points in point_rows}
+
+    result = []
+    for user in users:
+        user_data = user.to_dict()
+        total_points = point_map.get(user.id, 0)
+        user_data['total_points'] = total_points
+        user_data['totalPoints'] = total_points
+        result.append(user_data)
+
+    return jsonify(result)
 
 @promote_bp.route('/superadmin/promote/<int:user_id>', methods=['PUT'])
 @superadmin_required

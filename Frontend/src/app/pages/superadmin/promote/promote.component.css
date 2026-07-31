@@ -154,35 +154,107 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 18%, transparent);
 }
 
-.table-wrapper {
-  overflow-x: auto;
+.split-table {
+  display: grid;
+  grid-template-columns: minmax(0, 30%) minmax(0, 70%);
+  overflow: hidden;
 }
 
-.user-table {
-  width: 100%;
-  min-width: 880px;
-  border-collapse: collapse;
+.frozen-table {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border-right: 1px solid var(--studio-line);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 40%),
+    color-mix(in srgb, var(--studio-panel-strong) 92%, var(--studio-bg));
+  box-shadow: 14px 0 24px color-mix(in srgb, var(--eden-shadow) 54%, transparent);
+}
+
+.scroll-table {
+  overflow-x: auto;
+  scrollbar-color: var(--studio-accent) color-mix(in srgb, var(--studio-panel-strong) 84%, transparent);
+}
+
+.admin-grid {
+  --promote-header-height: 5px;
+  --promote-row-height: 65px;
   font-size: 0.9rem;
 }
 
-.user-table th {
-  padding: 15px 12px;
-  border-bottom: 1px solid var(--studio-line);
+.admin-grid--frozen {
+  width: 100%;
+}
+
+.admin-grid--frozen .admin-grid-row {
+  grid-template-columns: 15% 50% 40%;
+}
+
+.admin-grid--scroll {
+  min-width: 780px;
+}
+
+.admin-grid--scroll .admin-grid-row {
+  grid-template-columns: 90px 260px 140px 180px 220px;
+}
+
+.admin-grid-row {
+  display: grid;
+  align-items: center;
+  min-height: var(--promote-row-height);
+  border-bottom: 1px solid color-mix(in srgb, var(--studio-line) 62%, transparent);
+}
+
+.admin-grid-row--header {
+  min-height: var(--promote-header-height);
   color: var(--studio-accent);
   background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
   font-weight: 900;
-  text-align: left;
   text-transform: uppercase;
 }
 
-.user-table td {
-  padding: 15px 12px;
-  border-bottom: 1px solid color-mix(in srgb, var(--studio-line) 62%, transparent);
-  color: var(--studio-muted);
-  vertical-align: middle;
+.admin-grid-row > div {
+  min-width: 0;
+  padding: 0 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.user-row:hover {
+.col-points {
+  width: 90px;
+}
+
+.col-email {
+  width: 260px;
+}
+
+.col-role {
+  width: 140px;
+}
+
+.col-created {
+  width: 180px;
+}
+
+.col-actions {
+  width: 150px;
+}
+
+.col-id {
+  width: 100px;
+}
+
+.col-username {
+  width: 190px;
+}
+
+.col-nickname {
+  width: 100px;
+}
+
+.user-row:hover,
+.frozen-table .user-row:hover {
   background: color-mix(in srgb, var(--studio-accent) 7%, transparent);
 }
 
@@ -190,6 +262,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .user-avatar {
@@ -202,9 +275,26 @@
 }
 
 .username,
-.user-id {
+.user-id,
+.nickname,
+.points {
   color: var(--studio-text);
   font-weight: 800;
+}
+
+.username span,
+.nickname,
+.email,
+.created-at {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points {
+  color: var(--studio-warm);
+  font-size: 1rem;
+  text-align: left;
 }
 
 .email,
@@ -242,13 +332,14 @@
 }
 
 .actions {
-  text-align: center;
+  text-align: left;
   white-space: nowrap;
 }
 
 .promote-btn,
 .demote-btn {
   min-height: 36px;
+  max-height: 36px;
   padding: 8px 14px;
   border: 1px solid var(--studio-line);
   border-radius: 7px;
@@ -258,6 +349,7 @@
     color-mix(in srgb, var(--studio-panel-strong) 78%, transparent);
   font-size: 0.85rem;
   font-weight: 900;
+  white-space: nowrap;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
@@ -267,10 +359,6 @@
   color: var(--studio-bg);
   background: var(--studio-accent);
   transform: translateY(-2px);
-}
-
-.demote-btn {
-  margin-left: 8px;
 }
 
 .demote-btn:hover:not(:disabled) {
@@ -348,13 +436,18 @@
     grid-template-columns: 1fr;
   }
 
-  .user-table {
+  .admin-grid--scroll {
+    min-width: 700px;
+  }
+
+  .admin-grid {
+    --promote-header-height: 44px;
+    --promote-row-height: 56px;
     font-size: 0.8rem;
   }
 
-  .user-table th,
-  .user-table td {
-    padding: 10px 8px;
+  .admin-grid-row > div {
+    padding: 0 8px;
   }
 
   .user-avatar {

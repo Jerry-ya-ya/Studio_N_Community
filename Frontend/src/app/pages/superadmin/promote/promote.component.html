@@ -42,38 +42,49 @@
           >
         </div>
       </div>
-      <div class="table-wrapper">
-        <table class="user-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>帳號</th>
-              <th>暱稱</th>
-              <th>Email</th>
-              <th>角色</th>
-              <th>註冊時間</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div class="split-table">
+        <div class="frozen-table">
+          <div class="admin-grid admin-grid--frozen">
+            <div class="admin-grid-row admin-grid-row--header">
+              <div class="col-id">ID</div>
+              <div class="col-username">帳號</div>
+              <div class="col-nickname">暱稱</div>
+            </div>
             @for (user of filteredUsers; track user) {
-              <tr class="user-row">
-                <td class="user-id">{{ user.id }}</td>
-                <td class="username">
+              <div class="admin-grid-row user-row">
+                <div class="user-id col-id">{{ user.id }}</div>
+                <div class="username col-username">
                   <div class="user-info">
                     <img class="user-avatar" [src]="apiRoot + '/' + user.avatar_url"/>
                     <span>{{ user.username }}</span>
                   </div>
-                </td>
-                <td>{{ user.nickname || '-' }}</td>
-                <td class="email">{{ user.email }}</td>
-                <td>
+                </div>
+                <div class="nickname col-nickname">{{ user.nickname || '-' }}</div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="scroll-table">
+          <div class="admin-grid admin-grid--scroll">
+            <div class="admin-grid-row admin-grid-row--header">
+              <div class="col-points">點數</div>
+              <div class="col-email">Email</div>
+              <div class="col-role">角色</div>
+              <div class="col-created">註冊時間</div>
+              <div class="col-actions">操作</div>
+            </div>
+            @for (user of filteredUsers; track user) {
+              <div class="admin-grid-row user-row">
+                <div class="points col-points">{{ user.totalPoints ?? user.total_points ?? 0 }}</div>
+                <div class="email col-email">{{ user.email }}</div>
+                <div class="col-role">
                   <span class="role-badge" [class]="'role-' + user.role">
                     {{ getRoleDisplayName(user.role) }}
                   </span>
-                </td>
-                <td class="created-at">{{ formatDate(user.created_at) }}</td>
-                <td class="actions">
+                </div>
+                <div class="created-at col-created">{{ formatDate(user.created_at) }}</div>
+                <div class="actions col-actions">
                   <!-- 晉升 -->
                   @if (user.role === 'user') {
                     <button
@@ -108,11 +119,11 @@
                   @if (user.role === 'superadmin') {
                     <span class="no-action">最高管理員</span>
                   }
-                </td>
-              </tr>
+                </div>
+              </div>
             }
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
 
       <!-- 空狀態 -->
