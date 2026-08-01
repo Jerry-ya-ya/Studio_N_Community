@@ -822,6 +822,33 @@
       "checkInFailure": "チェックインに失敗しました。"
     }
   },
+  "adminProjects": {
+    "hero": {
+      "kicker": "Project Registry",
+      "title": "プロジェクト募集管理",
+      "subtitle": "すべてのプロジェクト募集、投稿者、登録済み参加者を確認できます。",
+      "totalLabel": "プロジェクト"
+    },
+    "state": {
+      "loading": "プロジェクト募集を読み込み中...",
+      "empty": "公開済みのプロジェクト募集はまだありません。"
+    },
+    "card": {
+      "roleFallback": "役割未指定",
+      "members": "参加者",
+      "noLimit": "制限なし",
+      "creator": "投稿者",
+      "createdAt": "公開日時",
+      "contact": "連絡先"
+    },
+    "members": {
+      "title": "登録メンバー",
+      "empty": "まだ登録したユーザーはいません。"
+    },
+    "feedback": {
+      "loadFailure": "プロジェクト募集を読み込めませんでした。"
+    }
+  },
   "adminContent": {
     "aria": {
       "contentSections": "コンテンツセクション",

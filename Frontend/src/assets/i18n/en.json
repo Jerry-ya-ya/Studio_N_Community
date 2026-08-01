@@ -822,6 +822,33 @@
       "checkInFailure": "Failed to check in."
     }
   },
+  "adminProjects": {
+    "hero": {
+      "kicker": "Project Registry",
+      "title": "Project Recruitment",
+      "subtitle": "Review every project recruitment post, its publisher, and registered participants.",
+      "totalLabel": "Projects"
+    },
+    "state": {
+      "loading": "Loading project recruitments...",
+      "empty": "No project recruitments have been published yet."
+    },
+    "card": {
+      "roleFallback": "Unspecified Role",
+      "members": "Participants",
+      "noLimit": "No Limit",
+      "creator": "Publisher",
+      "createdAt": "Published",
+      "contact": "Contact"
+    },
+    "members": {
+      "title": "Registered Members",
+      "empty": "No users have registered yet."
+    },
+    "feedback": {
+      "loadFailure": "Failed to load project recruitments."
+    }
+  },
   "adminContent": {
     "aria": {
       "contentSections": "Content sections",

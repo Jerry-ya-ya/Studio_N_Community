@@ -70,6 +70,11 @@ const routes: Routes = [
       import('../pages/admin/content/content.module').then(m => m.ContentModule)
   },
   {
+    path: appPath.projects,
+    loadChildren: () =>
+      import('../pages/admin/projects/projects.module').then(m => m.ProjectsModule)
+  },
+  {
     path: appPath.friend,
     loadChildren: () =>
       import('../pages/private/friend/friend.module').then(m => m.FriendModule)

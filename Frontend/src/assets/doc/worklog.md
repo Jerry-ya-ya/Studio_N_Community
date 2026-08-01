@@ -493,3 +493,5 @@
 - Add superadmin point totals and split user list layout.
 
 - Apply brand fonts to the public home hero.
+
+- Add admin project recruitment overview page.

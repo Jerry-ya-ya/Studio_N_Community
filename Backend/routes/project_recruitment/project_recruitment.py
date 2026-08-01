@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 from models import db, ProjectRecruitment, ProjectRecruitmentMember
+from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import to_taipei_text
 
@@ -50,6 +51,17 @@ def serialize_project(project, current_user):
 @project_recruitment_bp.route('/project-recruitments', methods=['GET'])
 @jwt_required()
 def list_project_recruitments():
+    current_user = get_current_user_from_token()
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    projects = ProjectRecruitment.query.order_by(ProjectRecruitment.created_at.desc()).all()
+    return jsonify([serialize_project(project, current_user) for project in projects])
+
+
+@project_recruitment_bp.route('/admin/project-recruitments', methods=['GET'])
+@admin_required
+def admin_list_project_recruitments():
     current_user = get_current_user_from_token()
     if not current_user:
         return jsonify({'error': 'User not found'}), 404

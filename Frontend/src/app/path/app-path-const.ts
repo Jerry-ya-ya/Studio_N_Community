@@ -23,6 +23,8 @@ export const appPath = {
     promote: 'promote',
     //admin content
     content: 'content',
+    //admin projects
+    projects: 'projects',
     //friend
     friend: 'friend',
     //project recruitment

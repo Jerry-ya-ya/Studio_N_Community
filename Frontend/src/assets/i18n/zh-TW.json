@@ -822,6 +822,33 @@
       "checkInFailure": "簽到失敗。"
     }
   },
+  "adminProjects": {
+    "hero": {
+      "kicker": "Project Registry",
+      "title": "專案招募管理",
+      "subtitle": "查看所有使用者發布的專案招募、發布者與已登記參與的人員。",
+      "totalLabel": "總專案"
+    },
+    "state": {
+      "loading": "正在載入專案招募...",
+      "empty": "目前沒有已發布的專案招募。"
+    },
+    "card": {
+      "roleFallback": "未指定角色",
+      "members": "參與人員",
+      "noLimit": "不限",
+      "creator": "發布者",
+      "createdAt": "發布時間",
+      "contact": "聯絡方式"
+    },
+    "members": {
+      "title": "登記成員",
+      "empty": "尚無使用者登記加入。"
+    },
+    "feedback": {
+      "loadFailure": "無法載入專案招募。"
+    }
+  },
   "adminContent": {
     "aria": {
       "contentSections": "內容區塊",

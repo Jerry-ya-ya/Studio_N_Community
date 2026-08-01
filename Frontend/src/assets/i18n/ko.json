@@ -822,6 +822,33 @@
       "checkInFailure": "출석에 실패했습니다."
     }
   },
+  "adminProjects": {
+    "hero": {
+      "kicker": "Project Registry",
+      "title": "프로젝트 모집 관리",
+      "subtitle": "모든 프로젝트 모집 글, 게시자, 등록한 참여자를 확인합니다.",
+      "totalLabel": "프로젝트"
+    },
+    "state": {
+      "loading": "프로젝트 모집을 불러오는 중...",
+      "empty": "아직 게시된 프로젝트 모집이 없습니다."
+    },
+    "card": {
+      "roleFallback": "역할 미지정",
+      "members": "참여자",
+      "noLimit": "제한 없음",
+      "creator": "게시자",
+      "createdAt": "게시 시간",
+      "contact": "연락처"
+    },
+    "members": {
+      "title": "등록 멤버",
+      "empty": "아직 등록한 사용자가 없습니다."
+    },
+    "feedback": {
+      "loadFailure": "프로젝트 모집을 불러오지 못했습니다."
+    }
+  },
   "adminContent": {
     "aria": {
       "contentSections": "콘텐츠 섹션",

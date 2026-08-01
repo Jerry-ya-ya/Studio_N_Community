@@ -1,0 +1,85 @@
+<main class="admin-projects">
+  <section class="projects-hero">
+    <div>
+      <p class="admin-kicker">{{ 'adminProjects.hero.kicker' | translate }}</p>
+      <h1>{{ 'adminProjects.hero.title' | translate }}</h1>
+      <p>{{ 'adminProjects.hero.subtitle' | translate }}</p>
+    </div>
+    <div class="hero-badge">
+      <span>{{ 'adminProjects.hero.totalLabel' | translate }}</span>
+      <strong>{{ projects.length }}</strong>
+    </div>
+  </section>
+
+  @if (loading) {
+    <p class="state-message">{{ 'adminProjects.state.loading' | translate }}</p>
+  }
+
+  @if (errorMessage) {
+    <p class="error-message">{{ errorMessage | translate }}</p>
+  }
+
+  @if (!loading && !errorMessage) {
+    <section class="project-list">
+      @for (project of projects; track project.id) {
+        <article class="project-card">
+          <header class="project-card__header">
+            <div>
+              <p class="admin-kicker">{{ project.role_needed || ('adminProjects.card.roleFallback' | translate) }}</p>
+              <h2>{{ project.title }}</h2>
+              <p>{{ project.summary }}</p>
+            </div>
+            <div class="project-count">
+              <span>{{ 'adminProjects.card.members' | translate }}</span>
+              <strong>{{ project.member_count }} / {{ project.max_members || ('adminProjects.card.noLimit' | translate) }}</strong>
+            </div>
+          </header>
+
+          <div class="project-meta">
+            <article>
+              <span>{{ 'adminProjects.card.creator' | translate }}</span>
+              <strong>{{ getDisplayName(project.creator) }}</strong>
+              <small>{{ project.creator.username }}</small>
+            </article>
+            <article>
+              <span>{{ 'adminProjects.card.createdAt' | translate }}</span>
+              <strong>{{ project.created_at }}</strong>
+            </article>
+            <article>
+              <span>{{ 'adminProjects.card.contact' | translate }}</span>
+              <strong>{{ project.contact || '-' }}</strong>
+            </article>
+          </div>
+
+          <section class="member-panel">
+            <div class="member-panel__title">
+              <mat-icon>groups</mat-icon>
+              <h3>{{ 'adminProjects.members.title' | translate }}</h3>
+            </div>
+
+            @if (project.members.length > 0) {
+              <div class="member-grid">
+                @for (member of project.members; track member.id) {
+                  <article class="member-card">
+                    <div class="member-avatar">{{ getDisplayName(member.user).charAt(0) }}</div>
+                    <div>
+                      <strong>{{ getDisplayName(member.user) }}</strong>
+                      <span>{{ member.user.username }}</span>
+                      @if (member.message) {
+                        <p>{{ member.message }}</p>
+                      }
+                    </div>
+                  </article>
+                }
+              </div>
+            } @else {
+              <p class="empty-message">{{ 'adminProjects.members.empty' | translate }}</p>
+            }
+          </section>
+        </article>
+      } @empty {
+        <p class="empty-message">{{ 'adminProjects.state.empty' | translate }}</p>
+      }
+    </section>
+  }
+</main>

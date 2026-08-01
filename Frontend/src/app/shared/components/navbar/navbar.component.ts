@@ -71,7 +71,7 @@ export class NavbarComponent {
         { labelKey: 'nav.admin.logs', icon: 'article', route: appPath.home },
         { labelKey: 'nav.admin.announce', icon: 'notifications_active', route: appPath.home },
         { labelKey: 'nav.admin.events', icon: 'event', route: appPath.home },
-        { labelKey: 'nav.admin.projects', icon: 'workspaces', route: appPath.home },
+        { labelKey: 'nav.admin.projects', icon: 'workspaces', route: appPath.projects },
         { labelKey: 'nav.admin.member', icon: 'badge', route: appPath.home }
       ]
     },
