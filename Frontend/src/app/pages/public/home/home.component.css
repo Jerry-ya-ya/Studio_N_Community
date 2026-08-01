@@ -1,3 +1,15 @@
+@font-face {
+  font-family: "StudioGlitchGoblin";
+  src: url("/assets/font/GlitchGoblin.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "StudioCiberGotica";
+  src: url("/assets/font/CiberGotica.woff2") format("woff2");
+  font-display: swap;
+}
+
 :host {
   display: block;
 }
@@ -108,17 +120,24 @@
 }
 
 h1 {
-  margin: 0;
+  margin: 18px 0 14px;
   color: var(--studio-text);
-  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-family: "StudioCiberGotica", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-size: clamp(54px, 12vw, 168px);
-  line-height: 0.9;
+  line-height: 1.16;
   letter-spacing: 0;
   text-transform: uppercase;
   text-shadow:
     3px 3px 0 var(--studio-danger),
     -3px -3px 0 color-mix(in srgb, var(--studio-accent) 44%, transparent),
     0 20px 50px rgba(0, 0, 0, 0.38);
+}
+
+.day-mode h1 {
+  margin: 0;
+  font-family: "StudioGlitchGoblin", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(54px, 12vw, 168px);
+  line-height: 0.9;
 }
 
 .day-mode h1 {
