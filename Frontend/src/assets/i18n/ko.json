@@ -843,7 +843,17 @@
     },
     "members": {
       "title": "등록 멤버",
+      "creatorBadge": "게시자",
       "empty": "아직 등록한 사용자가 없습니다."
+    },
+    "todos": {
+      "title": "프로젝트 Todo",
+      "summary": "진행 중 {{ active }} / 완료 {{ done }}",
+      "active": "진행 중",
+      "done": "완료",
+      "unassigned": "미지정",
+      "noActive": "현재 진행 중인 Todo가 없습니다.",
+      "noDone": "아직 완료된 Todo가 없습니다."
     },
     "feedback": {
       "loadFailure": "프로젝트 모집을 불러오지 못했습니다."

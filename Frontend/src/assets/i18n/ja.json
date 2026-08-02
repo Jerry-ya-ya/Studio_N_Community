@@ -843,7 +843,17 @@
     },
     "members": {
       "title": "登録メンバー",
+      "creatorBadge": "投稿者",
       "empty": "まだ登録したユーザーはいません。"
+    },
+    "todos": {
+      "title": "プロジェクト Todo",
+      "summary": "進行中 {{ active }} / 完了 {{ done }}",
+      "active": "進行中",
+      "done": "完了",
+      "unassigned": "未割り当て",
+      "noActive": "現在進行中の Todo はありません。",
+      "noDone": "完了した Todo はまだありません。"
     },
     "feedback": {
       "loadFailure": "プロジェクト募集を読み込めませんでした。"

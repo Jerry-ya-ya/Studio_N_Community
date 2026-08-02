@@ -29,6 +29,21 @@ def serialize_member(member):
     }
 
 
+def serialize_project_todo(todo):
+    return {
+        'id': todo.id,
+        'text': todo.text,
+        'done': todo.done,
+        'priority': todo.priority,
+        'user_id': todo.user_id,
+        'created_by_id': todo.created_by_id,
+        'claimed_by_id': todo.claimed_by_id,
+        'assignee_name': todo.user.nickname or todo.user.username if todo.user else None,
+        'claimed_by_name': todo.claimed_by.nickname or todo.claimed_by.username if todo.claimed_by else None,
+        'created_at': to_taipei_text(todo.created_at),
+    }
+
+
 def serialize_project(project, current_user):
     member_user_ids = {member.user_id for member in project.members}
 
@@ -42,6 +57,10 @@ def serialize_project(project, current_user):
         'created_at': to_taipei_text(project.created_at),
         'creator': serialize_user(project.creator),
         'members': [serialize_member(member) for member in project.members],
+        'todos': [
+            serialize_project_todo(todo)
+            for todo in sorted(project.todos, key=lambda item: (item.done, item.priority, item.id))
+        ],
         'member_count': len(project.members),
         'joined_by_me': current_user.id in member_user_ids,
         'owned_by_me': project.creator_id == current_user.id,

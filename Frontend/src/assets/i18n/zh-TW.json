@@ -843,7 +843,17 @@
     },
     "members": {
       "title": "登記成員",
+      "creatorBadge": "發布者",
       "empty": "尚無使用者登記加入。"
+    },
+    "todos": {
+      "title": "專案 Todo",
+      "summary": "進行中 {{ active }} / 已完成 {{ done }}",
+      "active": "正在執行",
+      "done": "執行完畢",
+      "unassigned": "尚未指派",
+      "noActive": "目前沒有正在執行的 Todo。",
+      "noDone": "目前沒有已完成的 Todo。"
     },
     "feedback": {
       "loadFailure": "無法載入專案招募。"

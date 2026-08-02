@@ -495,3 +495,7 @@
 - Apply brand fonts to the public home hero.
 
 - Add admin project recruitment overview page.
+
+## 2026/08/02
+
+- Add admin project todo details to recruitment overview.

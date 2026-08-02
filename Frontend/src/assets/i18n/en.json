@@ -843,7 +843,17 @@
     },
     "members": {
       "title": "Registered Members",
+      "creatorBadge": "Publisher",
       "empty": "No users have registered yet."
+    },
+    "todos": {
+      "title": "Project Todo",
+      "summary": "Active {{ active }} / Done {{ done }}",
+      "active": "Active",
+      "done": "Done",
+      "unassigned": "Unassigned",
+      "noActive": "No active todos right now.",
+      "noDone": "No completed todos yet."
     },
     "feedback": {
       "loadFailure": "Failed to load project recruitments."

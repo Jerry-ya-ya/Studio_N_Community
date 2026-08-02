@@ -147,6 +147,12 @@
   padding-top: 18px;
 }
 
+.todo-panel {
+  margin-top: 18px;
+  border-top: 1px solid var(--studio-line);
+  padding-top: 18px;
+}
+
 .member-panel__title {
   display: flex;
   align-items: center;
@@ -177,6 +183,14 @@
   background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
 }
 
+.member-card--creator {
+  border-color: color-mix(in srgb, var(--studio-warm) 66%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-warm) 18%, transparent), transparent 48%),
+    color-mix(in srgb, var(--studio-panel-strong) 84%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--studio-warm) 28%, transparent);
+}
+
 .member-avatar {
   width: 42px;
   height: 42px;
@@ -188,6 +202,12 @@
   background: var(--studio-accent);
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.member-avatar--creator {
+  border-color: color-mix(in srgb, var(--studio-warm) 72%, transparent);
+  color: var(--studio-bg);
+  background: var(--studio-warm);
 }
 
 .member-card strong,
@@ -211,6 +231,12 @@
   font-size: 0.86rem;
 }
 
+.member-card--creator p {
+  color: var(--studio-warm);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .state-message,
 .error-message,
 .empty-message {
@@ -228,6 +254,112 @@
   color: var(--studio-danger);
 }
 
+.empty-message--inline {
+  width: auto;
+  margin: 0;
+  display: grid;
+  align-content: center;
+}
+
+.todo-toggle {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 42%, transparent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--studio-text);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-accent) 12%, transparent), transparent 42%),
+    color-mix(in srgb, var(--studio-panel-strong) 78%, transparent);
+  cursor: pointer;
+}
+
+.todo-toggle span,
+.todo-toggle strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+}
+
+.todo-toggle strong {
+  color: var(--studio-warm);
+}
+
+.todo-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.todo-column {
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 70%, transparent);
+  border-radius: 8px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--studio-panel-strong) 68%, transparent);
+}
+
+.todo-column h3 {
+  margin: 0 0 12px;
+  color: var(--studio-text);
+  font-size: 1rem;
+}
+
+.todo-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 64%, transparent);
+  border-radius: 8px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--studio-panel) 72%, transparent);
+}
+
+.todo-card + .todo-card {
+  margin-top: 8px;
+}
+
+.todo-card strong,
+.todo-card small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-card strong {
+  color: var(--studio-text);
+}
+
+.todo-card small {
+  grid-column: 2;
+  color: var(--studio-muted);
+}
+
+.todo-card--done {
+  opacity: 0.72;
+}
+
+.priority-badge {
+  grid-row: span 2;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--studio-warm) 54%, transparent);
+  border-radius: 8px;
+  color: var(--studio-bg);
+  background: var(--studio-warm);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 @media (max-width: 760px) {
   .admin-projects {
     padding: 92px 12px 28px;
@@ -239,6 +371,10 @@
   }
 
   .project-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .todo-board {
     grid-template-columns: 1fr;
   }
 }

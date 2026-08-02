@@ -16,6 +16,19 @@ interface ProjectMember {
   user: ProjectUser;
 }
 
+interface ProjectTodo {
+  id: number;
+  text: string;
+  done: boolean;
+  priority: number;
+  user_id?: number | null;
+  created_by_id?: number | null;
+  claimed_by_id?: number | null;
+  assignee_name?: string | null;
+  claimed_by_name?: string | null;
+  created_at: string;
+}
+
 interface AdminProject {
   id: number;
   title: string;
@@ -26,6 +39,7 @@ interface AdminProject {
   created_at: string;
   creator: ProjectUser;
   members: ProjectMember[];
+  todos: ProjectTodo[];
   member_count: number;
 }
 
@@ -38,6 +52,7 @@ interface AdminProject {
 })
 export class ProjectsComponent implements OnInit {
   projects: AdminProject[] = [];
+  expandedTodoProjectIds = new Set<number>();
   loading = false;
   errorMessage = '';
 
@@ -74,6 +89,26 @@ export class ProjectsComponent implements OnInit {
       return '-';
     }
     return user.nickname || user.username || '-';
+  }
+
+  toggleTodos(projectId: number) {
+    if (this.expandedTodoProjectIds.has(projectId)) {
+      this.expandedTodoProjectIds.delete(projectId);
+    } else {
+      this.expandedTodoProjectIds.add(projectId);
+    }
+  }
+
+  isTodosExpanded(projectId: number) {
+    return this.expandedTodoProjectIds.has(projectId);
+  }
+
+  getActiveTodos(project: AdminProject) {
+    return (project.todos || []).filter(todo => !todo.done);
+  }
+
+  getDoneTodos(project: AdminProject) {
+    return (project.todos || []).filter(todo => todo.done);
   }
 
 }

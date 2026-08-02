@@ -57,8 +57,17 @@
               <h3>{{ 'adminProjects.members.title' | translate }}</h3>
             </div>
 
-            @if (project.members.length > 0) {
-              <div class="member-grid">
+            <div class="member-grid">
+              <article class="member-card member-card--creator">
+                <div class="member-avatar member-avatar--creator">{{ getDisplayName(project.creator).charAt(0) }}</div>
+                <div>
+                  <strong>{{ getDisplayName(project.creator) }}</strong>
+                  <span>{{ project.creator.username }}</span>
+                  <p>{{ 'adminProjects.members.creatorBadge' | translate }}</p>
+                </div>
+              </article>
+
+              @if (project.members.length > 0) {
                 @for (member of project.members; track member.id) {
                   <article class="member-card">
                     <div class="member-avatar">{{ getDisplayName(member.user).charAt(0) }}</div>
@@ -71,9 +80,51 @@
                     </div>
                   </article>
                 }
+              } @else {
+                <p class="empty-message empty-message--inline">{{ 'adminProjects.members.empty' | translate }}</p>
+              }
+            </div>
+          </section>
+
+          <section class="todo-panel">
+            <button class="todo-toggle" type="button" (click)="toggleTodos(project.id)" [attr.aria-expanded]="isTodosExpanded(project.id)">
+              <span>
+                <mat-icon>{{ isTodosExpanded(project.id) ? 'expand_less' : 'expand_more' }}</mat-icon>
+                {{ 'adminProjects.todos.title' | translate }}
+              </span>
+              <strong>
+                {{ 'adminProjects.todos.summary' | translate: { active: getActiveTodos(project).length, done: getDoneTodos(project).length } }}
+              </strong>
+            </button>
+
+            @if (isTodosExpanded(project.id)) {
+              <div class="todo-board">
+                <article class="todo-column">
+                  <h3>{{ 'adminProjects.todos.active' | translate }}</h3>
+                  @for (todo of getActiveTodos(project); track todo.id) {
+                    <div class="todo-card todo-card--active">
+                      <span class="priority-badge">P{{ todo.priority }}</span>
+                      <strong>{{ todo.text }}</strong>
+                      <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                    </div>
+                  } @empty {
+                    <p class="empty-message empty-message--inline">{{ 'adminProjects.todos.noActive' | translate }}</p>
+                  }
+                </article>
+
+                <article class="todo-column">
+                  <h3>{{ 'adminProjects.todos.done' | translate }}</h3>
+                  @for (todo of getDoneTodos(project); track todo.id) {
+                    <div class="todo-card todo-card--done">
+                      <span class="priority-badge">P{{ todo.priority }}</span>
+                      <strong>{{ todo.text }}</strong>
+                      <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                    </div>
+                  } @empty {
+                    <p class="empty-message empty-message--inline">{{ 'adminProjects.todos.noDone' | translate }}</p>
+                  }
+                </article>
               </div>
-            } @else {
-              <p class="empty-message">{{ 'adminProjects.members.empty' | translate }}</p>
             }
           </section>
         </article>
