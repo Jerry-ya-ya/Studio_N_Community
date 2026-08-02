@@ -84,6 +84,7 @@ def serialize_registered_member(user):
         'role': role,
         'githubUrl': user.github_url or '',
         'avatarUrl': user.avatar_url,
+        'avatarSource': user.avatar_source or 'github',
         'sort_order': user.id,
         'created_at': to_taipei_iso(user.created_at),
         'updated_at': None,

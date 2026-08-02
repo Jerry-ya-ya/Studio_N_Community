@@ -499,3 +499,5 @@
 ## 2026/08/02
 
 - Add admin project todo details to recruitment overview.
+
+- Add profile avatar source preference.

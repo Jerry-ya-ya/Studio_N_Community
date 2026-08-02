@@ -256,6 +256,42 @@
   color: var(--studio-muted);
 }
 
+.avatar-source-control {
+  display: grid;
+  gap: 10px;
+}
+
+.avatar-source-control > span,
+.avatar-source-options span {
+  color: var(--studio-muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.avatar-source-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.avatar-source-options label {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+  cursor: pointer;
+}
+
+.avatar-source-options input {
+  accent-color: var(--studio-accent);
+}
+
 .profile-loading {
   max-width: 860px;
   margin: 0 auto;

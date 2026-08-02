@@ -13,6 +13,7 @@ export interface MemberContentItem {
   role: MemberRole;
   githubUrl: string;
   avatarUrl?: string | null;
+  avatarSource?: 'local' | 'github';
   sort_order?: number;
 }
 
@@ -69,6 +70,7 @@ export class MemberContentService {
 
     const members = items.map((item, index) => {
       const member = item as Partial<MemberContentItem>;
+      const avatarSource: 'local' | 'github' = member.avatarSource === 'local' ? 'local' : 'github';
       return {
         id: member.id ?? null,
         name: String(member.name ?? '').trim(),
@@ -76,6 +78,7 @@ export class MemberContentService {
         role: this.normalizeRole(member.role),
         githubUrl: String(member.githubUrl ?? '').trim(),
         avatarUrl: member.avatarUrl ? String(member.avatarUrl).trim() : null,
+        avatarSource,
         sort_order: Number(member.sort_order ?? index)
       };
     }).filter(member => member.name || member.role || member.githubUrl);

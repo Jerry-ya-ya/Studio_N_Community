@@ -42,7 +42,10 @@ export class ProfileComponent implements OnInit {
       // 取得使用者資料
       this.http.get<any>(`${environment.apiUrl}/me`, { headers }).subscribe({
         next: (data) => {
-          this.user = data;
+          this.user = {
+            ...data,
+            avatarSource: data.avatarSource || data.avatar_source || 'github'
+          };
           console.log('Loaded user successfully', this.user);
         },
         error: (err) => {
@@ -61,21 +64,41 @@ export class ProfileComponent implements OnInit {
   loadProfile() {
     this.http.get<any>(`${environment.apiUrl}/me`).subscribe({
       next: data => {
-        this.user = data;
+        this.user = {
+          ...data,
+          avatarSource: data.avatarSource || data.avatar_source || 'github'
+        };
       },
       error: () => alert(this.translate.instant('privateProfile.feedback.loadFailure'))
     });
   }
 
   saveProfile() {
-    this.http.put(`${environment.apiUrl}/me`, {
+    this.updateProfile({
       email: this.user.email,
       nickname: this.user.nickname,
-      githubUrl: this.user.githubUrl || this.user.github_url || ''
+      githubUrl: this.user.githubUrl || this.user.github_url || '',
+      avatarSource: this.user.avatarSource || this.user.avatar_source || 'github'
     }).subscribe({
       next: () => {
         this.success = this.translate.instant('privateProfile.feedback.updateSuccess');
         this.editing = false;
+      },
+      error: () => alert(this.translate.instant('privateProfile.feedback.updateFailure'))
+    });
+  }
+
+  saveAvatarSource(showSuccess = true) {
+    this.updateProfile({
+      email: this.user.email,
+      nickname: this.user.nickname,
+      githubUrl: this.user.githubUrl || this.user.github_url || '',
+      avatarSource: this.user.avatarSource || this.user.avatar_source || 'github'
+    }).subscribe({
+      next: () => {
+        if (showSuccess) {
+          this.success = this.translate.instant('privateProfile.feedback.avatarSourceSuccess');
+        }
       },
       error: () => alert(this.translate.instant('privateProfile.feedback.updateFailure'))
     });
@@ -106,10 +129,17 @@ export class ProfileComponent implements OnInit {
     this.http.post<any>(`${environment.apiUrl}/avatar`, formData, { headers }).subscribe({
       next: res => {
         this.user.avatar_url = res.avatar_url;
+        this.user.avatarSource = 'local';
+        this.user.avatar_source = 'local';
         this.avatarPreview = null;
+        this.saveAvatarSource(false);
         alert(this.translate.instant('privateProfile.feedback.avatarSuccess'));
       },
       error: () => alert(this.translate.instant('privateProfile.feedback.avatarFailure'))
     });
+  }
+
+  private updateProfile(payload: Record<string, unknown>) {
+    return this.http.put(`${environment.apiUrl}/me`, payload);
   }
 }

@@ -25,6 +25,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     avatar_url = db.Column(db.String(255))
+    avatar_source = db.Column(db.String(20), default='github', nullable=False)
     nickname = db.Column(db.String(80))
     github_url = db.Column(db.String(255))
     role = db.Column(db.String(20), default='user')  # 'user', 'admin', 'superadmin'
@@ -52,6 +53,8 @@ class User(db.Model):
             'role': self.role,
             'email_verified': self.email_verified,
             'avatar_url': self.avatar_url,
+            'avatar_source': self.avatar_source,
+            'avatarSource': self.avatar_source,
             'created_at': to_taipei_iso(self.created_at)
         }
 

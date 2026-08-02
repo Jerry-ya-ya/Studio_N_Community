@@ -728,12 +728,16 @@
       "previewAlt": "頭像預覽",
       "newPreview": "新頭像預覽",
       "current": "目前頭像",
-      "chooseNew": "選擇新頭像"
+      "chooseNew": "選擇新頭像",
+      "sourceLabel": "公開成員頁頭像來源",
+      "sourceGithub": "GitHub 頭像",
+      "sourceLocal": "網站上傳頭像"
     },
     "actions": {
       "edit": "編輯資料",
       "save": "儲存",
       "cancel": "取消",
+      "saveAvatarSource": "儲存頭像來源",
       "uploadAvatar": "上傳頭像"
     },
     "loading": {
@@ -745,6 +749,7 @@
       "loadFailure": "取得個人資料失敗",
       "updateSuccess": "資料已更新！",
       "updateFailure": "更新失敗",
+      "avatarSourceSuccess": "頭像來源已更新",
       "avatarSuccess": "頭像上傳成功",
       "avatarFailure": "上傳失敗"
     }

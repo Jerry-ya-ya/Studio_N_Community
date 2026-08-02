@@ -728,12 +728,16 @@
       "previewAlt": "アバタープレビュー",
       "newPreview": "新しいアバターのプレビュー",
       "current": "現在のアバター",
-      "chooseNew": "新しいアバターを選択"
+      "chooseNew": "新しいアバターを選択",
+      "sourceLabel": "公開メンバーページのアバター元",
+      "sourceGithub": "GitHub アバター",
+      "sourceLocal": "サイトにアップロードしたアバター"
     },
     "actions": {
       "edit": "プロフィール編集",
       "save": "保存",
       "cancel": "キャンセル",
+      "saveAvatarSource": "アバター元を保存",
       "uploadAvatar": "アバターをアップロード"
     },
     "loading": {
@@ -745,6 +749,7 @@
       "loadFailure": "プロフィールデータの取得に失敗しました",
       "updateSuccess": "プロフィールを更新しました。",
       "updateFailure": "更新に失敗しました",
+      "avatarSourceSuccess": "アバター元を更新しました。",
       "avatarSuccess": "アバターをアップロードしました。",
       "avatarFailure": "アップロードに失敗しました"
     }

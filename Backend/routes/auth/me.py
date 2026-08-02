@@ -28,6 +28,8 @@ def get_current_user():
         'githubUrl': user.github_url,
         'created_at': to_taipei_iso(user.created_at),
         'avatar_url': user.avatar_url,
+        'avatar_source': user.avatar_source or 'github',
+        'avatarSource': user.avatar_source or 'github',
         'role': user.role,
     })
 
@@ -61,6 +63,11 @@ def update_current_user():
     user.nickname = data.get('nickname', user.nickname)
     if 'githubUrl' in data or 'github_url' in data:
         user.github_url = (data.get('githubUrl') or data.get('github_url') or '').strip()[:255] or None
+    if 'avatarSource' in data or 'avatar_source' in data:
+        avatar_source = (data.get('avatarSource') or data.get('avatar_source') or 'github').strip()
+        if avatar_source not in ['local', 'github']:
+            return jsonify({'error': 'Avatar source must be local or github'}), 400
+        user.avatar_source = avatar_source
     db.session.commit()
 
     if email_changed:
@@ -97,6 +104,8 @@ def public_user(user_id):
         'githubUrl': user.github_url,
         'email': user.email,
         'avatar_url': user.avatar_url,
+        'avatar_source': user.avatar_source or 'github',
+        'avatarSource': user.avatar_source or 'github',
         'role': user.role,
         'created_at': to_taipei_iso(user.created_at)
     })

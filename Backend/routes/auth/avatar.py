@@ -41,8 +41,14 @@ def upload_avatar():
 
         # 使用正斜線作為 URL 路徑
         user.avatar_url = f'/static/uploads/avatar/{filename}'
+        user.avatar_source = 'local'
         db.session.commit()
 
-        return jsonify({'message': 'Avatar uploaded', 'avatar_url': user.avatar_url})
+        return jsonify({
+            'message': 'Avatar uploaded',
+            'avatar_url': user.avatar_url,
+            'avatar_source': user.avatar_source,
+            'avatarSource': user.avatar_source,
+        })
 
     return jsonify({'error': 'Invalid file type'}), 400

@@ -728,12 +728,16 @@
       "previewAlt": "Avatar preview",
       "newPreview": "New avatar preview",
       "current": "Current avatar",
-      "chooseNew": "Choose new avatar"
+      "chooseNew": "Choose new avatar",
+      "sourceLabel": "Public member avatar source",
+      "sourceGithub": "GitHub avatar",
+      "sourceLocal": "Uploaded site avatar"
     },
     "actions": {
       "edit": "Edit Profile",
       "save": "Save",
       "cancel": "Cancel",
+      "saveAvatarSource": "Save Avatar Source",
       "uploadAvatar": "Upload Avatar"
     },
     "loading": {
@@ -745,6 +749,7 @@
       "loadFailure": "Failed to get profile data.",
       "updateSuccess": "Profile updated.",
       "updateFailure": "Update failed.",
+      "avatarSourceSuccess": "Avatar source updated.",
       "avatarSuccess": "Avatar uploaded successfully.",
       "avatarFailure": "Upload failed."
     }

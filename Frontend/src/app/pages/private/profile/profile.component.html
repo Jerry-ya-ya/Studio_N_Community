@@ -93,6 +93,22 @@
             <span>{{ 'privateProfile.avatar.chooseNew' | translate }}</span>
             <input type="file" accept="image/*" (change)="onFileSelected($event)">
           </label>
+          <div class="avatar-source-control">
+            <span>{{ 'privateProfile.avatar.sourceLabel' | translate }}</span>
+            <div class="avatar-source-options">
+              <label>
+                <input type="radio" name="avatarSource" value="github" [(ngModel)]="user.avatarSource">
+                <span>{{ 'privateProfile.avatar.sourceGithub' | translate }}</span>
+              </label>
+              <label>
+                <input type="radio" name="avatarSource" value="local" [(ngModel)]="user.avatarSource">
+                <span>{{ 'privateProfile.avatar.sourceLocal' | translate }}</span>
+              </label>
+            </div>
+          </div>
+          <button class="profile-button profile-button--ghost" type="button" (click)="saveAvatarSource()">
+            {{ 'privateProfile.actions.saveAvatarSource' | translate }}
+          </button>
           <button class="profile-button" type="button" (click)="uploadAvatar()" [disabled]="!selectedFile">
             {{ 'privateProfile.actions.uploadAvatar' | translate }}
           </button>

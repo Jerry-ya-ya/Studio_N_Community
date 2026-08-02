@@ -728,12 +728,16 @@
       "previewAlt": "아바타 미리보기",
       "newPreview": "새 아바타 미리보기",
       "current": "현재 아바타",
-      "chooseNew": "새 아바타 선택"
+      "chooseNew": "새 아바타 선택",
+      "sourceLabel": "공개 멤버 페이지 아바타 출처",
+      "sourceGithub": "GitHub 아바타",
+      "sourceLocal": "사이트 업로드 아바타"
     },
     "actions": {
       "edit": "프로필 편집",
       "save": "저장",
       "cancel": "취소",
+      "saveAvatarSource": "아바타 출처 저장",
       "uploadAvatar": "아바타 업로드"
     },
     "loading": {
@@ -745,6 +749,7 @@
       "loadFailure": "프로필 데이터를 가져오지 못했습니다",
       "updateSuccess": "프로필이 업데이트되었습니다.",
       "updateFailure": "업데이트에 실패했습니다",
+      "avatarSourceSuccess": "아바타 출처가 업데이트되었습니다.",
       "avatarSuccess": "아바타를 업로드했습니다.",
       "avatarFailure": "업로드에 실패했습니다"
     }

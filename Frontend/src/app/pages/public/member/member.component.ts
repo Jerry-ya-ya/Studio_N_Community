@@ -152,16 +152,31 @@ export class MemberComponent implements OnInit {
   }
 
   get memberAvatar() {
-    return this.profile?.avatar_url || this.getLocalAvatarUrl(this.selectedMember) || 'icons/cmenstudio.png';
+    const localAvatar = this.getLocalAvatarUrl(this.selectedMember);
+    if (this.shouldUseLocalAvatar(this.selectedMember) && localAvatar) {
+      return localAvatar;
+    }
+
+    const githubUsername = this.getGithubUsername(this.selectedMember);
+    return this.profile?.avatar_url || (githubUsername ? this.avatarByUsername[githubUsername] : '') || localAvatar || 'icons/cmenstudio.png';
   }
 
   getMemberAvatar(member: MemberContentItem) {
+    const localAvatar = this.getLocalAvatarUrl(member);
+    if (this.shouldUseLocalAvatar(member) && localAvatar) {
+      return localAvatar;
+    }
+
     const githubUsername = this.getGithubUsername(member);
-    return (githubUsername ? this.avatarByUsername[githubUsername] : '') || this.getLocalAvatarUrl(member) || 'icons/cmenstudio.png';
+    return (githubUsername ? this.avatarByUsername[githubUsername] : '') || localAvatar || 'icons/cmenstudio.png';
   }
 
   private loadMemberAvatars(members: MemberContentItem[]) {
     for (const member of members) {
+      if (this.shouldUseLocalAvatar(member)) {
+        continue;
+      }
+
       const githubUsername = this.getGithubUsername(member);
       if (!githubUsername) {
         continue;
@@ -225,5 +240,9 @@ export class MemberComponent implements OnInit {
     }
 
     return /^https?:\/\//i.test(member.avatarUrl) ? member.avatarUrl : `${this.apiRoot}/${member.avatarUrl}`;
+  }
+
+  private shouldUseLocalAvatar(member: MemberContentItem) {
+    return member.avatarSource === 'local';
   }
 }
