@@ -1,6 +1,24 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
+import { environment } from '../../../../environments/environment';
+
+interface GithubProfile {
+  avatar_url: string;
+  login: string;
+}
+
+interface FriendItem {
+  id: number;
+  username: string;
+  name?: string | null;
+  nickname?: string | null;
+  email?: string | null;
+  githubUrl?: string | null;
+  avatarUrl?: string | null;
+  avatarSource?: 'local' | 'github';
+}
 
 @Component({
   selector: 'app-friend',
@@ -12,13 +30,17 @@ import { ApiService } from '../../../core/services/api.service';
 export class FriendComponent implements OnInit {
   friendUsername: string = '';
   message: string = '';
-  friends: any[] = [];
+  friends: FriendItem[] = [];
+  public apiRoot: string = environment.apiUrl.replace('/api', '');
+  private avatarByUsername: Record<string, string> = {};
+  private avatarRequests = new Set<string>();
 
   toUsername: string = '';
   requests: any[] = [];
 
   constructor(
     private apiService: ApiService,
+    private http: HttpClient,
     private translate: TranslateService
   ) {}
 
@@ -61,10 +83,16 @@ export class FriendComponent implements OnInit {
   }
 
   loadFriends() {
-    this.apiService.get<any[]>(
+    this.apiService.get<FriendItem[]>(
       '/friends/list',
       this.apiService.createAuthHeaders()
-    ).subscribe(friends => this.friends = friends);
+    ).subscribe(friends => {
+      this.friends = friends.map(friend => ({
+        ...friend,
+        avatarSource: friend.avatarSource === 'local' ? 'local' : 'github'
+      }));
+      this.loadFriendAvatars(this.friends);
+    });
   }
 
   sendRequest() {
@@ -125,5 +153,73 @@ export class FriendComponent implements OnInit {
         this.message = err.error?.error || this.translate.instant('privateFriend.feedback.rejectFailure');
       }
     });
+  }
+
+  getFriendAvatar(friend: FriendItem) {
+    const localAvatar = this.getLocalAvatarUrl(friend);
+    if (this.shouldUseLocalAvatar(friend) && localAvatar) {
+      return localAvatar;
+    }
+
+    const githubUsername = this.getGithubUsername(friend);
+    return (githubUsername ? this.avatarByUsername[githubUsername] : '') || localAvatar || 'icons/cmenstudio.png';
+  }
+
+  private loadFriendAvatars(friends: FriendItem[]) {
+    for (const friend of friends) {
+      if (this.shouldUseLocalAvatar(friend)) {
+        continue;
+      }
+
+      const githubUsername = this.getGithubUsername(friend);
+      if (!githubUsername) {
+        continue;
+      }
+
+      if (this.avatarByUsername[githubUsername] || this.avatarRequests.has(githubUsername)) {
+        continue;
+      }
+
+      this.avatarRequests.add(githubUsername);
+      this.http.get<GithubProfile>(`https://api.github.com/users/${githubUsername}`).subscribe({
+        next: profile => {
+          this.avatarByUsername[githubUsername] = profile.avatar_url;
+          this.avatarRequests.delete(githubUsername);
+        },
+        error: () => {
+          this.avatarRequests.delete(githubUsername);
+        }
+      });
+    }
+  }
+
+  private getGithubUsername(friend: FriendItem) {
+    const url = this.normalizeGithubUrl(friend.githubUrl || '');
+    return url.replace(/^https:\/\/github\.com\//, '').split('/')[0];
+  }
+
+  private normalizeGithubUrl(url: string) {
+    const trimmed = (url || '').trim();
+    if (!trimmed) {
+      return '';
+    }
+
+    if (/^https?:\/\//i.test(trimmed)) {
+      return trimmed.replace(/^http:\/\//i, 'https://').replace(/\/+$/, '');
+    }
+
+    return `https://github.com/${trimmed.replace(/^@/, '').replace(/^github\.com\//i, '').replace(/\/+$/, '')}`;
+  }
+
+  private getLocalAvatarUrl(friend: FriendItem) {
+    if (!friend.avatarUrl) {
+      return '';
+    }
+
+    return /^https?:\/\//i.test(friend.avatarUrl) ? friend.avatarUrl : `${this.apiRoot}/${friend.avatarUrl}`;
+  }
+
+  private shouldUseLocalAvatar(friend: FriendItem) {
+    return friend.avatarSource === 'local';
   }
 }

@@ -41,8 +41,18 @@
       <ul class="friend-list">
         @for (f of friends; track f) {
           <li class="friend-item">
-            <a [routerLink]="['/square', f.id]" class="friend-link">
-              {{ f.username }}（{{ f.email }}）
+            <a
+              [routerLink]="['/member']"
+              [queryParams]="{ username: f.username }"
+              fragment="github-signal"
+              class="friend-link">
+              <span class="friend-avatar">
+                <img [src]="getFriendAvatar(f)" [alt]="f.name || f.username">
+              </span>
+              <span class="friend-identity">
+                <strong>{{ f.name || f.nickname || f.username }}</strong>
+                <small>{{ f.username }}（{{ f.email }}）</small>
+              </span>
             </a>
             <button class="btn btn-danger" (click)="removeFriend(f.id)">{{ 'privateFriend.actions.remove' | translate }}</button>
           </li>

@@ -501,3 +501,7 @@
 - Add admin project todo details to recruitment overview.
 
 - Add profile avatar source preference.
+
+## 2026/08/03
+
+- Fix friend avatars and member profile linking.

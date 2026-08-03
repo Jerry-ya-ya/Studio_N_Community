@@ -26,7 +26,7 @@
     </div>
   </section>
 
-  <section class="member-profile" [attr.aria-label]="'member.aria.profile' | translate">
+  <section id="selected-member" class="member-profile" [attr.aria-label]="'member.aria.profile' | translate">
     <section class="member-hero">
       <div class="member-hero__content">
         <p class="member-kicker">{{ 'member.profile.kicker' | translate }}</p>
@@ -75,7 +75,7 @@
     }
 
     @if (!loading) {
-      <section class="github-stats" [attr.aria-label]="'member.aria.githubStats' | translate">
+      <section id="github-signal" class="github-stats" [attr.aria-label]="'member.aria.githubStats' | translate">
         <article class="stat-card">
           <span>{{ profile?.public_repos || 0 }}</span>
           <p>{{ 'member.stats.publicRepos' | translate }}</p>

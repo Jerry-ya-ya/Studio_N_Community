@@ -117,6 +117,11 @@
 }
 
 .friend-link {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
   color: var(--studio-text);
   text-decoration: none;
   font-weight: 500;
@@ -125,6 +130,42 @@
 .friend-link:hover {
   color: var(--studio-accent);
   text-decoration: underline;
+}
+
+.friend-avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 42%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--studio-panel-strong) 78%, transparent);
+}
+
+.friend-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.friend-identity {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.friend-identity strong,
+.friend-identity small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-identity small {
+  color: var(--studio-muted);
+  font-size: 0.86rem;
 }
 
 .empty-tip {

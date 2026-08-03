@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { defaultMemberContent, MemberContentItem, MemberContentService } from '../../../core/services/member-content.service';
 import { environment } from '../../../../environments/environment';
@@ -61,20 +62,21 @@ export class MemberComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private memberContent: MemberContentService
+    private memberContent: MemberContentService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.memberContent.loadPublicContent().subscribe({
       next: members => {
         this.demoMembers = members;
-        this.selectedMember = members[0] || this.memberContent.getDefaultContent()[0];
+        this.selectedMember = this.getInitialMember(members);
         this.loadMemberAvatars(this.demoMembers);
         this.loadGithubProfile(this.selectedMember);
       },
       error: () => {
         this.demoMembers = this.memberContent.getDefaultContent();
-        this.selectedMember = this.demoMembers[0];
+        this.selectedMember = this.getInitialMember(this.demoMembers);
         this.loadMemberAvatars(this.demoMembers);
         this.loadGithubProfile(this.selectedMember);
       }
@@ -99,6 +101,7 @@ export class MemberComponent implements OnInit {
       this.profile = this.getFallbackProfile(member);
       this.repositories = [];
       this.loading = false;
+      this.scrollToRequestedFragment();
       return;
     }
 
@@ -113,12 +116,14 @@ export class MemberComponent implements OnInit {
         this.avatarByUsername[profile.login] = profile.avatar_url;
         this.repositories = repositories.filter(repo => !repo.fork).slice(0, 6);
         this.loading = false;
+        this.scrollToRequestedFragment();
       },
       error: () => {
         this.profile = this.getFallbackProfile(member);
         this.repositories = [];
         this.error = 'member.state.githubUnavailable';
         this.loading = false;
+        this.scrollToRequestedFragment();
       }
     });
   }
@@ -196,6 +201,28 @@ export class MemberComponent implements OnInit {
         }
       });
     }
+  }
+
+  private getInitialMember(members: MemberContentItem[]) {
+    const requestedUsername = (this.route.snapshot.queryParamMap.get('username') || '').toLowerCase();
+    const requestedId = Number(this.route.snapshot.queryParamMap.get('id') || 0);
+
+    return members.find(member =>
+      (requestedUsername && String(member.username || '').toLowerCase() === requestedUsername) ||
+      (requestedUsername && this.getGithubUsername(member).toLowerCase() === requestedUsername) ||
+      (requestedId && member.id === requestedId)
+    ) || members[0] || this.memberContent.getDefaultContent()[0];
+  }
+
+  private scrollToRequestedFragment() {
+    const fragment = this.route.snapshot.fragment;
+    if (!fragment) {
+      return;
+    }
+
+    setTimeout(() => {
+      document.getElementById(fragment)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
   }
 
   private getFallbackProfile(member: MemberContentItem): GithubProfile {

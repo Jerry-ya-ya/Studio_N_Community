@@ -52,7 +52,17 @@ def get_friends():
         return jsonify({'error': 'User not found'}), 404
     
     return jsonify([
-        {'id': f.id, 'username': f.username, 'email': f.email}
+        {
+            'id': f.id,
+            'username': f.username,
+            'name': f.nickname or f.username,
+            'nickname': f.nickname,
+            'email': f.email,
+            'githubUrl': f.github_url or '',
+            'avatarUrl': f.avatar_url,
+            'avatarSource': f.avatar_source or 'github',
+            'role': f.role,
+        }
         for f in user.friends
     ])
 
