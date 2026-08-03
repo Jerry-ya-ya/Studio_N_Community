@@ -507,3 +507,5 @@
 - Fix friend avatars and member profile linking.
 
 - Add todo claim completion gates and effort levels.
+
+- Align todo level controls and defaults.

@@ -109,6 +109,7 @@ export class TodoComponent implements OnInit {
     }).subscribe(({ assignedTodos, createdTodos, projects, currentUser }) => {
         this.currentUserId = currentUser.id;
         this.projects = projects;
+        this.initializeProjectTodoDefaults(projects);
         this.setTodos(this.mergeTodos(assignedTodos, createdTodos));
       });
   }
@@ -258,6 +259,15 @@ export class TodoComponent implements OnInit {
     );
   }
 
+  private initializeProjectTodoDefaults(projects: ProjectRecruitment[]) {
+    for (const project of projects) {
+      this.todoTargets[project.id] ??= 'team';
+      this.todoPriorities[project.id] ??= 5;
+      this.todoDifficulties[project.id] ??= 5;
+      this.todoDurations[project.id] ??= 5;
+    }
+  }
+
   getTodoPriority(todo: Todo) {
     return Math.min(9, Math.max(0, Number(todo.priority ?? 5)));
   }
@@ -270,14 +280,17 @@ export class TodoComponent implements OnInit {
     return Math.min(9, Math.max(0, Number(todo.duration ?? 5)));
   }
 
+  getLevelColor(level: number) {
+    const value = Math.min(9, Math.max(0, Number(level)));
+    return `hsl(${(value / 9) * 120}, 78%, 46%)`;
+  }
+
   getPriorityColor(priority: number) {
-    const level = Math.min(9, Math.max(0, Number(priority)));
-    return `hsl(${(level / 9) * 120}, 78%, 46%)`;
+    return this.getLevelColor(priority);
   }
 
   getEffortColor(level: number) {
-    const value = Math.min(9, Math.max(0, Number(level)));
-    return `hsl(${120 - (value / 9) * 120}, 78%, 46%)`;
+    return this.getLevelColor(level);
   }
 
   getProjectTodoPriority(projectId: number) {
