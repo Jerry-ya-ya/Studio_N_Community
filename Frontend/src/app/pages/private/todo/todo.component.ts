@@ -71,6 +71,8 @@ export class TodoComponent implements OnInit {
   todoTexts: Record<number, string> = {};
   todoTargets: Record<number, string> = {};
   todoPriorities: Record<number, number> = {};
+  todoDifficulties: Record<number, number> = {};
+  todoDurations: Record<number, number> = {};
   isAllTodosOpen = false;
   statusMessage = '';
   
@@ -115,6 +117,8 @@ export class TodoComponent implements OnInit {
     const text = (this.todoTexts[project.id] || '').trim();
     const target = this.todoTargets[project.id] || 'team';
     const priority = this.getProjectTodoPriority(project.id);
+    const difficulty = this.getProjectTodoDifficulty(project.id);
+    const duration = this.getProjectTodoDuration(project.id);
 
     if (!project.owned_by_me || !text || this.todoLoading[project.id]) {
       return;
@@ -124,12 +128,16 @@ export class TodoComponent implements OnInit {
       text: string;
       project_id: number;
       priority: number;
+      difficulty: number;
+      duration: number;
       assign_to_team?: boolean;
       assignee_user_id?: number;
     } = {
       text,
       project_id: project.id,
       priority,
+      difficulty,
+      duration,
     };
 
     if (target === 'team') {
@@ -152,6 +160,8 @@ export class TodoComponent implements OnInit {
         this.todoTexts[project.id] = '';
         this.todoTargets[project.id] = 'team';
         this.todoPriorities[project.id] = 5;
+        this.todoDifficulties[project.id] = 5;
+        this.todoDurations[project.id] = 5;
         delete this.todoLoading[project.id];
         this.statusMessage = this.translate.instant('privateTodo.feedback.publishSuccess');
       },
@@ -168,7 +178,9 @@ export class TodoComponent implements OnInit {
     this.apiService.put<Todo>(`/todos/${todo.id}`, {
       text: todo.text,
       claimed: !todo.claimed_by_id,
-      priority: todo.priority
+      priority: todo.priority,
+      difficulty: todo.difficulty,
+      duration: todo.duration
     }, this.apiService.createAuthHeaders()).subscribe(updated => {
       this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item));
     });
@@ -178,7 +190,9 @@ export class TodoComponent implements OnInit {
     this.apiService.put<Todo>(`/todos/${todo.id}`, {
       text: todo.text,
       done: !todo.done,
-      priority: todo.priority
+      priority: todo.priority,
+      difficulty: todo.difficulty,
+      duration: todo.duration
     }, this.apiService.createAuthHeaders()).subscribe(updated => {
       this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item));
     });
@@ -248,9 +262,22 @@ export class TodoComponent implements OnInit {
     return Math.min(9, Math.max(0, Number(todo.priority ?? 5)));
   }
 
+  getTodoDifficulty(todo: Todo) {
+    return Math.min(9, Math.max(0, Number(todo.difficulty ?? 5)));
+  }
+
+  getTodoDuration(todo: Todo) {
+    return Math.min(9, Math.max(0, Number(todo.duration ?? 5)));
+  }
+
   getPriorityColor(priority: number) {
     const level = Math.min(9, Math.max(0, Number(priority)));
     return `hsl(${(level / 9) * 120}, 78%, 46%)`;
+  }
+
+  getEffortColor(level: number) {
+    const value = Math.min(9, Math.max(0, Number(level)));
+    return `hsl(${120 - (value / 9) * 120}, 78%, 46%)`;
   }
 
   getProjectTodoPriority(projectId: number) {
@@ -258,8 +285,22 @@ export class TodoComponent implements OnInit {
     return Math.min(9, Math.max(0, priority));
   }
 
+  getProjectTodoDifficulty(projectId: number) {
+    const difficulty = Number(this.todoDifficulties[projectId] ?? 5);
+    return Math.min(9, Math.max(0, difficulty));
+  }
+
+  getProjectTodoDuration(projectId: number) {
+    const duration = Number(this.todoDurations[projectId] ?? 5);
+    return Math.min(9, Math.max(0, duration));
+  }
+
   canToggleClaim(todo: Todo) {
     return !todo.done && (!todo.claimed_by_id || todo.claimed_by_id === this.currentUserId);
+  }
+
+  canToggleDone(todo: Todo) {
+    return todo.claimed_by_id === this.currentUserId;
   }
 
   toggleAllTodos() {

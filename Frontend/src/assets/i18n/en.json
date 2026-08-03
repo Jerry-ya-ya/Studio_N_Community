@@ -637,6 +637,10 @@
       "captain": "Captain only",
       "priority": "Priority",
       "priorityHint": "0 is most urgent / 9 is least urgent",
+      "difficulty": "Difficulty",
+      "difficultyHint": "0 easiest / 9 hardest",
+      "duration": "Time cost",
+      "durationHint": "0 shortest / 9 longest",
       "placeholder": "Example: finish the first character controller build",
       "noTodos": "This project has no published todos yet."
     },

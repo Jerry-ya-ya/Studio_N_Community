@@ -104,6 +104,8 @@
                   @for (todo of getActiveTodos(project); track todo.id) {
                     <div class="todo-card todo-card--active">
                       <span class="priority-badge">P{{ todo.priority }}</span>
+                      <span class="priority-badge">D{{ todo.difficulty }}</span>
+                      <span class="priority-badge">T{{ todo.duration }}</span>
                       <strong>{{ todo.text }}</strong>
                       <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
                     </div>
@@ -117,6 +119,8 @@
                   @for (todo of getDoneTodos(project); track todo.id) {
                     <div class="todo-card todo-card--done">
                       <span class="priority-badge">P{{ todo.priority }}</span>
+                      <span class="priority-badge">D{{ todo.difficulty }}</span>
+                      <span class="priority-badge">T{{ todo.duration }}</span>
                       <strong>{{ todo.text }}</strong>
                       <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
                     </div>

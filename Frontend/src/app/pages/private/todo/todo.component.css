@@ -79,9 +79,11 @@ input[type="checkbox"] {
   margin-right: 16px;
 }
 
-input[type="checkbox"]:disabled {
+input[type="checkbox"]:disabled,
+button.done-button:disabled {
   cursor: not-allowed;
   opacity: 0.48;
+  pointer-events: none;
 }
 
 .priority-badge {
@@ -409,11 +411,6 @@ li.is-done span {
   margin-bottom: 8px;
   padding: 10px 12px;
   box-shadow: none;
-}
-
-.project-task-list li.is-done span {
-  color: var(--studio-muted);
-  text-decoration: line-through;
 }
 
 @media (max-width: 600px) {

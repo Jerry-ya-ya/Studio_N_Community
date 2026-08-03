@@ -21,6 +21,8 @@ interface ProjectTodo {
   text: string;
   done: boolean;
   priority: number;
+  difficulty: number;
+  duration: number;
   user_id?: number | null;
   created_by_id?: number | null;
   claimed_by_id?: number | null;

@@ -35,6 +35,8 @@ def serialize_project_todo(todo):
         'text': todo.text,
         'done': todo.done,
         'priority': todo.priority,
+        'difficulty': todo.difficulty,
+        'duration': todo.duration,
         'user_id': todo.user_id,
         'created_by_id': todo.created_by_id,
         'claimed_by_id': todo.claimed_by_id,

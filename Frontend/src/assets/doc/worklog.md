@@ -505,3 +505,5 @@
 ## 2026/08/03
 
 - Fix friend avatars and member profile linking.
+
+- Add todo claim completion gates and effort levels.

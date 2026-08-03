@@ -637,6 +637,10 @@
       "captain": "팀장 본인",
       "priority": "우선순위",
       "priorityHint": "0 가장 긴급 / 9 가장 낮음",
+      "difficulty": "난이도",
+      "difficultyHint": "0 가장 쉬움 / 9 가장 어려움",
+      "duration": "소요 시간",
+      "durationHint": "0 가장 짧음 / 9 가장 김",
       "placeholder": "예: 캐릭터 컨트롤러 첫 버전 완성",
       "noTodos": "이 프로젝트에는 아직 게시된 Todo가 없습니다."
     },

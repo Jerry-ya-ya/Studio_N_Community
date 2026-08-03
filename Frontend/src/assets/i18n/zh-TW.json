@@ -637,6 +637,10 @@
       "captain": "隊長自己",
       "priority": "優先級",
       "priorityHint": "0 最緊急 / 9 最不緊急",
+      "difficulty": "難度級別",
+      "difficultyHint": "0 最簡單 / 9 最困難",
+      "duration": "耗時級別",
+      "durationHint": "0 最短 / 9 最久",
       "placeholder": "例如：完成角色控制器第一版",
       "noTodos": "這個專案目前還沒有發布 Todo。"
     },

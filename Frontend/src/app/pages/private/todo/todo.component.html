@@ -45,6 +45,16 @@
               [style.background]="getPriorityColor(getTodoPriority(todo))">
               P{{ getTodoPriority(todo) }}
             </strong>
+            <strong
+              class="priority-badge"
+              [style.background]="getEffortColor(getTodoDifficulty(todo))">
+              D{{ getTodoDifficulty(todo) }}
+            </strong>
+            <strong
+              class="priority-badge"
+              [style.background]="getEffortColor(getTodoDuration(todo))">
+              T{{ getTodoDuration(todo) }}
+            </strong>
             <span>
               {{ todo.text }}
             </span>
@@ -60,7 +70,10 @@
                 {{ todo.project_title }} · {{ todo.assignee_name }}
               </small>
             }
-            <button class="done-button" (click)="toggleDone(todo)">
+            <button
+              class="done-button"
+              [disabled]="!canToggleDone(todo)"
+              (click)="toggleDone(todo)">
               {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
             </button>
             <button (click)="deleteTodo(todo.id)">
@@ -132,6 +145,32 @@
               </strong>
               <small>{{ 'privateTodo.dispatch.priorityHint' | translate }}</small>
             </label>
+            <label class="todo-priority">
+              <span>{{ 'privateTodo.dispatch.difficulty' | translate }}</span>
+              <input
+                type="number"
+                min="0"
+                max="9"
+                [(ngModel)]="todoDifficulties[card.project.id]"
+                [name]="'todoDifficulty' + card.project.id">
+              <strong [style.background]="getEffortColor(getProjectTodoDifficulty(card.project.id))">
+                {{ getProjectTodoDifficulty(card.project.id) }}
+              </strong>
+              <small>{{ 'privateTodo.dispatch.difficultyHint' | translate }}</small>
+            </label>
+            <label class="todo-priority">
+              <span>{{ 'privateTodo.dispatch.duration' | translate }}</span>
+              <input
+                type="number"
+                min="0"
+                max="9"
+                [(ngModel)]="todoDurations[card.project.id]"
+                [name]="'todoDuration' + card.project.id">
+              <strong [style.background]="getEffortColor(getProjectTodoDuration(card.project.id))">
+                {{ getProjectTodoDuration(card.project.id) }}
+              </strong>
+              <small>{{ 'privateTodo.dispatch.durationHint' | translate }}</small>
+            </label>
 
             <div class="todo-publisher__controls">
               <input
@@ -172,6 +211,16 @@
                 [style.background]="getPriorityColor(getTodoPriority(todo))">
                 P{{ getTodoPriority(todo) }}
               </strong>
+              <strong
+                class="priority-badge"
+                [style.background]="getEffortColor(getTodoDifficulty(todo))">
+                D{{ getTodoDifficulty(todo) }}
+              </strong>
+              <strong
+                class="priority-badge"
+                [style.background]="getEffortColor(getTodoDuration(todo))">
+                T{{ getTodoDuration(todo) }}
+              </strong>
               <span>{{ todo.text }}</span>
               <small class="claim-badge">
                 @if (todo.claimed_by_name) {
@@ -181,7 +230,10 @@
                 }
               </small>
               <small>{{ todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
-              <button class="done-button" (click)="toggleDone(todo)">
+              <button
+                class="done-button"
+                [disabled]="!canToggleDone(todo)"
+                (click)="toggleDone(todo)">
                 {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
               </button>
             </li>

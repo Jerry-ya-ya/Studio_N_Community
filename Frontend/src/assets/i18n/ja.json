@@ -637,6 +637,10 @@
       "captain": "リーダーのみ",
       "priority": "優先度",
       "priorityHint": "0 が最緊急 / 9 が最も低い",
+      "difficulty": "難易度",
+      "difficultyHint": "0 が最も簡単 / 9 が最も難しい",
+      "duration": "所要時間",
+      "durationHint": "0 が最短 / 9 が最長",
       "placeholder": "例：キャラクターコントローラー初版を完成",
       "noTodos": "このプロジェクトにはまだ公開済み Todo がありません。"
     },

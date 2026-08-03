@@ -15,6 +15,8 @@ def serialize_todo(todo):
         'text': todo.text,
         'done': todo.done,
         'priority': todo.priority,
+        'difficulty': todo.difficulty,
+        'duration': todo.duration,
         'user_id': todo.user_id,
         'created_by_id': todo.created_by_id,
         'claimed_by_id': todo.claimed_by_id,
@@ -49,19 +51,19 @@ def get_project_assignee_ids(project, data):
     return [assignee_user_id]
 
 
-def parse_priority(value):
+def parse_level(value):
     if value in [None, '']:
         return 5
 
     try:
-        priority = int(value)
+        level = int(value)
     except (TypeError, ValueError):
         return None
 
-    if priority < 0 or priority > 9:
+    if level < 0 or level > 9:
         return None
 
-    return priority
+    return level
 
 # C 新增待辦事項
 @todo_bp.route('/todos', methods=['POST'])
@@ -76,9 +78,15 @@ def add_todo():
     if not text:
         return jsonify({'error': 'Todo text is required'}), 400
 
-    priority = parse_priority(data.get('priority'))
+    priority = parse_level(data.get('priority'))
     if priority is None:
         return jsonify({'error': 'Todo priority must be between 0 and 9'}), 400
+    difficulty = parse_level(data.get('difficulty'))
+    if difficulty is None:
+        return jsonify({'error': 'Todo difficulty must be between 0 and 9'}), 400
+    duration = parse_level(data.get('duration'))
+    if duration is None:
+        return jsonify({'error': 'Todo duration must be between 0 and 9'}), 400
 
     project_id = data.get('project_id')
     if project_id:
@@ -94,6 +102,8 @@ def add_todo():
             Todo(
                 text=text,
                 priority=priority,
+                difficulty=difficulty,
+                duration=duration,
                 user_id=assignee_id,
                 created_by_id=user.id,
                 project_id=project.id,
@@ -105,7 +115,14 @@ def add_todo():
 
         return jsonify([serialize_todo(todo) for todo in new_todos]), 201
 
-    new_todo = Todo(text=text, priority=priority, user_id=user.id, created_by_id=user.id)
+    new_todo = Todo(
+        text=text,
+        priority=priority,
+        difficulty=difficulty,
+        duration=duration,
+        user_id=user.id,
+        created_by_id=user.id
+    )
 
     db.session.add(new_todo)
     db.session.commit()
@@ -160,10 +177,20 @@ def update_todo(todo_id):
         todo.text = text
 
     if 'priority' in data:
-        priority = parse_priority(data.get('priority'))
+        priority = parse_level(data.get('priority'))
         if priority is None:
             return jsonify({'error': 'Todo priority must be between 0 and 9'}), 400
         todo.priority = priority
+    if 'difficulty' in data:
+        difficulty = parse_level(data.get('difficulty'))
+        if difficulty is None:
+            return jsonify({'error': 'Todo difficulty must be between 0 and 9'}), 400
+        todo.difficulty = difficulty
+    if 'duration' in data:
+        duration = parse_level(data.get('duration'))
+        if duration is None:
+            return jsonify({'error': 'Todo duration must be between 0 and 9'}), 400
+        todo.duration = duration
 
     if 'claimed' in data:
         claimed = bool(data.get('claimed'))
@@ -177,7 +204,7 @@ def update_todo(todo_id):
             return jsonify({'error': '只能取消自己佔領的任務'}), 403
 
     if 'done' in data:
-        if data.get('done') and todo.claimed_by_id and todo.claimed_by_id != user.id and todo.created_by_id != user.id:
+        if data.get('done') and todo.claimed_by_id != user.id:
             return jsonify({'error': '只能完成自己佔領的任務'}), 403
         todo.done = bool(data.get('done'))
 
