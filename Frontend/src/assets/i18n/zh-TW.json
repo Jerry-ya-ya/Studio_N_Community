@@ -525,6 +525,14 @@
       "joined": "已登記加入",
       "full": "名額已滿"
     },
+    "review": {
+      "status": {
+        "open": "招募中",
+        "pending": "待審理",
+        "approved": "審理通過",
+        "rejected": "審理駁回"
+      }
+    },
     "actions": {
       "creating": "建立中...",
       "publishRecruitment": "發布招募",
@@ -532,6 +540,7 @@
       "join": "登記加入",
       "processing": "處理中...",
       "cancelJoin": "取消登記",
+      "submitReview": "提交完成審理",
       "publishing": "發布中...",
       "publishTodo": "發布 Todo",
       "deleting": "刪除中...",
@@ -554,6 +563,8 @@
       "leaveFailure": "取消登記失敗",
       "deleteSuccess": "招募已刪除",
       "deleteFailure": "刪除招募失敗",
+      "reviewSubmitted": "專案已提交審理",
+      "reviewSubmitFailure": "提交審理失敗",
       "todoSuccess": "Todo 已發布",
       "todoFailure": "發布 Todo 失敗"
     }
@@ -848,7 +859,21 @@
       "noLimit": "不限",
       "creator": "發布者",
       "createdAt": "發布時間",
-      "contact": "聯絡方式"
+      "contact": "聯絡方式",
+      "reviewStatus": "審理狀態"
+    },
+    "review": {
+      "kicker": "Project Review",
+      "title": "專案完成審理",
+      "empty": "目前沒有待審理的專案。",
+      "approve": "通過",
+      "reject": "駁回",
+      "status": {
+        "open": "招募中",
+        "pending": "待審理",
+        "approved": "審理通過",
+        "rejected": "審理駁回"
+      }
     },
     "members": {
       "title": "登記成員",
@@ -865,7 +890,8 @@
       "noDone": "目前沒有已完成的 Todo。"
     },
     "feedback": {
-      "loadFailure": "無法載入專案招募。"
+      "loadFailure": "無法載入專案招募。",
+      "reviewFailure": "審理專案失敗。"
     }
   },
   "adminContent": {

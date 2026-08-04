@@ -525,6 +525,14 @@
       "joined": "등록 완료",
       "full": "정원 마감"
     },
+    "review": {
+      "status": {
+        "open": "모집 중",
+        "pending": "검토 대기",
+        "approved": "승인됨",
+        "rejected": "반려됨"
+      }
+    },
     "actions": {
       "creating": "생성 중...",
       "publishRecruitment": "모집 게시",
@@ -532,6 +540,7 @@
       "join": "참가 등록",
       "processing": "처리 중...",
       "cancelJoin": "등록 취소",
+      "submitReview": "완료 검토 제출",
       "publishing": "게시 중...",
       "publishTodo": "Todo 게시",
       "deleting": "삭제 중...",
@@ -554,6 +563,8 @@
       "leaveFailure": "등록 취소에 실패했습니다.",
       "deleteSuccess": "모집을 삭제했습니다.",
       "deleteFailure": "모집 삭제에 실패했습니다.",
+      "reviewSubmitted": "프로젝트를 검토에 제출했습니다.",
+      "reviewSubmitFailure": "검토 제출에 실패했습니다.",
       "todoSuccess": "Todo를 게시했습니다.",
       "todoFailure": "Todo 게시에 실패했습니다."
     }
@@ -848,7 +859,21 @@
       "noLimit": "제한 없음",
       "creator": "게시자",
       "createdAt": "게시 시간",
-      "contact": "연락처"
+      "contact": "연락처",
+      "reviewStatus": "검토 상태"
+    },
+    "review": {
+      "kicker": "Project Review",
+      "title": "프로젝트 완료 검토",
+      "empty": "검토 대기 중인 프로젝트가 없습니다.",
+      "approve": "승인",
+      "reject": "반려",
+      "status": {
+        "open": "모집 중",
+        "pending": "검토 대기",
+        "approved": "승인됨",
+        "rejected": "반려됨"
+      }
     },
     "members": {
       "title": "등록 멤버",
@@ -865,7 +890,8 @@
       "noDone": "아직 완료된 Todo가 없습니다."
     },
     "feedback": {
-      "loadFailure": "프로젝트 모집을 불러오지 못했습니다."
+      "loadFailure": "프로젝트 모집을 불러오지 못했습니다.",
+      "reviewFailure": "프로젝트 검토에 실패했습니다."
     }
   },
   "adminContent": {

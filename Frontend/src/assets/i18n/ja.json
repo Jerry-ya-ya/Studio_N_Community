@@ -525,6 +525,14 @@
       "joined": "登録済み",
       "full": "満員"
     },
+    "review": {
+      "status": {
+        "open": "募集中",
+        "pending": "審査待ち",
+        "approved": "承認済み",
+        "rejected": "差し戻し"
+      }
+    },
     "actions": {
       "creating": "作成中...",
       "publishRecruitment": "募集を公開",
@@ -532,6 +540,7 @@
       "join": "参加登録",
       "processing": "処理中...",
       "cancelJoin": "登録を取消",
+      "submitReview": "完了審査を申請",
       "publishing": "公開中...",
       "publishTodo": "Todo を公開",
       "deleting": "削除中...",
@@ -554,6 +563,8 @@
       "leaveFailure": "登録取消に失敗しました。",
       "deleteSuccess": "募集を削除しました。",
       "deleteFailure": "募集の削除に失敗しました。",
+      "reviewSubmitted": "プロジェクトを審査に提出しました。",
+      "reviewSubmitFailure": "審査提出に失敗しました。",
       "todoSuccess": "Todo を公開しました。",
       "todoFailure": "Todo の公開に失敗しました。"
     }
@@ -848,7 +859,21 @@
       "noLimit": "制限なし",
       "creator": "投稿者",
       "createdAt": "公開日時",
-      "contact": "連絡先"
+      "contact": "連絡先",
+      "reviewStatus": "審査状態"
+    },
+    "review": {
+      "kicker": "Project Review",
+      "title": "プロジェクト完了審査",
+      "empty": "審査待ちのプロジェクトはありません。",
+      "approve": "承認",
+      "reject": "差し戻し",
+      "status": {
+        "open": "募集中",
+        "pending": "審査待ち",
+        "approved": "承認済み",
+        "rejected": "差し戻し"
+      }
     },
     "members": {
       "title": "登録メンバー",
@@ -865,7 +890,8 @@
       "noDone": "完了した Todo はまだありません。"
     },
     "feedback": {
-      "loadFailure": "プロジェクト募集を読み込めませんでした。"
+      "loadFailure": "プロジェクト募集を読み込めませんでした。",
+      "reviewFailure": "プロジェクト審査に失敗しました。"
     }
   },
   "adminContent": {

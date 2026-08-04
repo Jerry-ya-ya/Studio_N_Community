@@ -56,6 +56,7 @@ def serialize_project(project, current_user):
         'role_needed': project.role_needed,
         'contact': project.contact,
         'max_members': project.max_members,
+        'review_status': project.review_status,
         'created_at': to_taipei_text(project.created_at),
         'creator': serialize_user(project.creator),
         'members': [serialize_member(member) for member in project.members],
@@ -162,6 +163,52 @@ def join_project_recruitment(project_id):
     except IntegrityError:
         db.session.rollback()
         return jsonify({'message': '你已經登記加入此招募'}), 200
+
+    return jsonify(serialize_project(project, current_user))
+
+
+@project_recruitment_bp.route('/project-recruitments/<int:project_id>/submit-review', methods=['POST'])
+@jwt_required()
+def submit_project_review(project_id):
+    current_user = get_current_user_from_token()
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    project = ProjectRecruitment.query.get_or_404(project_id)
+    if project.creator_id != current_user.id:
+        return jsonify({'error': '只有組長可以提交專案完成審理'}), 403
+    if project.review_status == 'pending':
+        return jsonify({'error': '此專案已在審理中'}), 409
+    if project.review_status == 'approved':
+        return jsonify({'error': '此專案已完成審理'}), 409
+
+    project.review_status = 'pending'
+    db.session.commit()
+
+    return jsonify(serialize_project(project, current_user))
+
+
+@project_recruitment_bp.route('/admin/project-recruitments/<int:project_id>/review', methods=['POST'])
+@admin_required
+def review_project_recruitment(project_id):
+    current_user = get_current_user_from_token()
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    project = ProjectRecruitment.query.get_or_404(project_id)
+    data = request.get_json(silent=True) or {}
+    action = data.get('action')
+
+    if project.review_status != 'pending':
+        return jsonify({'error': '此專案目前不在待審理狀態'}), 409
+    if action == 'approve':
+        project.review_status = 'approved'
+    elif action == 'reject':
+        project.review_status = 'rejected'
+    else:
+        return jsonify({'error': '審理動作不正確'}), 400
+
+    db.session.commit()
 
     return jsonify(serialize_project(project, current_user))
 

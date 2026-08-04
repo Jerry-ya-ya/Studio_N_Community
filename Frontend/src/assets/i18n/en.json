@@ -525,6 +525,14 @@
       "joined": "Registered",
       "full": "Full"
     },
+    "review": {
+      "status": {
+        "open": "Open",
+        "pending": "Pending Review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
     "actions": {
       "creating": "Creating...",
       "publishRecruitment": "Publish Recruitment",
@@ -532,6 +540,7 @@
       "join": "Register",
       "processing": "Processing...",
       "cancelJoin": "Cancel Registration",
+      "submitReview": "Submit Completion Review",
       "publishing": "Publishing...",
       "publishTodo": "Publish Todo",
       "deleting": "Deleting...",
@@ -554,6 +563,8 @@
       "leaveFailure": "Failed to cancel registration.",
       "deleteSuccess": "Recruitment deleted.",
       "deleteFailure": "Failed to delete recruitment.",
+      "reviewSubmitted": "Project submitted for review.",
+      "reviewSubmitFailure": "Failed to submit review.",
       "todoSuccess": "Todo published.",
       "todoFailure": "Failed to publish Todo."
     }
@@ -848,7 +859,21 @@
       "noLimit": "No Limit",
       "creator": "Publisher",
       "createdAt": "Published",
-      "contact": "Contact"
+      "contact": "Contact",
+      "reviewStatus": "Review Status"
+    },
+    "review": {
+      "kicker": "Project Review",
+      "title": "Project Completion Review",
+      "empty": "There are no projects pending review.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "status": {
+        "open": "Open",
+        "pending": "Pending Review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
     },
     "members": {
       "title": "Registered Members",
@@ -865,7 +890,8 @@
       "noDone": "No completed todos yet."
     },
     "feedback": {
-      "loadFailure": "Failed to load project recruitments."
+      "loadFailure": "Failed to load project recruitments.",
+      "reviewFailure": "Failed to review project."
     }
   },
   "adminContent": {

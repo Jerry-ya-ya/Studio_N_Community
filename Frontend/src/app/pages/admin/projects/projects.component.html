@@ -20,6 +20,38 @@
   }
 
   @if (!loading && !errorMessage) {
+    <section class="review-panel">
+      <div class="review-panel__header">
+        <div>
+          <p class="admin-kicker">{{ 'adminProjects.review.kicker' | translate }}</p>
+          <h2>{{ 'adminProjects.review.title' | translate }}</h2>
+        </div>
+        <strong>{{ pendingProjects.length }}</strong>
+      </div>
+
+      @if (pendingProjects.length === 0) {
+        <p class="empty-message empty-message--inline">{{ 'adminProjects.review.empty' | translate }}</p>
+      }
+
+      @for (project of pendingProjects; track project.id) {
+        <article class="review-card">
+          <div>
+            <span>{{ getDisplayName(project.creator) }}</span>
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.summary }}</p>
+          </div>
+          <div class="review-actions">
+            <button type="button" (click)="reviewProject(project, 'approve')" [disabled]="reviewLoading[project.id]">
+              {{ 'adminProjects.review.approve' | translate }}
+            </button>
+            <button type="button" (click)="reviewProject(project, 'reject')" [disabled]="reviewLoading[project.id]">
+              {{ 'adminProjects.review.reject' | translate }}
+            </button>
+          </div>
+        </article>
+      }
+    </section>
+
     <section class="project-list">
       @for (project of projects; track project.id) {
         <article class="project-card">
@@ -48,6 +80,10 @@
             <article>
               <span>{{ 'adminProjects.card.contact' | translate }}</span>
               <strong>{{ project.contact || '-' }}</strong>
+            </article>
+            <article>
+              <span>{{ 'adminProjects.card.reviewStatus' | translate }}</span>
+              <strong>{{ ('adminProjects.review.status.' + project.review_status) | translate }}</strong>
             </article>
           </div>
 

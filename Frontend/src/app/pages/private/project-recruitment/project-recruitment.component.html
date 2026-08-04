@@ -73,7 +73,12 @@
               <p class="project-owner">{{ project.creator.nickname || project.creator.username }}</p>
               <h3>{{ project.title }}</h3>
             </div>
-            <span class="project-count">{{ project.member_count }}{{ project.max_members ? '/' + project.max_members : '' }}</span>
+            <div class="project-card__badges">
+              <span class="project-badge project-badge--status">
+                {{ ('privateRecruit.review.status.' + project.review_status) | translate }}
+              </span>
+              <span class="project-count">{{ project.member_count }}{{ project.max_members ? '/' + project.max_members : '' }}</span>
+            </div>
           </div>
           <p class="project-summary">{{ project.summary }}</p>
           <div class="project-meta">
@@ -193,12 +198,15 @@
             </div>
           }
         <div class="manage-actions">
+          <span class="project-badge project-badge--status">
+            {{ ('privateRecruit.review.status.' + project.review_status) | translate }}
+          </span>
           <button
-            class="recruit-button recruit-button--danger"
+            class="recruit-button"
             type="button"
-            (click)="deleteProject(project)"
-            [disabled]="deletingProject[project.id]">
-            {{ (deletingProject[project.id] ? 'privateRecruit.actions.deleting' : 'privateRecruit.actions.deleteRecruitment') | translate }}
+            (click)="submitProjectReview(project)"
+            [disabled]="!canSubmitReview(project) || reviewLoading[project.id]">
+            {{ (reviewLoading[project.id] ? 'privateRecruit.actions.processing' : 'privateRecruit.actions.submitReview') | translate }}
           </button>
         </div>
       </article>

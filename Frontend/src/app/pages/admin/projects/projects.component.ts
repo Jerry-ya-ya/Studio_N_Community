@@ -38,6 +38,7 @@ interface AdminProject {
   role_needed?: string | null;
   contact?: string | null;
   max_members?: number | null;
+  review_status: 'open' | 'pending' | 'approved' | 'rejected';
   created_at: string;
   creator: ProjectUser;
   members: ProjectMember[];
@@ -55,6 +56,7 @@ interface AdminProject {
 export class ProjectsComponent implements OnInit {
   projects: AdminProject[] = [];
   expandedTodoProjectIds = new Set<number>();
+  reviewLoading: Record<number, boolean> = {};
   loading = false;
   errorMessage = '';
 
@@ -111,6 +113,34 @@ export class ProjectsComponent implements OnInit {
 
   getDoneTodos(project: AdminProject) {
     return (project.todos || []).filter(todo => todo.done);
+  }
+
+  get pendingProjects() {
+    return this.projects.filter(project => project.review_status === 'pending');
+  }
+
+  reviewProject(project: AdminProject, action: 'approve' | 'reject') {
+    if (project.review_status !== 'pending' || this.reviewLoading[project.id]) {
+      return;
+    }
+
+    this.reviewLoading[project.id] = true;
+    this.apiService.post<AdminProject>(
+      `/admin/project-recruitments/${project.id}/review`,
+      { action },
+      this.apiService.createAuthHeaders()
+    ).subscribe({
+      next: updated => {
+        this.projects = this.projects.map(item => item.id === updated.id ? updated : item);
+        delete this.reviewLoading[project.id];
+        this.changeDetectorRef.detectChanges();
+      },
+      error: error => {
+        this.errorMessage = error?.error?.error || 'adminProjects.feedback.reviewFailure';
+        delete this.reviewLoading[project.id];
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
 }

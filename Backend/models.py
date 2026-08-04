@@ -135,12 +135,20 @@ class Post(db.Model):
     user = db.relationship('User', backref='posts')
 
 class ProjectRecruitment(db.Model):
+    __table_args__ = (
+        db.CheckConstraint(
+            "review_status IN ('open', 'pending', 'approved', 'rejected')",
+            name='ck_project_recruitment_review_status'
+        ),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     summary = db.Column(db.Text, nullable=False)
     role_needed = db.Column(db.String(120))
     contact = db.Column(db.String(160))
     max_members = db.Column(db.Integer)
+    review_status = db.Column(db.String(20), default='open', nullable=False)
     created_at = db.Column(db.DateTime, default=taipei_now)
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
