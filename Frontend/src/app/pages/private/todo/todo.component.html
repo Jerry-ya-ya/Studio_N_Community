@@ -46,6 +46,18 @@
               [title]="getPriorityMultiplierLabel(todo.priority)">
               P{{ getPriorityLevel(todo.priority) }}
             </strong>
+            @if (todo.project_id && todo.claimed_by_id === currentUserId && !todo.done) {
+              <label class="todo-time-select">
+                <span>{{ 'privateTodo.actions.timeLabel' | translate }}</span>
+                <select
+                  [(ngModel)]="todoCompletionTimes[todo.id]"
+                  [ngModelOptions]="{ standalone: true }">
+                  @for (time of timeOptions; track time.value) {
+                    <option [ngValue]="time.value">{{ time.labelKey | translate }}</option>
+                  }
+                </select>
+              </label>
+            }
             <span>
               {{ todo.text }}
             </span>
@@ -182,12 +194,12 @@
           <div class="project-task-groups">
             <details class="todo-publisher" open>
               <summary>
-                <span>{{ 'privateTodo.groups.unclaimed' | translate }}</span>
-                <strong>{{ getUnclaimedTodos(card.todos).length }}</strong>
+                <span>{{ 'privateTodo.groups.pendingCompletion' | translate }}</span>
+                <strong>{{ getPendingCompletionTodos(card.todos).length }}</strong>
               </summary>
               <ul class="project-task-list">
-                @for (todo of getUnclaimedTodos(card.todos); track todo.id) {
-                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: false, showDifficulty: false }"></ng-container>
+                @for (todo of getPendingCompletionTodos(card.todos); track todo.id) {
+                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showCompletionTime: true, showTime: false, showDifficulty: false }"></ng-container>
                 } @empty {
                   <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
                 }
@@ -228,7 +240,7 @@
   </section>
 </div>
 
-<ng-template #projectTodoItem let-todo="todo" let-showTime="showTime" let-showDifficulty="showDifficulty">
+<ng-template #projectTodoItem let-todo="todo" let-showCompletionTime="showCompletionTime" let-showTime="showTime" let-showDifficulty="showDifficulty">
   <li [class.is-claimed]="todo.claimed_by_id" [class.is-done]="todo.done">
     <input
       type="checkbox"
@@ -248,6 +260,18 @@
         [style.background]="getEffortColor(getTodoDuration(todo))">
         T{{ getTodoDuration(todo) }}
       </strong>
+    }
+    @if (showCompletionTime && todo.claimed_by_id === currentUserId && !todo.done) {
+      <label class="todo-time-select">
+        <span>{{ 'privateTodo.actions.timeLabel' | translate }}</span>
+        <select
+          [(ngModel)]="todoCompletionTimes[todo.id]"
+          [ngModelOptions]="{ standalone: true }">
+          @for (time of timeOptions; track time.value) {
+            <option [ngValue]="time.value">{{ time.labelKey | translate }}</option>
+          }
+        </select>
+      </label>
     }
     @if (showDifficulty) {
       <strong

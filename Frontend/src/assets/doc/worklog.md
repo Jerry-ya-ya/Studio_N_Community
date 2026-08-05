@@ -521,3 +521,5 @@
 - Move settlement requests to todo projects.
 
 - Update todo review groups and persist sidebar state.
+
+- Refine todo completion review flow.

@@ -617,11 +617,20 @@
       "claimTitle": "タスクを確保",
       "done": "完了",
       "reopen": "再開",
-      "delete": "削除"
+      "delete": "削除",
+      "timeLabel": "Time",
+      "timePlaceholder": "時間を選択"
     },
     "claim": {
       "claimedBy": "確保中：{{ name }}",
       "unclaimed": "未確保"
+    },
+    "time": {
+      "lessThan30": "30 分未満",
+      "oneHour": "1 時間",
+      "halfDay": "半日",
+      "oneDay": "1 日",
+      "multipleDays": "数日"
     },
     "assignee": {
       "unassigned": "未指定"
@@ -640,6 +649,7 @@
     },
     "groups": {
       "unclaimed": "未担当",
+      "pendingCompletion": "完了待ち",
       "working": "作業中",
       "reviewPending": "審査待ち",
       "settled": "精算済み",
@@ -679,7 +689,8 @@
     },
     "feedback": {
       "publishSuccess": "Todo を公開しました。",
-      "publishFailure": "Todo の公開に失敗しました。"
+      "publishFailure": "Todo の公開に失敗しました。",
+      "timeRequired": "先に Time 点数を選択してください。"
     }
   },
   "privateSetting": {

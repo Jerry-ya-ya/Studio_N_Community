@@ -617,11 +617,20 @@
       "claimTitle": "Claim task",
       "done": "Done",
       "reopen": "Reopen",
-      "delete": "Delete"
+      "delete": "Delete",
+      "timeLabel": "Time",
+      "timePlaceholder": "Select time"
     },
     "claim": {
       "claimedBy": "Claimed by {{ name }}",
       "unclaimed": "Unclaimed"
+    },
+    "time": {
+      "lessThan30": "<30 min",
+      "oneHour": "1 hour",
+      "halfDay": "Half day",
+      "oneDay": "1 day",
+      "multipleDays": "Multiple days"
     },
     "assignee": {
       "unassigned": "Unassigned"
@@ -640,6 +649,7 @@
     },
     "groups": {
       "unclaimed": "Unclaimed",
+      "pendingCompletion": "To Complete",
       "working": "In Progress",
       "reviewPending": "Pending Review",
       "settled": "Settled",
@@ -679,7 +689,8 @@
     },
     "feedback": {
       "publishSuccess": "Todo published.",
-      "publishFailure": "Failed to publish todo."
+      "publishFailure": "Failed to publish todo.",
+      "timeRequired": "Select a Time score first."
     }
   },
   "privateSetting": {

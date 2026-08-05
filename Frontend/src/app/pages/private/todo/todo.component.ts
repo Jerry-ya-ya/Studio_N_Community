@@ -64,6 +64,13 @@ interface ProjectTodoCard {
 })
 export class TodoComponent implements OnInit {
   readonly priorityMultipliers = [1, 1.1, 1.2, 1.35, 1.5];
+  readonly timeOptions = [
+    { value: 0, labelKey: 'privateTodo.time.lessThan30' },
+    { value: 1, labelKey: 'privateTodo.time.oneHour' },
+    { value: 2, labelKey: 'privateTodo.time.halfDay' },
+    { value: 3, labelKey: 'privateTodo.time.oneDay' },
+    { value: 5, labelKey: 'privateTodo.time.multipleDays' }
+  ];
   todos: Todo[] = [];
   projectTodoGroups: ProjectTodoGroup[] = [];
   projects: ProjectRecruitment[] = [];
@@ -75,6 +82,7 @@ export class TodoComponent implements OnInit {
   todoPriorities: Record<number, number> = {};
   todoDifficulties: Record<number, number> = {};
   todoDurations: Record<number, number> = {};
+  todoCompletionTimes: Record<number, number | null> = {};
   settlementLoading: Record<number, boolean> = {};
   isAllTodosOpen = false;
   statusMessage = '';
@@ -187,13 +195,21 @@ export class TodoComponent implements OnInit {
   }
 
   toggleDone(todo: Todo) {
+    const selectedDuration = this.getSelectedTodoDuration(todo);
+
+    if (!todo.done && selectedDuration === null) {
+      this.statusMessage = this.translate.instant('privateTodo.feedback.timeRequired');
+      return;
+    }
+
     this.apiService.put<Todo>(`/todos/${todo.id}`, {
       text: todo.text,
       done: !todo.done,
       priority: todo.priority,
       difficulty: todo.difficulty,
-      duration: todo.duration
+      duration: !todo.done ? selectedDuration : todo.duration
     }, this.apiService.createAuthHeaders()).subscribe(updated => {
+      delete this.todoCompletionTimes[todo.id];
       this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item));
     });
   }
@@ -346,23 +362,37 @@ export class TodoComponent implements OnInit {
   }
 
   canToggleDone(todo: Todo) {
-    return todo.claimed_by_id === this.currentUserId;
+    return todo.claimed_by_id === this.currentUserId && (todo.done || this.hasSelectedTodoDuration(todo));
   }
 
   canSubmitSettlementReview(project: ProjectRecruitment) {
     return project.review_status === 'open' || project.review_status === 'rejected';
   }
 
-  getUnclaimedTodos(todos: Todo[]) {
-    return todos.filter(todo => !todo.done && !todo.claimed_by_id);
+  getPendingCompletionTodos(todos: Todo[]): Todo[] {
+    return todos.filter(todo => !todo.done);
   }
 
-  getReviewPendingTodos(todos: Todo[]) {
-    return todos.filter(todo => !todo.done && !!todo.claimed_by_id);
-  }
-
-  getSettledTodos(todos: Todo[]) {
+  getReviewPendingTodos(todos: Todo[]): Todo[] {
     return todos.filter(todo => todo.done);
+  }
+
+  getSettledTodos(todos: Todo[]): Todo[] {
+    return [];
+  }
+
+  getSelectedTodoDuration(todo: Todo) {
+    const duration = this.todoCompletionTimes[todo.id];
+    if (duration === undefined || duration === null) {
+      return null;
+    }
+
+    const value = Number(duration);
+    return Number.isNaN(value) ? null : value;
+  }
+
+  hasSelectedTodoDuration(todo: Todo) {
+    return this.getSelectedTodoDuration(todo) !== null;
   }
 
   toggleAllTodos() {

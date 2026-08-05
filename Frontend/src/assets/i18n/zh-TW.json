@@ -617,11 +617,20 @@
       "claimTitle": "佔領任務",
       "done": "完成",
       "reopen": "重新開啟",
-      "delete": "刪除"
+      "delete": "刪除",
+      "timeLabel": "Time",
+      "timePlaceholder": "選擇時間"
     },
     "claim": {
       "claimedBy": "佔領：{{ name }}",
       "unclaimed": "未佔領"
+    },
+    "time": {
+      "lessThan30": "<30 分",
+      "oneHour": "1 小時",
+      "halfDay": "半天",
+      "oneDay": "1 天",
+      "multipleDays": "多天"
     },
     "assignee": {
       "unassigned": "未指定"
@@ -640,6 +649,7 @@
     },
     "groups": {
       "unclaimed": "未認領",
+      "pendingCompletion": "待完成",
       "working": "工作中",
       "reviewPending": "待送審",
       "settled": "已結算",
@@ -679,7 +689,8 @@
     },
     "feedback": {
       "publishSuccess": "Todo 已發布",
-      "publishFailure": "發布 Todo 失敗"
+      "publishFailure": "發布 Todo 失敗",
+      "timeRequired": "請先選擇 Time 分數"
     }
   },
   "privateSetting": {
