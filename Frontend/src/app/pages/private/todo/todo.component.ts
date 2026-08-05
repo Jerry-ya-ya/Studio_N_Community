@@ -62,6 +62,7 @@ interface ProjectTodoCard {
   styleUrl: './todo.component.css'
 })
 export class TodoComponent implements OnInit {
+  readonly priorityMultipliers = [1, 1.1, 1.2, 1.35, 1.5];
   todos: Todo[] = [];
   projectTodoGroups: ProjectTodoGroup[] = [];
   projects: ProjectRecruitment[] = [];
@@ -160,7 +161,7 @@ export class TodoComponent implements OnInit {
         this.setTodos(this.mergeTodos(this.todos, createdTodos));
         this.todoTexts[project.id] = '';
         this.todoTargets[project.id] = 'team';
-        this.todoPriorities[project.id] = 5;
+        this.todoPriorities[project.id] = 0;
         this.todoDifficulties[project.id] = 5;
         this.todoDurations[project.id] = 5;
         delete this.todoLoading[project.id];
@@ -262,14 +263,14 @@ export class TodoComponent implements OnInit {
   private initializeProjectTodoDefaults(projects: ProjectRecruitment[]) {
     for (const project of projects) {
       this.todoTargets[project.id] ??= 'team';
-      this.todoPriorities[project.id] ??= 5;
+      this.todoPriorities[project.id] ??= 0;
       this.todoDifficulties[project.id] ??= 5;
       this.todoDurations[project.id] ??= 5;
     }
   }
 
   getTodoPriority(todo: Todo) {
-    return Math.min(9, Math.max(0, Number(todo.priority ?? 5)));
+    return Math.min(4, Math.max(0, Number(todo.priority ?? 0)));
   }
 
   getTodoDifficulty(todo: Todo) {
@@ -286,7 +287,20 @@ export class TodoComponent implements OnInit {
   }
 
   getPriorityColor(priority: number) {
-    return this.getLevelColor(priority);
+    const value = this.getTodoPriority({ priority } as Todo);
+    return `hsl(${(value / 4) * 120}, 78%, 46%)`;
+  }
+
+  getPriorityLevel(priority: number) {
+    return this.getTodoPriority({ priority } as Todo) + 1;
+  }
+
+  getPriorityMultiplier(priority: number) {
+    return this.priorityMultipliers[this.getTodoPriority({ priority } as Todo)];
+  }
+
+  getPriorityMultiplierLabel(priority: number) {
+    return `x${this.getPriorityMultiplier(priority).toFixed(2)}`;
   }
 
   getEffortColor(level: number) {
@@ -294,8 +308,8 @@ export class TodoComponent implements OnInit {
   }
 
   getProjectTodoPriority(projectId: number) {
-    const priority = Number(this.todoPriorities[projectId] ?? 5);
-    return Math.min(9, Math.max(0, priority));
+    const priority = Number(this.todoPriorities[projectId] ?? 0);
+    return Math.min(4, Math.max(0, priority));
   }
 
   getProjectTodoDifficulty(projectId: number) {

@@ -67,7 +67,6 @@ li {
   border: 1px solid var(--studio-line);
   background: color-mix(in srgb, var(--studio-panel-strong) 76%, transparent);
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   padding: 12px 16px;
   margin-bottom: 14px;
 }
@@ -134,15 +133,13 @@ button:last-child:hover {
   margin: 16px 0 0;
   color: var(--studio-accent);
   font-weight: 800;
-  text-align: center;
 }
 
 .all-todo-section {
   margin-top: 22px;
 }
 
-.all-todo-toggle,
-.all-todo-toggle:last-child {
+button.all-todo-toggle {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
@@ -156,11 +153,9 @@ button:last-child:hover {
   text-align: left;
 }
 
-.all-todo-toggle:hover,
-.all-todo-toggle:last-child:hover {
+button.all-todo-toggle:hover {
   color: var(--studio-text);
   background: color-mix(in srgb, var(--studio-accent) 12%, transparent);
-  box-shadow: none;
 }
 
 .all-todo-list {
@@ -331,14 +326,8 @@ li.is-done span {
   justify-content: space-between;
 }
 
-.todo-publisher h5 {
-  margin-top: 4px;
-  font-size: 1.05rem;
-}
-
 .todo-publisher select,
-.todo-publisher input,
-.todo-priority input {
+.todo-publisher input {
   min-height: 42px;
   padding: 0 12px;
   border: 1px solid var(--studio-line);
@@ -354,17 +343,18 @@ li.is-done span {
 
 .todo-publisher__controls input {
   flex: 1;
+  min-width: 0;
 }
 
-.todo-publisher button,
-.todo-publisher button:last-child {
+.todo-publisher__controls { flex-wrap: wrap; }
+
+.todo-publisher button {
   border-color: var(--studio-accent);
   background: var(--studio-accent);
   color: var(--studio-bg);
 }
 
-.todo-publisher button:hover,
-.todo-publisher button:last-child:hover {
+.todo-publisher button:hover {
   border-color: var(--studio-accent);
   background: transparent;
   color: var(--studio-accent);
@@ -372,18 +362,18 @@ li.is-done span {
 
 .todo-priority {
   display: grid;
-  grid-template-columns: 120px 92px 44px 1fr;
+  grid-template-columns: 120px 110px 64px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
 }
 
-.todo-priority input { text-align: center; }
+.todo-priority small { white-space: normal; }
 
 .todo-priority strong {
   display: inline-grid;
   place-items: center;
   justify-self: center;
-  width: 44px;
+  width: 64px;
   height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 50%;
@@ -406,14 +396,17 @@ li.is-done span {
   background: linear-gradient(90deg, var(--studio-accent), var(--studio-warm));
 }
 
-.project-task-list {
-  margin-top: 0;
-}
-
 .project-task-list li {
   margin-bottom: 8px;
   padding: 10px 12px;
   box-shadow: none;
+}
+
+@media (max-width: 980px) {
+  .todo-priority { grid-template-columns: 84px 1fr 58px; }
+  .todo-priority small { grid-column: 1 / -1; margin-left: 0; }
+  .todo-priority strong { width: 58px; }
+  .todo-publisher__controls button { white-space: nowrap; }
 }
 
 @media (max-width: 600px) {

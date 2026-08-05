@@ -51,16 +51,16 @@ def get_project_assignee_ids(project, data):
     return [assignee_user_id]
 
 
-def parse_level(value):
+def parse_level(value, maximum=9, default=5):
     if value in [None, '']:
-        return 5
+        return default
 
     try:
         level = int(value)
     except (TypeError, ValueError):
         return None
 
-    if level < 0 or level > 9:
+    if level < 0 or level > maximum:
         return None
 
     return level
@@ -78,9 +78,9 @@ def add_todo():
     if not text:
         return jsonify({'error': 'Todo text is required'}), 400
 
-    priority = parse_level(data.get('priority'))
+    priority = parse_level(data.get('priority'), maximum=4, default=0)
     if priority is None:
-        return jsonify({'error': 'Todo priority must be between 0 and 9'}), 400
+        return jsonify({'error': 'Todo priority must be between 0 and 4'}), 400
     difficulty = parse_level(data.get('difficulty'))
     if difficulty is None:
         return jsonify({'error': 'Todo difficulty must be between 0 and 9'}), 400
@@ -177,9 +177,9 @@ def update_todo(todo_id):
         todo.text = text
 
     if 'priority' in data:
-        priority = parse_level(data.get('priority'))
+        priority = parse_level(data.get('priority'), maximum=4, default=0)
         if priority is None:
-            return jsonify({'error': 'Todo priority must be between 0 and 9'}), 400
+            return jsonify({'error': 'Todo priority must be between 0 and 4'}), 400
         todo.priority = priority
     if 'difficulty' in data:
         difficulty = parse_level(data.get('difficulty'))

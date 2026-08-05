@@ -115,6 +115,15 @@ export class ProjectsComponent implements OnInit {
     return (project.todos || []).filter(todo => todo.done);
   }
 
+  getPriorityLevel(priority: number) {
+    return Math.min(4, Math.max(0, Number(priority ?? 0))) + 1;
+  }
+
+  getPriorityMultiplierLabel(priority: number) {
+    const multipliers = [1, 1.1, 1.2, 1.35, 1.5];
+    return `x${multipliers[this.getPriorityLevel(priority) - 1].toFixed(2)}`;
+  }
+
   get pendingProjects() {
     return this.projects.filter(project => project.review_status === 'pending');
   }

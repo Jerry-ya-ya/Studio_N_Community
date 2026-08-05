@@ -510,7 +510,7 @@
       "team": "整個團隊",
       "captain": "隊長自己",
       "priority": "優先級",
-      "priorityHint": "0 最緊急 / 9 最不緊急",
+      "priorityHint": "1 到 5 級倍率：x1.00 到 x1.50",
       "placeholder": "例如：完成角色控制器第一版"
     },
     "join": {
@@ -647,7 +647,8 @@
       "team": "整個團隊",
       "captain": "隊長自己",
       "priority": "優先級",
-      "priorityHint": "0 最緊急 / 9 最不緊急",
+      "priorityOption": "{{ level }} 級 ×{{ multiplier }}",
+      "priorityHint": "Priority 是組長設定的 Token 倍率",
       "difficulty": "難度級別",
       "difficultyHint": "0 最簡單 / 9 最困難",
       "duration": "耗時級別",

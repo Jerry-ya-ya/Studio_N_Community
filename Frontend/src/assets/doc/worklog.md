@@ -513,3 +513,7 @@
 ## 2026/08/04
 
 - Add project completion review workflow.
+
+## 2026/08/05
+
+- Update todo priority multiplier controls.

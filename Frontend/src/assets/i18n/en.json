@@ -510,7 +510,7 @@
       "team": "Whole team",
       "captain": "Captain only",
       "priority": "Priority",
-      "priorityHint": "0 most urgent / 9 least urgent",
+      "priorityHint": "Levels 1-5 multiplier: x1.00 to x1.50",
       "placeholder": "Example: Finish the first character controller"
     },
     "join": {
@@ -647,7 +647,8 @@
       "team": "Whole team",
       "captain": "Captain only",
       "priority": "Priority",
-      "priorityHint": "0 is most urgent / 9 is least urgent",
+      "priorityOption": "Level {{ level }} x{{ multiplier }}",
+      "priorityHint": "Priority is the leader-controlled token multiplier",
       "difficulty": "Difficulty",
       "difficultyHint": "0 easiest / 9 hardest",
       "duration": "Time cost",

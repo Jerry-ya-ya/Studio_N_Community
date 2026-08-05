@@ -42,8 +42,9 @@
               [title]="'privateTodo.actions.claimTitle' | translate">
             <strong
               class="priority-badge"
-              [style.background]="getPriorityColor(getTodoPriority(todo))">
-              P{{ getTodoPriority(todo) }}
+              [style.background]="getPriorityColor(todo.priority)"
+              [title]="getPriorityMultiplierLabel(todo.priority)">
+              P{{ getPriorityLevel(todo.priority) }}
             </strong>
             <strong
               class="priority-badge"
@@ -134,14 +135,17 @@
 
             <label class="todo-priority">
               <span>{{ 'privateTodo.dispatch.priority' | translate }}</span>
-              <input
-                type="number"
-                min="0"
-                max="9"
+              <select
                 [(ngModel)]="todoPriorities[card.project.id]"
                 [name]="'todoPriority' + card.project.id">
-              <strong [style.background]="getPriorityColor(getProjectTodoPriority(card.project.id))">
-                {{ getProjectTodoPriority(card.project.id) }}
+                @for (multiplier of priorityMultipliers; track multiplier; let index = $index) {
+                  <option [ngValue]="index">
+                    {{ 'privateTodo.dispatch.priorityOption' | translate: { level: index + 1, multiplier: multiplier.toFixed(2) } }}
+                  </option>
+                }
+              </select>
+              <strong [style.background]="getPriorityColor(todoPriorities[card.project.id])">
+                {{ getPriorityMultiplierLabel(getProjectTodoPriority(card.project.id)) }}
               </strong>
               <small>{{ 'privateTodo.dispatch.priorityHint' | translate }}</small>
             </label>
@@ -208,8 +212,9 @@
                 [title]="'privateTodo.actions.claimTitle' | translate">
               <strong
                 class="priority-badge"
-                [style.background]="getPriorityColor(getTodoPriority(todo))">
-                P{{ getTodoPriority(todo) }}
+                [style.background]="getPriorityColor(todo.priority)"
+                [title]="getPriorityMultiplierLabel(todo.priority)">
+                P{{ getPriorityLevel(todo.priority) }}
               </strong>
               <strong
                 class="priority-badge"

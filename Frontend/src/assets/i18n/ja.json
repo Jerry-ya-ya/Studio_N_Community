@@ -510,7 +510,7 @@
       "team": "チーム全体",
       "captain": "隊長のみ",
       "priority": "優先度",
-      "priorityHint": "0 最緊急 / 9 最低優先",
+      "priorityHint": "1〜5 段階の倍率: x1.00〜x1.50",
       "placeholder": "例: キャラクターコントローラー初版を完成"
     },
     "join": {
@@ -647,7 +647,8 @@
       "team": "チーム全体",
       "captain": "リーダーのみ",
       "priority": "優先度",
-      "priorityHint": "0 が最緊急 / 9 が最も低い",
+      "priorityOption": "レベル {{ level }} x{{ multiplier }}",
+      "priorityHint": "Priority はリーダーが設定するトークン倍率です",
       "difficulty": "難易度",
       "difficultyHint": "0 が最も簡単 / 9 が最も難しい",
       "duration": "所要時間",

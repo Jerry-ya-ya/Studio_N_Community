@@ -510,7 +510,7 @@
       "team": "팀 전체",
       "captain": "팀장 본인",
       "priority": "우선순위",
-      "priorityHint": "0 가장 긴급 / 9 가장 덜 긴급",
+      "priorityHint": "1-5단계 배율: x1.00-x1.50",
       "placeholder": "예: 캐릭터 컨트롤러 첫 버전 완성"
     },
     "join": {
@@ -647,7 +647,8 @@
       "team": "전체 팀",
       "captain": "팀장 본인",
       "priority": "우선순위",
-      "priorityHint": "0 가장 긴급 / 9 가장 낮음",
+      "priorityOption": "레벨 {{ level }} x{{ multiplier }}",
+      "priorityHint": "Priority는 팀장이 설정하는 토큰 배율입니다",
       "difficulty": "난이도",
       "difficultyHint": "0 가장 쉬움 / 9 가장 어려움",
       "duration": "소요 시간",
