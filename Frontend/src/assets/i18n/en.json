@@ -638,6 +638,13 @@
       "progress": "{{ done }}/{{ total }} done",
       "unsorted": "Unsorted Project"
     },
+    "groups": {
+      "unclaimed": "Unclaimed",
+      "working": "In Progress",
+      "reviewPending": "Pending Review",
+      "settled": "Settled",
+      "empty": "No items here."
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "Project Todo Publishing",

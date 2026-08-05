@@ -638,6 +638,13 @@
       "progress": "{{ done }}/{{ total }} 完成",
       "unsorted": "未分類專案"
     },
+    "groups": {
+      "unclaimed": "未認領",
+      "working": "工作中",
+      "reviewPending": "待送審",
+      "settled": "已結算",
+      "empty": "目前沒有項目。"
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "專案 Todo 發布",

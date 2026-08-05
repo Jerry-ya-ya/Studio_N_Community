@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Injector, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Injector, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { appPath } from '../../../path/app-path-const';
 import { ThemeService } from '../../../core/services/theme.service';
 
 type NavSectionKey = 'public' | 'private' | 'admin' | 'superadmin';
+const NAV_COLLAPSED_STORAGE_KEY = 'navbarCollapsed';
 
 interface NavItem {
   labelKey: string;
@@ -26,12 +27,12 @@ interface NavSection {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   path = appPath; // 將 appPath 物件賦值給 path 屬性
 
   @Output() collapsedChange = new EventEmitter<boolean>();
 
-  collapsed = true;
+  collapsed = localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) !== 'false';
   readonly sections: NavSection[] = [
     {
       key: 'public',
@@ -92,8 +93,13 @@ export class NavbarComponent {
     public theme: ThemeService
   ) {}
 
+  ngOnInit() {
+    this.collapsedChange.emit(this.collapsed);
+  }
+
   toggleSidebar() {
     this.collapsed = !this.collapsed;
+    this.saveCollapsedState();
     this.collapsedChange.emit(this.collapsed);
   }
 
@@ -124,9 +130,14 @@ export class NavbarComponent {
     localStorage.removeItem('role');
     localStorage.removeItem('username');
     this.collapsed = true;
+    this.saveCollapsedState();
     this.collapsedChange.emit(this.collapsed);
     this.openLogoutSnack();
     this.router.navigate([appPath.login]);
+  }
+
+  private saveCollapsedState() {
+    localStorage.setItem(NAV_COLLAPSED_STORAGE_KEY, String(this.collapsed));
   }
 
   private async openLogoutSnack() {

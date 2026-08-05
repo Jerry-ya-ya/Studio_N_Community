@@ -46,16 +46,6 @@
               [title]="getPriorityMultiplierLabel(todo.priority)">
               P{{ getPriorityLevel(todo.priority) }}
             </strong>
-            <strong
-              class="priority-badge"
-              [style.background]="getEffortColor(getTodoDifficulty(todo))">
-              D{{ getTodoDifficulty(todo) }}
-            </strong>
-            <strong
-              class="priority-badge"
-              [style.background]="getEffortColor(getTodoDuration(todo))">
-              T{{ getTodoDuration(todo) }}
-            </strong>
             <span>
               {{ todo.text }}
             </span>
@@ -189,51 +179,97 @@
         }
 
         @if (card.todos.length > 0) {
-          <ul class="project-task-list">
-            @for (todo of card.todos; track todo.id) {
-            <li [class.is-claimed]="todo.claimed_by_id" [class.is-done]="todo.done">
-              <input
-                type="checkbox"
-                [checked]="!!todo.claimed_by_id"
-                [disabled]="!canToggleClaim(todo)"
-                (change)="toggleClaim(todo)"
-                [title]="'privateTodo.actions.claimTitle' | translate">
-              <strong
-                class="priority-badge"
-                [style.background]="getPriorityColor(todo.priority)"
-                [title]="getPriorityMultiplierLabel(todo.priority)">
-                P{{ getPriorityLevel(todo.priority) }}
-              </strong>
-              <strong
-                class="priority-badge"
-                [style.background]="getEffortColor(getTodoDifficulty(todo))">
-                D{{ getTodoDifficulty(todo) }}
-              </strong>
-              <strong
-                class="priority-badge"
-                [style.background]="getEffortColor(getTodoDuration(todo))">
-                T{{ getTodoDuration(todo) }}
-              </strong>
-              <span>{{ todo.text }}</span>
-              <small class="claim-badge">
-                @if (todo.claimed_by_name) {
-                  {{ 'privateTodo.claim.claimedBy' | translate: { name: todo.claimed_by_name } }}
-                } @else {
-                  {{ 'privateTodo.claim.unclaimed' | translate }}
+          <div class="project-task-groups">
+            <details class="todo-publisher" open>
+              <summary>
+                <span>{{ 'privateTodo.groups.unclaimed' | translate }}</span>
+                <strong>{{ getUnclaimedTodos(card.todos).length }}</strong>
+              </summary>
+              <ul class="project-task-list">
+                @for (todo of getUnclaimedTodos(card.todos); track todo.id) {
+                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: false, showDifficulty: false }"></ng-container>
+                } @empty {
+                  <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
                 }
-              </small>
-              <small>{{ todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
-              <button
-                class="done-button"
-                [disabled]="!canToggleDone(todo)"
-                (click)="toggleDone(todo)">
-                {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
-              </button>
-            </li>
-            }
-          </ul>
+              </ul>
+            </details>
+
+            <details class="todo-publisher" open>
+              <summary>
+                <span>{{ 'privateTodo.groups.reviewPending' | translate }}</span>
+                <strong>{{ getReviewPendingTodos(card.todos).length }}</strong>
+              </summary>
+              <ul class="project-task-list">
+                @for (todo of getReviewPendingTodos(card.todos); track todo.id) {
+                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: true, showDifficulty: false }"></ng-container>
+                } @empty {
+                  <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
+                }
+              </ul>
+            </details>
+
+            <details class="todo-publisher">
+              <summary>
+                <span>{{ 'privateTodo.groups.settled' | translate }}</span>
+                <strong>{{ getSettledTodos(card.todos).length }}</strong>
+              </summary>
+              <ul class="project-task-list">
+                @for (todo of getSettledTodos(card.todos); track todo.id) {
+                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: true, showDifficulty: true }"></ng-container>
+                } @empty {
+                  <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
+                }
+              </ul>
+            </details>
+          </div>
         }
       </article>
     }
   </section>
 </div>
+
+<ng-template #projectTodoItem let-todo="todo" let-showTime="showTime" let-showDifficulty="showDifficulty">
+  <li [class.is-claimed]="todo.claimed_by_id" [class.is-done]="todo.done">
+    <input
+      type="checkbox"
+      [checked]="!!todo.claimed_by_id"
+      [disabled]="!canToggleClaim(todo)"
+      (change)="toggleClaim(todo)"
+      [title]="'privateTodo.actions.claimTitle' | translate">
+    <strong
+      class="priority-badge"
+      [style.background]="getPriorityColor(todo.priority)"
+      [title]="getPriorityMultiplierLabel(todo.priority)">
+      P{{ getPriorityLevel(todo.priority) }}
+    </strong>
+    @if (showTime) {
+      <strong
+        class="priority-badge"
+        [style.background]="getEffortColor(getTodoDuration(todo))">
+        T{{ getTodoDuration(todo) }}
+      </strong>
+    }
+    @if (showDifficulty) {
+      <strong
+        class="priority-badge"
+        [style.background]="getEffortColor(getTodoDifficulty(todo))">
+        D{{ getTodoDifficulty(todo) }}
+      </strong>
+    }
+    <span>{{ todo.text }}</span>
+    <small class="claim-badge">
+      @if (todo.claimed_by_name) {
+        {{ 'privateTodo.claim.claimedBy' | translate: { name: todo.claimed_by_name } }}
+      } @else {
+        {{ 'privateTodo.claim.unclaimed' | translate }}
+      }
+    </small>
+    <small>{{ todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
+    <button
+      class="done-button"
+      [disabled]="!canToggleDone(todo)"
+      (click)="toggleDone(todo)">
+      {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
+    </button>
+  </li>
+</ng-template>

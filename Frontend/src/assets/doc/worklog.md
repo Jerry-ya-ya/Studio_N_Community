@@ -519,3 +519,5 @@
 - Update todo priority multiplier controls.
 
 - Move settlement requests to todo projects.
+
+- Update todo review groups and persist sidebar state.

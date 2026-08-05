@@ -3,6 +3,8 @@ import { appPath } from './path/app-path-const';
 import { ThemeService } from './core/services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 
+const NAV_COLLAPSED_STORAGE_KEY = 'navbarCollapsed';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,7 +23,7 @@ export class AppComponent {
   ];
   currentLanguage = localStorage.getItem('language') || 'zh-TW';
   languageMenuOpen = false;
-  navCollapsed = true;
+  navCollapsed = localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) !== 'false';
 
   constructor(
     public theme: ThemeService,

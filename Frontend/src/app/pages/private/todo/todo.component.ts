@@ -353,6 +353,18 @@ export class TodoComponent implements OnInit {
     return project.review_status === 'open' || project.review_status === 'rejected';
   }
 
+  getUnclaimedTodos(todos: Todo[]) {
+    return todos.filter(todo => !todo.done && !todo.claimed_by_id);
+  }
+
+  getReviewPendingTodos(todos: Todo[]) {
+    return todos.filter(todo => !todo.done && !!todo.claimed_by_id);
+  }
+
+  getSettledTodos(todos: Todo[]) {
+    return todos.filter(todo => todo.done);
+  }
+
   toggleAllTodos() {
     this.isAllTodosOpen = !this.isAllTodosOpen;
   }

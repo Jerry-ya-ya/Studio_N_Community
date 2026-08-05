@@ -638,6 +638,13 @@
       "progress": "{{ done }}/{{ total }} 完了",
       "unsorted": "未分類プロジェクト"
     },
+    "groups": {
+      "unclaimed": "未担当",
+      "working": "作業中",
+      "reviewPending": "審査待ち",
+      "settled": "精算済み",
+      "empty": "項目はありません。"
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "プロジェクト Todo 公開",
