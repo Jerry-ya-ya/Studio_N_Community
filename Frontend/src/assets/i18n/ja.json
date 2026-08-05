@@ -542,6 +542,7 @@
       "cancelJoin": "登録を取消",
       "submitReview": "完了審査を申請",
       "publishing": "公開中...",
+      "processing": "処理中...",
       "publishTodo": "Todo を公開",
       "deleting": "削除中...",
       "deleteRecruitment": "募集を削除"
@@ -655,6 +656,19 @@
       "durationHint": "0 が最短 / 9 が最長",
       "placeholder": "例：キャラクターコントローラー初版を完成",
       "noTodos": "このプロジェクトにはまだ公開済み Todo がありません。"
+    },
+    "settlement": {
+      "kicker": "Settlement Review",
+      "title": "精算依頼を送信",
+      "submit": "精算依頼を送信",
+      "submitted": "精算依頼を送信しました。",
+      "submitFailure": "精算依頼の送信に失敗しました。",
+      "status": {
+        "open": "未送信",
+        "pending": "管理者審査中",
+        "approved": "承認済み",
+        "rejected": "差し戻し、再送信可能"
+      }
     },
     "feedback": {
       "publishSuccess": "Todo を公開しました。",

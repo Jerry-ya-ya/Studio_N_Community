@@ -39,6 +39,7 @@ interface ProjectRecruitment {
   members: ProjectRecruitmentMember[];
   member_count: number;
   owned_by_me: boolean;
+  review_status: 'open' | 'pending' | 'approved' | 'rejected';
 }
 
 interface ProjectTodoCard {
@@ -74,6 +75,7 @@ export class TodoComponent implements OnInit {
   todoPriorities: Record<number, number> = {};
   todoDifficulties: Record<number, number> = {};
   todoDurations: Record<number, number> = {};
+  settlementLoading: Record<number, boolean> = {};
   isAllTodosOpen = false;
   statusMessage = '';
   
@@ -119,8 +121,6 @@ export class TodoComponent implements OnInit {
     const text = (this.todoTexts[project.id] || '').trim();
     const target = this.todoTargets[project.id] || 'team';
     const priority = this.getProjectTodoPriority(project.id);
-    const difficulty = this.getProjectTodoDifficulty(project.id);
-    const duration = this.getProjectTodoDuration(project.id);
 
     if (!project.owned_by_me || !text || this.todoLoading[project.id]) {
       return;
@@ -138,8 +138,8 @@ export class TodoComponent implements OnInit {
       text,
       project_id: project.id,
       priority,
-      difficulty,
-      duration,
+      difficulty: 5,
+      duration: 5,
     };
 
     if (target === 'team') {
@@ -162,8 +162,6 @@ export class TodoComponent implements OnInit {
         this.todoTexts[project.id] = '';
         this.todoTargets[project.id] = 'team';
         this.todoPriorities[project.id] = 0;
-        this.todoDifficulties[project.id] = 5;
-        this.todoDurations[project.id] = 5;
         delete this.todoLoading[project.id];
         this.statusMessage = this.translate.instant('privateTodo.feedback.publishSuccess');
       },
@@ -205,6 +203,29 @@ export class TodoComponent implements OnInit {
   deleteTodo(id: number) {
     this.apiService.delete(`/todos/${id}`, this.apiService.createAuthHeaders())
       .subscribe(() => this.setTodos(this.todos.filter(t => t.id !== id)));
+  }
+
+  submitSettlementReview(project: ProjectRecruitment) {
+    if (!project.owned_by_me || !this.canSubmitSettlementReview(project) || this.settlementLoading[project.id]) {
+      return;
+    }
+
+    this.settlementLoading[project.id] = true;
+    this.apiService.post<ProjectRecruitment>(
+      `/project-recruitments/${project.id}/submit-review`,
+      {},
+      this.apiService.createAuthHeaders()
+    ).subscribe({
+      next: updated => {
+        this.projects = this.projects.map(item => item.id === updated.id ? updated : item);
+        delete this.settlementLoading[project.id];
+        this.statusMessage = this.translate.instant('privateTodo.settlement.submitted');
+      },
+      error: err => {
+        this.statusMessage = err.error?.error || this.translate.instant('privateTodo.settlement.submitFailure');
+        delete this.settlementLoading[project.id];
+      }
+    });
   }
 
   private setTodos(todos: Todo[]) {
@@ -264,8 +285,6 @@ export class TodoComponent implements OnInit {
     for (const project of projects) {
       this.todoTargets[project.id] ??= 'team';
       this.todoPriorities[project.id] ??= 0;
-      this.todoDifficulties[project.id] ??= 5;
-      this.todoDurations[project.id] ??= 5;
     }
   }
 
@@ -288,7 +307,7 @@ export class TodoComponent implements OnInit {
 
   getPriorityColor(priority: number) {
     const value = this.getTodoPriority({ priority } as Todo);
-    return `hsl(${(value / 4) * 120}, 78%, 46%)`;
+    return `hsl(${120 - (value / 4) * 120}, 78%, 46%)`;
   }
 
   getPriorityLevel(priority: number) {
@@ -328,6 +347,10 @@ export class TodoComponent implements OnInit {
 
   canToggleDone(todo: Todo) {
     return todo.claimed_by_id === this.currentUserId;
+  }
+
+  canSubmitSettlementReview(project: ProjectRecruitment) {
+    return project.review_status === 'open' || project.review_status === 'rejected';
   }
 
   toggleAllTodos() {

@@ -542,6 +542,7 @@
       "cancelJoin": "取消登記",
       "submitReview": "提交完成審理",
       "publishing": "發布中...",
+      "processing": "處理中...",
       "publishTodo": "發布 Todo",
       "deleting": "刪除中...",
       "deleteRecruitment": "刪除招募"
@@ -655,6 +656,19 @@
       "durationHint": "0 最短 / 9 最久",
       "placeholder": "例如：完成角色控制器第一版",
       "noTodos": "這個專案目前還沒有發布 Todo。"
+    },
+    "settlement": {
+      "kicker": "Settlement Review",
+      "title": "發送結算邀請",
+      "submit": "送出結算邀請",
+      "submitted": "結算邀請已送出",
+      "submitFailure": "送出結算邀請失敗",
+      "status": {
+        "open": "尚未送出",
+        "pending": "管理員審理中",
+        "approved": "審理通過",
+        "rejected": "已駁回，可重新送出"
+      }
     },
     "feedback": {
       "publishSuccess": "Todo 已發布",

@@ -50,7 +50,6 @@ export class ProjectRecruitmentComponent implements OnInit {
   submitting = false;
   deletingProject: Record<number, boolean> = {};
   actionLoading: Record<number, boolean> = {};
-  reviewLoading: Record<number, boolean> = {};
   joinMessages: Record<number, string> = {};
   statusMessage = '';
   joinMessage = '';
@@ -183,39 +182,12 @@ export class ProjectRecruitmentComponent implements OnInit {
     });
   }
 
-  submitProjectReview(project: ProjectRecruitment) {
-    if (!project.owned_by_me || !this.canSubmitReview(project) || this.reviewLoading[project.id]) {
-      return;
-    }
-
-    this.reviewLoading[project.id] = true;
-    this.apiService.post<ProjectRecruitment>(
-      `/project-recruitments/${project.id}/submit-review`,
-      {},
-      this.apiService.createAuthHeaders()
-    ).subscribe({
-      next: updated => {
-        this.replaceProject(updated);
-        delete this.reviewLoading[project.id];
-        this.statusMessage = this.translate.instant('privateRecruit.feedback.reviewSubmitted');
-      },
-      error: err => {
-        this.statusMessage = err.error?.error || this.translate.instant('privateRecruit.feedback.reviewSubmitFailure');
-        delete this.reviewLoading[project.id];
-      }
-    });
-  }
-
   isFull(project: ProjectRecruitment) {
     return !!project.max_members && project.member_count >= project.max_members;
   }
 
   get ownedProjects() {
     return this.projects.filter(project => project.owned_by_me);
-  }
-
-  canSubmitReview(project: ProjectRecruitment) {
-    return project.review_status === 'open' || project.review_status === 'rejected';
   }
 
   private replaceProject(updated: ProjectRecruitment) {

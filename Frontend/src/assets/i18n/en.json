@@ -542,6 +542,7 @@
       "cancelJoin": "Cancel Registration",
       "submitReview": "Submit Completion Review",
       "publishing": "Publishing...",
+      "processing": "Processing...",
       "publishTodo": "Publish Todo",
       "deleting": "Deleting...",
       "deleteRecruitment": "Delete Recruitment"
@@ -655,6 +656,19 @@
       "durationHint": "0 shortest / 9 longest",
       "placeholder": "Example: finish the first character controller build",
       "noTodos": "This project has no published todos yet."
+    },
+    "settlement": {
+      "kicker": "Settlement Review",
+      "title": "Send Settlement Request",
+      "submit": "Send Settlement Request",
+      "submitted": "Settlement request sent.",
+      "submitFailure": "Failed to send settlement request.",
+      "status": {
+        "open": "Not submitted",
+        "pending": "Under admin review",
+        "approved": "Approved",
+        "rejected": "Rejected, can resubmit"
+      }
     },
     "feedback": {
       "publishSuccess": "Todo published.",

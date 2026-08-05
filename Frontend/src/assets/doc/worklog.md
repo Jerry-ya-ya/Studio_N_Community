@@ -517,3 +517,5 @@
 ## 2026/08/05
 
 - Update todo priority multiplier controls.
+
+- Move settlement requests to todo projects.

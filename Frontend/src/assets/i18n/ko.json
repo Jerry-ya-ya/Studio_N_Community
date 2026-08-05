@@ -542,6 +542,7 @@
       "cancelJoin": "등록 취소",
       "submitReview": "완료 검토 제출",
       "publishing": "게시 중...",
+      "processing": "처리 중...",
       "publishTodo": "Todo 게시",
       "deleting": "삭제 중...",
       "deleteRecruitment": "모집 삭제"
@@ -655,6 +656,19 @@
       "durationHint": "0 가장 짧음 / 9 가장 김",
       "placeholder": "예: 캐릭터 컨트롤러 첫 버전 완성",
       "noTodos": "이 프로젝트에는 아직 게시된 Todo가 없습니다."
+    },
+    "settlement": {
+      "kicker": "Settlement Review",
+      "title": "정산 요청 보내기",
+      "submit": "정산 요청 보내기",
+      "submitted": "정산 요청을 보냈습니다.",
+      "submitFailure": "정산 요청 보내기에 실패했습니다.",
+      "status": {
+        "open": "아직 보내지 않음",
+        "pending": "관리자 검토 중",
+        "approved": "승인됨",
+        "rejected": "반려됨, 다시 보낼 수 있음"
+      }
     },
     "feedback": {
       "publishSuccess": "Todo가 게시되었습니다.",

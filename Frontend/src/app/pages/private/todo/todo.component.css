@@ -266,7 +266,8 @@ li.is-done span {
 }
 
 .project-dispatch-card h4,
-.todo-publisher h5 {
+.todo-publisher h5,
+.settlement-panel h5 {
   margin: 0;
   color: var(--studio-text);
   line-height: 1.1;
@@ -278,6 +279,7 @@ li.is-done span {
 
 .project-dispatch-card p,
 .todo-publisher__header p,
+.settlement-panel p,
 .todo-priority span,
 .todo-priority small {
   margin: 0;
@@ -306,13 +308,21 @@ li.is-done span {
   white-space: nowrap;
 }
 
-.todo-publisher {
+.todo-publisher,
+.settlement-panel {
   display: grid;
   gap: 12px;
   padding: 16px;
   border: 1px solid var(--studio-line);
   border-radius: 8px;
   background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+}
+
+.settlement-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
 }
 
 .todo-publisher__header,
@@ -348,13 +358,15 @@ li.is-done span {
 
 .todo-publisher__controls { flex-wrap: wrap; }
 
-.todo-publisher button {
+.todo-publisher button,
+.settlement-panel button {
   border-color: var(--studio-accent);
   background: var(--studio-accent);
   color: var(--studio-bg);
 }
 
-.todo-publisher button:hover {
+.todo-publisher button:hover,
+.settlement-panel button:hover {
   border-color: var(--studio-accent);
   background: transparent;
   color: var(--studio-accent);
@@ -402,13 +414,6 @@ li.is-done span {
   box-shadow: none;
 }
 
-@media (max-width: 980px) {
-  .todo-priority { grid-template-columns: 84px 1fr 58px; }
-  .todo-priority small { grid-column: 1 / -1; margin-left: 0; }
-  .todo-priority strong { width: 58px; }
-  .todo-publisher__controls button { white-space: nowrap; }
-}
-
 @media (max-width: 600px) {
   .todo-container {
     padding: 12px 2px 24px 2px;
@@ -417,8 +422,7 @@ li.is-done span {
     flex-direction: column;
   }
   .todo-create-row button { margin-left: 0; }
-  .all-todo-toggle,
-  .all-todo-toggle:last-child {
+  button.all-todo-toggle {
     grid-template-columns: 1fr;
   }
   li {
@@ -428,6 +432,7 @@ li.is-done span {
   .project-dispatch-card__summary,
   .todo-publisher__header,
   .todo-publisher__controls,
+  .settlement-panel,
   .todo-priority,
   .project-task-list li {
     align-items: stretch;

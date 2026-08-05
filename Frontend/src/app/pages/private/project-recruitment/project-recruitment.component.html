@@ -201,13 +201,6 @@
           <span class="project-badge project-badge--status">
             {{ ('privateRecruit.review.status.' + project.review_status) | translate }}
           </span>
-          <button
-            class="recruit-button"
-            type="button"
-            (click)="submitProjectReview(project)"
-            [disabled]="!canSubmitReview(project) || reviewLoading[project.id]">
-            {{ (reviewLoading[project.id] ? 'privateRecruit.actions.processing' : 'privateRecruit.actions.submitReview') | translate }}
-          </button>
         </div>
       </article>
     }

@@ -149,32 +149,6 @@
               </strong>
               <small>{{ 'privateTodo.dispatch.priorityHint' | translate }}</small>
             </label>
-            <label class="todo-priority">
-              <span>{{ 'privateTodo.dispatch.difficulty' | translate }}</span>
-              <input
-                type="number"
-                min="0"
-                max="9"
-                [(ngModel)]="todoDifficulties[card.project.id]"
-                [name]="'todoDifficulty' + card.project.id">
-              <strong [style.background]="getEffortColor(getProjectTodoDifficulty(card.project.id))">
-                {{ getProjectTodoDifficulty(card.project.id) }}
-              </strong>
-              <small>{{ 'privateTodo.dispatch.difficultyHint' | translate }}</small>
-            </label>
-            <label class="todo-priority">
-              <span>{{ 'privateTodo.dispatch.duration' | translate }}</span>
-              <input
-                type="number"
-                min="0"
-                max="9"
-                [(ngModel)]="todoDurations[card.project.id]"
-                [name]="'todoDuration' + card.project.id">
-              <strong [style.background]="getEffortColor(getProjectTodoDuration(card.project.id))">
-                {{ getProjectTodoDuration(card.project.id) }}
-              </strong>
-              <small>{{ 'privateTodo.dispatch.durationHint' | translate }}</small>
-            </label>
 
             <div class="todo-publisher__controls">
               <input
@@ -188,6 +162,20 @@
               </button>
             </div>
           </form>
+
+          <section class="settlement-panel">
+            <div>
+              <p>{{ 'privateTodo.settlement.kicker' | translate }}</p>
+              <h5>{{ 'privateTodo.settlement.title' | translate }}</h5>
+              <small>{{ ('privateTodo.settlement.status.' + card.project.review_status) | translate }}</small>
+            </div>
+            <button
+              type="button"
+              (click)="submitSettlementReview(card.project)"
+              [disabled]="!canSubmitSettlementReview(card.project) || settlementLoading[card.project.id]">
+              {{ (settlementLoading[card.project.id] ? 'privateTodo.actions.processing' : 'privateTodo.settlement.submit') | translate }}
+            </button>
+          </section>
         }
 
         <div class="project-progress">
