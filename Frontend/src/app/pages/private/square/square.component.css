@@ -4,7 +4,7 @@
   margin: 0;
   padding: 116px clamp(16px, 4vw, 48px) 72px;
   color: var(--studio-text);
-  background: var(--studio-page-bg);
+  background: var(--studio-shell-bg);
 }
 
 h2 {
@@ -45,12 +45,11 @@ h2 {
   display: flex;
   align-items: center;
   border: 1px solid var(--studio-line);
-  background: color-mix(in srgb, var(--studio-panel) 86%, transparent);
+  background: var(--studio-surface-bg);
   border-radius: 8px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  box-shadow: var(--studio-surface-shadow);
   padding: 20px 28px;
   transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
-  backdrop-filter: blur(14px);
 }
 
 .user-card:hover {

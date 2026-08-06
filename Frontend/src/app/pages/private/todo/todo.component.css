@@ -4,11 +4,8 @@
     border: 1px solid var(--studio-line);
     border-radius: 8px;
     color: var(--studio-text);
-    background:
-      linear-gradient(135deg, color-mix(in srgb, var(--studio-accent) 10%, transparent), transparent 42%),
-      color-mix(in srgb, var(--studio-panel) 88%, transparent);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 24px 70px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(14px);
+    background: var(--studio-surface-bg);
+    box-shadow: var(--studio-surface-shadow);
     padding: clamp(24px, 4vw, 42px);
 }
 

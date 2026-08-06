@@ -6,7 +6,7 @@
   min-height: 100vh;
   padding: 116px clamp(16px, 4vw, 48px) 48px;
   color: var(--studio-text);
-  background: var(--studio-page-bg);
+  background: var(--studio-shell-bg);
   font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
 }
 
@@ -18,9 +18,8 @@
 .manage-card {
   border: 1px solid var(--studio-line);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--studio-panel) 86%, transparent);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(14px);
+  background: var(--studio-surface-bg);
+  box-shadow: var(--studio-surface-shadow);
 }
 
 .recruit-hero {

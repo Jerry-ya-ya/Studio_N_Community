@@ -527,3 +527,7 @@
 ## 2026/08/06
 
 - Add recurring todo settlement cycles.
+
+## 2026/08/07
+
+- Unify page surfaces and improve scroll performance.

@@ -6,8 +6,7 @@
   min-height: 100vh;
   padding: 116px clamp(16px, 4vw, 48px) 48px;
   color: var(--studio-text);
-  background: var(--studio-grid-bg);
-  background-size: 68px 68px, 68px 68px, auto;
+  background: var(--studio-shell-bg);
 }
 
 .check-in-hero,
@@ -16,11 +15,8 @@
   margin: 0 auto;
   border: 1px solid var(--studio-line);
   border-radius: 8px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 36%),
-    color-mix(in srgb, var(--studio-panel) 88%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 18px 48px var(--eden-shadow);
-  backdrop-filter: blur(14px);
+  background: var(--studio-surface-bg);
+  box-shadow: var(--studio-surface-shadow);
 }
 
 .check-in-hero {
