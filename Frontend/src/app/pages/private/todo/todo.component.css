@@ -197,8 +197,7 @@ li.is-done span {
   border-top: 1px solid var(--studio-line);
 }
 
-.project-todo-section__header,
-.project-task-list li {
+.project-todo-section__header {
   display: flex;
   align-items: center;
   gap: 12px;

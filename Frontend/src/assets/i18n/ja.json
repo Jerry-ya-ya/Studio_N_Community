@@ -675,16 +675,16 @@
       "noTodos": "このプロジェクトにはまだ公開済み Todo がありません。"
     },
     "settlement": {
-      "kicker": "Settlement Review",
-      "title": "精算依頼を送信",
-      "submit": "精算依頼を送信",
-      "submitted": "精算依頼を送信しました。",
-      "submitFailure": "精算依頼の送信に失敗しました。",
+      "kicker": "Settlement Cycle",
+      "title": "今回の精算を送信",
+      "submit": "今回の精算を送信",
+      "submitted": "今回の精算を送信しました。",
+      "submitFailure": "今回の精算送信に失敗しました。",
       "status": {
-        "open": "未送信",
-        "pending": "管理者審査中",
-        "approved": "承認済み",
-        "rejected": "差し戻し、再送信可能"
+        "open": "今回の精算を送信できます",
+        "pending": "今回の周期は管理者審査中",
+        "approved": "前回周期は承認済み、次回を蓄積できます",
+        "rejected": "前回周期は差し戻し、再送信可能"
       }
     },
     "feedback": {
@@ -896,10 +896,10 @@
       "reviewStatus": "審査状態"
     },
     "review": {
-      "kicker": "Project Review",
-      "title": "プロジェクト完了審査",
-      "empty": "審査待ちのプロジェクトはありません。",
-      "approve": "承認",
+      "kicker": "Settlement Review",
+      "title": "プロジェクト精算周期審査",
+      "empty": "審査待ちの精算周期はありません。",
+      "approve": "精算を承認",
       "reject": "差し戻し",
       "status": {
         "open": "募集中",
@@ -915,16 +915,25 @@
     },
     "todos": {
       "title": "プロジェクト Todo",
-      "summary": "進行中 {{ active }} / 完了 {{ done }}",
+      "summary": "進行中 {{ active }} / 精算待ち {{ done }} / 精算済み {{ settled }}",
       "active": "進行中",
       "done": "完了",
+      "settlement": "完了・精算待ち",
+      "settled": "精算済み",
+      "difficulty": "Difficulty",
+      "difficultyOption": "+{{ difficulty }} 点",
+      "saveDifficulty": "評価を保存",
+      "savingDifficulty": "保存中...",
       "unassigned": "未割り当て",
       "noActive": "現在進行中の Todo はありません。",
-      "noDone": "完了した Todo はまだありません。"
+      "noDone": "精算待ちの完了 Todo はありません。",
+      "noSettled": "精算済み Todo はまだありません。"
     },
     "feedback": {
       "loadFailure": "プロジェクト募集を読み込めませんでした。",
-      "reviewFailure": "プロジェクト審査に失敗しました。"
+      "reviewFailure": "プロジェクト審査に失敗しました。",
+      "difficultySaved": "Difficulty 評価を更新しました。",
+      "difficultyFailure": "Difficulty 評価の更新に失敗しました。"
     }
   },
   "adminContent": {

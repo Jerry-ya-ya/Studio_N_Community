@@ -173,8 +173,8 @@
             </div>
             <button
               type="button"
-              (click)="submitSettlementReview(card.project)"
-              [disabled]="!canSubmitSettlementReview(card.project) || settlementLoading[card.project.id]">
+              (click)="submitSettlementReview(card.project, card.todos)"
+              [disabled]="!canSubmitSettlementReview(card.project, card.todos) || settlementLoading[card.project.id]">
               {{ (settlementLoading[card.project.id] ? 'privateTodo.actions.processing' : 'privateTodo.settlement.submit') | translate }}
             </button>
           </section>
@@ -248,52 +248,60 @@
       [disabled]="!canToggleClaim(todo)"
       (change)="toggleClaim(todo)"
       [title]="'privateTodo.actions.claimTitle' | translate">
-    <strong
-      class="priority-badge"
-      [style.background]="getPriorityColor(todo.priority)"
-      [title]="getPriorityMultiplierLabel(todo.priority)">
-      P{{ getPriorityLevel(todo.priority) }}
-    </strong>
-    @if (showTime) {
+    <div class="project-task-metrics">
       <strong
         class="priority-badge"
-        [style.background]="getEffortColor(getTodoDuration(todo))">
-        T{{ getTodoDuration(todo) }}
+        [style.background]="getPriorityColor(todo.priority)"
+        [title]="getPriorityMultiplierLabel(todo.priority)">
+        P{{ getPriorityLevel(todo.priority) }}
       </strong>
-    }
-    @if (showCompletionTime && todo.claimed_by_id === currentUserId && !todo.done) {
-      <label class="todo-time-select">
-        <span>{{ 'privateTodo.actions.timeLabel' | translate }}</span>
-        <select
-          [(ngModel)]="todoCompletionTimes[todo.id]"
-          [ngModelOptions]="{ standalone: true }">
-          @for (time of timeOptions; track time.value) {
-            <option [ngValue]="time.value">{{ time.labelKey | translate }}</option>
-          }
-        </select>
-      </label>
-    }
-    @if (showDifficulty) {
-      <strong
-        class="priority-badge"
-        [style.background]="getEffortColor(getTodoDifficulty(todo))">
-        D{{ getTodoDifficulty(todo) }}
-      </strong>
-    }
-    <span>{{ todo.text }}</span>
-    <small class="claim-badge">
-      @if (todo.claimed_by_name) {
-        {{ 'privateTodo.claim.claimedBy' | translate: { name: todo.claimed_by_name } }}
-      } @else {
-        {{ 'privateTodo.claim.unclaimed' | translate }}
+      @if (showTime) {
+        <strong
+          class="priority-badge"
+          [style.background]="getEffortColor(getTodoDuration(todo))">
+          T{{ getTodoDuration(todo) }}
+        </strong>
       }
-    </small>
-    <small>{{ todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
-    <button
-      class="done-button"
-      [disabled]="!canToggleDone(todo)"
-      (click)="toggleDone(todo)">
-      {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
-    </button>
+      @if (showDifficulty) {
+        <strong
+          class="priority-badge"
+          [style.background]="getEffortColor(getTodoDifficulty(todo))">
+          D{{ getTodoDifficulty(todo) }}
+        </strong>
+      }
+    </div>
+    <div class="project-task-content">
+      <span>{{ todo.text }}</span>
+    </div>
+    <div class="project-task-side">
+      @if (showCompletionTime && todo.claimed_by_id === currentUserId && !todo.done) {
+        <label class="todo-time-select">
+          <span>{{ 'privateTodo.actions.timeLabel' | translate }}</span>
+          <select
+            [(ngModel)]="todoCompletionTimes[todo.id]"
+            [ngModelOptions]="{ standalone: true }">
+            @for (time of timeOptions; track time.value) {
+              <option [ngValue]="time.value">{{ time.labelKey | translate }}</option>
+            }
+          </select>
+        </label>
+      }
+      <div class="project-task-meta">
+        <small class="claim-badge">
+          @if (todo.claimed_by_name) {
+            {{ 'privateTodo.claim.claimedBy' | translate: { name: todo.claimed_by_name } }}
+          } @else {
+            {{ 'privateTodo.claim.unclaimed' | translate }}
+          }
+        </small>
+        <small>{{ todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
+      </div>
+      <button
+        class="done-button"
+        [disabled]="!canToggleDone(todo)"
+        (click)="toggleDone(todo)">
+        {{ (todo.done ? 'privateTodo.actions.reopen' : 'privateTodo.actions.done') | translate }}
+      </button>
+    </div>
   </li>
 </ng-template>

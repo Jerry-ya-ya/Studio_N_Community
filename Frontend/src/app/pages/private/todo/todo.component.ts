@@ -221,8 +221,8 @@ export class TodoComponent implements OnInit {
       .subscribe(() => this.setTodos(this.todos.filter(t => t.id !== id)));
   }
 
-  submitSettlementReview(project: ProjectRecruitment) {
-    if (!project.owned_by_me || !this.canSubmitSettlementReview(project) || this.settlementLoading[project.id]) {
+  submitSettlementReview(project: ProjectRecruitment, todos: Todo[] = []) {
+    if (!project.owned_by_me || !this.canSubmitSettlementReview(project, todos) || this.settlementLoading[project.id]) {
       return;
     }
 
@@ -309,7 +309,7 @@ export class TodoComponent implements OnInit {
   }
 
   getTodoDifficulty(todo: Todo) {
-    return Math.min(9, Math.max(0, Number(todo.difficulty ?? 5)));
+    return Math.min(13, Math.max(0, Number(todo.difficulty ?? 5)));
   }
 
   getTodoDuration(todo: Todo) {
@@ -365,8 +365,8 @@ export class TodoComponent implements OnInit {
     return todo.claimed_by_id === this.currentUserId && (todo.done || this.hasSelectedTodoDuration(todo));
   }
 
-  canSubmitSettlementReview(project: ProjectRecruitment) {
-    return project.review_status === 'open' || project.review_status === 'rejected';
+  canSubmitSettlementReview(project: ProjectRecruitment, todos: Todo[] = []) {
+    return project.review_status !== 'pending' && this.getReviewPendingTodos(todos).length > 0;
   }
 
   getPendingCompletionTodos(todos: Todo[]): Todo[] {
@@ -374,11 +374,11 @@ export class TodoComponent implements OnInit {
   }
 
   getReviewPendingTodos(todos: Todo[]): Todo[] {
-    return todos.filter(todo => todo.done);
+    return todos.filter(todo => todo.done && !todo.settled);
   }
 
   getSettledTodos(todos: Todo[]): Todo[] {
-    return [];
+    return todos.filter(todo => todo.settled);
   }
 
   getSelectedTodoDuration(todo: Todo) {

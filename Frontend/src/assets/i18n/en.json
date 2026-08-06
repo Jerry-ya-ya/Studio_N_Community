@@ -675,16 +675,16 @@
       "noTodos": "This project has no published todos yet."
     },
     "settlement": {
-      "kicker": "Settlement Review",
-      "title": "Send Settlement Request",
-      "submit": "Send Settlement Request",
-      "submitted": "Settlement request sent.",
-      "submitFailure": "Failed to send settlement request.",
+      "kicker": "Settlement Cycle",
+      "title": "Send Current Settlement",
+      "submit": "Send Current Settlement",
+      "submitted": "Current settlement sent.",
+      "submitFailure": "Failed to send current settlement.",
       "status": {
-        "open": "Not submitted",
-        "pending": "Under admin review",
-        "approved": "Approved",
-        "rejected": "Rejected, can resubmit"
+        "open": "Ready for current settlement",
+        "pending": "Current cycle under admin review",
+        "approved": "Last cycle approved, next cycle can accumulate",
+        "rejected": "Last cycle rejected, can resubmit"
       }
     },
     "feedback": {
@@ -896,10 +896,10 @@
       "reviewStatus": "Review Status"
     },
     "review": {
-      "kicker": "Project Review",
-      "title": "Project Completion Review",
-      "empty": "There are no projects pending review.",
-      "approve": "Approve",
+      "kicker": "Settlement Review",
+      "title": "Project Settlement Cycles",
+      "empty": "There are no settlement cycles pending review.",
+      "approve": "Approve Settlement",
       "reject": "Reject",
       "status": {
         "open": "Open",
@@ -915,16 +915,25 @@
     },
     "todos": {
       "title": "Project Todo",
-      "summary": "Active {{ active }} / Done {{ done }}",
+      "summary": "Active {{ active }} / Pending {{ done }} / Settled {{ settled }}",
       "active": "Active",
       "done": "Done",
+      "settlement": "Completed for Settlement",
+      "settled": "Settled",
+      "difficulty": "Difficulty",
+      "difficultyOption": "+{{ difficulty }} pts",
+      "saveDifficulty": "Save Score",
+      "savingDifficulty": "Saving...",
       "unassigned": "Unassigned",
       "noActive": "No active todos right now.",
-      "noDone": "No completed todos yet."
+      "noDone": "No completed todos awaiting settlement.",
+      "noSettled": "No settled todos yet."
     },
     "feedback": {
       "loadFailure": "Failed to load project recruitments.",
-      "reviewFailure": "Failed to review project."
+      "reviewFailure": "Failed to review project.",
+      "difficultySaved": "Difficulty score updated.",
+      "difficultyFailure": "Failed to update difficulty score."
     }
   },
   "adminContent": {

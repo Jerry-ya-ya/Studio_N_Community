@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
-from models import db, ProjectRecruitment, ProjectRecruitmentMember
+from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import to_taipei_text
@@ -34,6 +34,7 @@ def serialize_project_todo(todo):
         'id': todo.id,
         'text': todo.text,
         'done': todo.done,
+        'settled': todo.settled,
         'priority': todo.priority,
         'difficulty': todo.difficulty,
         'duration': todo.duration,
@@ -90,6 +91,33 @@ def admin_list_project_recruitments():
 
     projects = ProjectRecruitment.query.order_by(ProjectRecruitment.created_at.desc()).all()
     return jsonify([serialize_project(project, current_user) for project in projects])
+
+
+@project_recruitment_bp.route('/admin/project-todos/<int:todo_id>/difficulty', methods=['PUT'])
+@admin_required
+def admin_update_project_todo_difficulty(todo_id):
+    current_user = get_current_user_from_token()
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    todo = Todo.query.filter(Todo.id == todo_id, Todo.project_id.isnot(None)).first_or_404()
+    if not todo.done or todo.settled:
+        return jsonify({'error': 'Only completed unsettled project todos can be scored'}), 409
+
+    data = request.get_json(silent=True) or {}
+
+    try:
+        difficulty = int(data.get('difficulty'))
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Todo difficulty must be one of 2, 4, 6, 9, 13'}), 400
+
+    if difficulty not in [2, 4, 6, 9, 13]:
+        return jsonify({'error': 'Todo difficulty must be one of 2, 4, 6, 9, 13'}), 400
+
+    todo.difficulty = difficulty
+    db.session.commit()
+
+    return jsonify(serialize_project_todo(todo))
 
 
 @project_recruitment_bp.route('/project-recruitments', methods=['POST'])
@@ -179,8 +207,10 @@ def submit_project_review(project_id):
         return jsonify({'error': '只有組長可以提交專案完成審理'}), 403
     if project.review_status == 'pending':
         return jsonify({'error': '此專案已在審理中'}), 409
-    if project.review_status == 'approved':
-        return jsonify({'error': '此專案已完成審理'}), 409
+
+    pending_todos = [todo for todo in project.todos if todo.done and not todo.settled]
+    if not pending_todos:
+        return jsonify({'error': '目前沒有已完成且待結算的 Todo'}), 409
 
     project.review_status = 'pending'
     db.session.commit()
@@ -202,7 +232,13 @@ def review_project_recruitment(project_id):
     if project.review_status != 'pending':
         return jsonify({'error': '此專案目前不在待審理狀態'}), 409
     if action == 'approve':
+        pending_todos = [todo for todo in project.todos if todo.done and not todo.settled]
+        if not pending_todos:
+            return jsonify({'error': '目前沒有已完成且待結算的 Todo'}), 409
+
         project.review_status = 'approved'
+        for todo in pending_todos:
+            todo.settled = True
     elif action == 'reject':
         project.review_status = 'rejected'
     else:

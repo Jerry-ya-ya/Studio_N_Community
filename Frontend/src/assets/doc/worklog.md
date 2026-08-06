@@ -523,3 +523,7 @@
 - Update todo review groups and persist sidebar state.
 
 - Refine todo completion review flow.
+
+## 2026/08/06
+
+- Add recurring todo settlement cycles.

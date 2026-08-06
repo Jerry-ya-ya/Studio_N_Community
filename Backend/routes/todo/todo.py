@@ -14,6 +14,7 @@ def serialize_todo(todo):
         'id': todo.id,
         'text': todo.text,
         'done': todo.done,
+        'settled': todo.settled,
         'priority': todo.priority,
         'difficulty': todo.difficulty,
         'duration': todo.duration,

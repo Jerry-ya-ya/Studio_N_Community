@@ -560,6 +560,24 @@ body.cmen-day-theme .language-menu button.active small {
   color: var(--studio-bg);
 }
 
+.difficulty-control { display: grid; grid-template-columns: auto minmax(92px, 120px) auto; align-items: center; gap: 8px; justify-self: end; }
+.difficulty-control span { color: var(--studio-muted); font-size: 0.75rem; font-weight: 900; text-transform: uppercase; }
+.difficulty-control select { min-height: 38px; border: 1px solid var(--studio-line); border-radius: 7px; padding: 0 10px; color: var(--studio-text); background: color-mix(in srgb, var(--studio-panel-strong) 86%, transparent); }
+.difficulty-control button { min-height: 38px; border: 1px solid var(--studio-accent); border-radius: 7px; padding: 0 12px; color: var(--studio-bg); background: var(--studio-accent); cursor: pointer; font-weight: 900; }
+.difficulty-control button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.project-task-list li { display: grid; grid-template-columns: auto 48px minmax(0, 1fr) minmax(190px, auto); align-items: start; gap: 8px 12px; }
+.project-task-metrics { display: grid; gap: 6px; }
+.project-task-metrics .priority-badge { margin-right: 0; }
+.project-task-content { min-width: 0; display: grid; gap: 6px; }
+.project-task-content span { line-height: 1.45; overflow-wrap: anywhere; }
+.project-task-side { width: 100%; display: grid; justify-items: end; justify-self: end; gap: 8px; text-align: right; }
+.project-task-side .todo-time-select { justify-self: end; justify-content: flex-end; margin-left: 0; }
+.project-task-side .todo-time-select span { flex: 0 0 auto; }
+.project-task-meta { width: 100%; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.project-task-meta small { margin-left: 0; }
+.project-task-side .done-button { justify-self: end; margin-left: 0 !important; }
+
 @media (max-width: 760px) {
   .language-switcher {
     flex-shrink: 0;
@@ -646,4 +664,9 @@ body.cmen-day-theme .language-menu button.active small {
   body.cmen-day-theme :is(.view) > :is(.box) {
     margin-top: 92px;
   }
+
+  .project-task-list li { grid-template-columns: 1fr; }
+  .project-task-metrics { grid-auto-flow: column; justify-content: start; }
+  .project-task-side,
+  .project-task-meta { justify-items: stretch; justify-content: flex-start; }
 }

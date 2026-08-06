@@ -129,39 +129,80 @@
                 {{ 'adminProjects.todos.title' | translate }}
               </span>
               <strong>
-                {{ 'adminProjects.todos.summary' | translate: { active: getActiveTodos(project).length, done: getDoneTodos(project).length } }}
+                {{ 'adminProjects.todos.summary' | translate: { active: getActiveTodos(project).length, done: getDoneTodos(project).length, settled: getSettledTodos(project).length } }}
               </strong>
             </button>
 
             @if (isTodosExpanded(project.id)) {
+              @if (todoMessage) {
+                <p class="empty-message empty-message--inline">{{ todoMessage | translate }}</p>
+              }
+
               <div class="todo-board">
-                <article class="todo-column">
+                <article class="todo-section">
                   <h3>{{ 'adminProjects.todos.active' | translate }}</h3>
                   @for (todo of getActiveTodos(project); track todo.id) {
                     <div class="todo-card todo-card--active">
                       <span class="priority-badge" [title]="getPriorityMultiplierLabel(todo.priority)">P{{ getPriorityLevel(todo.priority) }}</span>
-                      <span class="priority-badge">D{{ todo.difficulty }}</span>
                       <span class="priority-badge">T{{ todo.duration }}</span>
-                      <strong>{{ todo.text }}</strong>
-                      <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                      <div class="todo-card__body">
+                        <strong>{{ todo.text }}</strong>
+                        <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                      </div>
                     </div>
                   } @empty {
                     <p class="empty-message empty-message--inline">{{ 'adminProjects.todos.noActive' | translate }}</p>
                   }
                 </article>
 
-                <article class="todo-column">
-                  <h3>{{ 'adminProjects.todos.done' | translate }}</h3>
+                <article class="todo-section">
+                  <h3>{{ 'adminProjects.todos.settlement' | translate }}</h3>
                   @for (todo of getDoneTodos(project); track todo.id) {
                     <div class="todo-card todo-card--done">
                       <span class="priority-badge" [title]="getPriorityMultiplierLabel(todo.priority)">P{{ getPriorityLevel(todo.priority) }}</span>
-                      <span class="priority-badge">D{{ todo.difficulty }}</span>
                       <span class="priority-badge">T{{ todo.duration }}</span>
-                      <strong>{{ todo.text }}</strong>
-                      <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                      <div class="todo-card__body">
+                        <strong>{{ todo.text }}</strong>
+                        <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                      </div>
+                      <label class="difficulty-control">
+                        <span>{{ 'adminProjects.todos.difficulty' | translate }}</span>
+                        <select
+                          [(ngModel)]="difficultyDrafts[todo.id]"
+                          [ngModelOptions]="{ standalone: true }">
+                          @for (difficulty of difficultyOptions; track difficulty) {
+                            <option [ngValue]="difficulty">
+                              {{ 'adminProjects.todos.difficultyOption' | translate: { difficulty: difficulty } }}
+                            </option>
+                          }
+                        </select>
+                        <button
+                          type="button"
+                          (click)="updateTodoDifficulty(project, todo)"
+                          [disabled]="difficultyLoading[todo.id] || !hasDifficultyChanged(todo)">
+                          {{ (difficultyLoading[todo.id] ? 'adminProjects.todos.savingDifficulty' : 'adminProjects.todos.saveDifficulty') | translate }}
+                        </button>
+                      </label>
                     </div>
                   } @empty {
                     <p class="empty-message empty-message--inline">{{ 'adminProjects.todos.noDone' | translate }}</p>
+                  }
+                </article>
+
+                <article class="todo-section">
+                  <h3>{{ 'adminProjects.todos.settled' | translate }}</h3>
+                  @for (todo of getSettledTodos(project); track todo.id) {
+                    <div class="todo-card todo-card--settled">
+                      <span class="priority-badge" [title]="getPriorityMultiplierLabel(todo.priority)">P{{ getPriorityLevel(todo.priority) }}</span>
+                      <span class="priority-badge">D{{ todo.difficulty }}</span>
+                      <span class="priority-badge">T{{ todo.duration }}</span>
+                      <div class="todo-card__body">
+                        <strong>{{ todo.text }}</strong>
+                        <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
+                      </div>
+                    </div>
+                  } @empty {
+                    <p class="empty-message empty-message--inline">{{ 'adminProjects.todos.noSettled' | translate }}</p>
                   }
                 </article>
               </div>

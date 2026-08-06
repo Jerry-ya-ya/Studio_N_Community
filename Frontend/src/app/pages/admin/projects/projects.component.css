@@ -369,12 +369,11 @@
 
 .todo-board {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 12px;
 }
 
-.todo-column {
+.todo-section {
   min-width: 0;
   border: 1px solid color-mix(in srgb, var(--studio-line) 70%, transparent);
   border-radius: 8px;
@@ -382,7 +381,7 @@
   background: color-mix(in srgb, var(--studio-panel-strong) 68%, transparent);
 }
 
-.todo-column h3 {
+.todo-section h3 {
   margin: 0 0 12px;
   color: var(--studio-text);
   font-size: 1rem;
@@ -390,7 +389,7 @@
 
 .todo-card {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-columns: repeat(2, 42px) minmax(0, 1fr) minmax(220px, auto);
   gap: 8px 12px;
   align-items: center;
   border: 1px solid color-mix(in srgb, var(--studio-line) 64%, transparent);
@@ -415,16 +414,14 @@
 }
 
 .todo-card small {
-  grid-column: 2;
   color: var(--studio-muted);
 }
 
 .todo-card--done {
-  opacity: 0.72;
+  border-color: color-mix(in srgb, var(--studio-warm) 44%, var(--studio-line));
 }
 
 .priority-badge {
-  grid-row: span 2;
   width: 36px;
   height: 36px;
   display: grid;
@@ -435,6 +432,12 @@
   background: var(--studio-warm);
   font-size: 0.78rem;
   font-weight: 900;
+}
+
+.todo-card__body {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
 }
 
 @media (max-width: 760px) {
@@ -452,7 +455,9 @@
     grid-template-columns: 1fr;
   }
 
-  .todo-board {
+  .todo-card,
+  .difficulty-control {
     grid-template-columns: 1fr;
+    justify-items: stretch;
   }
 }

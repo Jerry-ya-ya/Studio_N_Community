@@ -20,6 +20,7 @@ interface ProjectTodo {
   id: number;
   text: string;
   done: boolean;
+  settled: boolean;
   priority: number;
   difficulty: number;
   duration: number;
@@ -54,11 +55,15 @@ interface AdminProject {
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ProjectsComponent implements OnInit {
+  readonly difficultyOptions = [2, 4, 6, 9, 13];
   projects: AdminProject[] = [];
   expandedTodoProjectIds = new Set<number>();
   reviewLoading: Record<number, boolean> = {};
+  difficultyDrafts: Record<number, number> = {};
+  difficultyLoading: Record<number, boolean> = {};
   loading = false;
   errorMessage = '';
+  todoMessage = '';
 
   constructor(
     private apiService: ApiService,
@@ -77,6 +82,7 @@ export class ProjectsComponent implements OnInit {
       .subscribe({
         next: projects => {
           this.projects = projects;
+          this.syncDifficultyDrafts(projects);
           this.loading = false;
           this.changeDetectorRef.detectChanges();
         },
@@ -112,7 +118,46 @@ export class ProjectsComponent implements OnInit {
   }
 
   getDoneTodos(project: AdminProject) {
-    return (project.todos || []).filter(todo => todo.done);
+    return (project.todos || []).filter(todo => todo.done && !todo.settled);
+  }
+
+  getSettledTodos(project: AdminProject) {
+    return (project.todos || []).filter(todo => todo.settled);
+  }
+
+  updateTodoDifficulty(project: AdminProject, todo: ProjectTodo) {
+    const difficulty = this.getDifficultyDraft(todo);
+
+    if (this.difficultyLoading[todo.id]) {
+      return;
+    }
+
+    this.difficultyLoading[todo.id] = true;
+    this.todoMessage = '';
+    this.apiService.put<ProjectTodo>(
+      `/admin/project-todos/${todo.id}/difficulty`,
+      { difficulty },
+      this.apiService.createAuthHeaders()
+    ).subscribe({
+      next: updated => {
+        this.projects = this.projects.map(item => item.id === project.id
+          ? {
+              ...item,
+              todos: item.todos.map(projectTodo => projectTodo.id === updated.id ? updated : projectTodo)
+            }
+          : item
+        );
+        this.difficultyDrafts[updated.id] = this.getDifficultyDraft(updated);
+        delete this.difficultyLoading[todo.id];
+        this.todoMessage = 'adminProjects.feedback.difficultySaved';
+        this.changeDetectorRef.detectChanges();
+      },
+      error: error => {
+        this.todoMessage = error?.error?.error || 'adminProjects.feedback.difficultyFailure';
+        delete this.difficultyLoading[todo.id];
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   getPriorityLevel(priority: number) {
@@ -122,6 +167,10 @@ export class ProjectsComponent implements OnInit {
   getPriorityMultiplierLabel(priority: number) {
     const multipliers = [1, 1.1, 1.2, 1.35, 1.5];
     return `x${multipliers[this.getPriorityLevel(priority) - 1].toFixed(2)}`;
+  }
+
+  hasDifficultyChanged(todo: ProjectTodo) {
+    return this.getDifficultyDraft(todo) !== Number(todo.difficulty);
   }
 
   get pendingProjects() {
@@ -150,6 +199,19 @@ export class ProjectsComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  private syncDifficultyDrafts(projects: AdminProject[]) {
+    for (const project of projects) {
+      for (const todo of project.todos || []) {
+        this.difficultyDrafts[todo.id] = this.getDifficultyDraft(todo);
+      }
+    }
+  }
+
+  private getDifficultyDraft(todo: ProjectTodo) {
+    const difficulty = Number(this.difficultyDrafts[todo.id] ?? todo.difficulty);
+    return this.difficultyOptions.includes(difficulty) ? difficulty : 6;
   }
 
 }

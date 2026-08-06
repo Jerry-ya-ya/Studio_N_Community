@@ -675,16 +675,16 @@
       "noTodos": "這個專案目前還沒有發布 Todo。"
     },
     "settlement": {
-      "kicker": "Settlement Review",
-      "title": "發送結算邀請",
-      "submit": "送出結算邀請",
-      "submitted": "結算邀請已送出",
-      "submitFailure": "送出結算邀請失敗",
+      "kicker": "Settlement Cycle",
+      "title": "發送本期結算",
+      "submit": "送出本期結算",
+      "submitted": "本期結算已送出",
+      "submitFailure": "送出本期結算失敗",
       "status": {
-        "open": "尚未送出",
-        "pending": "管理員審理中",
-        "approved": "審理通過",
-        "rejected": "已駁回，可重新送出"
+        "open": "可送出本期結算",
+        "pending": "本期管理員審理中",
+        "approved": "上一期已通過，可累積下一期",
+        "rejected": "上一期已駁回，可重新送出"
       }
     },
     "feedback": {
@@ -896,10 +896,10 @@
       "reviewStatus": "審理狀態"
     },
     "review": {
-      "kicker": "Project Review",
-      "title": "專案完成審理",
-      "empty": "目前沒有待審理的專案。",
-      "approve": "通過",
+      "kicker": "Settlement Review",
+      "title": "專案結算週期審理",
+      "empty": "目前沒有待審理的結算週期。",
+      "approve": "結算通過",
       "reject": "駁回",
       "status": {
         "open": "招募中",
@@ -915,16 +915,25 @@
     },
     "todos": {
       "title": "專案 Todo",
-      "summary": "進行中 {{ active }} / 已完成 {{ done }}",
+      "summary": "進行中 {{ active }} / 待結算 {{ done }} / 已結算 {{ settled }}",
       "active": "正在執行",
       "done": "執行完畢",
+      "settlement": "已完成待結算",
+      "settled": "已結算",
+      "difficulty": "Difficulty",
+      "difficultyOption": "+{{ difficulty }} 點",
+      "saveDifficulty": "儲存評分",
+      "savingDifficulty": "儲存中...",
       "unassigned": "尚未指派",
       "noActive": "目前沒有正在執行的 Todo。",
-      "noDone": "目前沒有已完成的 Todo。"
+      "noDone": "目前沒有已完成待結算的 Todo。",
+      "noSettled": "目前沒有已結算的 Todo。"
     },
     "feedback": {
       "loadFailure": "無法載入專案招募。",
-      "reviewFailure": "審理專案失敗。"
+      "reviewFailure": "審理專案失敗。",
+      "difficultySaved": "Difficulty 評分已更新。",
+      "difficultyFailure": "Difficulty 評分更新失敗。"
     }
   },
   "adminContent": {

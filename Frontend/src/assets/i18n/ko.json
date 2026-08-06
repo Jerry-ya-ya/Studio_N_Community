@@ -675,16 +675,16 @@
       "noTodos": "이 프로젝트에는 아직 게시된 Todo가 없습니다."
     },
     "settlement": {
-      "kicker": "Settlement Review",
-      "title": "정산 요청 보내기",
-      "submit": "정산 요청 보내기",
-      "submitted": "정산 요청을 보냈습니다.",
-      "submitFailure": "정산 요청 보내기에 실패했습니다.",
+      "kicker": "Settlement Cycle",
+      "title": "이번 정산 보내기",
+      "submit": "이번 정산 보내기",
+      "submitted": "이번 정산을 보냈습니다.",
+      "submitFailure": "이번 정산 보내기에 실패했습니다.",
       "status": {
-        "open": "아직 보내지 않음",
-        "pending": "관리자 검토 중",
-        "approved": "승인됨",
-        "rejected": "반려됨, 다시 보낼 수 있음"
+        "open": "이번 정산을 보낼 수 있음",
+        "pending": "이번 주기는 관리자 검토 중",
+        "approved": "지난 주기 승인됨, 다음 주기를 누적할 수 있음",
+        "rejected": "지난 주기 반려됨, 다시 보낼 수 있음"
       }
     },
     "feedback": {
@@ -896,10 +896,10 @@
       "reviewStatus": "검토 상태"
     },
     "review": {
-      "kicker": "Project Review",
-      "title": "프로젝트 완료 검토",
-      "empty": "검토 대기 중인 프로젝트가 없습니다.",
-      "approve": "승인",
+      "kicker": "Settlement Review",
+      "title": "프로젝트 정산 주기 검토",
+      "empty": "검토 대기 중인 정산 주기가 없습니다.",
+      "approve": "정산 승인",
       "reject": "반려",
       "status": {
         "open": "모집 중",
@@ -915,16 +915,25 @@
     },
     "todos": {
       "title": "프로젝트 Todo",
-      "summary": "진행 중 {{ active }} / 완료 {{ done }}",
+      "summary": "진행 중 {{ active }} / 정산 대기 {{ done }} / 정산 완료 {{ settled }}",
       "active": "진행 중",
       "done": "완료",
+      "settlement": "완료 및 정산 대기",
+      "settled": "정산 완료",
+      "difficulty": "Difficulty",
+      "difficultyOption": "+{{ difficulty }}점",
+      "saveDifficulty": "평점 저장",
+      "savingDifficulty": "저장 중...",
       "unassigned": "미지정",
       "noActive": "현재 진행 중인 Todo가 없습니다.",
-      "noDone": "아직 완료된 Todo가 없습니다."
+      "noDone": "정산 대기 중인 완료 Todo가 없습니다.",
+      "noSettled": "아직 정산 완료된 Todo가 없습니다."
     },
     "feedback": {
       "loadFailure": "프로젝트 모집을 불러오지 못했습니다.",
-      "reviewFailure": "프로젝트 검토에 실패했습니다."
+      "reviewFailure": "프로젝트 검토에 실패했습니다.",
+      "difficultySaved": "Difficulty 평점이 업데이트되었습니다.",
+      "difficultyFailure": "Difficulty 평점 업데이트에 실패했습니다."
     }
   },
   "adminContent": {
