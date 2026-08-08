@@ -120,13 +120,18 @@
 
 .profile-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(190px, 1fr));
   gap: 10px;
   margin: 0 0 22px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-color: color-mix(in srgb, var(--studio-accent) 55%, transparent) transparent;
 }
 
 .profile-stats div {
   min-width: 0;
+  display: grid;
+  align-content: start;
   padding: 14px;
   border: 1px solid var(--studio-line);
   border-radius: 8px;
@@ -259,10 +264,15 @@
 .avatar-source-control {
   display: grid;
   gap: 10px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 82%, transparent);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-accent) 8%, transparent), transparent 46%),
+    color-mix(in srgb, var(--studio-panel-strong) 62%, transparent);
 }
 
-.avatar-source-control > span,
-.avatar-source-options span {
+.avatar-source-control > span {
   color: var(--studio-muted);
   font-size: 12px;
   font-weight: 900;
@@ -277,19 +287,66 @@
 }
 
 .avatar-source-options label {
-  min-height: 48px;
+  position: relative;
+  min-height: 70px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 8px;
   border: 1px solid var(--studio-line);
   border-radius: 8px;
-  padding: 0 12px;
-  background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+  padding: 12px;
+  color: var(--studio-muted);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-panel-strong) 84%, transparent), transparent 120%),
+    color-mix(in srgb, var(--studio-panel) 74%, transparent);
   cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.avatar-source-options label:hover,
+.avatar-source-option--active {
+  transform: translateY(-1px);
+  border-color: var(--studio-accent);
+  color: var(--studio-text);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--studio-accent) 16%, transparent);
+}
+
+.avatar-source-option--active {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-accent) 18%, transparent), transparent 62%),
+    color-mix(in srgb, var(--studio-panel-strong) 86%, transparent);
+}
+
+.avatar-source-options label > span:last-child {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .avatar-source-options input {
-  accent-color: var(--studio-accent);
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.avatar-source-mark {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 64%, var(--studio-line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--studio-panel-strong) 86%, transparent);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--studio-panel-strong) 100%, transparent);
+}
+
+.avatar-source-option--active .avatar-source-mark {
+  background: var(--studio-accent);
 }
 
 .profile-loading {
@@ -298,10 +355,15 @@
   padding: clamp(28px, 6vw, 72px);
 }
 
+@media (max-width: 1080px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .profile-hero,
-  .profile-grid,
-  .profile-stats {
+  .profile-grid {
     grid-template-columns: 1fr;
   }
 

@@ -96,12 +96,14 @@
           <div class="avatar-source-control">
             <span>{{ 'privateProfile.avatar.sourceLabel' | translate }}</span>
             <div class="avatar-source-options">
-              <label>
+              <label [class.avatar-source-option--active]="user.avatarSource === 'github'">
                 <input type="radio" name="avatarSource" value="github" [(ngModel)]="user.avatarSource">
+                <span class="avatar-source-mark"></span>
                 <span>{{ 'privateProfile.avatar.sourceGithub' | translate }}</span>
               </label>
-              <label>
+              <label [class.avatar-source-option--active]="user.avatarSource === 'local'">
                 <input type="radio" name="avatarSource" value="local" [(ngModel)]="user.avatarSource">
+                <span class="avatar-source-mark"></span>
                 <span>{{ 'privateProfile.avatar.sourceLocal' | translate }}</span>
               </label>
             </div>

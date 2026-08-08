@@ -535,3 +535,5 @@
 ## 2026/08/08
 
 - Add black and white site themes.
+
+- Improve private profile and crawler responsive layouts.

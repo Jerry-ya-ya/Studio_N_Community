@@ -4,7 +4,7 @@
 
 .crawler-page {
   min-height: 100vh;
-  padding: 116px clamp(16px, 4vw, 48px) 48px;
+  padding: 116px clamp(14px, 3vw, 40px) 48px;
   color: var(--studio-text);
   background: var(--studio-page-bg);
   font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
@@ -27,26 +27,35 @@
 .crawler-hero {
   min-height: 340px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
-  gap: 24px;
+  grid-template-columns: minmax(0, 0.74fr) minmax(180px, 0.26fr);
+  gap: clamp(16px, 2.4vw, 24px);
   align-items: end;
-  padding: clamp(28px, 6vw, 72px);
+  padding: clamp(26px, 5vw, 64px);
+}
+
+.crawler-hero > div:first-child {
+  min-width: 0;
 }
 
 .crawler-kicker {
+  display: inline-block;
+  max-width: 100%;
   margin: 0 0 12px;
   color: var(--studio-accent);
   font-size: 13px;
   font-weight: 900;
   letter-spacing: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .crawler-hero h1 {
   margin: 0;
   color: var(--studio-text);
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: clamp(48px, 9vw, 118px);
+  font-size: clamp(44px, 7vw, 96px);
   line-height: 0.95;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -63,7 +72,7 @@
 .crawler-status {
   display: grid;
   gap: 8px;
-  padding: 20px;
+  padding: clamp(16px, 2.4vw, 20px);
   border: 1px solid var(--studio-line);
   border-radius: 8px;
   background:
@@ -83,13 +92,13 @@
 
 .crawler-status strong {
   color: var(--studio-text);
-  font-size: clamp(42px, 7vw, 70px);
+  font-size: clamp(34px, 5vw, 58px);
   line-height: 1;
 }
 
 .crawler-toolbar {
   display: grid;
-  grid-template-columns: minmax(260px, 0.55fr) minmax(0, 1fr);
+  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
   gap: 18px;
   margin-top: 18px;
   padding: clamp(20px, 3vw, 30px);
@@ -160,11 +169,18 @@
   margin-bottom: 18px;
 }
 
+.panel-header .crawler-kicker {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+
 .panel-header h2 {
+  min-width: 0;
   margin: 0;
   color: var(--studio-text);
   font-size: clamp(28px, 4vw, 52px);
   line-height: 1;
+  text-align: right;
   text-transform: uppercase;
 }
 
@@ -240,10 +256,9 @@
   text-align: center;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 760px) {
   .crawler-hero,
-  .crawler-toolbar,
-  .schedule-grid {
+  .crawler-toolbar {
     grid-template-columns: 1fr;
   }
 }
@@ -257,6 +272,10 @@
   .crawler-toolbar,
   .news-panel {
     padding: 22px;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
   }
 
   .news-item {
