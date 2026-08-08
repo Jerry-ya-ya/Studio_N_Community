@@ -531,3 +531,7 @@
 ## 2026/08/07
 
 - Unify page surfaces and improve scroll performance.
+
+## 2026/08/08
+
+- Add black and white site themes.

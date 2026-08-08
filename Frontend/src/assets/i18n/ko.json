@@ -725,6 +725,14 @@
         "cyber": {
           "label": "Cyber Grid",
           "description": "차가운 기술 느낌의 팔레트와 날렵한 컨트롤입니다."
+        },
+        "onyx": {
+          "label": "Onyx Black",
+          "description": "차가운 빛과 골드 신호를 살린 더 선명한 블랙 테마입니다."
+        },
+        "ivory": {
+          "label": "Ivory White",
+          "description": "밝은 환경에서 보기 좋은 산뜻한 화이트 테마입니다."
         }
       }
     },

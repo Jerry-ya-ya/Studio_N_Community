@@ -725,6 +725,14 @@
         "cyber": {
           "label": "Cyber Grid",
           "description": "クールなテック配色で、コントロールはよりシャープです。"
+        },
+        "onyx": {
+          "label": "Onyx Black",
+          "description": "冷たい光とゴールドの合図を残した、より純粋な黒テーマです。"
+        },
+        "ivory": {
+          "label": "Ivory White",
+          "description": "明るい環境でも使いやすい、すっきりした白テーマです。"
         }
       }
     },

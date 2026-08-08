@@ -725,6 +725,14 @@
         "cyber": {
           "label": "Cyber Grid",
           "description": "A cool tech palette with sharper controls."
+        },
+        "onyx": {
+          "label": "Onyx Black",
+          "description": "A cleaner black theme with cool light and gold signals."
+        },
+        "ivory": {
+          "label": "Ivory White",
+          "description": "A crisp white theme for brighter viewing conditions."
         }
       }
     },

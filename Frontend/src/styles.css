@@ -108,6 +108,58 @@ body.studio-theme-cyber {
   --studio-control-radius: 4px;
 }
 
+body.studio-theme-onyx {
+  --studio-bg: #030304;
+  --studio-panel: rgba(12, 12, 14, 0.86);
+  --studio-panel-strong: rgba(5, 5, 7, 0.96);
+  --studio-line: rgba(224, 232, 240, 0.18);
+  --studio-text: #f7f7f2;
+  --studio-muted: #b7bbc3;
+  --studio-accent: #8ee6ff;
+  --studio-warm: #ffd36a;
+  --studio-danger: #ff6f7d;
+  --studio-success: #80f0b5;
+  --studio-page-bg:
+    radial-gradient(circle at 18% 18%, rgba(142, 230, 255, 0.12), transparent 26%),
+    radial-gradient(circle at 82% 20%, rgba(255, 211, 106, 0.1), transparent 22%),
+    linear-gradient(135deg, #030304 0%, #101014 54%, #050509 100%);
+  --studio-grid-bg:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.032) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.032) 1px, transparent 1px),
+    var(--studio-page-bg);
+  --studio-surface-bg:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 34%),
+    color-mix(in srgb, var(--studio-panel-strong) 94%, #000 6%);
+  --studio-surface-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 16px 38px rgba(0, 0, 0, 0.38);
+  --studio-control-radius: 6px;
+}
+
+body.studio-theme-ivory {
+  --studio-bg: #f4f1e8;
+  --studio-panel: rgba(255, 252, 244, 0.86);
+  --studio-panel-strong: rgba(255, 255, 250, 0.96);
+  --studio-line: rgba(36, 47, 59, 0.18);
+  --studio-text: #18212c;
+  --studio-muted: #536170;
+  --studio-accent: #156f8f;
+  --studio-warm: #c64f38;
+  --studio-danger: #c73b52;
+  --studio-success: #287a55;
+  --studio-page-bg:
+    radial-gradient(circle at 16% 18%, rgba(21, 111, 143, 0.13), transparent 28%),
+    radial-gradient(circle at 84% 18%, rgba(198, 79, 56, 0.1), transparent 24%),
+    linear-gradient(135deg, #f8f6ef 0%, #ebe7dc 54%, #f6f3ea 100%);
+  --studio-grid-bg:
+    linear-gradient(90deg, rgba(24, 33, 44, 0.045) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(24, 33, 44, 0.045) 1px, transparent 1px),
+    var(--studio-page-bg);
+  --studio-surface-bg:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), transparent 34%),
+    color-mix(in srgb, var(--studio-panel-strong) 90%, #d8dedc 10%);
+  --studio-surface-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.74), 0 16px 38px rgba(40, 48, 56, 0.16);
+  --studio-control-radius: 10px;
+}
+
 * {
   box-sizing: border-box;
 }

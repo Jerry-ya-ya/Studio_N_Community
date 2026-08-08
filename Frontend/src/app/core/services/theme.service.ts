@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, OnDestroy } from '@angular/core';
 
-export type StudioThemeId = 'eden' | 'arcade' | 'cyber';
+export type StudioThemeId = 'eden' | 'arcade' | 'cyber' | 'onyx' | 'ivory';
 
 export interface StudioThemeOption {
   id: StudioThemeId;
@@ -28,6 +28,16 @@ export class ThemeService implements OnDestroy {
       id: 'cyber',
       labelKey: 'privateSetting.theme.options.cyber.label',
       descriptionKey: 'privateSetting.theme.options.cyber.description'
+    },
+    {
+      id: 'onyx',
+      labelKey: 'privateSetting.theme.options.onyx.label',
+      descriptionKey: 'privateSetting.theme.options.onyx.description'
+    },
+    {
+      id: 'ivory',
+      labelKey: 'privateSetting.theme.options.ivory.label',
+      descriptionKey: 'privateSetting.theme.options.ivory.description'
     }
   ];
 

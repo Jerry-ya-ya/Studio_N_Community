@@ -111,7 +111,7 @@
 
 .theme-options {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 12px;
   margin: 18px 0;
 }
@@ -189,6 +189,20 @@
   --preview-accent: #53ecff;
   --preview-warm: #9bff7a;
   --preview-panel: rgba(118, 91, 255, 0.28);
+}
+
+.theme-option__preview--onyx {
+  --preview-accent: #8ee6ff;
+  --preview-warm: #ffd36a;
+  --preview-panel: rgba(247, 247, 242, 0.18);
+  background: #030304;
+}
+
+.theme-option__preview--ivory {
+  --preview-accent: #156f8f;
+  --preview-warm: #c64f38;
+  --preview-panel: rgba(24, 33, 44, 0.18);
+  background: #f8f6ef;
 }
 
 .theme-option__text {
