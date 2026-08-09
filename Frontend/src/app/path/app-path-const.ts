@@ -25,6 +25,8 @@ export const appPath = {
     content: 'content',
     //admin projects
     projects: 'projects',
+    //admin activity
+    activity: 'activity',
     //friend
     friend: 'friend',
     //project recruitment

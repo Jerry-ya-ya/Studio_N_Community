@@ -1075,5 +1075,42 @@
       "saveBeforeBackgroundUpload": "Save this news card before uploading a background image.",
       "defaultsLoaded": "Defaults loaded. Save to publish them."
     }
+  },
+  "adminActivity": {
+    "hero": {
+      "kicker": "Admin Activity",
+      "title": "Activity",
+      "subtitle": "Prepare promotional activity banners, copy, visibility, and target filters for future delivery.",
+      "totalLabel": "Draft Cards",
+      "totalHint": "Local draft only"
+    },
+    "manager": {
+      "kicker": "Campaign Console",
+      "title": "Activity Promotions",
+      "subtitle": "This admin page is ready for upload, delete, public/private, and target-filter flows before the user-facing activity surface is built."
+    },
+    "preview": {
+      "placeholder": "Image Preview",
+      "imageAlt": "Activity promotional image"
+    },
+    "form": {
+      "image": "Upload Image",
+      "title": "Activity Title",
+      "titlePlaceholder": "Enter activity title",
+      "description": "Activity Copy",
+      "descriptionPlaceholder": "Write the promotional text",
+      "visibility": "Visibility",
+      "targetFilter": "Target Filter",
+      "targetFilterPlaceholder": "all, role:member, user:Jerry"
+    },
+    "visibility": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "actions": {
+      "add": "Add Activity",
+      "remove": "Delete Activity",
+      "clearImage": "Remove Image"
+    }
   }
 }

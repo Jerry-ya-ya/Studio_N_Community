@@ -1,0 +1,86 @@
+<main class="activity-admin">
+  <section class="activity-hero">
+    <div>
+      <p class="admin-kicker">{{ 'adminActivity.hero.kicker' | translate }}</p>
+      <h1>{{ 'adminActivity.hero.title' | translate }}</h1>
+      <p>{{ 'adminActivity.hero.subtitle' | translate }}</p>
+    </div>
+
+    <div class="activity-stat">
+      <span>{{ 'adminActivity.hero.totalLabel' | translate }}</span>
+      <strong>{{ activities.length }}</strong>
+      <small>{{ 'adminActivity.hero.totalHint' | translate }}</small>
+    </div>
+  </section>
+
+  <section class="activity-toolbar">
+    <div>
+      <p class="admin-kicker">{{ 'adminActivity.manager.kicker' | translate }}</p>
+      <h2>{{ 'adminActivity.manager.title' | translate }}</h2>
+      <p>{{ 'adminActivity.manager.subtitle' | translate }}</p>
+    </div>
+
+    <button type="button" class="activity-button" (click)="addActivity()">
+      {{ 'adminActivity.actions.add' | translate }}
+    </button>
+  </section>
+
+  <section class="activity-list">
+    @for (activity of activities; track activity.id) {
+      <article class="activity-card">
+        <div class="activity-preview">
+          @if (activity.imagePreview) {
+            <img [src]="activity.imagePreview" [alt]="activity.title || ('adminActivity.preview.imageAlt' | translate)">
+          } @else {
+            <div class="preview-placeholder">
+              <span>{{ 'adminActivity.preview.placeholder' | translate }}</span>
+            </div>
+          }
+
+          <label class="image-picker">
+            <span>{{ activity.imageName || ('adminActivity.form.image' | translate) }}</span>
+            <input type="file" accept="image/*" (change)="onImageSelected($event, activity)">
+          </label>
+
+          <button type="button" class="ghost danger" (click)="clearImage(activity)" [disabled]="!activity.imagePreview">
+            {{ 'adminActivity.actions.clearImage' | translate }}
+          </button>
+        </div>
+
+        <div class="activity-form">
+          <label>
+            <span>{{ 'adminActivity.form.title' | translate }}</span>
+            <input type="text" [(ngModel)]="activity.title" [placeholder]="'adminActivity.form.titlePlaceholder' | translate">
+          </label>
+
+          <label>
+            <span>{{ 'adminActivity.form.description' | translate }}</span>
+            <textarea rows="4" [(ngModel)]="activity.description" [placeholder]="'adminActivity.form.descriptionPlaceholder' | translate"></textarea>
+          </label>
+
+          <div class="form-grid">
+            <label>
+              <span>{{ 'adminActivity.form.visibility' | translate }}</span>
+              <select [(ngModel)]="activity.visibility">
+                @for (option of visibilityOptions; track option) {
+                  <option [value]="option">{{ ('adminActivity.visibility.' + option) | translate }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span>{{ 'adminActivity.form.targetFilter' | translate }}</span>
+              <input type="text" [(ngModel)]="activity.targetFilter" [placeholder]="'adminActivity.form.targetFilterPlaceholder' | translate">
+            </label>
+          </div>
+
+          <div class="activity-actions">
+            <button type="button" class="ghost danger" (click)="removeActivity(activity.id)">
+              {{ 'adminActivity.actions.remove' | translate }}
+            </button>
+          </div>
+        </div>
+      </article>
+    }
+  </section>
+</main>

@@ -1075,5 +1075,42 @@
       "saveBeforeBackgroundUpload": "배경 이미지를 업로드하기 전에 이 뉴스 카드를 먼저 저장하세요.",
       "defaultsLoaded": "기본값을 불러왔습니다. 게시하려면 저장하세요."
     }
+  },
+  "adminActivity": {
+    "hero": {
+      "kicker": "Admin Activity",
+      "title": "Activity",
+      "subtitle": "활동 홍보 이미지, 문구, 공개 범위, 대상 필터를 준비합니다.",
+      "totalLabel": "초안 카드",
+      "totalHint": "현재는 로컬 초안"
+    },
+    "manager": {
+      "kicker": "Campaign Console",
+      "title": "Activity Promotions",
+      "subtitle": "이 관리 페이지는 업로드, 삭제, public/private, 대상 필터 흐름을 먼저 준비합니다."
+    },
+    "preview": {
+      "placeholder": "이미지 미리보기",
+      "imageAlt": "활동 홍보 이미지"
+    },
+    "form": {
+      "image": "이미지 업로드",
+      "title": "활동 제목",
+      "titlePlaceholder": "활동 제목 입력",
+      "description": "활동 문구",
+      "descriptionPlaceholder": "홍보 문구 작성",
+      "visibility": "공개 범위",
+      "targetFilter": "대상 필터",
+      "targetFilterPlaceholder": "all, role:member, user:Jerry"
+    },
+    "visibility": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "actions": {
+      "add": "활동 추가",
+      "remove": "활동 삭제",
+      "clearImage": "이미지 제거"
+    }
   }
 }

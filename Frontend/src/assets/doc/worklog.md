@@ -541,3 +541,5 @@
 ## 2026/08/09
 
 - Add more site themes and refine setting layout.
+
+- Add admin activity management page.
