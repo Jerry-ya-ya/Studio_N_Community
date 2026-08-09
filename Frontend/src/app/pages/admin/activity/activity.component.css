@@ -9,6 +9,10 @@
   background: var(--studio-page-bg);
 }
 
+.activity-admin > * + * {
+  margin-top: 22px;
+}
+
 .activity-hero,
 .activity-toolbar,
 .activity-card {
@@ -87,7 +91,6 @@
   align-items: end;
   justify-content: space-between;
   gap: 18px;
-  margin-top: 18px;
   padding: clamp(20px, 3vw, 32px);
 }
 
@@ -133,12 +136,11 @@
 .activity-list {
   display: grid;
   gap: 16px;
-  margin-top: 18px;
 }
 
 .state-message {
   max-width: 1180px;
-  margin: 18px auto 0;
+  margin-inline: auto;
   padding: 14px;
   border: 1px solid var(--studio-line);
   border-radius: 8px;
@@ -246,10 +248,19 @@
 }
 
 @media (max-width: 900px) {
+  .activity-hero {
+    min-height: auto;
+    gap: 18px;
+  }
+
   .activity-hero,
   .activity-card,
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .activity-hero h1 {
+    font-size: clamp(52px, 12vw, 88px);
   }
 
   .activity-toolbar {

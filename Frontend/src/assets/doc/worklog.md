@@ -545,3 +545,5 @@
 - Add admin activity management page.
 
 - Connect admin activity management to backend.
+
+- Fix activity refresh and responsive recruit layout.

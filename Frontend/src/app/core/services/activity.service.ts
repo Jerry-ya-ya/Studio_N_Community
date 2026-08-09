@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { environment } from '../../../environments/environment';
 
 export type ActivityVisibility = 'public' | 'private';
 
@@ -33,6 +34,8 @@ export interface ActivityPayload {
   providedIn: 'root'
 })
 export class ActivityService {
+  private readonly assetBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
+
   constructor(private apiService: ApiService) {}
 
   getAdminActivities(): Observable<ActivityPromotion[]> {
@@ -92,6 +95,6 @@ export class ActivityService {
       return imageUrl;
     }
 
-    return `${this.apiService.getCurrentApiUrl()}${imageUrl}`;
+    return `${this.assetBaseUrl}${imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`}`;
   }
 }

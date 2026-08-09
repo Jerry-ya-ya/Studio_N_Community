@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivityPayload, ActivityPromotion, ActivityService, ActivityVisibility } from '../../../core/services/activity.service';
 
 interface ActivityDraft {
@@ -22,6 +22,7 @@ interface ActivityDraft {
   standalone: false,
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class ActivityComponent implements OnInit {
   readonly visibilityOptions: ActivityVisibility[] = ['public', 'private'];
@@ -31,7 +32,10 @@ export class ActivityComponent implements OnInit {
   savedMessage = '';
   errorMessage = '';
 
-  constructor(private activityService: ActivityService) {}
+  constructor(
+    private activityService: ActivityService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadActivities();
@@ -45,10 +49,12 @@ export class ActivityComponent implements OnInit {
       next: activities => {
         this.activities = activities.map((activity, index) => this.fromApi(activity, index));
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: error => {
         this.errorMessage = error?.error?.error || 'adminActivity.feedback.loadFailure';
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -86,6 +92,7 @@ export class ActivityComponent implements OnInit {
         this.applySavedActivity(activity, saved);
         this.savedMessage = 'adminActivity.feedback.saveSuccess';
         activity.saving = false;
+        this.refreshActivity(activity);
 
         if (activity.pendingImageFile && activity.id) {
           this.uploadPendingImage(activity);
@@ -94,6 +101,7 @@ export class ActivityComponent implements OnInit {
       error: error => {
         this.errorMessage = error?.error?.error || 'adminActivity.feedback.saveFailure';
         activity.saving = false;
+        this.refreshActivity(activity);
       }
     });
   }
@@ -101,6 +109,7 @@ export class ActivityComponent implements OnInit {
   removeActivity(activity: ActivityDraft) {
     if (!activity.id) {
       this.activities = this.activities.filter(item => item.localId !== activity.localId);
+      this.cdr.markForCheck();
       return;
     }
 
@@ -112,10 +121,12 @@ export class ActivityComponent implements OnInit {
       next: () => {
         this.activities = this.activities.filter(item => item.localId !== activity.localId);
         this.savedMessage = 'adminActivity.feedback.deleteSuccess';
+        this.cdr.markForCheck();
       },
       error: error => {
         this.errorMessage = error?.error?.error || 'adminActivity.feedback.deleteFailure';
         activity.saving = false;
+        this.refreshActivity(activity);
       }
     });
   }
@@ -126,6 +137,7 @@ export class ActivityComponent implements OnInit {
       activity.imagePreview = '';
       activity.imageUrl = null;
       activity.pendingImageFile = null;
+      this.refreshActivity(activity);
       return;
     }
 
@@ -137,10 +149,12 @@ export class ActivityComponent implements OnInit {
         activity.pendingImageFile = null;
         activity.uploading = false;
         this.savedMessage = 'adminActivity.feedback.imageRemoved';
+        this.refreshActivity(activity);
       },
       error: error => {
         this.errorMessage = error?.error?.error || 'adminActivity.feedback.imageRemoveFailure';
         activity.uploading = false;
+        this.refreshActivity(activity);
       }
     });
   }
@@ -157,7 +171,10 @@ export class ActivityComponent implements OnInit {
     activity.pendingImageFile = file;
 
     const reader = new FileReader();
-    reader.onload = () => activity.imagePreview = String(reader.result || '');
+    reader.onload = () => {
+      activity.imagePreview = String(reader.result || '');
+      this.refreshActivity(activity);
+    };
     reader.readAsDataURL(file);
     input.value = '';
   }
@@ -178,12 +195,19 @@ export class ActivityComponent implements OnInit {
         activity.pendingImageFile = null;
         activity.uploading = false;
         this.savedMessage = 'adminActivity.feedback.imageUploaded';
+        this.refreshActivity(activity);
       },
       error: error => {
         this.errorMessage = error?.error?.error || 'adminActivity.feedback.imageUploadFailure';
         activity.uploading = false;
+        this.refreshActivity(activity);
       }
     });
+  }
+
+  private refreshActivity(activity: ActivityDraft) {
+    this.activities = this.activities.map(item => item.localId === activity.localId ? { ...activity } : item);
+    this.cdr.markForCheck();
   }
 
   private toPayload(activity: ActivityDraft): ActivityPayload {
