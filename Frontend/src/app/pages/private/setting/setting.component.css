@@ -20,10 +20,14 @@
 .setting-hero {
   min-height: 360px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
-  gap: 24px;
+  grid-template-columns: minmax(0, 0.72fr) minmax(220px, 0.28fr);
+  gap: clamp(18px, 2.6vw, 24px);
   align-items: end;
-  padding: clamp(28px, 6vw, 72px);
+  padding: clamp(28px, 5vw, 68px);
+}
+
+.setting-hero > div:first-child {
+  min-width: 0;
 }
 
 .setting-kicker {
@@ -39,7 +43,7 @@
   margin: 0;
   color: var(--studio-text);
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: clamp(56px, 11vw, 142px);
+  font-size: clamp(54px, 8.5vw, 124px);
   line-height: 0.9;
   text-transform: uppercase;
 }
@@ -73,7 +77,7 @@
 
 .status-panel strong {
   color: var(--studio-text);
-  font-size: clamp(24px, 4vw, 38px);
+  font-size: clamp(24px, 3.2vw, 36px);
   line-height: 1;
 }
 
@@ -205,6 +209,34 @@
   background: #f8f6ef;
 }
 
+.theme-option__preview--aurora {
+  --preview-accent: #7dffd5;
+  --preview-warm: #cfa7ff;
+  --preview-panel: rgba(125, 255, 213, 0.2);
+  background: #061116;
+}
+
+.theme-option__preview--ember {
+  --preview-accent: #ff934f;
+  --preview-warm: #ffe071;
+  --preview-panel: rgba(255, 147, 79, 0.2);
+  background: #120806;
+}
+
+.theme-option__preview--mint {
+  --preview-accent: #168961;
+  --preview-warm: #5367d8;
+  --preview-panel: rgba(19, 38, 31, 0.18);
+  background: #f5fff9;
+}
+
+.theme-option__preview--royal {
+  --preview-accent: #a988ff;
+  --preview-warm: #f5ce65;
+  --preview-panel: rgba(169, 136, 255, 0.24);
+  background: #080718;
+}
+
 .theme-option__text {
   display: grid;
   gap: 8px;
@@ -279,8 +311,33 @@
   line-height: 1.8;
 }
 
+@media (max-width: 1120px) {
+  .setting-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .status-panel {
+    grid-template-columns: minmax(120px, 0.8fr) minmax(180px, 1.4fr) minmax(120px, 0.8fr);
+    align-items: center;
+  }
+
+  .status-panel span,
+  .status-panel strong,
+  .status-panel small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .status-panel strong {
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
 @media (max-width: 900px) {
-  .setting-hero,
   .settings-grid {
     grid-template-columns: 1fr;
   }
@@ -298,5 +355,15 @@
   .setting-hero {
     min-height: auto;
     padding: 22px;
+  }
+
+  .status-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .status-panel span,
+  .status-panel strong,
+  .status-panel small {
+    white-space: normal;
   }
 }

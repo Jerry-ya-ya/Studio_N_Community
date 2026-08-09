@@ -733,6 +733,22 @@
         "ivory": {
           "label": "Ivory White",
           "description": "A crisp white theme for brighter viewing conditions."
+        },
+        "aurora": {
+          "label": "Aurora Lab",
+          "description": "Green-blue aurora tones with a slight experimental lab feel."
+        },
+        "ember": {
+          "label": "Ember Forge",
+          "description": "Molten orange and gold signals for a workshop-like game mood."
+        },
+        "mint": {
+          "label": "Mint Circuit",
+          "description": "A bright mint palette with blue-violet signals and clean circuitry."
+        },
+        "royal": {
+          "label": "Royal Void",
+          "description": "Deep violet space with gold signals for a steady stage-like presence."
         }
       }
     },

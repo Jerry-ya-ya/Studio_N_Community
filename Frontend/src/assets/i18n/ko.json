@@ -733,6 +733,22 @@
         "ivory": {
           "label": "Ivory White",
           "description": "밝은 환경에서 보기 좋은 산뜻한 화이트 테마입니다."
+        },
+        "aurora": {
+          "label": "Aurora Lab",
+          "description": "청록 오로라 톤에 실험실 같은 기술감을 더한 테마입니다."
+        },
+        "ember": {
+          "label": "Ember Forge",
+          "description": "용광로 같은 주황빛과 골드 신호로 작업실 분위기를 만듭니다."
+        },
+        "mint": {
+          "label": "Mint Circuit",
+          "description": "밝은 민트 팔레트에 청보라 신호를 더한 깔끔한 회로풍 테마입니다."
+        },
+        "royal": {
+          "label": "Royal Void",
+          "description": "깊은 보라색 공간에 골드 신호를 더한 차분한 무대형 테마입니다."
         }
       }
     },

@@ -733,6 +733,22 @@
         "ivory": {
           "label": "Ivory White",
           "description": "清爽的白色主題，適合明亮環境下使用。"
+        },
+        "aurora": {
+          "label": "Aurora Lab",
+          "description": "極光般的青綠與紫色，帶一點實驗室科技感。"
+        },
+        "ember": {
+          "label": "Ember Forge",
+          "description": "熔火與金色提示交錯，像在工坊裡打造新企劃。"
+        },
+        "mint": {
+          "label": "Mint Circuit",
+          "description": "明亮薄荷綠搭配藍紫訊號，清爽但仍有電路感。"
+        },
+        "royal": {
+          "label": "Royal Void",
+          "description": "深紫宇宙底色配上金色訊號，沉穩又有舞台感。"
         }
       }
     },

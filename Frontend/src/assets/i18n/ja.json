@@ -733,6 +733,22 @@
         "ivory": {
           "label": "Ivory White",
           "description": "明るい環境でも使いやすい、すっきりした白テーマです。"
+        },
+        "aurora": {
+          "label": "Aurora Lab",
+          "description": "青緑のオーロラに、少し実験室のテック感を加えたテーマです。"
+        },
+        "ember": {
+          "label": "Ember Forge",
+          "description": "溶けた火色とゴールドの合図で、工房のようなゲーム感を作ります。"
+        },
+        "mint": {
+          "label": "Mint Circuit",
+          "description": "明るいミント色に青紫の信号を合わせた、軽やかな回路風テーマです。"
+        },
+        "royal": {
+          "label": "Royal Void",
+          "description": "深い紫の宇宙にゴールドの合図を置いた、落ち着いた舞台感のテーマです。"
         }
       }
     },
