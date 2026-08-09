@@ -547,3 +547,7 @@
 - Connect admin activity management to backend.
 
 - Fix activity refresh and responsive recruit layout.
+
+## 2026/08/10
+
+- Refactor setting and activity hero cards.
