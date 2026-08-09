@@ -1107,10 +1107,29 @@
       "public": "Public",
       "private": "Private"
     },
+    "state": {
+      "loading": "데이터베이스에서 활동을 불러오는 중...",
+      "empty": "아직 활동이 없습니다."
+    },
     "actions": {
       "add": "활동 추가",
+      "save": "활동 저장",
+      "saving": "저장 중...",
+      "uploading": "업데이트 중...",
       "remove": "활동 삭제",
       "clearImage": "이미지 제거"
+    },
+    "feedback": {
+      "loadFailure": "활동을 불러오지 못했습니다.",
+      "required": "활동 제목과 문구는 필수입니다.",
+      "saveSuccess": "활동이 저장되었습니다.",
+      "saveFailure": "활동 저장에 실패했습니다.",
+      "deleteSuccess": "활동이 삭제되었습니다.",
+      "deleteFailure": "활동 삭제에 실패했습니다.",
+      "imageUploaded": "활동 이미지가 업로드되었습니다.",
+      "imageUploadFailure": "활동 이미지 업로드에 실패했습니다.",
+      "imageRemoved": "활동 이미지가 제거되었습니다.",
+      "imageRemoveFailure": "활동 이미지 제거에 실패했습니다."
     }
   }
 }

@@ -1107,10 +1107,29 @@
       "public": "Public",
       "private": "Private"
     },
+    "state": {
+      "loading": "Loading activities from database...",
+      "empty": "No activities yet."
+    },
     "actions": {
       "add": "Add Activity",
+      "save": "Save Activity",
+      "saving": "Saving...",
+      "uploading": "Updating...",
       "remove": "Delete Activity",
       "clearImage": "Remove Image"
+    },
+    "feedback": {
+      "loadFailure": "Failed to load activities.",
+      "required": "Activity title and copy are required.",
+      "saveSuccess": "Activity saved.",
+      "saveFailure": "Failed to save activity.",
+      "deleteSuccess": "Activity deleted.",
+      "deleteFailure": "Failed to delete activity.",
+      "imageUploaded": "Activity image uploaded.",
+      "imageUploadFailure": "Failed to upload activity image.",
+      "imageRemoved": "Activity image removed.",
+      "imageRemoveFailure": "Failed to remove activity image."
     }
   }
 }

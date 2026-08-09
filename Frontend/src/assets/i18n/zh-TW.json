@@ -1107,10 +1107,29 @@
       "public": "Public",
       "private": "Private"
     },
+    "state": {
+      "loading": "正在從資料庫載入活動...",
+      "empty": "目前沒有活動。"
+    },
     "actions": {
       "add": "新增活動",
+      "save": "儲存活動",
+      "saving": "儲存中...",
+      "uploading": "更新中...",
       "remove": "刪除活動",
       "clearImage": "移除圖片"
+    },
+    "feedback": {
+      "loadFailure": "載入活動失敗。",
+      "required": "活動標題與文字為必填。",
+      "saveSuccess": "活動已儲存。",
+      "saveFailure": "儲存活動失敗。",
+      "deleteSuccess": "活動已刪除。",
+      "deleteFailure": "刪除活動失敗。",
+      "imageUploaded": "活動圖片已上傳。",
+      "imageUploadFailure": "上傳活動圖片失敗。",
+      "imageRemoved": "活動圖片已移除。",
+      "imageRemoveFailure": "移除活動圖片失敗。"
     }
   }
 }

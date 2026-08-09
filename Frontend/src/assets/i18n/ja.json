@@ -1107,10 +1107,29 @@
       "public": "Public",
       "private": "Private"
     },
+    "state": {
+      "loading": "データベースから活動を読み込んでいます...",
+      "empty": "活動はまだありません。"
+    },
     "actions": {
       "add": "活動を追加",
+      "save": "活動を保存",
+      "saving": "保存中...",
+      "uploading": "更新中...",
       "remove": "活動を削除",
       "clearImage": "画像を削除"
+    },
+    "feedback": {
+      "loadFailure": "活動の読み込みに失敗しました。",
+      "required": "活動タイトルと本文は必須です。",
+      "saveSuccess": "活動を保存しました。",
+      "saveFailure": "活動の保存に失敗しました。",
+      "deleteSuccess": "活動を削除しました。",
+      "deleteFailure": "活動の削除に失敗しました。",
+      "imageUploaded": "活動画像をアップロードしました。",
+      "imageUploadFailure": "活動画像のアップロードに失敗しました。",
+      "imageRemoved": "活動画像を削除しました。",
+      "imageRemoveFailure": "活動画像の削除に失敗しました。"
     }
   }
 }

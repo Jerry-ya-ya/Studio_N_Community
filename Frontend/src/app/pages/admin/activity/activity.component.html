@@ -25,12 +25,24 @@
     </button>
   </section>
 
+  @if (loading) {
+    <p class="state-message">{{ 'adminActivity.state.loading' | translate }}</p>
+  }
+
+  @if (savedMessage) {
+    <p class="state-message state-message--success">{{ savedMessage | translate }}</p>
+  }
+
+  @if (errorMessage) {
+    <p class="state-message state-message--error">{{ errorMessage | translate }}</p>
+  }
+
   <section class="activity-list">
-    @for (activity of activities; track activity.id) {
+    @for (activity of activities; track activity.localId) {
       <article class="activity-card">
         <div class="activity-preview">
-          @if (activity.imagePreview) {
-            <img [src]="activity.imagePreview" [alt]="activity.title || ('adminActivity.preview.imageAlt' | translate)">
+          @if (previewImage(activity)) {
+            <img [src]="previewImage(activity)" [alt]="activity.title || ('adminActivity.preview.imageAlt' | translate)">
           } @else {
             <div class="preview-placeholder">
               <span>{{ 'adminActivity.preview.placeholder' | translate }}</span>
@@ -42,8 +54,8 @@
             <input type="file" accept="image/*" (change)="onImageSelected($event, activity)">
           </label>
 
-          <button type="button" class="ghost danger" (click)="clearImage(activity)" [disabled]="!activity.imagePreview">
-            {{ 'adminActivity.actions.clearImage' | translate }}
+          <button type="button" class="ghost danger" (click)="clearImage(activity)" [disabled]="!previewImage(activity) || activity.uploading">
+            {{ (activity.uploading ? 'adminActivity.actions.uploading' : 'adminActivity.actions.clearImage') | translate }}
           </button>
         </div>
 
@@ -75,12 +87,20 @@
           </div>
 
           <div class="activity-actions">
-            <button type="button" class="ghost danger" (click)="removeActivity(activity.id)">
+            <button type="button" class="ghost" (click)="saveActivity(activity)" [disabled]="activity.saving || activity.uploading">
+              {{ (activity.saving ? 'adminActivity.actions.saving' : 'adminActivity.actions.save') | translate }}
+            </button>
+
+            <button type="button" class="ghost danger" (click)="removeActivity(activity)" [disabled]="activity.saving">
               {{ 'adminActivity.actions.remove' | translate }}
             </button>
           </div>
         </div>
       </article>
+    }
+
+    @if (!loading && activities.length === 0) {
+      <p class="state-message">{{ 'adminActivity.state.empty' | translate }}</p>
     }
   </section>
 </main>

@@ -136,6 +136,28 @@
   margin-top: 18px;
 }
 
+.state-message {
+  max-width: 1180px;
+  margin: 18px auto 0;
+  padding: 14px;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  color: var(--studio-muted);
+  background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+  font-weight: 800;
+  text-align: center;
+}
+
+.state-message--success {
+  border-color: color-mix(in srgb, var(--studio-success) 62%, var(--studio-line));
+  color: var(--studio-success);
+}
+
+.state-message--error {
+  border-color: color-mix(in srgb, var(--studio-danger) 62%, var(--studio-line));
+  color: var(--studio-danger);
+}
+
 .activity-card {
   display: grid;
   grid-template-columns: minmax(260px, 0.42fr) minmax(0, 1fr);
@@ -218,6 +240,8 @@
 
 .activity-actions {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: flex-end;
 }
 

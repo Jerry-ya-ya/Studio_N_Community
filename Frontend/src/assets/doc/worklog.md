@@ -543,3 +543,5 @@
 - Add more site themes and refine setting layout.
 
 - Add admin activity management page.
+
+- Connect admin activity management to backend.

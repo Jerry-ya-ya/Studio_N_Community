@@ -188,6 +188,24 @@ class DailyCheckIn(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='daily_check_ins')
 
+class ActivityPromotion(db.Model):
+    __table_args__ = (
+        db.CheckConstraint("visibility IN ('public', 'private')", name='ck_activity_promotion_visibility'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    visibility = db.Column(db.String(20), default='private', nullable=False, index=True)
+    target_filter = db.Column(db.String(160), default='all', nullable=False)
+    image_url = db.Column(db.String(255))
+    sort_order = db.Column(db.Integer, default=0, nullable=False)
+    created_at = db.Column(db.DateTime, default=taipei_now)
+    updated_at = db.Column(db.DateTime, default=taipei_now, onupdate=taipei_now)
+
+    created_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_by = db.relationship('User', backref='activity_promotions')
+
 
 def load_models():
     """Keep all table models registered from one place before schema creation."""
@@ -203,4 +221,5 @@ def load_models():
         ProjectRecruitment,
         ProjectRecruitmentMember,
         DailyCheckIn,
+        ActivityPromotion,
     )
