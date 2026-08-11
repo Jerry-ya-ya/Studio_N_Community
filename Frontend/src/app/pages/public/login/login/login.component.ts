@@ -19,6 +19,7 @@ export class LoginComponent {
   username = '';
   password = '';
   role = '';
+  rememberLogin = true;
 
   error = '';
   submitting = false;
@@ -29,6 +30,10 @@ export class LoginComponent {
     private snackBar: MatSnackBar,
     private translate: TranslateService
   ) {}
+
+  get loginAction() {
+    return `${this.apiService.getCurrentApiUrl()}/login`;
+  }
 
   login() {
     if (this.submitting) {
@@ -46,6 +51,7 @@ export class LoginComponent {
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('username', res.username);
         localStorage.setItem('role', res.role);
+        this.storeBrowserCredential(res.username || this.username);
         this.openLoginSnack('login.feedback.success', 'studio-snackbar-success');
         this.router.navigate([appPath.userhome]);
       },
@@ -68,5 +74,27 @@ export class LoginComponent {
         panelClass: ['studio-snackbar', panelClass]
       }
     );
+  }
+
+  private storeBrowserCredential(displayName: string) {
+    if (!this.rememberLogin || !this.username || !this.password) {
+      return;
+    }
+
+    const credentialWindow = window as Window & {
+      PasswordCredential?: new (data: { id: string; name?: string; password: string }) => Credential;
+    };
+
+    if (!credentialWindow.PasswordCredential || !navigator.credentials?.store) {
+      return;
+    }
+
+    const credential = new credentialWindow.PasswordCredential({
+      id: this.username,
+      name: displayName,
+      password: this.password
+    });
+
+    navigator.credentials.store(credential).catch(() => undefined);
   }
 }

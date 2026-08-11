@@ -96,7 +96,13 @@
       <p>{{ 'login.hero.description' | translate }}</p>
     </div>
 
-    <form class="login-panel" (ngSubmit)="login()" autocomplete="on">
+    <form
+      id="login-form"
+      class="login-panel"
+      method="post"
+      [attr.action]="loginAction"
+      (ngSubmit)="login()"
+      autocomplete="on">
       <div class="panel-header">
         <p class="login-kicker">{{ 'login.form.kicker' | translate }}</p>
         <h2>{{ 'login.form.title' | translate }}</h2>
@@ -105,7 +111,8 @@
       <label class="form-field">
         <span>{{ 'login.form.username' | translate }}</span>
         <input
-          id="login-username"
+          id="username"
+          type="text"
           [(ngModel)]="username"
           name="username"
           autocomplete="username"
@@ -118,7 +125,7 @@
       <label class="form-field">
         <span>{{ 'login.form.password' | translate }}</span>
         <input
-          id="login-password"
+          id="password"
           [(ngModel)]="password"
           name="password"
           type="password"
@@ -129,7 +136,12 @@
 
       <div class="login-tools">
         <label class="remember">
-          <input class="checkbox" type="checkbox" name="remember" autocomplete="off">
+          <input
+            class="checkbox"
+            type="checkbox"
+            name="remember"
+            [(ngModel)]="rememberLogin"
+            autocomplete="on">
           <span>{{ 'login.form.remember' | translate }}</span>
         </label>
         <a [routerLink]="['forgotpassword']">{{ 'login.links.forgotPassword' | translate }}</a>

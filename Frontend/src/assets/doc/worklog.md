@@ -551,3 +551,6 @@
 ## 2026/08/10
 
 - Refactor setting and activity hero cards.
+## 2026/08/11
+
+- Improve browser credential support for login.
