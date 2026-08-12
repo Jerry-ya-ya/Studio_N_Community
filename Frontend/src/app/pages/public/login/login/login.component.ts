@@ -46,9 +46,11 @@ export class LoginComponent {
     this.apiService.post<any>('/login', {
       username: this.username,
       password: this.password,
+      remember_me: this.rememberLogin,
     }).subscribe({
       next: res => {
         localStorage.setItem('token', res.access_token);
+        localStorage.setItem('refreshToken', res.refresh_token);
         localStorage.setItem('username', res.username);
         localStorage.setItem('role', res.role);
         this.storeBrowserCredential(res.username || this.username);

@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <form class="register-panel" (ngSubmit)="register()" autocomplete="off">
+    <form id="register-form" class="register-panel" method="post" [attr.action]="registerAction" (ngSubmit)="register()" autocomplete="on">
       <div class="panel-header">
         <p class="register-kicker">{{ 'register.form.kicker' | translate }}</p>
         <h2>{{ 'register.form.title' | translate }}</h2>
@@ -22,17 +22,17 @@
 
       <label class="form-field" for="username">
         <span>{{ 'register.form.username' | translate }}</span>
-        <input id="username" [(ngModel)]="username" name="username" required [placeholder]="'register.form.usernamePlaceholder' | translate">
+        <input id="username" type="text" [(ngModel)]="username" name="username" autocomplete="username" required [placeholder]="'register.form.usernamePlaceholder' | translate">
       </label>
 
       <label class="form-field" for="email">
         <span>{{ 'register.form.email' | translate }}</span>
-        <input id="email" type="email" [(ngModel)]="email" name="email" required [placeholder]="'register.form.emailPlaceholder' | translate">
+        <input id="email" type="email" [(ngModel)]="email" name="email" autocomplete="email" required [placeholder]="'register.form.emailPlaceholder' | translate">
       </label>
 
       <label class="form-field" for="password">
         <span>{{ 'register.form.password' | translate }}</span>
-        <input id="password" type="password" [(ngModel)]="password" name="password" required [placeholder]="'register.form.passwordPlaceholder' | translate">
+        <input id="password" type="password" [(ngModel)]="password" name="password" autocomplete="new-password" required [placeholder]="'register.form.passwordPlaceholder' | translate">
       </label>
 
       <button class="register-btn" type="submit" [disabled]="submitting">

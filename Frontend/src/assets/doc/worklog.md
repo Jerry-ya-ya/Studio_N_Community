@@ -554,3 +554,7 @@
 ## 2026/08/11
 
 - Improve browser credential support for login.
+
+## 2026/08/13
+
+- Add remember me refresh tokens and register credentials support.

@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from models import db, User
 from routes.auth.email import generate_confirmation_token, mail
 from flask_mail import Message
 import os
 from flask import current_app
 from time_utils import taipei_now, to_taipei_iso
+from datetime import timedelta
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -82,6 +83,7 @@ def login():
 
     username = data.get('username')
     password = data.get('password')
+    remember_me = bool(data.get('remember_me'))
 
     if not all([username, password]):
         return jsonify({'error': '請填寫帳號和密碼'}), 400
@@ -94,11 +96,37 @@ def login():
     if not user.email_verified:
         return jsonify({'error': '請先驗證你的 Email'}), 403  # 👈 阻止登入
 
+    refresh_expires = timedelta(days=7 if remember_me else 1)
+    token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
+    refresh_token = create_refresh_token(
+        identity=str(user.id),
+        additional_claims={'role': user.role, 'remember_me': remember_me},
+        expires_delta=refresh_expires
+    )
+    return jsonify({
+        'access_token': token,
+        'refresh_token': refresh_token,
+        'refresh_expires_in_days': 7 if remember_me else 1,
+        'is_verified': True,  # 明確標示用戶已驗證
+        'require_verification': False,  # 告訴前端不需要驗證
+        'role': user.role,
+        'username': user.username,
+        'user_id': user.id,
+    })
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh_access_token():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
     token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
     return jsonify({
         'access_token': token,
-        'is_verified': True,  # 明確標示用戶已驗證
-        'require_verification': False,  # 告訴前端不需要驗證
         'role': user.role,
         'username': user.username,
         'user_id': user.id,

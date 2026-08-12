@@ -127,6 +127,7 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');
     localStorage.removeItem('username');
     this.collapsed = true;

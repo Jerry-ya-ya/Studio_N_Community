@@ -32,6 +32,9 @@ export class ProfileComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
     location.reload();  // 或導向登入頁
   }
 

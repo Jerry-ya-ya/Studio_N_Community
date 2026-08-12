@@ -22,6 +22,32 @@ export class RegisterComponent {
   
   constructor(private apiService: ApiService) {}
 
+  get registerAction() {
+    return `${this.apiService.getCurrentApiUrl()}/register`;
+  }
+
+  private storeBrowserCredential(displayName: string) {
+    if (!this.username || !this.password) {
+      return;
+    }
+
+    const credentialWindow = window as Window & {
+      PasswordCredential?: new (data: { id: string; name?: string; password: string }) => Credential;
+    };
+
+    if (!credentialWindow.PasswordCredential || !navigator.credentials?.store) {
+      return;
+    }
+
+    const credential = new credentialWindow.PasswordCredential({
+      id: this.username,
+      name: displayName,
+      password: this.password
+    });
+
+    navigator.credentials.store(credential).catch(() => undefined);
+  }
+
   register() {
     if (this.submitting) {
       return;
@@ -38,6 +64,7 @@ export class RegisterComponent {
       email: this.email,
     }).subscribe({
       next: res => {
+        this.storeBrowserCredential(res.username || this.username);
         this.successMessageKey = 'register.feedback.success';
         this.username = '';
         this.password = '';

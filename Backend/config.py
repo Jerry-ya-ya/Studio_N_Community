@@ -14,7 +14,7 @@ class BaseConfig:
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
 
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
 
     SUPERADMIN_EMAIL = os.environ.get("SUPERADMIN_EMAIL")
 

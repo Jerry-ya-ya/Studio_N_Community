@@ -1,9 +1,9 @@
 import { Injectable, Injector } from '@angular/core';
 
-import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,8 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private router: Router,
     private injector: Injector,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private http: HttpClient
   ) {}
   
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -28,7 +29,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     let authReq = req;
     
-    if (token && isBackendApiRequest) {
+    if (token && isBackendApiRequest && !this.isRefreshRequest(req.url)) {
       authReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
@@ -39,10 +40,25 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (isBackendApiRequest && error.status === 401 && !this.isLoginRequest(req.url)) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-          this.openSessionExpiredSnack();
-          this.router.navigate(['/login']);
+          if (this.isRefreshRequest(req.url)) {
+            this.clearSessionAndRedirect();
+            return throwError(() => error);
+          }
+
+          return this.refreshAccessToken().pipe(
+            switchMap(accessToken => {
+              const retryReq = req.clone({
+                setHeaders: {
+                  Authorization: `Bearer ${accessToken}`
+                }
+              });
+              return next.handle(retryReq);
+            }),
+            catchError(refreshError => {
+              this.clearSessionAndRedirect();
+              return throwError(() => refreshError);
+            })
+          );
         }
         return throwError(() => error);
       })
@@ -55,6 +71,48 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private isLoginRequest(url: string) {
     return url.split('?')[0].replace(/\/+$/, '').endsWith('/login');
+  }
+
+  private isRefreshRequest(url: string) {
+    return url.split('?')[0].replace(/\/+$/, '').endsWith('/refresh');
+  }
+
+  private refreshAccessToken(): Observable<string> {
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (!refreshToken) {
+      return throwError(() => new Error('Missing refresh token'));
+    }
+
+    return this.http.post<{ access_token: string; role?: string; username?: string }>(
+      `${this.apiBaseUrl}/refresh`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`
+        }
+      }
+    ).pipe(
+      map(response => {
+        localStorage.setItem('token', response.access_token);
+        if (response.role) {
+          localStorage.setItem('role', response.role);
+        }
+        if (response.username) {
+          localStorage.setItem('username', response.username);
+        }
+        return response.access_token;
+      })
+    );
+  }
+
+  private clearSessionAndRedirect() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
+    this.openSessionExpiredSnack();
+    this.router.navigate(['/login']);
   }
 
   private async openSessionExpiredSnack() {
