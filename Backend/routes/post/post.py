@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, abort
 from flask_jwt_extended import jwt_required
-from models import db, Post
+from models import db, Post, PostLike
 from routes.auth.utils import get_current_user_from_token
 from time_utils import to_taipei_text
 
@@ -14,12 +14,14 @@ def get_pagination_args(default_per_page=20, max_per_page=50):
     per_page = min(max(per_page or default_per_page, 1), max_per_page)
     return page, per_page
 
-def serialize_post(post, include_user=False):
+def serialize_post(post, include_user=False, current_user_id=None):
     data = {
         'id': post.id,
         'content': post.content,
         'created_at': to_taipei_text(post.created_at),
         'user_id': post.user_id,
+        'like_count': len(post.likes),
+        'liked_by_me': any(like.user_id == current_user_id for like in post.likes) if current_user_id else False,
     }
 
     if include_user:
@@ -55,6 +57,10 @@ def create_post():
 @post_bp.route('/post', methods=['GET'])
 @jwt_required()
 def get_all_posts():
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
     page, per_page = get_pagination_args()
     posts = (
         Post.query
@@ -64,7 +70,7 @@ def get_all_posts():
         .all()
     )
 
-    return jsonify([serialize_post(post, include_user=True) for post in posts])
+    return jsonify([serialize_post(post, include_user=True, current_user_id=user.id) for post in posts])
 
 @post_bp.route('/post/me', methods=['GET'])
 @jwt_required()
@@ -82,7 +88,31 @@ def get_my_posts():
         .all()
     )
 
-    return jsonify([serialize_post(post) for post in posts])
+    return jsonify([serialize_post(post, current_user_id=user.id) for post in posts])
+
+@post_bp.route('/post/<int:post_id>/like', methods=['POST'])
+@jwt_required()
+def toggle_post_like(post_id):
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    post = Post.query.get_or_404(post_id)
+    like = PostLike.query.filter_by(post_id=post.id, user_id=user.id).first()
+
+    if like:
+        db.session.delete(like)
+        liked = False
+    else:
+        db.session.add(PostLike(post_id=post.id, user_id=user.id))
+        liked = True
+
+    db.session.commit()
+
+    return jsonify({
+        'liked_by_me': liked,
+        'like_count': PostLike.query.filter_by(post_id=post.id).count()
+    })
 
 # 修改貼文
 @post_bp.route('/post/<int:post_id>', methods=['PUT'])

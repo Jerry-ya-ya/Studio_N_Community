@@ -84,6 +84,29 @@ export class UserhomeComponent {
     return (user?.nickname || user?.username || '?').charAt(0).toUpperCase();
   }
 
+  toggleLike(post: any) {
+    if (post.likePending) {
+      return;
+    }
+
+    post.likePending = true;
+    this.http.post<{ liked_by_me: boolean; like_count: number }>(
+      `${environment.apiUrl}/post/${post.id}/like`,
+      {},
+      { headers: this.headers }
+    ).subscribe({
+      next: response => {
+        post.liked_by_me = response.liked_by_me;
+        post.like_count = response.like_count;
+        post.likePending = false;
+      },
+      error: err => {
+        console.error('Failed to toggle post like:', err);
+        post.likePending = false;
+      }
+    });
+  }
+
   ngOnInit(): void {
     console.log('UserHome component initialized - loading all users and posts');
     this.loadAllUsers();

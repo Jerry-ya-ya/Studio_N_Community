@@ -362,6 +362,52 @@
   gap: 20px;
 }
 
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 80%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--studio-text) 82%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-panel) 72%, transparent), color-mix(in srgb, var(--studio-panel-strong) 68%, transparent));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.like-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  color: var(--studio-danger);
+  border-color: color-mix(in srgb, var(--studio-danger) 48%, var(--studio-line));
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--studio-danger) 20%, transparent), transparent 42%),
+    color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+}
+
+.like-button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.like-button--active {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--studio-danger) 68%, var(--studio-line));
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22), transparent 35%),
+    linear-gradient(135deg, var(--studio-danger), color-mix(in srgb, var(--studio-danger) 68%, var(--studio-accent)));
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--studio-danger) 24%, transparent);
+}
+
+.like-icon {
+  width: 18px;
+  font-size: 19px;
+  line-height: 1;
+  text-align: center;
+}
+
 .stat-item {
   display: flex;
   align-items: center;

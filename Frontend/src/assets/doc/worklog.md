@@ -558,3 +558,5 @@
 ## 2026/08/13
 
 - Add remember me refresh tokens and register credentials support.
+
+- Add private home post hearts.

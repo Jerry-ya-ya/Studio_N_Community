@@ -82,10 +82,16 @@
                 </div>
                 <div class="post-footer">
                   <div class="post-stats">
-                    <span class="stat-item">
-                      <span class="stat-icon">💬</span>
-                      <span class="stat-number">0</span>
-                    </span>
+                    <button
+                      type="button"
+                      class="like-button"
+                      [class.like-button--active]="post.liked_by_me"
+                      [disabled]="post.likePending"
+                      (click)="toggleLike(post)"
+                      [attr.aria-pressed]="post.liked_by_me">
+                      <span class="like-icon">{{ post.liked_by_me ? '♥' : '♡' }}</span>
+                      <span class="stat-number">{{ post.like_count || 0 }}</span>
+                    </button>
                   </div>
                 </div>
               </div>

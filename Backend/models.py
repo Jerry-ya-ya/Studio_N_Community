@@ -135,6 +135,20 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='posts')
 
+class PostLike(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('post_id', 'user_id', name='uq_post_like_post_user'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=taipei_now)
+
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    post = db.relationship('Post', backref=db.backref('likes', cascade='all, delete-orphan'))
+    user = db.relationship('User', backref='post_likes')
+
 class ProjectRecruitment(db.Model):
     __table_args__ = (
         db.CheckConstraint(
@@ -218,6 +232,7 @@ def load_models():
         MemberContentItem,
         ScheduleState,
         Post,
+        PostLike,
         ProjectRecruitment,
         ProjectRecruitmentMember,
         DailyCheckIn,
