@@ -560,3 +560,7 @@
 - Add remember me refresh tokens and register credentials support.
 
 - Add private home post hearts.
+
+## 2026/08/14
+
+- Sync browser tab branding with world mode.

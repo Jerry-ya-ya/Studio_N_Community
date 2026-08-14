@@ -65,6 +65,10 @@ export class ThemeService implements OnDestroy {
   private readonly defaultWorldModeIsNight = true;
   private readonly defaultWorldLocked = true;
   private readonly storageKey = 'studio-theme';
+  private readonly edenBrowserTitle = 'EDEN';
+  private readonly cmenBrowserTitle = 'CMENStudio';
+  private readonly edenBrowserIcon = 'icons/eden.png';
+  private readonly cmenBrowserIcon = 'icons/cmenstudio.png';
   private timerId: ReturnType<typeof setInterval> | null = null;
 
   isNightMode = this.defaultWorldModeIsNight;
@@ -159,9 +163,42 @@ export class ThemeService implements OnDestroy {
   private syncBodyTheme() {
     this.document.body.classList.toggle('eden-night-theme', this.isNightMode);
     this.document.body.classList.toggle('cmen-day-theme', !this.isNightMode);
+    this.syncBrowserTitle();
 
     for (const theme of this.themeOptions) {
       this.document.body.classList.toggle(`studio-theme-${theme.id}`, this.activeTheme === theme.id);
+    }
+  }
+
+  private syncBrowserTitle() {
+    const title = this.isNightMode ? this.edenBrowserTitle : this.cmenBrowserTitle;
+    this.document.title = title;
+    this.syncBrowserIcon();
+
+    const appleTitle = this.document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-title"]');
+    if (appleTitle) {
+      appleTitle.content = title;
+    }
+  }
+
+  private syncBrowserIcon() {
+    const icon = this.isNightMode ? this.edenBrowserIcon : this.cmenBrowserIcon;
+    this.setLinkHref('icon', icon);
+    this.setLinkHref('apple-touch-icon', icon);
+  }
+
+  private setLinkHref(rel: string, href: string) {
+    let link = this.document.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
+
+    if (!link) {
+      link = this.document.createElement('link');
+      link.rel = rel;
+      this.document.head.appendChild(link);
+    }
+
+    link.href = href;
+    if (rel === 'icon') {
+      link.type = 'image/png';
     }
   }
 
