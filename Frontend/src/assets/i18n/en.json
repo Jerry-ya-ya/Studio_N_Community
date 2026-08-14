@@ -772,6 +772,21 @@
       "sharedDevice": "Change your password if a device is shared or lost.",
       "publicComputer": "Log out after using a public computer."
     },
+    "danger": {
+      "aria": "Danger zone",
+      "kicker": "Danger Zone",
+      "title": "Danger Zone",
+      "description": "These actions can remove your access to the account. Read carefully before continuing.",
+      "deleteTitle": "Delete Account",
+      "deleteDescription": "This will deactivate your account and sign you out. Site records are preserved for audit history.",
+      "confirmLabel": "Type DELETE to confirm",
+      "confirmPlaceholder": "DELETE",
+      "deleteButton": "Delete Account",
+      "deleting": "Deleting...",
+      "feedback": {
+        "failure": "Failed to delete account."
+      }
+    },
     "feedback": {
       "passwordSuccess": "Password changed successfully.",
       "passwordFailure": "Update failed."

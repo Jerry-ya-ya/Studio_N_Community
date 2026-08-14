@@ -568,3 +568,5 @@
 - Support opening sidebar brand link in new tabs.
 
 - Add superadmin website logs scaffold.
+
+- Add account soft delete controls and promote avatar fallback.

@@ -9,10 +9,15 @@ interface User {
   nickname?: string;
   role: string;
   email_verified: boolean;
+  is_deleted?: boolean;
   avatar_url?: string;
+  avatarUrl?: string;
+  avatar_source?: string;
+  avatarSource?: string;
   created_at: string;
   total_points?: number;
   totalPoints?: number;
+  imageLoadFailed?: boolean;
 }
 
 @Component({
@@ -73,6 +78,33 @@ export class PromoteComponent implements OnInit {
       'superadmin': '最高管理員'
     };
     return roleMap[role] || role;
+  }
+
+  getAccountStatus(user: User): string {
+    return user.is_deleted ? '已刪除' : '啟用中';
+  }
+
+  getUserAvatar(user: User): string {
+    const avatarUrl = user.avatarUrl || user.avatar_url || '';
+
+    if (!avatarUrl || user.imageLoadFailed) {
+      return '';
+    }
+
+    if (/^https?:\/\//i.test(avatarUrl)) {
+      return avatarUrl;
+    }
+
+    return `${this.apiRoot}/${avatarUrl.replace(/^\/+/, '')}`;
+  }
+
+  getUserInitial(user: User): string {
+    const label = (user.nickname || user.username || user.email || '?').trim();
+    return label.charAt(0).toUpperCase() || '?';
+  }
+
+  markAvatarFailed(user: User): void {
+    user.imageLoadFailed = true;
   }
 
   formatDate(dateString: string): string {

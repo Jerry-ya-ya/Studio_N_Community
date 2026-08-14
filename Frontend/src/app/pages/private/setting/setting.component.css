@@ -89,13 +89,87 @@
 
 .settings-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.7fr);
+  grid-template-columns: 1fr;
   gap: 18px;
   margin-top: 18px;
 }
 
 .theme-controller {
-  grid-column: 1 / -1;
+  grid-column: auto;
+}
+
+.danger-zone {
+  position: relative;
+  grid-column: auto;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--studio-danger) 64%, var(--studio-line));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-danger) 16%, transparent), transparent 45%),
+    var(--studio-surface-bg);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--studio-danger) 18%, transparent),
+    0 22px 46px color-mix(in srgb, var(--studio-danger) 16%, transparent);
+}
+
+.danger-zone__stripe {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 8px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--studio-danger) 0 10px,
+      color-mix(in srgb, var(--studio-danger) 42%, #000) 10px 20px
+    );
+}
+
+.danger-zone .setting-kicker,
+.danger-zone h2 {
+  color: var(--studio-danger);
+}
+
+.danger-zone h2 {
+  text-shadow:
+    2px 2px 0 color-mix(in srgb, var(--studio-danger) 42%, transparent),
+    -2px -2px 0 color-mix(in srgb, var(--studio-warm) 26%, transparent);
+}
+
+.danger-zone__copy {
+  max-width: 820px;
+  margin: 0 0 18px;
+  color: var(--studio-muted);
+  line-height: 1.7;
+}
+
+.danger-delete {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: stretch;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--studio-danger) 42%, transparent);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-danger) 12%, transparent), transparent 55%),
+    color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+}
+
+.danger-delete h3 {
+  margin: 0 0 8px;
+  color: var(--studio-text);
+  font-size: 1.12rem;
+  text-transform: uppercase;
+}
+
+.danger-delete p {
+  max-width: 820px;
+  margin: 0;
+  color: var(--studio-muted);
+  line-height: 1.55;
+}
+
+.danger-delete .setting-button {
+  max-width: 280px;
 }
 
 .setting-card {
@@ -295,6 +369,18 @@
   opacity: 0.62;
 }
 
+.setting-button--danger {
+  border-color: var(--studio-danger);
+  color: #fff;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-danger) 88%, #000), var(--studio-danger));
+}
+
+.setting-button--danger:not(:disabled):hover {
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--studio-danger) 26%, transparent);
+  transform: translateY(-1px);
+}
+
 .setting-message {
   margin: 16px 0 0;
   padding: 12px;
@@ -318,12 +404,12 @@
 }
 
 @media (max-width: 900px) {
-  .settings-grid {
+  .theme-options {
     grid-template-columns: 1fr;
   }
 
-  .theme-options {
-    grid-template-columns: 1fr;
+  .danger-delete .setting-button {
+    max-width: none;
   }
 }
 

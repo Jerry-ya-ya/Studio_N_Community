@@ -9,6 +9,12 @@ todo_bp = Blueprint('todo', __name__)
 # Todos API
 
 
+def display_user_name(user):
+    if not user:
+        return None
+    return user.display_nickname or user.display_username
+
+
 def serialize_todo(todo):
     return {
         'id': todo.id,
@@ -23,8 +29,8 @@ def serialize_todo(todo):
         'claimed_by_id': todo.claimed_by_id,
         'project_id': todo.project_id,
         'project_title': todo.project.title if todo.project else None,
-        'assignee_name': todo.user.nickname or todo.user.username if todo.user else None,
-        'claimed_by_name': todo.claimed_by.nickname or todo.claimed_by.username if todo.claimed_by else None,
+        'assignee_name': display_user_name(todo.user),
+        'claimed_by_name': display_user_name(todo.claimed_by),
         'created_at': to_taipei_text(todo.created_at),
     }
 

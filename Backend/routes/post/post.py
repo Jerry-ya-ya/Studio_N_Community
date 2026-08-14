@@ -27,8 +27,8 @@ def serialize_post(post, include_user=False, current_user_id=None):
     if include_user:
         data['user'] = {
             'id': post.user.id,
-            'username': post.user.username,
-            'nickname': post.user.nickname,
+            'username': post.user.display_username,
+            'nickname': post.user.display_nickname,
             'avatar_url': post.user.avatar_url,
             'role': post.user.role
         }

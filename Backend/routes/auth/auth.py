@@ -90,7 +90,7 @@ def login():
     
     user = User.query.filter_by(username=username).first()
         
-    if not user or not check_password_hash(user.password, password):
+    if not user or user.is_deleted or not check_password_hash(user.password, password):
         return jsonify({'error': '帳號或密碼錯誤'}), 401
 
     if not user.email_verified:
@@ -121,7 +121,7 @@ def refresh_access_token():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
 
-    if not user:
+    if not user or user.is_deleted:
         return jsonify({'error': 'User not found'}), 404
 
     token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})

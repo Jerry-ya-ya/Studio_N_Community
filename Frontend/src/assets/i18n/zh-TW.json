@@ -772,6 +772,21 @@
       "sharedDevice": "如果裝置曾被共用或遺失，請更換密碼。",
       "publicComputer": "使用公共電腦後請記得登出。"
     },
+    "danger": {
+      "aria": "危險區域",
+      "kicker": "Danger Zone",
+      "title": "危險區域",
+      "description": "這裡的操作會移除你對帳號的存取權限，繼續前請仔細確認。",
+      "deleteTitle": "刪除帳號",
+      "deleteDescription": "這會刪除你的帳號並登出。網站紀錄會被保留作為稽核歷史。",
+      "confirmLabel": "輸入 DELETE 以確認",
+      "confirmPlaceholder": "DELETE",
+      "deleteButton": "刪除帳號",
+      "deleting": "刪除中...",
+      "feedback": {
+        "failure": "刪除帳號失敗。"
+      }
+    },
     "feedback": {
       "passwordSuccess": "密碼修改成功",
       "passwordFailure": "修改失敗"

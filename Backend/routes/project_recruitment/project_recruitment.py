@@ -13,8 +13,8 @@ project_recruitment_bp = Blueprint('project_recruitment', __name__)
 def serialize_user(user):
     return {
         'id': user.id,
-        'username': user.username,
-        'nickname': user.nickname,
+        'username': user.display_username,
+        'nickname': user.display_nickname,
         'avatar_url': user.avatar_url,
         'role': user.role,
     }
@@ -41,8 +41,8 @@ def serialize_project_todo(todo):
         'user_id': todo.user_id,
         'created_by_id': todo.created_by_id,
         'claimed_by_id': todo.claimed_by_id,
-        'assignee_name': todo.user.nickname or todo.user.username if todo.user else None,
-        'claimed_by_name': todo.claimed_by.nickname or todo.claimed_by.username if todo.claimed_by else None,
+        'assignee_name': todo.user.display_nickname or todo.user.display_username if todo.user else None,
+        'claimed_by_name': todo.claimed_by.display_nickname or todo.claimed_by.display_username if todo.claimed_by else None,
         'created_at': to_taipei_text(todo.created_at),
     }
 

@@ -42,7 +42,7 @@ def remove_friend(friend_id):
     current_user.friends.remove(friend)
     db.session.commit()
 
-    return jsonify({'message': f'已刪除 {friend.username} 為好友'})
+    return jsonify({'message': f'已刪除 {friend.display_username} 為好友'})
 
 @friend_bp.route('/friends/list', methods=['GET'])
 @jwt_required()
@@ -54,10 +54,10 @@ def get_friends():
     return jsonify([
         {
             'id': f.id,
-            'username': f.username,
-            'name': f.nickname or f.username,
-            'nickname': f.nickname,
-            'email': f.email,
+            'username': f.display_username,
+            'name': f.display_nickname or f.display_username,
+            'nickname': f.display_nickname,
+            'email': f.display_email,
             'githubUrl': f.github_url or '',
             'avatarUrl': f.avatar_url,
             'avatarSource': f.avatar_source or 'github',
@@ -107,7 +107,7 @@ def get_friend_requests():
 
     requests = FriendRequest.query.filter_by(to_user_id=current_user.id).all()
     return jsonify([
-        {'id': r.id, 'from_username': r.from_user.username}
+        {'id': r.id, 'from_username': r.from_user.display_username}
         for r in requests
     ])
 
@@ -131,7 +131,7 @@ def accept_friend_request(request_id):
     db.session.delete(req)
     db.session.commit()
 
-    return jsonify({'message': f'你與 {from_user.username} 已成為好友'})
+    return jsonify({'message': f'你與 {from_user.display_username} 已成為好友'})
 
 @friend_bp.route('/friends/reject/<int:request_id>', methods=['POST'])
 @jwt_required()

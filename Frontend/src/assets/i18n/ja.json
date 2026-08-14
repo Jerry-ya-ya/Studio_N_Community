@@ -772,6 +772,21 @@
       "sharedDevice": "端末を共有した、または紛失した場合はパスワードを変更してください。",
       "publicComputer": "公共のコンピューターを使用した後はログアウトしてください。"
     },
+    "danger": {
+      "aria": "危険ゾーン",
+      "kicker": "Danger Zone",
+      "title": "危険ゾーン",
+      "description": "この操作によりアカウントへのアクセスが失われる可能性があります。続行前に内容を確認してください。",
+      "deleteTitle": "アカウント削除",
+      "deleteDescription": "アカウントを無効化してサインアウトします。監査履歴のためサイト記録は保持されます。",
+      "confirmLabel": "確認のため DELETE と入力",
+      "confirmPlaceholder": "DELETE",
+      "deleteButton": "アカウント削除",
+      "deleting": "削除中...",
+      "feedback": {
+        "failure": "アカウントを削除できませんでした。"
+      }
+    },
     "feedback": {
       "passwordSuccess": "パスワードを変更しました。",
       "passwordFailure": "更新に失敗しました。"

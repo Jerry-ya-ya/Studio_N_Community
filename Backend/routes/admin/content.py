@@ -79,8 +79,8 @@ def serialize_registered_member(user):
 
     return {
         'id': user.id,
-        'name': user.nickname or user.username,
-        'username': user.username,
+        'name': user.display_nickname or user.display_username,
+        'username': user.display_username,
         'role': role,
         'githubUrl': user.github_url or '',
         'avatarUrl': user.avatar_url,

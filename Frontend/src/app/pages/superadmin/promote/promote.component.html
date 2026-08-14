@@ -55,7 +55,18 @@
                 <div class="user-id col-id">{{ user.id }}</div>
                 <div class="username col-username">
                   <div class="user-info">
-                    <img class="user-avatar" [src]="apiRoot + '/' + user.avatar_url"/>
+                    @if (getUserAvatar(user)) {
+                      <img
+                        class="user-avatar"
+                        [src]="getUserAvatar(user)"
+                        [alt]="user.nickname || user.username"
+                        (error)="markAvatarFailed(user)"
+                      />
+                    } @else {
+                      <span class="user-avatar user-avatar--initial" aria-hidden="true">
+                        {{ getUserInitial(user) }}
+                      </span>
+                    }
                     <span>{{ user.username }}</span>
                   </div>
                 </div>
@@ -69,6 +80,7 @@
           <div class="admin-grid admin-grid--scroll">
             <div class="admin-grid-row admin-grid-row--header">
               <div class="col-points">點數</div>
+              <div class="col-status">帳號狀態</div>
               <div class="col-email">Email</div>
               <div class="col-role">角色</div>
               <div class="col-created">註冊時間</div>
@@ -77,6 +89,11 @@
             @for (user of filteredUsers; track user) {
               <div class="admin-grid-row user-row">
                 <div class="points col-points">{{ user.totalPoints ?? user.total_points ?? 0 }}</div>
+                <div class="col-status">
+                  <span class="account-status" [class.account-status--deleted]="user.is_deleted">
+                    {{ getAccountStatus(user) }}
+                  </span>
+                </div>
                 <div class="email col-email">{{ user.email }}</div>
                 <div class="col-role">
                   <span class="role-badge" [class]="'role-' + user.role">

@@ -186,11 +186,11 @@
 }
 
 .admin-grid--scroll {
-  min-width: 780px;
+  min-width: 900px;
 }
 
 .admin-grid--scroll .admin-grid-row {
-  grid-template-columns: 90px 260px 140px 180px 220px;
+  grid-template-columns: 90px 120px 260px 140px 180px 220px;
 }
 
 .admin-grid-row {
@@ -222,6 +222,10 @@
 
 .col-email {
   width: 260px;
+}
+
+.col-status {
+  width: 120px;
 }
 
 .col-role {
@@ -261,12 +265,26 @@
 }
 
 .user-avatar {
+  display: inline-grid;
+  flex: 0 0 34px;
+  place-items: center;
   width: 34px;
   height: 34px;
   border: 1px solid var(--studio-line);
   border-radius: 50%;
   object-fit: cover;
   background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+}
+
+.user-avatar--initial {
+  color: var(--studio-bg);
+  background:
+    linear-gradient(135deg, var(--studio-accent), var(--studio-warm));
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 12%, transparent);
 }
 
 .username,
@@ -324,6 +342,26 @@
 .role-superadmin {
   color: var(--studio-danger);
   background: color-mix(in srgb, var(--studio-danger) 10%, transparent);
+}
+
+.account-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--studio-success) 48%, var(--studio-line));
+  border-radius: 999px;
+  color: var(--studio-success);
+  background: color-mix(in srgb, var(--studio-success) 10%, transparent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.account-status--deleted {
+  border-color: color-mix(in srgb, var(--studio-danger) 58%, var(--studio-line));
+  color: var(--studio-danger);
+  background: color-mix(in srgb, var(--studio-danger) 12%, transparent);
 }
 
 .actions {
@@ -432,7 +470,7 @@
   }
 
   .admin-grid--scroll {
-    min-width: 700px;
+    min-width: 840px;
   }
 
   .admin-grid {
@@ -446,6 +484,7 @@
   }
 
   .user-avatar {
+    flex-basis: 26px;
     width: 26px;
     height: 26px;
   }

@@ -6,7 +6,7 @@ from flask_mail import Message
 from models import db, User
 from routes.auth.email import generate_confirmation_token, mail
 from routes.auth.utils import get_current_user_from_token
-from time_utils import to_taipei_iso
+from time_utils import taipei_now, to_taipei_iso
 
 me_bp = Blueprint('me', __name__)
 
@@ -98,14 +98,44 @@ def public_user(user_id):
 
     return jsonify({
         'id': user.id,
-        'username': user.username,
-        'nickname': user.nickname,
+        'username': user.display_username,
+        'nickname': user.display_nickname,
         'github_url': user.github_url,
         'githubUrl': user.github_url,
-        'email': user.email,
+        'email': user.display_email,
         'avatar_url': user.avatar_url,
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
         'role': user.role,
         'created_at': to_taipei_iso(user.created_at)
     })
+
+
+@me_bp.route('/me', methods=['DELETE'])
+@jwt_required()
+def delete_current_user():
+    user = get_current_user_from_token()
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if user.role == 'superadmin':
+        return jsonify({'error': 'Superadmin accounts cannot be deleted from settings'}), 403
+
+    data = request.get_json(silent=True) or {}
+    if data.get('confirmation') != 'DELETE':
+        return jsonify({'error': 'Type DELETE to confirm account deletion'}), 400
+
+    deleted_label = f'deleted_user_{user.id}'
+    user.is_deleted = True
+    user.deleted_at = taipei_now()
+    user.email_verified = False
+    user.username = deleted_label
+    user.nickname = '已刪除'
+    user.email = f'{deleted_label}@deleted.local'
+    user.github_url = None
+    user.avatar_url = None
+    user.avatar_source = 'github'
+    db.session.commit()
+
+    return jsonify({'message': 'Account deleted'})

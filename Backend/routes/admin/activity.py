@@ -32,7 +32,7 @@ def serialize_activity(activity):
         'imageUrl': activity.image_url,
         'image_url': activity.image_url,
         'sort_order': activity.sort_order,
-        'createdBy': creator.username if creator else None,
+        'createdBy': creator.display_username if creator else None,
         'created_by_id': activity.created_by_id,
         'created_at': to_taipei_iso(activity.created_at),
         'updated_at': to_taipei_iso(activity.updated_at),

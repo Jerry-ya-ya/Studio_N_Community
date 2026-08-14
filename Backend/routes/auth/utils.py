@@ -9,7 +9,9 @@ def get_current_user_from_token():
 
     identity_text = str(identity)
     if identity_text.isdigit():
-        return User.query.get(int(identity_text))
+        user = User.query.get(int(identity_text))
+        return None if user and user.is_deleted else user
 
     # Backward compatibility for tokens issued before user id identities.
-    return User.query.filter_by(username=identity_text).first()
+    user = User.query.filter_by(username=identity_text).first()
+    return None if user and user.is_deleted else user

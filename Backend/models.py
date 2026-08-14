@@ -32,6 +32,8 @@ class User(db.Model):
 
     email = db.Column(db.String(120), unique=True)
     email_verified = db.Column(db.Boolean, default=False)
+    is_deleted = db.Column(db.Boolean, default=False, nullable=False)
+    deleted_at = db.Column(db.DateTime)
     
     todos = db.relationship('Todo', foreign_keys='Todo.user_id', backref='user', lazy=True) # 一對多關聯
 
@@ -42,16 +44,30 @@ class User(db.Model):
         secondaryjoin=id == friend_association.c.friend_id,
         backref='added_by'  # 可以反查「被誰加為好友」
     )
+
+    @property
+    def display_username(self):
+        return '已刪除' if self.is_deleted else self.username
+
+    @property
+    def display_email(self):
+        return '已刪除' if self.is_deleted else self.email
+
+    @property
+    def display_nickname(self):
+        return '已刪除' if self.is_deleted else self.nickname
+
     def to_dict(self):
         return {
             'id': self.id,
-            'username': self.username,
-            'email': self.email,
-            'nickname': self.nickname,
+            'username': self.display_username,
+            'email': self.display_email,
+            'nickname': self.display_nickname,
             'github_url': self.github_url,
             'githubUrl': self.github_url,
             'role': self.role,
             'email_verified': self.email_verified,
+            'is_deleted': self.is_deleted,
             'avatar_url': self.avatar_url,
             'avatar_source': self.avatar_source,
             'avatarSource': self.avatar_source,

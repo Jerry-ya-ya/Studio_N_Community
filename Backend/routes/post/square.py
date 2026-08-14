@@ -28,8 +28,8 @@ def get_square():
 
     user_list = [{
         'id': user.id,
-        'username': user.username,
-        'nickname': user.nickname,
+        'username': user.display_username,
+        'nickname': user.display_nickname,
         'avatar_url': user.avatar_url,
         'role': user.role,
         'created_at': to_taipei_iso(user.created_at)

@@ -85,5 +85,41 @@
         <li>{{ 'privateSetting.notes.publicComputer' | translate }}</li>
       </ul>
     </aside>
+
+    <section class="setting-card danger-zone" [attr.aria-label]="'privateSetting.danger.aria' | translate">
+      <div class="danger-zone__stripe"></div>
+      <div class="card-header">
+        <p class="setting-kicker">{{ 'privateSetting.danger.kicker' | translate }}</p>
+        <h2>{{ 'privateSetting.danger.title' | translate }}</h2>
+      </div>
+
+      <p class="danger-zone__copy">{{ 'privateSetting.danger.description' | translate }}</p>
+
+      <form class="danger-delete" (ngSubmit)="deleteAccount()" autocomplete="off">
+        <div>
+          <h3>{{ 'privateSetting.danger.deleteTitle' | translate }}</h3>
+          <p>{{ 'privateSetting.danger.deleteDescription' | translate }}</p>
+        </div>
+
+        <label class="form-field">
+          <span>{{ 'privateSetting.danger.confirmLabel' | translate }}</span>
+          <input
+            type="text"
+            name="deleteConfirmation"
+            [(ngModel)]="deleteConfirmation"
+            [placeholder]="'privateSetting.danger.confirmPlaceholder' | translate"
+            autocapitalize="off"
+            spellcheck="false">
+        </label>
+
+        <button class="setting-button setting-button--danger" type="submit" [disabled]="!canDeleteAccount">
+          {{ (deletingAccount ? 'privateSetting.danger.deleting' : 'privateSetting.danger.deleteButton') | translate }}
+        </button>
+
+        @if (deleteAccountMessage) {
+          <p class="setting-message">{{ deleteAccountMessage }}</p>
+        }
+      </form>
+    </section>
   </section>
 </main>
