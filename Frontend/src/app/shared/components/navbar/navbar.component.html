@@ -10,15 +10,14 @@
       <mat-icon>menu</mat-icon>
     </button>
 
-    <button
+    <a
       class="brand-wordmark"
-      type="button"
-      (click)="goToHomeEntry()"
+      [routerLink]="[homeEntryPath]"
       [attr.aria-label]="'nav.aria.brandHome' | translate: { brand: brandName }"
     >
       <span class="brand-wordmark__text brand-wordmark__text--cmen">CMENStudio</span>
       <span class="brand-wordmark__text brand-wordmark__text--eden">EDEN</span>
-    </button>
+    </a>
   </header>
 
   <div class="nav-sections">

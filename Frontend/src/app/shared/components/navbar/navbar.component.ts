@@ -121,8 +121,8 @@ export class NavbarComponent implements OnInit {
     return this.theme.isNightMode ? 'EDEN' : 'CMENStudio';
   }
 
-  goToHomeEntry() {
-    this.router.navigate([this.isLoggedIn() ? appPath.userhome : appPath.home]);
+  get homeEntryPath() {
+    return this.isLoggedIn() ? appPath.userhome : appPath.home;
   }
 
   logout() {

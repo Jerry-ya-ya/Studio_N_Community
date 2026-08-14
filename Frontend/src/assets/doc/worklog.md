@@ -564,3 +564,5 @@
 ## 2026/08/14
 
 - Sync browser tab branding with world mode.
+
+- Support opening sidebar brand link in new tabs.
