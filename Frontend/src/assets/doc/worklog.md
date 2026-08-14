@@ -570,3 +570,7 @@
 - Add superadmin website logs scaffold.
 
 - Add account soft delete controls and promote avatar fallback.
+
+## 2026/08/15
+
+- Add backend register log writer.

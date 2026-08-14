@@ -6,10 +6,12 @@ from routes.auth.email import generate_confirmation_token, mail
 from flask_mail import Message
 import os
 from flask import current_app
+from log_writer import get_backend_logger
 from time_utils import taipei_now, to_taipei_iso
 from datetime import timedelta
 
 auth_bp = Blueprint('auth', __name__)
+register_logger = get_backend_logger('register', 'register.log')
 
 # 註冊新用戶
 @auth_bp.route('/register', methods=['POST'])
@@ -21,16 +23,35 @@ def register():
     email = data.get('email')
     nickname = data.get('nickname')
     created_at = taipei_now()
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
 
     if not all([username, password, email]):
+        register_logger.warning(
+            'Register failed: missing required fields ip=%s username=%s email=%s',
+            client_ip,
+            username or '-',
+            email or '-'
+        )
         return jsonify({'error': '請填寫所有必填欄位'}), 400
 
     hashed_pw = generate_password_hash(password)
 
     if User.query.filter_by(username=username).first():
+        register_logger.warning(
+            'Register failed: username exists ip=%s username=%s email=%s',
+            client_ip,
+            username,
+            email
+        )
         return jsonify({'error': 'Username already exists'}), 400
     
     if User.query.filter_by(email=email).first():
+        register_logger.warning(
+            'Register failed: email exists ip=%s username=%s email=%s',
+            client_ip,
+            username,
+            email
+        )
         return jsonify({'error': 'Email already exists'}), 400
 
     # 判斷是否是唯一超管 email
@@ -51,6 +72,15 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
+    register_logger.info(
+        'Register success: user_id=%s username=%s email=%s nickname=%s role=%s ip=%s',
+        new_user.id,
+        new_user.username,
+        new_user.email,
+        new_user.nickname or '-',
+        new_user.role,
+        client_ip
+    )
 
     # 生成確認令牌並發送驗證郵件
     token = generate_confirmation_token(email)
