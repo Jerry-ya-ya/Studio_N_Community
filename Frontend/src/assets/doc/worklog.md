@@ -566,3 +566,5 @@
 - Sync browser tab branding with world mode.
 
 - Support opening sidebar brand link in new tabs.
+
+- Add superadmin website logs scaffold.

@@ -81,6 +81,7 @@ export class NavbarComponent implements OnInit {
       requires: 'superadmin',
       items: [
         { labelKey: 'nav.superadmin.promote', icon: 'admin_panel_settings', route: appPath.promote },
+        { labelKey: 'nav.superadmin.logs', icon: 'receipt_long', route: appPath.superadminLogs },
         { labelKey: 'nav.superadmin.feature', icon: 'extension', route: appPath.home }
       ]
     }

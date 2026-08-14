@@ -77,6 +77,7 @@
     },
     "superadmin": {
       "promote": "権限",
+      "logs": "ログ",
       "feature": "機能"
     }
   },

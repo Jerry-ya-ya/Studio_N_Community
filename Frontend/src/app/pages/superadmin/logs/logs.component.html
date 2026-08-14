@@ -1,0 +1,67 @@
+<main class="logs-page">
+  <section class="logs-hero">
+    <div>
+      <p class="logs-kicker">Superadmin Audit</p>
+      <h1>Website Logs</h1>
+      <p>
+        A frontend scaffold for reviewing private and admin activity across the site.
+      </p>
+    </div>
+
+    <div class="logs-metrics" aria-label="Log summary">
+      <article>
+        <span>{{ totalLogTypes }}</span>
+        <small>Log Types</small>
+      </article>
+      <article>
+        <span>{{ totalPreviewRows }}</span>
+        <small>Preview Rows</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="logs-board">
+    @for (section of sections; track section.title) {
+      <article class="log-section">
+        <header class="log-section__header">
+          <div>
+            <p class="logs-kicker">{{ section.eyebrow }}</p>
+            <h2>{{ section.title }}</h2>
+            <p>{{ section.description }}</p>
+          </div>
+          <strong>{{ section.groups.length }}</strong>
+        </header>
+
+        <div class="log-groups">
+          @for (group of section.groups; track group.title) {
+            <article class="log-card" [style.--log-accent]="group.accent">
+              <header class="log-card__header">
+                <div>
+                  <h3>{{ group.title }}</h3>
+                  <p>{{ group.description }}</p>
+                </div>
+                <span>{{ group.logs.length }}</span>
+              </header>
+
+              <div class="log-list">
+                @for (log of group.logs; track log.actor + log.action + log.target) {
+                  <div class="log-row">
+                    <span class="log-status" [class]="'log-status log-status--' + log.status"></span>
+                    <div class="log-main">
+                      <strong>{{ log.actor }}</strong>
+                      <span>{{ log.action }}</span>
+                    </div>
+                    <div class="log-target">
+                      <span>{{ log.target }}</span>
+                      <small>{{ log.time }}</small>
+                    </div>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </article>
+    }
+  </section>
+</main>

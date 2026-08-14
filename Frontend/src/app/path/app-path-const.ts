@@ -21,6 +21,8 @@ export const appPath = {
     checkIn: 'check-in',
     //promote
     promote: 'promote',
+    //superadmin logs
+    superadminLogs: 'superadmin-logs',
     //admin content
     content: 'content',
     //admin projects

@@ -77,6 +77,7 @@
     },
     "superadmin": {
       "promote": "권한",
+      "logs": "로그",
       "feature": "기능"
     }
   },

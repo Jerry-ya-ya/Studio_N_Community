@@ -65,6 +65,11 @@ const routes: Routes = [
       import('../pages/superadmin/promote/promote.module').then(m => m.PromoteModule)
   },
   {
+    path: appPath.superadminLogs,
+    loadChildren: () =>
+      import('../pages/superadmin/logs/logs.module').then(m => m.LogsModule)
+  },
+  {
     path: appPath.content,
     loadChildren: () =>
       import('../pages/admin/content/content.module').then(m => m.ContentModule)
