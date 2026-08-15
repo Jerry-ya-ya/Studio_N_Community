@@ -574,3 +574,5 @@
 ## 2026/08/15
 
 - Add backend register log writer.
+
+- Connect register JSON logs to superadmin logs.

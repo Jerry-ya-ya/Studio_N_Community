@@ -91,7 +91,7 @@
 
 .logs-board {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
@@ -153,7 +153,39 @@
   font-size: 1.12rem;
 }
 
-.log-card__header span {
+.log-source {
+  display: block;
+  margin-top: 8px;
+  color: var(--studio-muted);
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
+  opacity: 0.78;
+}
+
+.log-card__tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.log-card__tools button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--log-accent) 42%, var(--studio-line));
+  border-radius: 7px;
+  color: var(--log-accent);
+  background: color-mix(in srgb, var(--log-accent) 10%, transparent);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.log-card__tools button:hover {
+  color: var(--studio-bg);
+  background: var(--log-accent);
+}
+
+.log-card__tools span {
   display: grid;
   place-items: center;
   flex: 0 0 auto;
@@ -169,9 +201,41 @@
   display: grid;
 }
 
+.log-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  padding: 14px 16px;
+  color: var(--studio-muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.log-state--error {
+  color: var(--studio-danger);
+}
+
+.log-state button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--studio-danger) 48%, var(--studio-line));
+  border-radius: 7px;
+  color: var(--studio-danger);
+  background: color-mix(in srgb, var(--studio-danger) 10%, transparent);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.log-state button:hover {
+  color: var(--studio-bg);
+  background: var(--studio-danger);
+}
+
 .log-row {
   display: grid;
-  grid-template-columns: 14px minmax(0, 1fr) minmax(140px, 0.8fr);
+  grid-template-columns: 14px minmax(180px, 0.65fr) minmax(280px, 1.35fr);
   gap: 12px;
   align-items: center;
   min-height: 64px;
@@ -213,12 +277,25 @@
   gap: 4px;
 }
 
+.log-json {
+  grid-column: 2 / -1;
+  max-height: 160px;
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--log-accent) 28%, var(--studio-line));
+  border-radius: 7px;
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-panel-strong) 78%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
 .log-main strong,
 .log-target span {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .log-main span,

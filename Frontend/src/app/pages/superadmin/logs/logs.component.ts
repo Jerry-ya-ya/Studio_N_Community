@@ -1,12 +1,6 @@
-import { Component } from '@angular/core';
-
-interface AuditLogItem {
-  actor: string;
-  action: string;
-  target: string;
-  time: string;
-  status: 'success' | 'pending' | 'notice';
-}
+import { Component, OnInit } from '@angular/core';
+import { timeout } from 'rxjs/operators';
+import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
 interface AuditLogGroup {
   title: string;
@@ -28,8 +22,13 @@ interface AuditLogSection {
   templateUrl: './logs.component.html',
   styleUrl: './logs.component.css',
 })
-export class LogsComponent {
-  readonly sections: AuditLogSection[] = [
+export class LogsComponent implements OnInit {
+  registerItems: AuditLogItem[] = [];
+  registerLoading = false;
+  registerError = '';
+  registerSource = '';
+
+  sections: AuditLogSection[] = [
     {
       title: 'Private',
       eyebrow: 'Member Activity',
@@ -39,10 +38,7 @@ export class LogsComponent {
           title: 'Register Log',
           description: 'Tracks who registered a new account.',
           accent: 'var(--studio-success)',
-          logs: [
-            { actor: 'Jerry', action: 'created an account', target: 'Jerry', time: 'Pending API', status: 'pending' },
-            { actor: 'New member', action: 'completed registration', target: 'Community account', time: 'Pending API', status: 'notice' }
-          ]
+          logs: []
         },
         {
           title: 'Project Log',
@@ -91,14 +87,54 @@ export class LogsComponent {
     }
   ];
 
+  constructor(private auditLogService: AuditLogService) {}
+
+  ngOnInit() {
+    this.loadRegisterLogs();
+  }
+
   get totalLogTypes() {
     return this.sections.reduce((total, section) => total + section.groups.length, 0);
   }
 
   get totalPreviewRows() {
     return this.sections.reduce(
-      (total, section) => total + section.groups.reduce((groupTotal, group) => groupTotal + group.logs.length, 0),
+      (total, section) => total + section.groups.reduce((groupTotal, group) => groupTotal + this.getGroupLogs(group).length, 0),
       0
     );
+  }
+
+  retryGroup(group: AuditLogGroup) {
+    if (this.isRegisterGroup(group)) {
+      this.loadRegisterLogs();
+    }
+  }
+
+  isRegisterGroup(group: AuditLogGroup) {
+    return group.title === 'Register Log';
+  }
+
+  getGroupLogs(group: AuditLogGroup) {
+    return this.isRegisterGroup(group) ? this.registerItems : group.logs;
+  }
+
+  loadRegisterLogs() {
+    this.registerLoading = true;
+    this.registerError = '';
+
+    this.auditLogService.getRegisterLogs().pipe(timeout(10000)).subscribe({
+      next: response => {
+        this.registerItems = Array.isArray(response.items) ? response.items : [];
+        this.registerSource = response.path ? `${response.path} / ${response.count ?? this.registerItems.length} records` : '';
+        this.registerLoading = false;
+        this.registerError = '';
+      },
+      error: () => {
+        this.registerItems = [];
+        this.registerSource = '';
+        this.registerLoading = false;
+        this.registerError = 'Unable to load register logs.';
+      }
+    });
   }
 }

@@ -8,7 +8,7 @@ LOG_DIR = BACKEND_ROOT / 'logs'
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 
 
-def get_backend_logger(name, filename, level=logging.INFO):
+def get_backend_logger(name, filename, level=logging.INFO, message_only=False):
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
     logger = logging.getLogger(name)
@@ -28,7 +28,8 @@ def get_backend_logger(name, filename, level=logging.INFO):
         backupCount=5,
         encoding='utf-8'
     )
-    handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    formatter = '%(message)s' if message_only else LOG_FORMAT
+    handler.setFormatter(logging.Formatter(formatter))
     logger.addHandler(handler)
 
     return logger

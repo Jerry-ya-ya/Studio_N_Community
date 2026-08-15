@@ -5,13 +5,21 @@ from models import db, User
 from routes.auth.email import generate_confirmation_token, mail
 from flask_mail import Message
 import os
+import json
 from flask import current_app
 from log_writer import get_backend_logger
 from time_utils import taipei_now, to_taipei_iso
 from datetime import timedelta
 
 auth_bp = Blueprint('auth', __name__)
-register_logger = get_backend_logger('register', 'register.log')
+register_logger = get_backend_logger('register', 'register.log', message_only=True)
+
+
+def write_register_log(level, **payload):
+    payload.setdefault('event', 'register')
+    payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
+    log_method = getattr(register_logger, level, register_logger.info)
+    log_method(json.dumps(payload, ensure_ascii=False))
 
 # 註冊新用戶
 @auth_bp.route('/register', methods=['POST'])
@@ -26,31 +34,43 @@ def register():
     client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
 
     if not all([username, password, email]):
-        register_logger.warning(
-            'Register failed: missing required fields ip=%s username=%s email=%s',
-            client_ip,
-            username or '-',
-            email or '-'
+        write_register_log(
+            'warning',
+            status='failed',
+            reason='missing_required_fields',
+            username=username or '-',
+            email=email or '-',
+            nickname=nickname or '-',
+            role='-',
+            ip=client_ip
         )
         return jsonify({'error': '請填寫所有必填欄位'}), 400
 
     hashed_pw = generate_password_hash(password)
 
     if User.query.filter_by(username=username).first():
-        register_logger.warning(
-            'Register failed: username exists ip=%s username=%s email=%s',
-            client_ip,
-            username,
-            email
+        write_register_log(
+            'warning',
+            status='failed',
+            reason='username_exists',
+            username=username,
+            email=email,
+            nickname=nickname or '-',
+            role='-',
+            ip=client_ip
         )
         return jsonify({'error': 'Username already exists'}), 400
     
     if User.query.filter_by(email=email).first():
-        register_logger.warning(
-            'Register failed: email exists ip=%s username=%s email=%s',
-            client_ip,
-            username,
-            email
+        write_register_log(
+            'warning',
+            status='failed',
+            reason='email_exists',
+            username=username,
+            email=email,
+            nickname=nickname or '-',
+            role='-',
+            ip=client_ip
         )
         return jsonify({'error': 'Email already exists'}), 400
 
@@ -72,14 +92,17 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    register_logger.info(
-        'Register success: user_id=%s username=%s email=%s nickname=%s role=%s ip=%s',
-        new_user.id,
-        new_user.username,
-        new_user.email,
-        new_user.nickname or '-',
-        new_user.role,
-        client_ip
+    write_register_log(
+        'info',
+        status='success',
+        reason='created',
+        user_id=new_user.id,
+        username=new_user.username,
+        email=new_user.email,
+        nickname=new_user.nickname or '-',
+        role=new_user.role,
+        ip=client_ip,
+        created_at=to_taipei_iso(new_user.created_at)
     )
 
     # 生成確認令牌並發送驗證郵件

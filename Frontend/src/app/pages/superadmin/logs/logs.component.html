@@ -39,12 +39,35 @@
                 <div>
                   <h3>{{ group.title }}</h3>
                   <p>{{ group.description }}</p>
+                  @if (isRegisterGroup(group) && registerSource) {
+                    <small class="log-source">{{ registerSource }}</small>
+                  }
                 </div>
-                <span>{{ group.logs.length }}</span>
+                <div class="log-card__tools">
+                  @if (isRegisterGroup(group)) {
+                    <button type="button" (click)="loadRegisterLogs()">Refresh</button>
+                  }
+                  <span>{{ getGroupLogs(group).length }}</span>
+                </div>
               </header>
 
               <div class="log-list">
-                @for (log of group.logs; track log.actor + log.action + log.target) {
+                @if (isRegisterGroup(group) && registerLoading) {
+                  <div class="log-state">
+                    Loading logs...
+                  </div>
+                } @else if (isRegisterGroup(group) && registerError) {
+                  <div class="log-state log-state--error">
+                    <span>{{ registerError }}</span>
+                    <button type="button" (click)="loadRegisterLogs()">Retry</button>
+                  </div>
+                } @else if (getGroupLogs(group).length === 0) {
+                  <div class="log-state">
+                    No records yet.
+                  </div>
+                }
+
+                @for (log of getGroupLogs(group); track log.id || log.time + log.actor + log.action + log.target) {
                   <div class="log-row">
                     <span class="log-status" [class]="'log-status log-status--' + log.status"></span>
                     <div class="log-main">
@@ -55,6 +78,9 @@
                       <span>{{ log.target }}</span>
                       <small>{{ log.time }}</small>
                     </div>
+                    @if (isRegisterGroup(group) && (log.rawJson || log.raw_json)) {
+                      <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>
+                    }
                   </div>
                 }
               </div>
