@@ -244,6 +244,69 @@ def parse_sign_in_log_line(line):
     }
 
 
+def parse_content_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-content-{abs(hash(line))}',
+            'actor': 'Content',
+            'action': 'recorded content event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    status = payload.get('status') or 'notice'
+    action_key = payload.get('action') or 'content_event'
+    reason = payload.get('reason') or '-'
+    username = payload.get('username') or 'Admin'
+    role = payload.get('role') or '-'
+    ip = payload.get('ip') or '-'
+    item_id = payload.get('item_id')
+    theme = payload.get('theme') or '-'
+    title = payload.get('title') or '-'
+    item_count = payload.get('item_count')
+
+    action_labels = {
+        'replace_home_news': 'saved home news content',
+        'create_home_news_item': 'created home news item',
+        'update_home_news_item': 'updated home news item',
+        'upload_home_news_background': 'uploaded home news background',
+        'delete_home_news_item': 'deleted home news item',
+    }
+
+    if status == 'success':
+        action = action_labels.get(action_key, 'updated admin content')
+        row_status = 'success'
+    else:
+        action = f'failed content update: {reason}'
+        row_status = 'pending'
+
+    if item_count is not None:
+        target = f'{item_count} items / role {role} / IP {ip}'
+    else:
+        target = f'{theme} / {title} / role {role} / IP {ip}'
+        if item_id:
+            target = f'#{item_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{payload.get('item_id') or payload.get('admin_id') or payload.get('action') or 'content'}",
+        'actor': username,
+        'action': action,
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': row_status,
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 @logs_bp.route('/superadmin/logs/register', methods=['GET'])
 @superadmin_required
 def register_logs():
@@ -271,6 +334,23 @@ def sign_in_logs():
 
     response = jsonify({
         'type': 'sign-in',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/superadmin/logs/content', methods=['GET'])
+@superadmin_required
+def content_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('content.log', limit)
+    items = [parse_content_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'content',
         'path': str(log_path),
         'count': len(lines),
         'items': items,

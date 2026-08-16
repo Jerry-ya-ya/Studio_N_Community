@@ -584,3 +584,7 @@
 - Add project recruitment logs to superadmin monitoring.
 
 - Add sign in logs to superadmin monitoring.
+
+## 2026/08/17
+
+- Add admin content logs to superadmin monitoring.

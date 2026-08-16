@@ -1,14 +1,18 @@
 import os
 import uuid
+import json
 
 from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
 
 from models import db, HomeNewsItem, User
 from routes.admin.decorators import admin_required
-from time_utils import to_taipei_iso
+from routes.auth.utils import get_current_user_from_token
+from log_writer import get_backend_logger
+from time_utils import taipei_now, to_taipei_iso
 
 content_bp = Blueprint('content', __name__)
+content_logger = get_backend_logger('content', 'content.log', message_only=True)
 
 VALID_THEMES = {'cmen', 'eden'}
 VALID_MEMBER_ROLES = {'superadmin', 'admin', 'member', 'user'}
@@ -50,6 +54,47 @@ DEFAULT_HOME_NEWS = {
         },
     ],
 }
+
+
+def get_client_ip():
+    return request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+
+
+def write_content_log(level, **payload):
+    payload.setdefault('event', 'admin_content')
+    payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
+    log_method = getattr(content_logger, level, content_logger.info)
+    log_method(json.dumps(payload, ensure_ascii=False))
+
+
+def admin_actor_payload():
+    user = get_current_user_from_token()
+    if not user:
+        return {
+            'admin_id': None,
+            'username': 'Admin',
+            'nickname': '-',
+            'role': '-',
+        }
+
+    return {
+        'admin_id': user.id,
+        'username': user.display_username,
+        'nickname': user.display_nickname or '-',
+        'role': user.role,
+    }
+
+
+def log_content_event(level, action, status, reason='-', **payload):
+    write_content_log(
+        level,
+        action=action,
+        status=status,
+        reason=reason,
+        ip=get_client_ip(),
+        **admin_actor_payload(),
+        **payload
+    )
 
 DEFAULT_MEMBER_CONTENT = [
     {
@@ -223,18 +268,42 @@ def replace_home_news():
     for theme in ['cmen', 'eden']:
         raw_items = data.get(theme, [])
         if not isinstance(raw_items, list):
+            log_content_event(
+                'warning',
+                action='replace_home_news',
+                status='failed',
+                reason='invalid_theme_items',
+                theme=theme
+            )
             return jsonify({'error': f'{theme} must be a list'}), 400
 
         for index, raw_item in enumerate(raw_items):
             payload, error = read_item_payload(raw_item, default_theme=theme, default_order=index)
             if error:
                 message, status = error
+                log_content_event(
+                    'warning',
+                    action='replace_home_news',
+                    status='failed',
+                    reason=message,
+                    theme=theme,
+                    sort_order=index
+                )
                 return jsonify({'error': message}), status
             next_items.append(HomeNewsItem(**payload))
 
     HomeNewsItem.query.delete()
     db.session.add_all(next_items)
     db.session.commit()
+    log_content_event(
+        'info',
+        action='replace_home_news',
+        status='success',
+        reason='saved',
+        item_count=len(next_items),
+        cmen_count=sum(1 for item in next_items if item.theme == 'cmen'),
+        eden_count=sum(1 for item in next_items if item.theme == 'eden')
+    )
 
     return jsonify(grouped_home_news())
 
@@ -246,11 +315,28 @@ def create_home_news_item():
     payload, error = read_item_payload(data)
     if error:
         message, status = error
+        log_content_event(
+            'warning',
+            action='create_home_news_item',
+            status='failed',
+            reason=message
+        )
         return jsonify({'error': message}), status
 
     item = HomeNewsItem(**payload)
     db.session.add(item)
     db.session.commit()
+    log_content_event(
+        'info',
+        action='create_home_news_item',
+        status='success',
+        reason='created',
+        item_id=item.id,
+        theme=item.theme,
+        title=item.title,
+        tag=item.tag,
+        sort_order=item.sort_order
+    )
 
     return jsonify(serialize_home_news(item)), 201
 
@@ -263,11 +349,31 @@ def update_home_news_item(item_id):
     payload, error = read_item_payload(data, default_theme=item.theme, default_order=item.sort_order)
     if error:
         message, status = error
+        log_content_event(
+            'warning',
+            action='update_home_news_item',
+            status='failed',
+            reason=message,
+            item_id=item.id,
+            theme=item.theme,
+            title=item.title
+        )
         return jsonify({'error': message}), status
 
     for key, value in payload.items():
         setattr(item, key, value)
     db.session.commit()
+    log_content_event(
+        'info',
+        action='update_home_news_item',
+        status='success',
+        reason='updated',
+        item_id=item.id,
+        theme=item.theme,
+        title=item.title,
+        tag=item.tag,
+        sort_order=item.sort_order
+    )
 
     return jsonify(serialize_home_news(item))
 
@@ -279,10 +385,38 @@ def upload_home_news_background(item_id):
     uploaded_file = request.files.get('file') or request.files.get('image') or request.files.get('background')
 
     if not uploaded_file:
+        log_content_event(
+            'warning',
+            action='upload_home_news_background',
+            status='failed',
+            reason='no_file_part',
+            item_id=item.id,
+            theme=item.theme,
+            title=item.title
+        )
         return jsonify({'error': 'No file part'}), 400
     if uploaded_file.filename == '':
+        log_content_event(
+            'warning',
+            action='upload_home_news_background',
+            status='failed',
+            reason='no_selected_file',
+            item_id=item.id,
+            theme=item.theme,
+            title=item.title
+        )
         return jsonify({'error': 'No selected file'}), 400
     if not is_allowed_image(uploaded_file.filename):
+        log_content_event(
+            'warning',
+            action='upload_home_news_background',
+            status='failed',
+            reason='invalid_file_type',
+            item_id=item.id,
+            theme=item.theme,
+            title=item.title,
+            filename=uploaded_file.filename
+        )
         return jsonify({'error': 'Invalid file type'}), 400
 
     upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'home-news')
@@ -296,6 +430,17 @@ def upload_home_news_background(item_id):
 
     item.background_url = f'/static/uploads/home-news/{filename}'
     db.session.commit()
+    log_content_event(
+        'info',
+        action='upload_home_news_background',
+        status='success',
+        reason='uploaded',
+        item_id=item.id,
+        theme=item.theme,
+        title=item.title,
+        filename=filename,
+        background_url=item.background_url
+    )
 
     return jsonify(serialize_home_news(item))
 
@@ -304,7 +449,21 @@ def upload_home_news_background(item_id):
 @admin_required
 def delete_home_news_item(item_id):
     item = HomeNewsItem.query.get_or_404(item_id)
+    deleted_payload = {
+        'item_id': item.id,
+        'theme': item.theme,
+        'title': item.title,
+        'tag': item.tag,
+        'sort_order': item.sort_order,
+    }
     db.session.delete(item)
     db.session.commit()
+    log_content_event(
+        'info',
+        action='delete_home_news_item',
+        status='success',
+        reason='deleted',
+        **deleted_payload
+    )
 
     return jsonify({'message': 'home news item deleted', 'id': item_id})

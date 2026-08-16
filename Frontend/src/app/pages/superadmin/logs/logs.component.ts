@@ -36,11 +36,16 @@ export class LogsComponent implements OnInit, OnDestroy {
   signInLoading = false;
   signInError = '';
   signInSource = '';
+  contentItems: AuditLogItem[] = [];
+  contentLoading = false;
+  contentError = '';
+  contentSource = '';
   collapsedGroups: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private refreshRegisterLogs$ = new Subject<void>();
   private refreshProjectLogs$ = new Subject<void>();
   private refreshSignInLogs$ = new Subject<void>();
+  private refreshContentLogs$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
@@ -78,10 +83,7 @@ export class LogsComponent implements OnInit, OnDestroy {
           title: 'Content Log',
           description: 'Tracks who modified public home content.',
           accent: 'var(--studio-danger)',
-          logs: [
-            { actor: 'Admin', action: 'updated content', target: 'Home news card', time: 'Pending API', status: 'pending' },
-            { actor: 'Admin', action: 'changed layout copy', target: 'CMENStudio home', time: 'Pending API', status: 'notice' }
-          ]
+          logs: []
         },
         {
           title: 'News Log',
@@ -107,6 +109,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.initializeRegisterLogStream();
     this.initializeProjectLogStream();
     this.initializeSignInLogStream();
+    this.initializeContentLogStream();
   }
 
   ngOnDestroy() {
@@ -135,6 +138,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isSignInGroup(group)) {
       this.loadSignInLogs();
     }
+    if (this.isContentGroup(group)) {
+      this.loadContentLogs();
+    }
   }
 
   isRegisterGroup(group: AuditLogGroup) {
@@ -149,8 +155,12 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.title === 'Sign In Log';
   }
 
+  isContentGroup(group: AuditLogGroup) {
+    return group.title === 'Content Log';
+  }
+
   isLiveLogGroup(group: AuditLogGroup) {
-    return this.isRegisterGroup(group) || this.isProjectGroup(group) || this.isSignInGroup(group);
+    return this.isRegisterGroup(group) || this.isProjectGroup(group) || this.isSignInGroup(group) || this.isContentGroup(group);
   }
 
   getGroupLogs(group: AuditLogGroup) {
@@ -162,6 +172,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSignInGroup(group)) {
       return this.signInItems;
+    }
+    if (this.isContentGroup(group)) {
+      return this.contentItems;
     }
     return group.logs;
   }
@@ -176,6 +189,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isSignInGroup(group)) {
       return this.signInSource;
     }
+    if (this.isContentGroup(group)) {
+      return this.contentSource;
+    }
     return '';
   }
 
@@ -183,7 +199,8 @@ export class LogsComponent implements OnInit, OnDestroy {
     return (
       (this.isRegisterGroup(group) && this.registerLoading) ||
       (this.isProjectGroup(group) && this.projectLoading) ||
-      (this.isSignInGroup(group) && this.signInLoading)
+      (this.isSignInGroup(group) && this.signInLoading) ||
+      (this.isContentGroup(group) && this.contentLoading)
     );
   }
 
@@ -196,6 +213,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSignInGroup(group)) {
       return this.signInError;
+    }
+    if (this.isContentGroup(group)) {
+      return this.contentError;
     }
     return '';
   }
@@ -234,6 +254,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshSignInLogs$.next();
   }
 
+  loadContentLogs() {
+    this.refreshContentLogs$.next();
+  }
+
   refreshGroup(group: AuditLogGroup) {
     if (this.isRegisterGroup(group)) {
       this.loadRegisterLogs();
@@ -243,6 +267,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSignInGroup(group)) {
       this.loadSignInLogs();
+    }
+    if (this.isContentGroup(group)) {
+      this.loadContentLogs();
     }
   }
 
@@ -352,6 +379,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.signInLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeContentLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.contentItems.length)
+    );
+
+    merge(initialRetry$, this.refreshContentLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.contentLoading = true;
+        this.contentError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getContentLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: 'Unable to load content logs.' }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.contentItems = Array.isArray(response.items) ? response.items : [];
+          this.contentSource = response.path ? `${response.path} / ${response.count ?? this.contentItems.length} records` : '';
+          this.contentError = '';
+        } else {
+          this.contentItems = [];
+          this.contentSource = '';
+          this.contentError = error;
+        }
+
+        this.contentLoading = false;
         this.changeDetector.detectChanges();
       });
     });
