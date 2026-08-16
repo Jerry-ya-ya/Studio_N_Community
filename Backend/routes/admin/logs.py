@@ -307,6 +307,72 @@ def parse_content_log_line(line):
     }
 
 
+def parse_news_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-news-{abs(hash(line))}',
+            'actor': 'News',
+            'action': 'recorded news event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    status = payload.get('status') or 'notice'
+    action_key = payload.get('action') or 'news_event'
+    reason = payload.get('reason') or '-'
+    username = payload.get('username') or 'Admin'
+    ip = payload.get('ip') or '-'
+    item_id = payload.get('item_id')
+    theme = payload.get('theme') or '-'
+    title = payload.get('title') or '-'
+    tag = payload.get('tag') or '-'
+    item_count = payload.get('item_count')
+    filename = payload.get('filename')
+
+    action_labels = {
+        'replace_home_news': 'saved news collection',
+        'create_home_news_item': 'created news item',
+        'update_home_news_item': 'updated news item',
+        'upload_home_news_background': 'uploaded news background',
+        'delete_home_news_item': 'deleted news item',
+    }
+
+    if status == 'success':
+        action = action_labels.get(action_key, 'updated news')
+        row_status = 'success'
+    else:
+        action = f'failed news update: {reason}'
+        row_status = 'pending'
+
+    if item_count is not None:
+        target = f'{item_count} items / cmen {payload.get("cmen_count", "-")} / eden {payload.get("eden_count", "-")} / IP {ip}'
+    else:
+        target = f'{theme} / {title} / {tag} / IP {ip}'
+        if filename:
+            target = f'{target} / file {filename}'
+        if item_id:
+            target = f'#{item_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{payload.get('item_id') or payload.get('admin_id') or payload.get('action') or 'news'}",
+        'actor': username,
+        'action': action,
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': row_status,
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 @logs_bp.route('/superadmin/logs/register', methods=['GET'])
 @superadmin_required
 def register_logs():
@@ -351,6 +417,23 @@ def content_logs():
 
     response = jsonify({
         'type': 'content',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/superadmin/logs/news', methods=['GET'])
+@superadmin_required
+def news_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('news.log', limit)
+    items = [parse_news_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'news',
         'path': str(log_path),
         'count': len(lines),
         'items': items,

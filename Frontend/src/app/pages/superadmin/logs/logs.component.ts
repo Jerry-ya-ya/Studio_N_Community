@@ -40,12 +40,17 @@ export class LogsComponent implements OnInit, OnDestroy {
   contentLoading = false;
   contentError = '';
   contentSource = '';
+  newsItems: AuditLogItem[] = [];
+  newsLoading = false;
+  newsError = '';
+  newsSource = '';
   collapsedGroups: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private refreshRegisterLogs$ = new Subject<void>();
   private refreshProjectLogs$ = new Subject<void>();
   private refreshSignInLogs$ = new Subject<void>();
   private refreshContentLogs$ = new Subject<void>();
+  private refreshNewsLogs$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
@@ -89,10 +94,7 @@ export class LogsComponent implements OnInit, OnDestroy {
           title: 'News Log',
           description: 'Tracks who modified news content or background assets.',
           accent: 'var(--studio-accent)',
-          logs: [
-            { actor: 'Admin', action: 'uploaded background', target: 'Home news image', time: 'Pending API', status: 'pending' },
-            { actor: 'Admin', action: 'edited summary', target: 'EDEN news item', time: 'Pending API', status: 'notice' }
-          ]
+          logs: []
         }
       ]
     }
@@ -110,6 +112,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.initializeProjectLogStream();
     this.initializeSignInLogStream();
     this.initializeContentLogStream();
+    this.initializeNewsLogStream();
   }
 
   ngOnDestroy() {
@@ -141,6 +144,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isContentGroup(group)) {
       this.loadContentLogs();
     }
+    if (this.isNewsGroup(group)) {
+      this.loadNewsLogs();
+    }
   }
 
   isRegisterGroup(group: AuditLogGroup) {
@@ -159,8 +165,18 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.title === 'Content Log';
   }
 
+  isNewsGroup(group: AuditLogGroup) {
+    return group.title === 'News Log';
+  }
+
   isLiveLogGroup(group: AuditLogGroup) {
-    return this.isRegisterGroup(group) || this.isProjectGroup(group) || this.isSignInGroup(group) || this.isContentGroup(group);
+    return (
+      this.isRegisterGroup(group) ||
+      this.isProjectGroup(group) ||
+      this.isSignInGroup(group) ||
+      this.isContentGroup(group) ||
+      this.isNewsGroup(group)
+    );
   }
 
   getGroupLogs(group: AuditLogGroup) {
@@ -175,6 +191,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isContentGroup(group)) {
       return this.contentItems;
+    }
+    if (this.isNewsGroup(group)) {
+      return this.newsItems;
     }
     return group.logs;
   }
@@ -192,6 +211,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isContentGroup(group)) {
       return this.contentSource;
     }
+    if (this.isNewsGroup(group)) {
+      return this.newsSource;
+    }
     return '';
   }
 
@@ -200,7 +222,8 @@ export class LogsComponent implements OnInit, OnDestroy {
       (this.isRegisterGroup(group) && this.registerLoading) ||
       (this.isProjectGroup(group) && this.projectLoading) ||
       (this.isSignInGroup(group) && this.signInLoading) ||
-      (this.isContentGroup(group) && this.contentLoading)
+      (this.isContentGroup(group) && this.contentLoading) ||
+      (this.isNewsGroup(group) && this.newsLoading)
     );
   }
 
@@ -216,6 +239,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isContentGroup(group)) {
       return this.contentError;
+    }
+    if (this.isNewsGroup(group)) {
+      return this.newsError;
     }
     return '';
   }
@@ -258,6 +284,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshContentLogs$.next();
   }
 
+  loadNewsLogs() {
+    this.refreshNewsLogs$.next();
+  }
+
   refreshGroup(group: AuditLogGroup) {
     if (this.isRegisterGroup(group)) {
       this.loadRegisterLogs();
@@ -270,6 +300,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isContentGroup(group)) {
       this.loadContentLogs();
+    }
+    if (this.isNewsGroup(group)) {
+      this.loadNewsLogs();
     }
   }
 
@@ -416,6 +449,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.contentLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeNewsLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.newsItems.length)
+    );
+
+    merge(initialRetry$, this.refreshNewsLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.newsLoading = true;
+        this.newsError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getNewsLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: 'Unable to load news logs.' }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.newsItems = Array.isArray(response.items) ? response.items : [];
+          this.newsSource = response.path ? `${response.path} / ${response.count ?? this.newsItems.length} records` : '';
+          this.newsError = '';
+        } else {
+          this.newsItems = [];
+          this.newsSource = '';
+          this.newsError = error;
+        }
+
+        this.newsLoading = false;
         this.changeDetector.detectChanges();
       });
     });

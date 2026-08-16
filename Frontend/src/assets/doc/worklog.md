@@ -588,3 +588,5 @@
 ## 2026/08/17
 
 - Add admin content logs to superadmin monitoring.
+
+- Add news logs to superadmin monitoring.

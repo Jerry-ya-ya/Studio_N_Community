@@ -13,10 +13,18 @@ from time_utils import taipei_now, to_taipei_iso
 
 content_bp = Blueprint('content', __name__)
 content_logger = get_backend_logger('content', 'content.log', message_only=True)
+news_logger = get_backend_logger('news', 'news.log', message_only=True)
 
 VALID_THEMES = {'cmen', 'eden'}
 VALID_MEMBER_ROLES = {'superadmin', 'admin', 'member', 'user'}
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+HOME_NEWS_LOG_ACTIONS = {
+    'replace_home_news',
+    'create_home_news_item',
+    'update_home_news_item',
+    'upload_home_news_background',
+    'delete_home_news_item',
+}
 
 DEFAULT_HOME_NEWS = {
     'cmen': [
@@ -67,6 +75,13 @@ def write_content_log(level, **payload):
     log_method(json.dumps(payload, ensure_ascii=False))
 
 
+def write_news_log(level, **payload):
+    payload.setdefault('event', 'admin_news')
+    payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
+    log_method = getattr(news_logger, level, news_logger.info)
+    log_method(json.dumps(payload, ensure_ascii=False))
+
+
 def admin_actor_payload():
     user = get_current_user_from_token()
     if not user:
@@ -86,15 +101,18 @@ def admin_actor_payload():
 
 
 def log_content_event(level, action, status, reason='-', **payload):
-    write_content_log(
-        level,
-        action=action,
-        status=status,
-        reason=reason,
-        ip=get_client_ip(),
+    log_payload = {
+        'action': action,
+        'status': status,
+        'reason': reason,
+        'ip': get_client_ip(),
         **admin_actor_payload(),
         **payload
-    )
+    }
+    write_content_log(level, **log_payload)
+
+    if action in HOME_NEWS_LOG_ACTIONS:
+        write_news_log(level, **log_payload)
 
 DEFAULT_MEMBER_CONTENT = [
     {

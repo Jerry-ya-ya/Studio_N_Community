@@ -46,6 +46,10 @@ export class AuditLogService {
     return this.getLogs('/superadmin/logs/content', limit);
   }
 
+  getNewsLogs(limit = 50): Observable<AuditLogResponse> {
+    return this.getLogs('/superadmin/logs/news', limit);
+  }
+
   private getLogs(endpoint: string, limit: number): Observable<AuditLogResponse> {
     const cacheBuster = Date.now();
     const headers = this.apiService.createAuthHeaders()
