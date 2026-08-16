@@ -31,13 +31,21 @@ export class AuditLogService {
   constructor(private apiService: ApiService) {}
 
   getRegisterLogs(limit = 50): Observable<AuditLogResponse> {
+    return this.getLogs('/superadmin/logs/register', limit);
+  }
+
+  getProjectLogs(limit = 50): Observable<AuditLogResponse> {
+    return this.getLogs('/superadmin/logs/project', limit);
+  }
+
+  private getLogs(endpoint: string, limit: number): Observable<AuditLogResponse> {
     const cacheBuster = Date.now();
     const headers = this.apiService.createAuthHeaders()
       .set('Cache-Control', 'no-cache')
       .set('Pragma', 'no-cache');
 
     return this.apiService.get<AuditLogResponse>(
-      `/superadmin/logs/register?limit=${limit}&_=${cacheBuster}`,
+      `${endpoint}?limit=${limit}&_=${cacheBuster}`,
       headers
     );
   }

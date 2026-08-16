@@ -23,6 +23,29 @@ def read_recent_lines(path, limit):
     return [line.strip() for line in lines[-limit:] if line.strip()]
 
 
+def read_backend_log(filename, limit):
+    log_path = Path(LOG_DIR) / filename
+    lines = read_recent_lines(log_path, limit)
+    if lines:
+        return log_path, lines
+
+    fallback_path = Path.cwd() / 'logs' / filename
+    fallback_lines = read_recent_lines(fallback_path, limit)
+    if fallback_lines:
+        return fallback_path, fallback_lines
+
+    return log_path, []
+
+
+def read_limit():
+    try:
+        limit = int(request.args.get('limit', 50))
+    except (TypeError, ValueError):
+        limit = 50
+
+    return min(max(limit, 1), 200)
+
+
 def parse_register_log_line(line):
     try:
         payload = json.loads(line)
@@ -120,28 +143,83 @@ def parse_register_json_log(payload, raw_line):
     }
 
 
+def parse_project_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-project-{abs(hash(line))}',
+            'actor': 'Project',
+            'action': 'recorded project event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    status = payload.get('status') or 'notice'
+    reason = payload.get('reason') or '-'
+    username = payload.get('username') or 'Project leader'
+    title = payload.get('title') or '-'
+    project_id = payload.get('project_id')
+    ip = payload.get('ip') or '-'
+    role_needed = payload.get('role_needed') or '-'
+    max_members = payload.get('max_members') or '-'
+
+    if status == 'success':
+        action = 'created project recruitment'
+        row_status = 'success'
+    else:
+        action = f'failed project recruitment: {reason}'
+        row_status = 'pending'
+
+    target = f'{title} / role {role_needed} / max {max_members} / IP {ip}'
+    if project_id:
+        target = f'#{project_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or payload.get('created_at') or '-'}-{payload.get('project_id') or payload.get('creator_id') or payload.get('username') or 'project'}",
+        'actor': username,
+        'action': action,
+        'target': target,
+        'time': payload.get('logged_at') or payload.get('created_at') or '-',
+        'status': row_status,
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 @logs_bp.route('/superadmin/logs/register', methods=['GET'])
 @superadmin_required
 def register_logs():
-    try:
-        limit = int(request.args.get('limit', 50))
-    except (TypeError, ValueError):
-        limit = 50
-
-    limit = min(max(limit, 1), 200)
-    log_path = Path(LOG_DIR) / 'register.log'
-    lines = read_recent_lines(log_path, limit)
-    if not lines:
-        fallback_path = Path.cwd() / 'logs' / 'register.log'
-        fallback_lines = read_recent_lines(fallback_path, limit)
-        if fallback_lines:
-            log_path = fallback_path
-            lines = fallback_lines
+    limit = read_limit()
+    log_path, lines = read_backend_log('register.log', limit)
 
     items = [parse_register_log_line(line) for line in reversed(lines)]
 
     response = jsonify({
         'type': 'register',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/superadmin/logs/project', methods=['GET'])
+@superadmin_required
+def project_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('project.log', limit)
+    items = [parse_project_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'project',
         'path': str(log_path),
         'count': len(lines),
         'items': items,

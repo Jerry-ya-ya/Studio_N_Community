@@ -52,13 +52,13 @@
                     <h3>{{ group.title }}</h3>
                   </div>
                   <p>{{ group.description }}</p>
-                  @if (isRegisterGroup(group) && registerSource) {
-                    <small class="log-source">{{ registerSource }}</small>
+                  @if (getGroupSource(group)) {
+                    <small class="log-source">{{ getGroupSource(group) }}</small>
                   }
                 </div>
                 <div class="log-card__tools">
-                  @if (isRegisterGroup(group)) {
-                    <button type="button" (click)="loadRegisterLogs(); $event.stopPropagation()">Refresh</button>
+                  @if (isLiveLogGroup(group)) {
+                    <button type="button" (click)="refreshGroup(group); $event.stopPropagation()">Refresh</button>
                   }
                   <span>{{ getGroupLogs(group).length }}</span>
                 </div>
@@ -66,14 +66,14 @@
 
               @if (!isGroupCollapsed(section, group)) {
               <div class="log-list">
-                @if (isRegisterGroup(group) && registerLoading) {
+                @if (isGroupLoading(group)) {
                   <div class="log-state">
                     Loading logs...
                   </div>
-                } @else if (isRegisterGroup(group) && registerError) {
+                } @else if (getGroupError(group)) {
                   <div class="log-state log-state--error">
-                    <span>{{ registerError }}</span>
-                    <button type="button" (click)="loadRegisterLogs()">Retry</button>
+                    <span>{{ getGroupError(group) }}</span>
+                    <button type="button" (click)="refreshGroup(group)">Retry</button>
                   </div>
                 } @else if (getGroupLogs(group).length === 0) {
                   <div class="log-state">
@@ -92,7 +92,7 @@
                       <span>{{ log.target }}</span>
                       <small>{{ log.time }}</small>
                     </div>
-                    @if (isRegisterGroup(group) && (log.rawJson || log.raw_json)) {
+                    @if (isLiveLogGroup(group) && (log.rawJson || log.raw_json)) {
                       <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>
                     }
                   </div>

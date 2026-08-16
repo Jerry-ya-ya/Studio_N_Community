@@ -28,9 +28,14 @@ export class LogsComponent implements OnInit, OnDestroy {
   registerLoading = false;
   registerError = '';
   registerSource = '';
+  projectItems: AuditLogItem[] = [];
+  projectLoading = false;
+  projectError = '';
+  projectSource = '';
   collapsedGroups: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private refreshRegisterLogs$ = new Subject<void>();
+  private refreshProjectLogs$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
@@ -101,6 +106,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadCollapsedGroups();
     this.initializeRegisterLogStream();
+    this.initializeProjectLogStream();
   }
 
   ngOnDestroy() {
@@ -123,14 +129,55 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isRegisterGroup(group)) {
       this.loadRegisterLogs();
     }
+    if (this.isProjectGroup(group)) {
+      this.loadProjectLogs();
+    }
   }
 
   isRegisterGroup(group: AuditLogGroup) {
     return group.title === 'Register Log';
   }
 
+  isProjectGroup(group: AuditLogGroup) {
+    return group.title === 'Project Log';
+  }
+
+  isLiveLogGroup(group: AuditLogGroup) {
+    return this.isRegisterGroup(group) || this.isProjectGroup(group);
+  }
+
   getGroupLogs(group: AuditLogGroup) {
-    return this.isRegisterGroup(group) ? this.registerItems : group.logs;
+    if (this.isRegisterGroup(group)) {
+      return this.registerItems;
+    }
+    if (this.isProjectGroup(group)) {
+      return this.projectItems;
+    }
+    return group.logs;
+  }
+
+  getGroupSource(group: AuditLogGroup) {
+    if (this.isRegisterGroup(group)) {
+      return this.registerSource;
+    }
+    if (this.isProjectGroup(group)) {
+      return this.projectSource;
+    }
+    return '';
+  }
+
+  isGroupLoading(group: AuditLogGroup) {
+    return (this.isRegisterGroup(group) && this.registerLoading) || (this.isProjectGroup(group) && this.projectLoading);
+  }
+
+  getGroupError(group: AuditLogGroup) {
+    if (this.isRegisterGroup(group)) {
+      return this.registerError;
+    }
+    if (this.isProjectGroup(group)) {
+      return this.projectError;
+    }
+    return '';
   }
 
   getGroupKey(section: AuditLogSection, group: AuditLogGroup) {
@@ -157,6 +204,19 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   loadRegisterLogs() {
     this.refreshRegisterLogs$.next();
+  }
+
+  loadProjectLogs() {
+    this.refreshProjectLogs$.next();
+  }
+
+  refreshGroup(group: AuditLogGroup) {
+    if (this.isRegisterGroup(group)) {
+      this.loadRegisterLogs();
+    }
+    if (this.isProjectGroup(group)) {
+      this.loadProjectLogs();
+    }
   }
 
   private initializeRegisterLogStream() {
@@ -191,6 +251,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.registerLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeProjectLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.projectItems.length)
+    );
+
+    merge(initialRetry$, this.refreshProjectLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.projectLoading = true;
+        this.projectError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getProjectLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: 'Unable to load project logs.' }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.projectItems = Array.isArray(response.items) ? response.items : [];
+          this.projectSource = response.path ? `${response.path} / ${response.count ?? this.projectItems.length} records` : '';
+          this.projectError = '';
+        } else {
+          this.projectItems = [];
+          this.projectSource = '';
+          this.projectError = error;
+        }
+
+        this.projectLoading = false;
         this.changeDetector.detectChanges();
       });
     });

@@ -1,13 +1,24 @@
+import json
+
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
+from log_writer import get_backend_logger
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
-from time_utils import to_taipei_text
+from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
+project_logger = get_backend_logger('project_recruitment', 'project.log', message_only=True)
+
+
+def write_project_log(level, **payload):
+    payload.setdefault('event', 'project_recruitment')
+    payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
+    log_method = getattr(project_logger, level, project_logger.info)
+    log_method(json.dumps(payload, ensure_ascii=False))
 
 
 def serialize_user(user):
@@ -133,10 +144,39 @@ def create_project_recruitment():
     role_needed = data.get('role_needed', '').strip() or None
     contact = data.get('contact', '').strip() or None
     max_members = data.get('max_members')
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
 
     if not title:
+        write_project_log(
+            'warning',
+            status='failed',
+            reason='missing_title',
+            creator_id=current_user.id,
+            username=current_user.display_username,
+            nickname=current_user.display_nickname or '-',
+            title='-',
+            summary=summary or '-',
+            role_needed=role_needed or '-',
+            contact=contact or '-',
+            max_members=max_members or '-',
+            ip=client_ip
+        )
         return jsonify({'error': '請填寫專案名稱'}), 400
     if not summary:
+        write_project_log(
+            'warning',
+            status='failed',
+            reason='missing_summary',
+            creator_id=current_user.id,
+            username=current_user.display_username,
+            nickname=current_user.display_nickname or '-',
+            title=title,
+            summary='-',
+            role_needed=role_needed or '-',
+            contact=contact or '-',
+            max_members=max_members or '-',
+            ip=client_ip
+        )
         return jsonify({'error': '請填寫招募內容'}), 400
 
     if max_members in ['', None]:
@@ -145,8 +185,36 @@ def create_project_recruitment():
         try:
             max_members = int(max_members)
         except (TypeError, ValueError):
+            write_project_log(
+                'warning',
+                status='failed',
+                reason='invalid_max_members',
+                creator_id=current_user.id,
+                username=current_user.display_username,
+                nickname=current_user.display_nickname or '-',
+                title=title,
+                summary=summary,
+                role_needed=role_needed or '-',
+                contact=contact or '-',
+                max_members=data.get('max_members') or '-',
+                ip=client_ip
+            )
             return jsonify({'error': '人數上限必須是數字'}), 400
         if max_members < 1:
+            write_project_log(
+                'warning',
+                status='failed',
+                reason='max_members_too_low',
+                creator_id=current_user.id,
+                username=current_user.display_username,
+                nickname=current_user.display_nickname or '-',
+                title=title,
+                summary=summary,
+                role_needed=role_needed or '-',
+                contact=contact or '-',
+                max_members=max_members,
+                ip=client_ip
+            )
             return jsonify({'error': '人數上限至少為 1'}), 400
 
     project = ProjectRecruitment(
@@ -159,6 +227,23 @@ def create_project_recruitment():
     )
     db.session.add(project)
     db.session.commit()
+    write_project_log(
+        'info',
+        status='success',
+        reason='created',
+        project_id=project.id,
+        creator_id=current_user.id,
+        username=current_user.display_username,
+        nickname=current_user.display_nickname or '-',
+        title=project.title,
+        summary=project.summary,
+        role_needed=project.role_needed or '-',
+        contact=project.contact or '-',
+        max_members=project.max_members or '-',
+        review_status=project.review_status,
+        ip=client_ip,
+        created_at=to_taipei_iso(project.created_at)
+    )
 
     return jsonify(serialize_project(project, current_user)), 201
 

@@ -580,3 +580,5 @@
 ## 2026/08/16
 
 - Persist collapsible superadmin log cards.
+
+- Add project recruitment logs to superadmin monitoring.
