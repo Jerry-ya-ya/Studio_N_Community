@@ -134,23 +134,61 @@
 .log-card {
   --log-accent: var(--studio-accent);
   overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.log-card--collapsed {
+  border-color: color-mix(in srgb, var(--log-accent) 34%, var(--studio-line));
 }
 
 .log-card__header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
   padding: 18px;
   border-bottom: 1px solid color-mix(in srgb, var(--log-accent) 32%, var(--studio-line));
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--log-accent) 12%, transparent), transparent 48%),
     color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.log-card__header:hover,
+.log-card__header:focus-visible {
+  border-color: color-mix(in srgb, var(--log-accent) 54%, var(--studio-line));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--log-accent) 18%, transparent), transparent 52%),
+    color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+  outline: none;
 }
 
 .log-card__header h3 {
-  margin: 0 0 6px;
+  margin: 0;
   color: var(--studio-text);
   font-size: 1.12rem;
+}
+
+.log-card__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.log-card__chevron {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid color-mix(in srgb, var(--log-accent) 48%, var(--studio-line));
+  border-radius: 8px;
+  color: var(--studio-bg);
+  background: var(--log-accent);
+  font-family: 'Material Icons';
+  font-size: 1.35rem;
+  line-height: 1;
 }
 
 .log-source {
@@ -195,6 +233,10 @@
   color: var(--studio-bg);
   background: var(--log-accent);
   font-weight: 900;
+}
+
+.log-card--collapsed .log-card__header {
+  border-bottom: 0;
 }
 
 .log-list {

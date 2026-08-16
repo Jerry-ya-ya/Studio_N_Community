@@ -576,3 +576,7 @@
 - Add backend register log writer.
 
 - Connect register JSON logs to superadmin logs.
+
+## 2026/08/16
+
+- Persist collapsible superadmin log cards.

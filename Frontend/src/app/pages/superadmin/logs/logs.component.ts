@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { timeout } from 'rxjs/operators';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { merge, of, Subject, timer } from 'rxjs';
+import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
 interface AuditLogGroup {
@@ -22,11 +23,15 @@ interface AuditLogSection {
   templateUrl: './logs.component.html',
   styleUrl: './logs.component.css',
 })
-export class LogsComponent implements OnInit {
+export class LogsComponent implements OnInit, OnDestroy {
   registerItems: AuditLogItem[] = [];
   registerLoading = false;
   registerError = '';
   registerSource = '';
+  collapsedGroups: Record<string, boolean> = {};
+  private destroy$ = new Subject<void>();
+  private refreshRegisterLogs$ = new Subject<void>();
+  private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
     {
@@ -87,10 +92,20 @@ export class LogsComponent implements OnInit {
     }
   ];
 
-  constructor(private auditLogService: AuditLogService) {}
+  constructor(
+    private auditLogService: AuditLogService,
+    private zone: NgZone,
+    private changeDetector: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    this.loadRegisterLogs();
+    this.loadCollapsedGroups();
+    this.initializeRegisterLogStream();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get totalLogTypes() {
@@ -118,23 +133,87 @@ export class LogsComponent implements OnInit {
     return this.isRegisterGroup(group) ? this.registerItems : group.logs;
   }
 
-  loadRegisterLogs() {
-    this.registerLoading = true;
-    this.registerError = '';
+  getGroupKey(section: AuditLogSection, group: AuditLogGroup) {
+    return `${section.title}.${group.title}`.replace(/\s+/g, '-').toLowerCase();
+  }
 
-    this.auditLogService.getRegisterLogs().pipe(timeout(10000)).subscribe({
-      next: response => {
-        this.registerItems = Array.isArray(response.items) ? response.items : [];
-        this.registerSource = response.path ? `${response.path} / ${response.count ?? this.registerItems.length} records` : '';
-        this.registerLoading = false;
+  isGroupCollapsed(section: AuditLogSection, group: AuditLogGroup) {
+    return !!this.collapsedGroups[this.getGroupKey(section, group)];
+  }
+
+  toggleGroup(section: AuditLogSection, group: AuditLogGroup) {
+    const key = this.getGroupKey(section, group);
+    this.collapsedGroups = {
+      ...this.collapsedGroups,
+      [key]: !this.collapsedGroups[key]
+    };
+    this.saveCollapsedGroup(key, this.collapsedGroups[key]);
+  }
+
+  toggleGroupFromKeyboard(event: Event, section: AuditLogSection, group: AuditLogGroup) {
+    event.preventDefault();
+    this.toggleGroup(section, group);
+  }
+
+  loadRegisterLogs() {
+    this.refreshRegisterLogs$.next();
+  }
+
+  private initializeRegisterLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.registerItems.length)
+    );
+
+    merge(initialRetry$, this.refreshRegisterLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.registerLoading = true;
         this.registerError = '';
-      },
-      error: () => {
-        this.registerItems = [];
-        this.registerSource = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getRegisterLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: 'Unable to load register logs.' }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.registerItems = Array.isArray(response.items) ? response.items : [];
+          this.registerSource = response.path ? `${response.path} / ${response.count ?? this.registerItems.length} records` : '';
+          this.registerError = '';
+        } else {
+          this.registerItems = [];
+          this.registerSource = '';
+          this.registerError = error;
+        }
+
         this.registerLoading = false;
-        this.registerError = 'Unable to load register logs.';
-      }
+        this.changeDetector.detectChanges();
+      });
     });
+  }
+
+  private loadCollapsedGroups() {
+    const nextState: Record<string, boolean> = {};
+
+    for (const section of this.sections) {
+      for (const group of section.groups) {
+        const key = this.getGroupKey(section, group);
+        nextState[key] = localStorage.getItem(this.getCollapsedStorageKey(key)) === 'true';
+      }
+    }
+
+    this.collapsedGroups = nextState;
+  }
+
+  private saveCollapsedGroup(key: string, collapsed: boolean) {
+    localStorage.setItem(this.getCollapsedStorageKey(key), String(collapsed));
+  }
+
+  private getCollapsedStorageKey(key: string) {
+    return `${this.collapsedStoragePrefix}.${key}`;
   }
 }

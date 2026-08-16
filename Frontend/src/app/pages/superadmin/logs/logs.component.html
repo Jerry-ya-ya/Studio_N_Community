@@ -34,10 +34,23 @@
 
         <div class="log-groups">
           @for (group of section.groups; track group.title) {
-            <article class="log-card" [style.--log-accent]="group.accent">
-              <header class="log-card__header">
+            <article class="log-card" [class.log-card--collapsed]="isGroupCollapsed(section, group)" [style.--log-accent]="group.accent">
+              <header
+                class="log-card__header"
+                role="button"
+                tabindex="0"
+                (click)="toggleGroup(section, group)"
+                (keydown.enter)="toggleGroup(section, group)"
+                (keydown.space)="toggleGroupFromKeyboard($event, section, group)"
+                [attr.aria-expanded]="!isGroupCollapsed(section, group)"
+              >
                 <div>
-                  <h3>{{ group.title }}</h3>
+                  <div class="log-card__title">
+                    <span class="log-card__chevron" aria-hidden="true">
+                      {{ isGroupCollapsed(section, group) ? 'expand_more' : 'expand_less' }}
+                    </span>
+                    <h3>{{ group.title }}</h3>
+                  </div>
                   <p>{{ group.description }}</p>
                   @if (isRegisterGroup(group) && registerSource) {
                     <small class="log-source">{{ registerSource }}</small>
@@ -45,12 +58,13 @@
                 </div>
                 <div class="log-card__tools">
                   @if (isRegisterGroup(group)) {
-                    <button type="button" (click)="loadRegisterLogs()">Refresh</button>
+                    <button type="button" (click)="loadRegisterLogs(); $event.stopPropagation()">Refresh</button>
                   }
                   <span>{{ getGroupLogs(group).length }}</span>
                 </div>
               </header>
 
+              @if (!isGroupCollapsed(section, group)) {
               <div class="log-list">
                 @if (isRegisterGroup(group) && registerLoading) {
                   <div class="log-state">
@@ -84,6 +98,7 @@
                   </div>
                 }
               </div>
+              }
             </article>
           }
         </div>
