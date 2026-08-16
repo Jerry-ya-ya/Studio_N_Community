@@ -13,12 +13,20 @@ from datetime import timedelta
 
 auth_bp = Blueprint('auth', __name__)
 register_logger = get_backend_logger('register', 'register.log', message_only=True)
+sign_in_logger = get_backend_logger('sign_in', 'sign_in.log', message_only=True)
 
 
 def write_register_log(level, **payload):
     payload.setdefault('event', 'register')
     payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
     log_method = getattr(register_logger, level, register_logger.info)
+    log_method(json.dumps(payload, ensure_ascii=False))
+
+
+def write_sign_in_log(level, **payload):
+    payload.setdefault('event', 'sign_in')
+    payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
+    log_method = getattr(sign_in_logger, level, sign_in_logger.info)
     log_method(json.dumps(payload, ensure_ascii=False))
 
 # 註冊新用戶
@@ -137,16 +145,50 @@ def login():
     username = data.get('username')
     password = data.get('password')
     remember_me = bool(data.get('remember_me'))
+    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
 
     if not all([username, password]):
+        write_sign_in_log(
+            'warning',
+            status='failed',
+            reason='missing_required_fields',
+            username=username or '-',
+            role='-',
+            remember_me=remember_me,
+            ip=client_ip
+        )
         return jsonify({'error': '請填寫帳號和密碼'}), 400
     
     user = User.query.filter_by(username=username).first()
         
     if not user or user.is_deleted or not check_password_hash(user.password, password):
+        write_sign_in_log(
+            'warning',
+            status='failed',
+            reason='invalid_credentials',
+            user_id=user.id if user and not user.is_deleted else None,
+            username=username or '-',
+            email=user.email if user and not user.is_deleted else '-',
+            nickname=user.nickname if user and not user.is_deleted else '-',
+            role=user.role if user and not user.is_deleted else '-',
+            remember_me=remember_me,
+            ip=client_ip
+        )
         return jsonify({'error': '帳號或密碼錯誤'}), 401
 
     if not user.email_verified:
+        write_sign_in_log(
+            'warning',
+            status='failed',
+            reason='email_unverified',
+            user_id=user.id,
+            username=user.username,
+            email=user.email,
+            nickname=user.nickname or '-',
+            role=user.role,
+            remember_me=remember_me,
+            ip=client_ip
+        )
         return jsonify({'error': '請先驗證你的 Email'}), 403  # 👈 阻止登入
 
     refresh_expires = timedelta(days=7 if remember_me else 1)
@@ -155,6 +197,19 @@ def login():
         identity=str(user.id),
         additional_claims={'role': user.role, 'remember_me': remember_me},
         expires_delta=refresh_expires
+    )
+    write_sign_in_log(
+        'info',
+        status='success',
+        reason='authenticated',
+        user_id=user.id,
+        username=user.username,
+        email=user.email,
+        nickname=user.nickname or '-',
+        role=user.role,
+        remember_me=remember_me,
+        refresh_expires_in_days=7 if remember_me else 1,
+        ip=client_ip
     )
     return jsonify({
         'access_token': token,

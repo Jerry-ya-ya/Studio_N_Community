@@ -193,6 +193,57 @@ def parse_project_log_line(line):
     }
 
 
+def parse_sign_in_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-sign-in-{abs(hash(line))}',
+            'actor': 'Sign in',
+            'action': 'recorded sign in event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    status = payload.get('status') or 'notice'
+    reason = payload.get('reason') or '-'
+    username = payload.get('username') or 'Sign in'
+    email = payload.get('email') or '-'
+    role = payload.get('role') or '-'
+    ip = payload.get('ip') or '-'
+    user_id = payload.get('user_id')
+    remember_me = payload.get('remember_me')
+
+    if status == 'success':
+        action = 'signed in'
+        row_status = 'success'
+    else:
+        action = f'failed sign in: {reason}'
+        row_status = 'notice' if reason == 'email_unverified' else 'pending'
+
+    remember_label = 'remember true' if remember_me else 'remember false'
+    target = f'{email} / {role} / {remember_label} / IP {ip}'
+    if user_id:
+        target = f'#{user_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{payload.get('user_id') or payload.get('username') or 'sign-in'}",
+        'actor': username,
+        'action': action,
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': row_status,
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 @logs_bp.route('/superadmin/logs/register', methods=['GET'])
 @superadmin_required
 def register_logs():
@@ -203,6 +254,23 @@ def register_logs():
 
     response = jsonify({
         'type': 'register',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/superadmin/logs/sign-in', methods=['GET'])
+@superadmin_required
+def sign_in_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('sign_in.log', limit)
+    items = [parse_sign_in_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'sign-in',
         'path': str(log_path),
         'count': len(lines),
         'items': items,

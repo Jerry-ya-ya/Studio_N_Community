@@ -38,6 +38,10 @@ export class AuditLogService {
     return this.getLogs('/superadmin/logs/project', limit);
   }
 
+  getSignInLogs(limit = 50): Observable<AuditLogResponse> {
+    return this.getLogs('/superadmin/logs/sign-in', limit);
+  }
+
   private getLogs(endpoint: string, limit: number): Observable<AuditLogResponse> {
     const cacheBuster = Date.now();
     const headers = this.apiService.createAuthHeaders()

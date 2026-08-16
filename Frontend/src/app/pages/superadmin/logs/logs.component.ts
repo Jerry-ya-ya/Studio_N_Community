@@ -32,10 +32,15 @@ export class LogsComponent implements OnInit, OnDestroy {
   projectLoading = false;
   projectError = '';
   projectSource = '';
+  signInItems: AuditLogItem[] = [];
+  signInLoading = false;
+  signInError = '';
+  signInSource = '';
   collapsedGroups: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private refreshRegisterLogs$ = new Subject<void>();
   private refreshProjectLogs$ = new Subject<void>();
+  private refreshSignInLogs$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
@@ -54,19 +59,13 @@ export class LogsComponent implements OnInit, OnDestroy {
           title: 'Project Log',
           description: 'Tracks who created a project recruitment.',
           accent: 'var(--studio-accent)',
-          logs: [
-            { actor: 'Project leader', action: 'created project', target: 'Eden website', time: 'Pending API', status: 'pending' },
-            { actor: 'Team lead', action: 'opened recruitment', target: 'Game studio taskforce', time: 'Pending API', status: 'notice' }
-          ]
+          logs: []
         },
         {
           title: 'Sign In Log',
-          description: 'Tracks successful sign-in activity.',
+          description: 'Tracks successful and failed sign-in activity.',
           accent: 'var(--studio-warm)',
-          logs: [
-            { actor: 'Jerry', action: 'signed in', target: 'Private home', time: 'Pending API', status: 'success' },
-            { actor: 'Member', action: 'refreshed session', target: 'Access token', time: 'Pending API', status: 'notice' }
-          ]
+          logs: []
         }
       ]
     },
@@ -107,6 +106,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.loadCollapsedGroups();
     this.initializeRegisterLogStream();
     this.initializeProjectLogStream();
+    this.initializeSignInLogStream();
   }
 
   ngOnDestroy() {
@@ -132,6 +132,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isProjectGroup(group)) {
       this.loadProjectLogs();
     }
+    if (this.isSignInGroup(group)) {
+      this.loadSignInLogs();
+    }
   }
 
   isRegisterGroup(group: AuditLogGroup) {
@@ -142,8 +145,12 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.title === 'Project Log';
   }
 
+  isSignInGroup(group: AuditLogGroup) {
+    return group.title === 'Sign In Log';
+  }
+
   isLiveLogGroup(group: AuditLogGroup) {
-    return this.isRegisterGroup(group) || this.isProjectGroup(group);
+    return this.isRegisterGroup(group) || this.isProjectGroup(group) || this.isSignInGroup(group);
   }
 
   getGroupLogs(group: AuditLogGroup) {
@@ -152,6 +159,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isProjectGroup(group)) {
       return this.projectItems;
+    }
+    if (this.isSignInGroup(group)) {
+      return this.signInItems;
     }
     return group.logs;
   }
@@ -163,11 +173,18 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isProjectGroup(group)) {
       return this.projectSource;
     }
+    if (this.isSignInGroup(group)) {
+      return this.signInSource;
+    }
     return '';
   }
 
   isGroupLoading(group: AuditLogGroup) {
-    return (this.isRegisterGroup(group) && this.registerLoading) || (this.isProjectGroup(group) && this.projectLoading);
+    return (
+      (this.isRegisterGroup(group) && this.registerLoading) ||
+      (this.isProjectGroup(group) && this.projectLoading) ||
+      (this.isSignInGroup(group) && this.signInLoading)
+    );
   }
 
   getGroupError(group: AuditLogGroup) {
@@ -176,6 +193,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isProjectGroup(group)) {
       return this.projectError;
+    }
+    if (this.isSignInGroup(group)) {
+      return this.signInError;
     }
     return '';
   }
@@ -210,12 +230,19 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshProjectLogs$.next();
   }
 
+  loadSignInLogs() {
+    this.refreshSignInLogs$.next();
+  }
+
   refreshGroup(group: AuditLogGroup) {
     if (this.isRegisterGroup(group)) {
       this.loadRegisterLogs();
     }
     if (this.isProjectGroup(group)) {
       this.loadProjectLogs();
+    }
+    if (this.isSignInGroup(group)) {
+      this.loadSignInLogs();
     }
   }
 
@@ -288,6 +315,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.projectLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeSignInLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.signInItems.length)
+    );
+
+    merge(initialRetry$, this.refreshSignInLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.signInLoading = true;
+        this.signInError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getSignInLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: 'Unable to load sign in logs.' }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.signInItems = Array.isArray(response.items) ? response.items : [];
+          this.signInSource = response.path ? `${response.path} / ${response.count ?? this.signInItems.length} records` : '';
+          this.signInError = '';
+        } else {
+          this.signInItems = [];
+          this.signInSource = '';
+          this.signInError = error;
+        }
+
+        this.signInLoading = false;
         this.changeDetector.detectChanges();
       });
     });

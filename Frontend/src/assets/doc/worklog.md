@@ -582,3 +582,5 @@
 - Persist collapsible superadmin log cards.
 
 - Add project recruitment logs to superadmin monitoring.
+
+- Add sign in logs to superadmin monitoring.
