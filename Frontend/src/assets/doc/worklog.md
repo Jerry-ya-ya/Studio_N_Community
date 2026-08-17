@@ -592,3 +592,5 @@
 - Add news logs to superadmin monitoring.
 
 - Add public and private activity pages.
+
+- Add admin activity visibility filter.

@@ -1125,6 +1125,9 @@
       "public": "Public",
       "private": "Private"
     },
+    "filter": {
+      "label": "活動の公開範囲フィルター"
+    },
     "state": {
       "loading": "データベースから活動を読み込んでいます...",
       "empty": "活動はまだありません。"

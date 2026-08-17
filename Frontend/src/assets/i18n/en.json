@@ -1125,6 +1125,9 @@
       "public": "Public",
       "private": "Private"
     },
+    "filter": {
+      "label": "Activity visibility filter"
+    },
     "state": {
       "loading": "Loading activities from database...",
       "empty": "No activities yet."

@@ -20,9 +20,26 @@
       <p>{{ 'adminActivity.manager.subtitle' | translate }}</p>
     </div>
 
-    <button type="button" class="activity-button" (click)="addActivity()">
-      {{ 'adminActivity.actions.add' | translate }}
-    </button>
+    <div class="activity-toolbar__actions">
+      <button type="button" class="activity-button" (click)="addActivity()">
+        {{ 'adminActivity.actions.add' | translate }}
+      </button>
+    </div>
+  </section>
+
+  <section class="activity-filter-panel">
+    <div class="visibility-tabs" [attr.aria-label]="'adminActivity.filter.label' | translate">
+      @for (option of visibilityOptions; track option) {
+        <button
+          type="button"
+          [class.active]="activeVisibility === option"
+          (click)="setVisibilityFilter(option)"
+        >
+          <span>{{ ('adminActivity.visibility.' + option) | translate }}</span>
+          <strong>{{ countByVisibility(option) }}</strong>
+        </button>
+      }
+    </div>
   </section>
 
   @if (loading) {
@@ -38,7 +55,7 @@
   }
 
   <section class="activity-list">
-    @for (activity of activities; track activity.localId) {
+    @for (activity of filteredActivities; track activity.localId) {
       <article class="activity-card">
         <div class="activity-preview">
           @if (previewImage(activity)) {
@@ -99,7 +116,7 @@
       </article>
     }
 
-    @if (!loading && activities.length === 0) {
+    @if (!loading && filteredActivities.length === 0) {
       <p class="state-message">{{ 'adminActivity.state.empty' | translate }}</p>
     }
   </section>

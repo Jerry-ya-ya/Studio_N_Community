@@ -28,6 +28,7 @@ export class ActivityComponent implements OnInit {
   readonly visibilityOptions: ActivityVisibility[] = ['public', 'private'];
 
   activities: ActivityDraft[] = [];
+  activeVisibility: ActivityVisibility = 'public';
   loading = false;
   savedMessage = '';
   errorMessage = '';
@@ -64,12 +65,24 @@ export class ActivityComponent implements OnInit {
       this.createDraft({
         title: '',
         description: '',
-        visibility: 'private',
-        targetFilter: 'role:member',
-        sort_order: this.activities.length
+        visibility: this.activeVisibility,
+        targetFilter: this.activeVisibility === 'private' ? 'role:member' : 'all',
+        sort_order: this.filteredActivities.length
       }),
       ...this.activities
     ];
+  }
+
+  get filteredActivities() {
+    return this.activities.filter(activity => activity.visibility === this.activeVisibility);
+  }
+
+  countByVisibility(visibility: ActivityVisibility) {
+    return this.activities.filter(activity => activity.visibility === visibility).length;
+  }
+
+  setVisibilityFilter(visibility: ActivityVisibility) {
+    this.activeVisibility = visibility;
   }
 
   saveActivity(activity: ActivityDraft) {

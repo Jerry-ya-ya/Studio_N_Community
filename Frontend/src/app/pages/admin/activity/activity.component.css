@@ -15,6 +15,7 @@
 
 .activity-hero,
 .activity-toolbar,
+.activity-filter-panel,
 .activity-card {
   width: min(1120px, 100%);
   margin-inline: auto;
@@ -95,6 +96,58 @@
   justify-content: space-between;
   gap: 18px;
   padding: clamp(20px, 3vw, 32px);
+}
+
+.activity-toolbar__actions {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.activity-filter-panel {
+  padding: 10px;
+}
+
+.visibility-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 8px;
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--studio-panel-strong) 74%, transparent);
+}
+
+.visibility-tabs button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 0 12px;
+  color: var(--studio-muted);
+  background: transparent;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.visibility-tabs button.active {
+  border-color: color-mix(in srgb, var(--studio-accent) 62%, var(--studio-line));
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-accent) 16%, transparent);
+}
+
+.visibility-tabs strong {
+  min-width: 28px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--studio-bg);
+  background: var(--studio-accent);
+  text-align: center;
 }
 
 .activity-toolbar h2 {
@@ -259,6 +312,14 @@
   .activity-toolbar {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .activity-toolbar__actions {
+    justify-items: stretch;
+  }
+
+  .activity-filter-panel {
+    padding: 8px;
   }
 }
 

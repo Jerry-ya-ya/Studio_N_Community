@@ -1125,6 +1125,9 @@
       "public": "Public",
       "private": "Private"
     },
+    "filter": {
+      "label": "活動可見範圍篩選"
+    },
     "state": {
       "loading": "正在從資料庫載入活動...",
       "empty": "目前沒有活動。"
