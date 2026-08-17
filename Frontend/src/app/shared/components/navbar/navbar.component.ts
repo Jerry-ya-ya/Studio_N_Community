@@ -42,6 +42,7 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.public.about', icon: 'info', route: appPath.aboutwebsite },
         { labelKey: 'nav.public.tutorial', icon: 'school', route: appPath.tutorial },
         { labelKey: 'nav.public.update', icon: 'new_releases', route: appPath.update },
+        { labelKey: 'nav.public.activities', icon: 'local_activity', route: appPath.publicActivities },
         { labelKey: 'nav.public.register', icon: 'person_add', route: appPath.register },
         { labelKey: 'nav.public.login', icon: 'login', route: appPath.login }
       ]
@@ -57,6 +58,7 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.private.friend', icon: 'diversity_3', route: appPath.friend },
         { labelKey: 'nav.private.todo', icon: 'task_alt', route: appPath.todo },
         { labelKey: 'nav.private.checkIn', icon: 'redeem', route: appPath.checkIn },
+        { labelKey: 'nav.private.activities', icon: 'celebration', route: appPath.privateActivities },
         { labelKey: 'nav.private.setting', icon: 'settings', route: appPath.setting },
         { labelKey: 'nav.private.profile', icon: 'account_circle', route: appPath.profile },
         { labelKey: 'nav.private.crawler', icon: 'travel_explore', route: appPath.crawler },

@@ -38,6 +38,17 @@ export class ActivityService {
 
   constructor(private apiService: ApiService) {}
 
+  getPublicActivities(): Observable<ActivityPromotion[]> {
+    return this.apiService.get<ActivityPromotion[]>('/activities');
+  }
+
+  getPrivateActivities(): Observable<ActivityPromotion[]> {
+    return this.apiService.get<ActivityPromotion[]>(
+      '/private/activities',
+      this.apiService.createAuthHeaders()
+    );
+  }
+
   getAdminActivities(): Observable<ActivityPromotion[]> {
     return this.apiService.get<ActivityPromotion[]>(
       '/admin/activities',

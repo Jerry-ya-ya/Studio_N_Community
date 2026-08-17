@@ -1,0 +1,45 @@
+<main class="activity-page private-activity-page">
+  <section class="activity-hero">
+    <div>
+      <p class="activity-kicker">Private Activity</p>
+      <h1>Member Events</h1>
+      <p>Role-targeted announcements and internal promotions from the admin activity board.</p>
+    </div>
+
+    <button type="button" class="refresh-button" (click)="loadActivities()" [disabled]="loading">
+      {{ loading ? 'Loading' : 'Refresh' }}
+    </button>
+  </section>
+
+  <section class="activity-board">
+    @if (loading) {
+      <div class="activity-state">Loading activities...</div>
+    } @else if (errorMessage) {
+      <div class="activity-state activity-state--error">
+        <span>{{ errorMessage }}</span>
+        <button type="button" (click)="loadActivities()">Retry</button>
+      </div>
+    } @else if (!activities.length) {
+      <div class="activity-state">No private activities for your account yet.</div>
+    }
+
+    @for (activity of activities; track activity.id) {
+      <article class="activity-card" [class.activity-card--image]="resolveImageUrl(activity)">
+        @if (resolveImageUrl(activity)) {
+          <img [src]="resolveImageUrl(activity)" [alt]="activity.title">
+        }
+        <div class="activity-card__glass">
+          <div class="activity-card__meta">
+            <span>{{ activity.visibility }}</span>
+            <span>{{ activity.targetFilter || activity.target_filter || 'all' }}</span>
+          </div>
+          <h2>{{ activity.title }}</h2>
+          <p>{{ activity.description }}</p>
+          @if (activity.createdBy) {
+            <small>Published by {{ activity.createdBy }}</small>
+          }
+        </div>
+      </article>
+    }
+  </section>
+</main>

@@ -1,0 +1,45 @@
+<main class="activity-page">
+  <section class="activity-hero">
+    <div>
+      <p class="activity-kicker">Public Activity</p>
+      <h1>Studio Events</h1>
+      <p>Open announcements and event promotions from the admin activity board.</p>
+    </div>
+
+    <button type="button" class="refresh-button" (click)="loadActivities()" [disabled]="loading">
+      {{ loading ? 'Loading' : 'Refresh' }}
+    </button>
+  </section>
+
+  <section class="activity-board">
+    @if (loading) {
+      <div class="activity-state">Loading activities...</div>
+    } @else if (errorMessage) {
+      <div class="activity-state activity-state--error">
+        <span>{{ errorMessage }}</span>
+        <button type="button" (click)="loadActivities()">Retry</button>
+      </div>
+    } @else if (!activities.length) {
+      <div class="activity-state">No public activities yet.</div>
+    }
+
+    @for (activity of activities; track activity.id) {
+      <article class="activity-card" [class.activity-card--image]="resolveImageUrl(activity)">
+        @if (resolveImageUrl(activity)) {
+          <img [src]="resolveImageUrl(activity)" [alt]="activity.title">
+        }
+        <div class="activity-card__glass">
+          <div class="activity-card__meta">
+            <span>{{ activity.visibility }}</span>
+            <span>{{ activity.targetFilter || activity.target_filter || 'all' }}</span>
+          </div>
+          <h2>{{ activity.title }}</h2>
+          <p>{{ activity.description }}</p>
+          @if (activity.created_at) {
+            <small>{{ activity.created_at }}</small>
+          }
+        </div>
+      </article>
+    }
+  </section>
+</main>

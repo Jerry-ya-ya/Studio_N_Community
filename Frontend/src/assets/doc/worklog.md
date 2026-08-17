@@ -590,3 +590,5 @@
 - Add admin content logs to superadmin monitoring.
 
 - Add news logs to superadmin monitoring.
+
+- Add public and private activity pages.

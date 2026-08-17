@@ -120,6 +120,16 @@ const routes: Routes = [
       import('../pages/public/update/update.module').then(m => m.UpdateModule)
   },
   {
+    path: appPath.publicActivities,
+    loadChildren: () =>
+      import('../pages/public/activities/activities.module').then(m => m.ActivitiesModule)
+  },
+  {
+    path: appPath.privateActivities,
+    loadChildren: () =>
+      import('../pages/private/activities/activities.module').then(m => m.ActivitiesModule)
+  },
+  {
     path: '**',
     redirectTo: '',
   }

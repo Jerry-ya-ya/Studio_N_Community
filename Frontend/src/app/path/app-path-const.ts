@@ -43,4 +43,8 @@ export const appPath = {
     tutorial: 'tutorial',
     //update
     update: 'update',
+    //public activities
+    publicActivities: 'activities',
+    //private activities
+    privateActivities: 'private-activities',
 };

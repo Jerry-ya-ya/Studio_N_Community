@@ -50,6 +50,7 @@
       "about": "About",
       "tutorial": "Tutorial",
       "update": "Update",
+      "activities": "Activities",
       "register": "Register",
       "login": "Login"
     },
@@ -61,6 +62,7 @@
       "friend": "Friend",
       "todo": "Todo",
       "checkIn": "Check In",
+      "activities": "Activities",
       "setting": "Setting",
       "profile": "Profile",
       "crawler": "Crawler",

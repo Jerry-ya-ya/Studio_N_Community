@@ -2,6 +2,7 @@ import os
 import uuid
 
 from flask import Blueprint, current_app, jsonify, request
+from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 from models import ActivityPromotion, db
@@ -37,6 +38,22 @@ def serialize_activity(activity):
         'created_at': to_taipei_iso(activity.created_at),
         'updated_at': to_taipei_iso(activity.updated_at),
     }
+
+
+def matches_activity_target(activity, user):
+    target_filter = (activity.target_filter or 'all').strip().lower()
+    if target_filter in {'', 'all', '*'}:
+        return True
+
+    role = (user.role or '').lower()
+    username = (user.username or '').lower()
+
+    if target_filter.startswith('role:'):
+        return target_filter.split(':', 1)[1].strip() == role
+    if target_filter.startswith('user:'):
+        return target_filter.split(':', 1)[1].strip().lower() == username
+
+    return target_filter in {role, username}
 
 
 def read_activity_payload(data, default_order=0):
@@ -81,6 +98,27 @@ def public_activities():
     ).all()
 
     return jsonify([serialize_activity(activity) for activity in activities])
+
+
+@activity_bp.route('/private/activities', methods=['GET'])
+@jwt_required()
+def private_activities():
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': '使用者不存在'}), 401
+
+    activities = ActivityPromotion.query.filter_by(visibility='private').order_by(
+        ActivityPromotion.sort_order.asc(),
+        ActivityPromotion.created_at.desc(),
+        ActivityPromotion.id.desc()
+    ).all()
+
+    visible_activities = [
+        activity for activity in activities
+        if matches_activity_target(activity, user)
+    ]
+
+    return jsonify([serialize_activity(activity) for activity in visible_activities])
 
 
 @activity_bp.route('/admin/activities', methods=['GET'])
