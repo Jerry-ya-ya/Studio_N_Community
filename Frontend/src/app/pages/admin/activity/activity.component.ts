@@ -66,7 +66,7 @@ export class ActivityComponent implements OnInit {
         title: '',
         description: '',
         visibility: this.activeVisibility,
-        targetFilter: this.activeVisibility === 'private' ? 'role:member' : 'all',
+        targetFilter: 'all',
         sort_order: this.filteredActivities.length
       }),
       ...this.activities

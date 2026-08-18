@@ -42,10 +42,14 @@ def serialize_activity(activity):
 
 def matches_activity_target(activity, user):
     target_filter = (activity.target_filter or 'all').strip().lower()
+    role = (user.role or '').lower()
+
+    if role in {'admin', 'superadmin'}:
+        return True
+
     if target_filter in {'', 'all', '*'}:
         return True
 
-    role = (user.role or '').lower()
     username = (user.username or '').lower()
 
     if target_filter.startswith('role:'):
@@ -97,7 +101,9 @@ def public_activities():
         ActivityPromotion.id.desc()
     ).all()
 
-    return jsonify([serialize_activity(activity) for activity in activities])
+    response = jsonify([serialize_activity(activity) for activity in activities])
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 
 @activity_bp.route('/private/activities', methods=['GET'])
@@ -118,7 +124,9 @@ def private_activities():
         if matches_activity_target(activity, user)
     ]
 
-    return jsonify([serialize_activity(activity) for activity in visible_activities])
+    response = jsonify([serialize_activity(activity) for activity in visible_activities])
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 
 @activity_bp.route('/admin/activities', methods=['GET'])

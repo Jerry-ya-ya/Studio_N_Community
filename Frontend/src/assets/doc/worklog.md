@@ -594,3 +594,7 @@
 - Add public and private activity pages.
 
 - Add admin activity visibility filter.
+
+## 2026/08/18
+
+- Fix activity page loading and private visibility.

@@ -65,6 +65,36 @@
   margin: 0 auto;
 }
 
+.activity-raw {
+  max-width: 1180px;
+  margin: 22px auto 0;
+  border: 1px solid var(--studio-border);
+  border-radius: 18px;
+  background: var(--studio-surface);
+  overflow: hidden;
+}
+
+.activity-raw header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--studio-border);
+  color: var(--studio-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.activity-raw pre {
+  max-height: 360px;
+  margin: 0;
+  padding: 18px;
+  overflow: auto;
+  color: var(--studio-text);
+  white-space: pre-wrap;
+}
+
 .activity-state {
   grid-column: 1 / -1;
   padding: 26px;

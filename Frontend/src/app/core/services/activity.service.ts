@@ -39,12 +39,12 @@ export class ActivityService {
   constructor(private apiService: ApiService) {}
 
   getPublicActivities(): Observable<ActivityPromotion[]> {
-    return this.apiService.get<ActivityPromotion[]>('/activities');
+    return this.apiService.get<ActivityPromotion[]>(`/activities?_=${Date.now()}`);
   }
 
   getPrivateActivities(): Observable<ActivityPromotion[]> {
     return this.apiService.get<ActivityPromotion[]>(
-      '/private/activities',
+      `/private/activities?_=${Date.now()}`,
       this.apiService.createAuthHeaders()
     );
   }
