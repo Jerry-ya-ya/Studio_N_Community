@@ -1118,6 +1118,9 @@
       "description": "Activity Copy",
       "descriptionPlaceholder": "Write the promotional text",
       "visibility": "Visibility",
+      "date": "Activity Date",
+      "startTime": "Start Time",
+      "endTime": "End Time",
       "targetFilter": "Target Filter",
       "targetFilterPlaceholder": "all, role:member, user:Jerry"
     },

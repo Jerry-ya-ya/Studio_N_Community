@@ -14,6 +14,13 @@ export interface ActivityPromotion {
   target_filter?: string;
   imageUrl?: string | null;
   image_url?: string | null;
+  startAt?: string | null;
+  start_at?: string | null;
+  endAt?: string | null;
+  end_at?: string | null;
+  status?: 'active' | 'ended';
+  isEnded?: boolean;
+  is_ended?: boolean;
   sort_order?: number;
   createdBy?: string | null;
   created_by_id?: number | null;
@@ -26,6 +33,8 @@ export interface ActivityPayload {
   description: string;
   visibility: ActivityVisibility;
   targetFilter: string;
+  startAt?: string | null;
+  endAt?: string | null;
   sort_order?: number;
   imageUrl?: string | null;
 }

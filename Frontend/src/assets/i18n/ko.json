@@ -1118,6 +1118,9 @@
       "description": "활동 문구",
       "descriptionPlaceholder": "홍보 문구 작성",
       "visibility": "공개 범위",
+      "date": "활동 날짜",
+      "startTime": "시작 시간",
+      "endTime": "종료 시간",
       "targetFilter": "대상 필터",
       "targetFilterPlaceholder": "all, role:member, user:Jerry"
     },

@@ -89,12 +89,27 @@
 
           <div class="form-grid">
             <label>
-              <span>{{ 'adminActivity.form.visibility' | translate }}</span>
-              <select [(ngModel)]="activity.visibility">
-                @for (option of visibilityOptions; track option) {
-                  <option [value]="option">{{ ('adminActivity.visibility.' + option) | translate }}</option>
-                }
-              </select>
+              <span>{{ 'adminActivity.form.date' | translate }}</span>
+              <mat-form-field class="activity-date-picker" appearance="outline">
+                <input
+                  matInput
+                  [matDatepicker]="activityDatePicker"
+                  [(ngModel)]="activity.activityDateValue"
+                  [placeholder]="'adminActivity.form.date' | translate"
+                >
+                <mat-datepicker-toggle matIconSuffix [for]="activityDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #activityDatePicker></mat-datepicker>
+              </mat-form-field>
+            </label>
+
+            <label>
+              <span>{{ 'adminActivity.form.startTime' | translate }}</span>
+              <input type="time" [(ngModel)]="activity.startTime">
+            </label>
+
+            <label>
+              <span>{{ 'adminActivity.form.endTime' | translate }}</span>
+              <input type="time" [(ngModel)]="activity.endTime">
             </label>
 
             <label>

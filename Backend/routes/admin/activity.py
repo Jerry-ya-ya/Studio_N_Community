@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 
 from flask import Blueprint, current_app, jsonify, request
 from flask_jwt_extended import jwt_required
@@ -8,7 +9,7 @@ from werkzeug.utils import secure_filename
 from models import ActivityPromotion, db
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
-from time_utils import to_taipei_iso
+from time_utils import taipei_now, to_taipei_iso
 
 activity_bp = Blueprint('activity', __name__)
 
@@ -22,6 +23,7 @@ def is_allowed_image(filename):
 
 def serialize_activity(activity):
     creator = activity.created_by
+    is_ended = bool(activity.end_at and activity.end_at <= taipei_now())
 
     return {
         'id': activity.id,
@@ -32,6 +34,13 @@ def serialize_activity(activity):
         'target_filter': activity.target_filter,
         'imageUrl': activity.image_url,
         'image_url': activity.image_url,
+        'startAt': to_taipei_iso(activity.start_at),
+        'start_at': to_taipei_iso(activity.start_at),
+        'endAt': to_taipei_iso(activity.end_at),
+        'end_at': to_taipei_iso(activity.end_at),
+        'status': 'ended' if is_ended else 'active',
+        'isEnded': is_ended,
+        'is_ended': is_ended,
         'sort_order': activity.sort_order,
         'createdBy': creator.display_username if creator else None,
         'created_by_id': activity.created_by_id,
@@ -69,6 +78,8 @@ def read_activity_payload(data, default_order=0):
     visibility = (data.get('visibility') or 'private').strip()
     target_filter = (data.get('targetFilter') or data.get('target_filter') or 'all').strip()
     image_url = (data.get('imageUrl') or data.get('image_url') or '').strip()
+    start_at, start_error = read_activity_datetime(data.get('startAt') or data.get('start_at'))
+    end_at, end_error = read_activity_datetime(data.get('endAt') or data.get('end_at'))
     sort_order = data.get('sort_order', default_order)
 
     if not title:
@@ -77,6 +88,12 @@ def read_activity_payload(data, default_order=0):
         return None, ('description is required', 400)
     if visibility not in VALID_VISIBILITIES:
         return None, ('visibility must be public or private', 400)
+    if start_error:
+        return None, ('startAt must be an ISO datetime', 400)
+    if end_error:
+        return None, ('endAt must be an ISO datetime', 400)
+    if start_at and end_at and end_at < start_at:
+        return None, ('endAt must be after startAt', 400)
 
     try:
         sort_order = int(sort_order)
@@ -89,8 +106,25 @@ def read_activity_payload(data, default_order=0):
         'visibility': visibility,
         'target_filter': (target_filter or 'all')[:160],
         'image_url': image_url[:255] or None,
+        'start_at': start_at,
+        'end_at': end_at,
         'sort_order': sort_order,
     }, None
+
+
+def read_activity_datetime(value):
+    if not value:
+        return None, None
+
+    if not isinstance(value, str):
+        return None, True
+
+    try:
+        parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+    except ValueError:
+        return None, True
+
+    return parsed.replace(tzinfo=None), None
 
 
 @activity_bp.route('/activities', methods=['GET'])

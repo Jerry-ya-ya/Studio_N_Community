@@ -164,6 +164,18 @@
   font-weight: 800;
 }
 
+.activity-card__meta .activity-card__status--ended {
+  border-color: color-mix(in srgb, var(--studio-danger) 56%, transparent);
+  color: var(--studio-danger);
+  background: color-mix(in srgb, var(--studio-danger) 12%, transparent);
+}
+
+.activity-card__time {
+  display: block;
+  margin: 0 0 10px;
+  color: color-mix(in srgb, var(--studio-muted) 76%, var(--studio-warm));
+}
+
 .activity-card h2 {
   margin: 0 0 10px;
   font-size: clamp(1.4rem, 2.4vw, 2rem);
@@ -175,7 +187,7 @@
   line-height: 1.65;
 }
 
-.activity-card small {
+.activity-card small:not(.activity-card__time) {
   display: block;
   margin-top: 14px;
   color: color-mix(in srgb, var(--studio-muted) 78%, var(--studio-warm));

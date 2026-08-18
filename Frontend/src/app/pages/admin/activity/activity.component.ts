@@ -8,6 +8,10 @@ interface ActivityDraft {
   description: string;
   visibility: ActivityVisibility;
   targetFilter: string;
+  activityDate: string;
+  activityDateValue: Date | null;
+  startTime: string;
+  endTime: string;
   imageName: string;
   imagePreview: string;
   imageUrl: string | null;
@@ -67,6 +71,8 @@ export class ActivityComponent implements OnInit {
         description: '',
         visibility: this.activeVisibility,
         targetFilter: 'all',
+        activityDate: this.todayInputValue(),
+        activityDateValue: new Date(),
         sort_order: this.filteredActivities.length
       }),
       ...this.activities
@@ -229,6 +235,8 @@ export class ActivityComponent implements OnInit {
       description: activity.description.trim(),
       visibility: activity.visibility,
       targetFilter: activity.targetFilter.trim() || 'all',
+      startAt: this.combineDateTime(this.getDateFromPicker(activity), activity.startTime),
+      endAt: this.combineDateTime(this.getDateFromPicker(activity), activity.endTime),
       sort_order: activity.sort_order,
       imageUrl: activity.imageUrl
     };
@@ -241,6 +249,10 @@ export class ActivityComponent implements OnInit {
       description: activity.description,
       visibility: activity.visibility,
       targetFilter: activity.targetFilter || activity.target_filter || 'all',
+      activityDate: this.getDateInputValue(activity.startAt || activity.start_at || activity.endAt || activity.end_at),
+      activityDateValue: this.getDatePickerValue(activity.startAt || activity.start_at || activity.endAt || activity.end_at),
+      startTime: this.getTimeInputValue(activity.startAt || activity.start_at),
+      endTime: this.getTimeInputValue(activity.endAt || activity.end_at),
       imageUrl: activity.imageUrl || activity.image_url || null,
       sort_order: activity.sort_order ?? index
     });
@@ -252,6 +264,10 @@ export class ActivityComponent implements OnInit {
     activity.description = saved.description;
     activity.visibility = saved.visibility;
     activity.targetFilter = saved.targetFilter || saved.target_filter || 'all';
+    activity.activityDate = this.getDateInputValue(saved.startAt || saved.start_at || saved.endAt || saved.end_at);
+    activity.activityDateValue = this.getDatePickerValue(saved.startAt || saved.start_at || saved.endAt || saved.end_at);
+    activity.startTime = this.getTimeInputValue(saved.startAt || saved.start_at);
+    activity.endTime = this.getTimeInputValue(saved.endAt || saved.end_at);
     activity.imageUrl = saved.imageUrl || saved.image_url || null;
     activity.imagePreview = '';
     activity.sort_order = saved.sort_order ?? activity.sort_order;
@@ -265,6 +281,10 @@ export class ActivityComponent implements OnInit {
       description: '',
       visibility: 'private',
       targetFilter: '',
+      activityDate: '',
+      activityDateValue: null,
+      startTime: '',
+      endTime: '',
       imageName: '',
       imagePreview: '',
       imageUrl: null,
@@ -274,5 +294,45 @@ export class ActivityComponent implements OnInit {
       pendingImageFile: null,
       ...overrides
     };
+  }
+
+  private combineDateTime(dateValue: string, timeValue: string) {
+    if (!dateValue || !timeValue) {
+      return null;
+    }
+
+    return `${dateValue}T${timeValue}:00`;
+  }
+
+  private getDateFromPicker(activity: ActivityDraft) {
+    if (activity.activityDateValue) {
+      return this.formatDateForInput(activity.activityDateValue);
+    }
+
+    return activity.activityDate;
+  }
+
+  private getDateInputValue(value?: string | null) {
+    return value ? value.slice(0, 10) : '';
+  }
+
+  private getDatePickerValue(value?: string | null) {
+    const dateValue = this.getDateInputValue(value);
+    return dateValue ? new Date(`${dateValue}T00:00:00`) : null;
+  }
+
+  private getTimeInputValue(value?: string | null) {
+    return value ? value.slice(11, 16) : '';
+  }
+
+  private todayInputValue() {
+    return this.formatDateForInput(new Date());
+  }
+
+  private formatDateForInput(date: Date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

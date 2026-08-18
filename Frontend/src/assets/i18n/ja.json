@@ -1118,6 +1118,9 @@
       "description": "活動テキスト",
       "descriptionPlaceholder": "告知文を入力",
       "visibility": "公開範囲",
+      "date": "活動日",
+      "startTime": "開始時間",
+      "endTime": "終了時間",
       "targetFilter": "対象フィルター",
       "targetFilterPlaceholder": "all、role:member、user:Jerry"
     },

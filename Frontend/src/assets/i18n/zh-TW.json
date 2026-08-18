@@ -1118,6 +1118,9 @@
       "description": "活動文字",
       "descriptionPlaceholder": "填寫宣傳文字",
       "visibility": "可見範圍",
+      "date": "活動日期",
+      "startTime": "開始時間",
+      "endTime": "結束時間",
       "targetFilter": "發送目標篩選",
       "targetFilterPlaceholder": "all、role:member、user:Jerry"
     },

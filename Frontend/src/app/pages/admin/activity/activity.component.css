@@ -275,6 +275,7 @@
 .activity-form input,
 .activity-form textarea,
 .activity-form select {
+  box-sizing: border-box;
   width: 100%;
   min-height: 46px;
   padding: 0 12px;
@@ -292,8 +293,37 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 0.35fr) minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
   gap: 12px;
+}
+
+.activity-date-picker {
+  width: 100%;
+}
+
+.activity-date-picker ::ng-deep .mat-mdc-text-field-wrapper {
+  min-height: 46px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+}
+
+.activity-date-picker ::ng-deep .mat-mdc-form-field-infix {
+  min-height: 46px;
+  padding-block: 11px;
+}
+
+.activity-date-picker ::ng-deep .mdc-notched-outline__leading,
+.activity-date-picker ::ng-deep .mdc-notched-outline__notch,
+.activity-date-picker ::ng-deep .mdc-notched-outline__trailing {
+  border-color: var(--studio-line);
+}
+
+.activity-date-picker ::ng-deep input {
+  color: var(--studio-text);
+}
+
+.activity-date-picker ::ng-deep .mat-datepicker-toggle {
+  color: var(--studio-accent);
 }
 
 .activity-actions {

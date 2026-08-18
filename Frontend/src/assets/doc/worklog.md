@@ -598,3 +598,5 @@
 ## 2026/08/18
 
 - Fix activity page loading and private visibility.
+
+- Add activity scheduling and date picker.

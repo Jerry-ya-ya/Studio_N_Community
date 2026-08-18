@@ -229,6 +229,8 @@ class ActivityPromotion(db.Model):
     visibility = db.Column(db.String(20), default='private', nullable=False, index=True)
     target_filter = db.Column(db.String(160), default='all', nullable=False)
     image_url = db.Column(db.String(255))
+    start_at = db.Column(db.DateTime)
+    end_at = db.Column(db.DateTime)
     sort_order = db.Column(db.Integer, default=0, nullable=False)
     created_at = db.Column(db.DateTime, default=taipei_now)
     updated_at = db.Column(db.DateTime, default=taipei_now, onupdate=taipei_now)

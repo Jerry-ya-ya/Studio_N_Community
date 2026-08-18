@@ -56,7 +56,39 @@ export class ActivitiesComponent implements OnInit {
     return this.activityService.resolveImageUrl(activity.imageUrl || activity.image_url);
   }
 
+  isEnded(activity: ActivityPromotion) {
+    return activity.isEnded || activity.is_ended || activity.status === 'ended';
+  }
+
+  getActivityTime(activity: ActivityPromotion) {
+    const startAt = activity.startAt || activity.start_at;
+    const endAt = activity.endAt || activity.end_at;
+
+    if (!startAt && !endAt) {
+      return 'Time pending';
+    }
+
+    const startText = startAt ? this.formatActivityDateTime(startAt) : 'Open start';
+    const endText = endAt ? this.formatActivityDateTime(endAt) : 'Open end';
+    return `${startText} - ${endText}`;
+  }
+
   get rawActivitiesJson() {
     return JSON.stringify(this.rawActivities, null, 2);
+  }
+
+  private formatActivityDateTime(value: string) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return date.toLocaleString([], {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }
