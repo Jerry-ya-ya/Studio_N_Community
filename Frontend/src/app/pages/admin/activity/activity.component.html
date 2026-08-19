@@ -104,17 +104,40 @@
 
             <label>
               <span>{{ 'adminActivity.form.startTime' | translate }}</span>
-              <input type="time" [(ngModel)]="activity.startTime">
+              <mat-form-field class="activity-date-picker" appearance="outline">
+                <input
+                  matInput
+                  type="time"
+                  [(ngModel)]="activity.startTime"
+                  [placeholder]="'adminActivity.form.startTime' | translate"
+                >
+              </mat-form-field>
             </label>
 
             <label>
               <span>{{ 'adminActivity.form.endTime' | translate }}</span>
-              <input type="time" [(ngModel)]="activity.endTime">
+              <mat-form-field class="activity-date-picker" appearance="outline">
+                <input
+                  matInput
+                  type="time"
+                  [(ngModel)]="activity.endTime"
+                  [placeholder]="'adminActivity.form.endTime' | translate"
+                >
+              </mat-form-field>
             </label>
 
             <label>
               <span>{{ 'adminActivity.form.targetFilter' | translate }}</span>
-              <input type="text" [(ngModel)]="activity.targetFilter" [placeholder]="'adminActivity.form.targetFilterPlaceholder' | translate">
+              <select [(ngModel)]="activity.targetFilter">
+                @if (activity.targetFilter && !isKnownTargetOption(activity.targetFilter)) {
+                  <option [value]="activity.targetFilter">{{ activity.targetFilter }}</option>
+                }
+                @for (option of targetOptions; track option) {
+                  <option [value]="option">
+                    {{ ('adminActivity.targetOptions.' + option) | translate }}
+                  </option>
+                }
+              </select>
             </label>
           </div>
 

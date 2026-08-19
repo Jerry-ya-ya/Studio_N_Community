@@ -1115,14 +1115,21 @@
       "image": "上傳圖片",
       "title": "活動標題",
       "titlePlaceholder": "輸入活動標題",
-      "description": "活動文字",
-      "descriptionPlaceholder": "填寫宣傳文字",
+      "description": "活動敘述",
+      "descriptionPlaceholder": "填寫活動敘述",
       "visibility": "可見範圍",
       "date": "活動日期",
       "startTime": "開始時間",
       "endTime": "結束時間",
-      "targetFilter": "發送目標篩選",
-      "targetFilterPlaceholder": "all、role:member、user:Jerry"
+      "targetFilter": "目標群體",
+      "targetFilterPlaceholder": "選擇目標群體"
+    },
+    "targetOptions": {
+      "all": "全部使用者",
+      "role:user": "一般使用者",
+      "role:member": "成員",
+      "role:admin": "管理員",
+      "role:superadmin": "超級管理員"
     },
     "visibility": {
       "public": "Public",

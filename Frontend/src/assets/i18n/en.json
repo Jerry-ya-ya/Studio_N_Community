@@ -1115,14 +1115,21 @@
       "image": "Upload Image",
       "title": "Activity Title",
       "titlePlaceholder": "Enter activity title",
-      "description": "Activity Copy",
-      "descriptionPlaceholder": "Write the promotional text",
+      "description": "Activity Description",
+      "descriptionPlaceholder": "Write the activity description",
       "visibility": "Visibility",
       "date": "Activity Date",
       "startTime": "Start Time",
       "endTime": "End Time",
-      "targetFilter": "Target Filter",
-      "targetFilterPlaceholder": "all, role:member, user:Jerry"
+      "targetFilter": "Target Group",
+      "targetFilterPlaceholder": "Choose target group"
+    },
+    "targetOptions": {
+      "all": "All users",
+      "role:user": "Users",
+      "role:member": "Members",
+      "role:admin": "Admins",
+      "role:superadmin": "Superadmins"
     },
     "visibility": {
       "public": "Public",

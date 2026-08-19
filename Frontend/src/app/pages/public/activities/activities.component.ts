@@ -10,7 +10,6 @@ import { ActivityPromotion, ActivityService } from '../../../core/services/activ
 })
 export class ActivitiesComponent implements OnInit {
   activities: ActivityPromotion[] = [];
-  rawActivities: ActivityPromotion[] = [];
   loading = false;
   errorMessage = '';
 
@@ -34,15 +33,15 @@ export class ActivitiesComponent implements OnInit {
     this.activityService.getPublicActivities().pipe(timeout(10000)).subscribe({
       next: activities => {
         this.zone.run(() => {
-          this.rawActivities = Array.isArray(activities) ? activities : [];
-          this.activities = this.rawActivities.filter(activity => activity.visibility === 'public');
+          this.activities = Array.isArray(activities)
+            ? activities.filter(activity => activity.visibility === 'public')
+            : [];
           this.loading = false;
           this.changeDetector.detectChanges();
         });
       },
       error: error => {
         this.zone.run(() => {
-          this.rawActivities = [];
           this.activities = [];
           this.errorMessage = error?.error?.error || 'Unable to load public activities.';
           this.loading = false;
@@ -71,10 +70,6 @@ export class ActivitiesComponent implements OnInit {
     const startText = startAt ? this.formatActivityDateTime(startAt) : 'Open start';
     const endText = endAt ? this.formatActivityDateTime(endAt) : 'Open end';
     return `${startText} - ${endText}`;
-  }
-
-  get rawActivitiesJson() {
-    return JSON.stringify(this.rawActivities, null, 2);
   }
 
   private formatActivityDateTime(value: string) {

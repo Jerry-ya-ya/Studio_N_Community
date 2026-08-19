@@ -30,6 +30,7 @@ interface ActivityDraft {
 })
 export class ActivityComponent implements OnInit {
   readonly visibilityOptions: ActivityVisibility[] = ['public', 'private'];
+  readonly targetOptions = ['all', 'role:user', 'role:member', 'role:admin', 'role:superadmin'];
 
   activities: ActivityDraft[] = [];
   activeVisibility: ActivityVisibility = 'public';
@@ -73,6 +74,8 @@ export class ActivityComponent implements OnInit {
         targetFilter: 'all',
         activityDate: this.todayInputValue(),
         activityDateValue: new Date(),
+        startTime: '09:00',
+        endTime: '18:00',
         sort_order: this.filteredActivities.length
       }),
       ...this.activities
@@ -89,6 +92,10 @@ export class ActivityComponent implements OnInit {
 
   setVisibilityFilter(visibility: ActivityVisibility) {
     this.activeVisibility = visibility;
+  }
+
+  isKnownTargetOption(targetFilter: string) {
+    return this.targetOptions.includes(targetFilter);
   }
 
   saveActivity(activity: ActivityDraft) {

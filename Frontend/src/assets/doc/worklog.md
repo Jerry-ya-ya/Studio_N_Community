@@ -600,3 +600,7 @@
 - Fix activity page loading and private visibility.
 
 - Add activity scheduling and date picker.
+
+## 2026/08/19
+
+- Refine activity pages and admin targeting.

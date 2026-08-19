@@ -30,7 +30,6 @@
         }
         <div class="activity-card__glass">
           <div class="activity-card__meta">
-            <span>{{ activity.visibility }}</span>
             <span>{{ activity.targetFilter || activity.target_filter || 'all' }}</span>
             <span [class.activity-card__status--ended]="isEnded(activity)">
               {{ isEnded(activity) ? 'Ended' : 'Active' }}
@@ -47,11 +46,4 @@
     }
   </section>
 
-  <section class="activity-raw">
-    <header>
-      <span>Raw API Response</span>
-      <strong>{{ rawActivities.length }} raw / {{ activities.length }} visible</strong>
-    </header>
-    <pre>{{ rawActivitiesJson }}</pre>
-  </section>
 </main>

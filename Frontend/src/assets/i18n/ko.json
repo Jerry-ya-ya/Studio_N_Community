@@ -1115,14 +1115,21 @@
       "image": "이미지 업로드",
       "title": "활동 제목",
       "titlePlaceholder": "활동 제목 입력",
-      "description": "활동 문구",
-      "descriptionPlaceholder": "홍보 문구 작성",
+      "description": "활동 설명",
+      "descriptionPlaceholder": "활동 설명 작성",
       "visibility": "공개 범위",
       "date": "활동 날짜",
       "startTime": "시작 시간",
       "endTime": "종료 시간",
-      "targetFilter": "대상 필터",
-      "targetFilterPlaceholder": "all, role:member, user:Jerry"
+      "targetFilter": "대상 그룹",
+      "targetFilterPlaceholder": "대상 그룹 선택"
+    },
+    "targetOptions": {
+      "all": "전체 사용자",
+      "role:user": "일반 사용자",
+      "role:member": "멤버",
+      "role:admin": "관리자",
+      "role:superadmin": "슈퍼 관리자"
     },
     "visibility": {
       "public": "Public",
