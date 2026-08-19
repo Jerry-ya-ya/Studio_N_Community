@@ -55,31 +55,6 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   sections: AuditLogSection[] = [
     {
-      title: 'Private',
-      eyebrow: 'Member Activity',
-      description: 'User-facing records for account creation, project publishing, and sign-in activity.',
-      groups: [
-        {
-          title: 'Register Log',
-          description: 'Tracks who registered a new account.',
-          accent: 'var(--studio-success)',
-          logs: []
-        },
-        {
-          title: 'Project Log',
-          description: 'Tracks who created a project recruitment.',
-          accent: 'var(--studio-accent)',
-          logs: []
-        },
-        {
-          title: 'Sign In Log',
-          description: 'Tracks successful and failed sign-in activity.',
-          accent: 'var(--studio-warm)',
-          logs: []
-        }
-      ]
-    },
-    {
       title: 'Admin',
       eyebrow: 'Management Activity',
       description: 'Administrative records for homepage content and news changes.',
@@ -108,9 +83,6 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadCollapsedGroups();
-    this.initializeRegisterLogStream();
-    this.initializeProjectLogStream();
-    this.initializeSignInLogStream();
     this.initializeContentLogStream();
     this.initializeNewsLogStream();
   }

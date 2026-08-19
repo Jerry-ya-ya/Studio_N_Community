@@ -31,15 +31,15 @@ export class AuditLogService {
   constructor(private apiService: ApiService) {}
 
   getRegisterLogs(limit = 50): Observable<AuditLogResponse> {
-    return this.getLogs('/superadmin/logs/register', limit);
+    return this.getLogs('/admin/logs/register', limit);
   }
 
   getProjectLogs(limit = 50): Observable<AuditLogResponse> {
-    return this.getLogs('/superadmin/logs/project', limit);
+    return this.getLogs('/admin/logs/project', limit);
   }
 
   getSignInLogs(limit = 50): Observable<AuditLogResponse> {
-    return this.getLogs('/superadmin/logs/sign-in', limit);
+    return this.getLogs('/admin/logs/sign-in', limit);
   }
 
   getContentLogs(limit = 50): Observable<AuditLogResponse> {

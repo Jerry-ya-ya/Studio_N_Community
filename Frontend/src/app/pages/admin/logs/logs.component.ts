@@ -1,0 +1,182 @@
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { merge, of, Subject, timer } from 'rxjs';
+import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
+import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
+
+interface AuditLogGroup {
+  key: 'register' | 'project' | 'signIn';
+  title: string;
+  description: string;
+  accent: string;
+  logs: AuditLogItem[];
+  loading: boolean;
+  error: string;
+  source: string;
+  refresh$: Subject<void>;
+}
+
+@Component({
+  selector: 'app-logs',
+  standalone: false,
+  templateUrl: './logs.component.html',
+  styleUrl: './logs.component.css',
+})
+export class LogsComponent implements OnInit, OnDestroy {
+  groups: AuditLogGroup[] = [
+    {
+      key: 'register',
+      title: 'Register Log',
+      description: 'Tracks who registered a new account.',
+      accent: 'var(--studio-success)',
+      logs: [],
+      loading: false,
+      error: '',
+      source: '',
+      refresh$: new Subject<void>()
+    },
+    {
+      key: 'project',
+      title: 'Project Log',
+      description: 'Tracks who created a project recruitment.',
+      accent: 'var(--studio-accent)',
+      logs: [],
+      loading: false,
+      error: '',
+      source: '',
+      refresh$: new Subject<void>()
+    },
+    {
+      key: 'signIn',
+      title: 'Sign In Log',
+      description: 'Tracks successful and failed sign-in activity.',
+      accent: 'var(--studio-warm)',
+      logs: [],
+      loading: false,
+      error: '',
+      source: '',
+      refresh$: new Subject<void>()
+    }
+  ];
+
+  collapsedGroups: Record<string, boolean> = {};
+  private destroy$ = new Subject<void>();
+  private readonly collapsedStoragePrefix = 'admin.logs.collapsed';
+
+  constructor(
+    private auditLogService: AuditLogService,
+    private zone: NgZone,
+    private changeDetector: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.loadCollapsedGroups();
+    for (const group of this.groups) {
+      this.initializeLogStream(group);
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+    for (const group of this.groups) {
+      group.refresh$.complete();
+    }
+  }
+
+  get totalLogTypes() {
+    return this.groups.length;
+  }
+
+  get totalPreviewRows() {
+    return this.groups.reduce((total, group) => total + group.logs.length, 0);
+  }
+
+  isGroupCollapsed(group: AuditLogGroup) {
+    return !!this.collapsedGroups[this.getGroupKey(group)];
+  }
+
+  toggleGroup(group: AuditLogGroup) {
+    const key = this.getGroupKey(group);
+    this.collapsedGroups = {
+      ...this.collapsedGroups,
+      [key]: !this.collapsedGroups[key]
+    };
+    localStorage.setItem(this.getCollapsedStorageKey(key), String(this.collapsedGroups[key]));
+  }
+
+  toggleGroupFromKeyboard(event: Event, group: AuditLogGroup) {
+    event.preventDefault();
+    this.toggleGroup(group);
+  }
+
+  refreshGroup(group: AuditLogGroup) {
+    group.refresh$.next();
+  }
+
+  private initializeLogStream(group: AuditLogGroup) {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !group.logs.length)
+    );
+
+    merge(initialRetry$, group.refresh$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        group.loading = true;
+        group.error = '';
+      }),
+      switchMap(() =>
+        this.fetchGroupLogs(group).pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: `Unable to load ${group.title.toLowerCase()}.` }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          group.logs = Array.isArray(response.items) ? response.items : [];
+          group.source = response.path ? `${response.path} / ${response.count ?? group.logs.length} records` : '';
+          group.error = '';
+        } else {
+          group.logs = [];
+          group.source = '';
+          group.error = error;
+        }
+
+        group.loading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private fetchGroupLogs(group: AuditLogGroup) {
+    if (group.key === 'register') {
+      return this.auditLogService.getRegisterLogs();
+    }
+    if (group.key === 'project') {
+      return this.auditLogService.getProjectLogs();
+    }
+    return this.auditLogService.getSignInLogs();
+  }
+
+  private loadCollapsedGroups() {
+    const nextState: Record<string, boolean> = {};
+
+    for (const group of this.groups) {
+      const key = this.getGroupKey(group);
+      nextState[key] = localStorage.getItem(this.getCollapsedStorageKey(key)) === 'true';
+    }
+
+    this.collapsedGroups = nextState;
+  }
+
+  private getGroupKey(group: AuditLogGroup) {
+    return group.title.replace(/\s+/g, '-').toLowerCase();
+  }
+
+  private getCollapsedStorageKey(key: string) {
+    return `${this.collapsedStoragePrefix}.${key}`;
+  }
+
+}

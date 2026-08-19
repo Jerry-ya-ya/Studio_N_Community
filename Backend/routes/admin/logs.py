@@ -5,7 +5,7 @@ import re
 from flask import Blueprint, jsonify, request
 
 from log_writer import LOG_DIR
-from routes.admin.decorators import superadmin_required
+from routes.admin.decorators import admin_required, superadmin_required
 
 logs_bp = Blueprint('logs', __name__)
 
@@ -373,9 +373,7 @@ def parse_news_log_line(line):
     }
 
 
-@logs_bp.route('/superadmin/logs/register', methods=['GET'])
-@superadmin_required
-def register_logs():
+def build_register_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('register.log', limit)
 
@@ -391,9 +389,19 @@ def register_logs():
     return response
 
 
-@logs_bp.route('/superadmin/logs/sign-in', methods=['GET'])
+@logs_bp.route('/superadmin/logs/register', methods=['GET'])
 @superadmin_required
-def sign_in_logs():
+def register_logs():
+    return build_register_logs_response()
+
+
+@logs_bp.route('/admin/logs/register', methods=['GET'])
+@admin_required
+def admin_register_logs():
+    return build_register_logs_response()
+
+
+def build_sign_in_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('sign_in.log', limit)
     items = [parse_sign_in_log_line(line) for line in reversed(lines)]
@@ -406,6 +414,18 @@ def sign_in_logs():
     })
     response.headers['Cache-Control'] = 'no-store'
     return response
+
+
+@logs_bp.route('/superadmin/logs/sign-in', methods=['GET'])
+@superadmin_required
+def sign_in_logs():
+    return build_sign_in_logs_response()
+
+
+@logs_bp.route('/admin/logs/sign-in', methods=['GET'])
+@admin_required
+def admin_sign_in_logs():
+    return build_sign_in_logs_response()
 
 
 @logs_bp.route('/superadmin/logs/content', methods=['GET'])
@@ -442,9 +462,7 @@ def news_logs():
     return response
 
 
-@logs_bp.route('/superadmin/logs/project', methods=['GET'])
-@superadmin_required
-def project_logs():
+def build_project_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('project.log', limit)
     items = [parse_project_log_line(line) for line in reversed(lines)]
@@ -457,3 +475,15 @@ def project_logs():
     })
     response.headers['Cache-Control'] = 'no-store'
     return response
+
+
+@logs_bp.route('/superadmin/logs/project', methods=['GET'])
+@superadmin_required
+def project_logs():
+    return build_project_logs_response()
+
+
+@logs_bp.route('/admin/logs/project', methods=['GET'])
+@admin_required
+def admin_project_logs():
+    return build_project_logs_response()

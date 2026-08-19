@@ -1,0 +1,104 @@
+<main class="logs-page">
+  <section class="logs-hero">
+    <div>
+      <p class="logs-kicker">Admin Audit</p>
+      <h1>Private Logs</h1>
+      <p>
+        Account, project, and sign-in records shared with admins for daily moderation.
+      </p>
+    </div>
+
+    <div class="logs-metrics" aria-label="Log summary">
+      <article>
+        <span>{{ totalLogTypes }}</span>
+        <small>Log Types</small>
+      </article>
+      <article>
+        <span>{{ totalPreviewRows }}</span>
+        <small>Preview Rows</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="logs-board">
+    <article class="log-section">
+      <header class="log-section__header">
+        <div>
+          <p class="logs-kicker">Member Activity</p>
+          <h2>Private</h2>
+          <p>User-facing records for account creation, project publishing, and sign-in activity.</p>
+        </div>
+        <strong>{{ groups.length }}</strong>
+      </header>
+
+      <div class="log-groups">
+        @for (group of groups; track group.title) {
+          <article class="log-card" [class.log-card--collapsed]="isGroupCollapsed(group)" [style.--log-accent]="group.accent">
+            <header
+              class="log-card__header"
+              role="button"
+              tabindex="0"
+              (click)="toggleGroup(group)"
+              (keydown.enter)="toggleGroup(group)"
+              (keydown.space)="toggleGroupFromKeyboard($event, group)"
+              [attr.aria-expanded]="!isGroupCollapsed(group)"
+            >
+              <div>
+                <div class="log-card__title">
+                  <span class="log-card__chevron" aria-hidden="true">
+                    {{ isGroupCollapsed(group) ? 'expand_more' : 'expand_less' }}
+                  </span>
+                  <h3>{{ group.title }}</h3>
+                </div>
+                <p>{{ group.description }}</p>
+                @if (group.source) {
+                  <small class="log-source">{{ group.source }}</small>
+                }
+              </div>
+              <div class="log-card__tools">
+                <button type="button" (click)="refreshGroup(group); $event.stopPropagation()">Refresh</button>
+                <span>{{ group.logs.length }}</span>
+              </div>
+            </header>
+
+            @if (!isGroupCollapsed(group)) {
+              <div class="log-list">
+                @if (group.loading) {
+                  <div class="log-state">
+                    Loading logs...
+                  </div>
+                } @else if (group.error) {
+                  <div class="log-state log-state--error">
+                    <span>{{ group.error }}</span>
+                    <button type="button" (click)="refreshGroup(group)">Retry</button>
+                  </div>
+                } @else if (group.logs.length === 0) {
+                  <div class="log-state">
+                    No records yet.
+                  </div>
+                }
+
+                @for (log of group.logs; track log.id || log.time + log.actor + log.action + log.target) {
+                  <div class="log-row">
+                    <span class="log-status" [class]="'log-status log-status--' + log.status"></span>
+                    <div class="log-main">
+                      <strong>{{ log.actor }}</strong>
+                      <span>{{ log.action }}</span>
+                    </div>
+                    <div class="log-target">
+                      <span>{{ log.target }}</span>
+                      <small>{{ log.time }}</small>
+                    </div>
+                    @if (log.rawJson || log.raw_json) {
+                      <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </article>
+        }
+      </div>
+    </article>
+  </section>
+</main>

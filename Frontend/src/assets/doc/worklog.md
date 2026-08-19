@@ -604,3 +604,7 @@
 ## 2026/08/19
 
 - Refine activity pages and admin targeting.
+
+## 2026/08/20
+
+- Move private logs into admin logs.

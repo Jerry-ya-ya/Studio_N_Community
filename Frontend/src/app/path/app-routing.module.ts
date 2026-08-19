@@ -85,6 +85,11 @@ const routes: Routes = [
       import('../pages/admin/activity/activity.module').then(m => m.ActivityModule)
   },
   {
+    path: appPath.adminLogs,
+    loadChildren: () =>
+      import('../pages/admin/logs/logs.module').then(m => m.LogsModule)
+  },
+  {
     path: appPath.friend,
     loadChildren: () =>
       import('../pages/private/friend/friend.module').then(m => m.FriendModule)
