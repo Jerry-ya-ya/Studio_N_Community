@@ -42,104 +42,88 @@
           >
         </div>
       </div>
-      <div class="split-table">
-        <div class="frozen-table">
-          <div class="admin-grid admin-grid--frozen">
-            <div class="admin-grid-row admin-grid-row--header">
-              <div class="col-id">ID</div>
-              <div class="col-username">帳號</div>
-              <div class="col-nickname">暱稱</div>
-            </div>
-            @for (user of filteredUsers; track user) {
-              <div class="admin-grid-row user-row">
-                <div class="user-id col-id">{{ user.id }}</div>
-                <div class="username col-username">
-                  <div class="user-info">
-                    @if (getUserAvatar(user)) {
-                      <img
-                        class="user-avatar"
-                        [src]="getUserAvatar(user)"
-                        [alt]="user.nickname || user.username"
-                        (error)="markAvatarFailed(user)"
-                      />
-                    } @else {
-                      <span class="user-avatar user-avatar--initial" aria-hidden="true">
-                        {{ getUserInitial(user) }}
-                      </span>
+      <div class="user-list-shell">
+        <div class="admin-grid">
+          <div class="admin-grid-row admin-grid-row--header">
+            <div class="user-cell">ID</div>
+            <div class="user-cell">帳號</div>
+            <div class="user-cell">暱稱</div>
+            <div class="user-cell">點數</div>
+            <div class="user-cell">帳號狀態</div>
+            <div class="user-cell">Email</div>
+            <div class="user-cell">角色</div>
+            <div class="user-cell">註冊時間</div>
+            <div class="user-cell">操作</div>
+          </div>
+          @for (user of filteredUsers; track user) {
+            <div class="admin-grid-row user-row">
+              <div class="user-cell user-id" data-label="ID">{{ user.id }}</div>
+              <div class="user-cell username" data-label="帳號">
+                <div class="user-info">
+                  @if (getUserAvatar(user)) {
+                    <img
+                      class="user-avatar"
+                      [src]="getUserAvatar(user)"
+                      [alt]="user.nickname || user.username"
+                      (error)="markAvatarFailed(user)"
+                    />
+                  } @else {
+                    <span class="user-avatar user-avatar--initial" aria-hidden="true">
+                      {{ getUserInitial(user) }}
+                    </span>
+                  }
+                  <span>{{ user.username }}</span>
+                </div>
+              </div>
+              <div class="user-cell nickname" data-label="暱稱">{{ user.nickname || '-' }}</div>
+              <div class="user-cell points" data-label="點數">{{ user.totalPoints ?? user.total_points ?? 0 }}</div>
+              <div class="user-cell" data-label="帳號狀態">
+                <span class="account-status" [class.account-status--deleted]="user.is_deleted">
+                  {{ getAccountStatus(user) }}
+                </span>
+              </div>
+              <div class="user-cell email" data-label="Email">{{ user.email }}</div>
+              <div class="user-cell" data-label="角色">
+                <span class="role-badge" [class]="'role-' + user.role">
+                  {{ getRoleDisplayName(user.role) }}
+                </span>
+              </div>
+              <div class="user-cell created-at" data-label="註冊時間">{{ formatDate(user.created_at) }}</div>
+              <div class="user-cell actions" data-label="操作">
+                @if (user.role === 'user') {
+                  <button
+                    (click)="promote(user.id)"
+                    class="promote-btn"
+                    [disabled]="promotingUserId === user.id"
+                    >
+                    @if (promotingUserId !== user.id) {
+                      <span>晉升為管理員</span>
                     }
-                    <span>{{ user.username }}</span>
-                  </div>
-                </div>
-                <div class="nickname col-nickname">{{ user.nickname || '-' }}</div>
+                    @if (promotingUserId === user.id) {
+                      <span class="loading">處理中...</span>
+                    }
+                  </button>
+                }
+                @if (user.role === 'admin') {
+                  <button
+                    (click)="demote(user.id)"
+                    class="demote-btn"
+                    [disabled]="demotingUserId === user.id"
+                    >
+                    @if (demotingUserId !== user.id) {
+                      <span>降級為一般用戶</span>
+                    }
+                    @if (demotingUserId === user.id) {
+                      <span class="loading">處理中...</span>
+                    }
+                  </button>
+                }
+                @if (user.role === 'superadmin') {
+                  <span class="no-action">最高管理員</span>
+                }
               </div>
-            }
-          </div>
-        </div>
-
-        <div class="scroll-table">
-          <div class="admin-grid admin-grid--scroll">
-            <div class="admin-grid-row admin-grid-row--header">
-              <div class="col-points">點數</div>
-              <div class="col-status">帳號狀態</div>
-              <div class="col-email">Email</div>
-              <div class="col-role">角色</div>
-              <div class="col-created">註冊時間</div>
-              <div class="col-actions">操作</div>
             </div>
-            @for (user of filteredUsers; track user) {
-              <div class="admin-grid-row user-row">
-                <div class="points col-points">{{ user.totalPoints ?? user.total_points ?? 0 }}</div>
-                <div class="col-status">
-                  <span class="account-status" [class.account-status--deleted]="user.is_deleted">
-                    {{ getAccountStatus(user) }}
-                  </span>
-                </div>
-                <div class="email col-email">{{ user.email }}</div>
-                <div class="col-role">
-                  <span class="role-badge" [class]="'role-' + user.role">
-                    {{ getRoleDisplayName(user.role) }}
-                  </span>
-                </div>
-                <div class="created-at col-created">{{ formatDate(user.created_at) }}</div>
-                <div class="actions col-actions">
-                  <!-- 晉升 -->
-                  @if (user.role === 'user') {
-                    <button
-                      (click)="promote(user.id)"
-                      class="promote-btn"
-                      [disabled]="promotingUserId === user.id"
-                      >
-                      @if (promotingUserId !== user.id) {
-                        <span>晉升為管理員</span>
-                      }
-                      @if (promotingUserId === user.id) {
-                        <span class="loading">處理中...</span>
-                      }
-                    </button>
-                  }
-                  <!-- 降級 -->
-                  @if (user.role === 'admin') {
-                    <button
-                      (click)="demote(user.id)"
-                      class="demote-btn"
-                      [disabled]="demotingUserId === user.id"
-                      >
-                      @if (demotingUserId !== user.id) {
-                        <span>降級為一般用戶</span>
-                      }
-                      @if (demotingUserId === user.id) {
-                        <span class="loading">處理中...</span>
-                      }
-                    </button>
-                  }
-                  <!-- 最高管理員 -->
-                  @if (user.role === 'superadmin') {
-                    <span class="no-action">最高管理員</span>
-                  }
-                </div>
-              </div>
-            }
-          </div>
+          }
         </div>
       </div>
 

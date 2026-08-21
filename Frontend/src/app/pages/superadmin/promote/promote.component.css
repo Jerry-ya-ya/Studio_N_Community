@@ -149,112 +149,67 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--studio-accent) 18%, transparent);
 }
 
-.split-table {
-  display: grid;
-  grid-template-columns: minmax(0, 30%) minmax(0, 70%);
-  overflow: hidden;
-}
-
-.frozen-table {
-  position: relative;
-  z-index: 2;
-  overflow: hidden;
-  border-right: 1px solid var(--studio-line);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 40%),
-    color-mix(in srgb, var(--studio-panel-strong) 92%, var(--studio-bg));
-  box-shadow: 14px 0 24px color-mix(in srgb, var(--eden-shadow) 54%, transparent);
-}
-
-.scroll-table {
+.user-list-shell {
   overflow-x: auto;
   scrollbar-color: var(--studio-accent) color-mix(in srgb, var(--studio-panel-strong) 84%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-accent) 6%, transparent), transparent 45%),
+    color-mix(in srgb, var(--studio-panel-strong) 62%, transparent);
 }
 
 .admin-grid {
-  --promote-header-height: 5px;
-  --promote-row-height: 65px;
+  --promote-row-height: 72px;
+  display: grid;
+  gap: 8px;
+  min-width: 1180px;
+  padding: 14px;
   font-size: 0.9rem;
-}
-
-.admin-grid--frozen {
-  width: 100%;
-}
-
-.admin-grid--frozen .admin-grid-row {
-  grid-template-columns: 15% 50% 40%;
-}
-
-.admin-grid--scroll {
-  min-width: 900px;
-}
-
-.admin-grid--scroll .admin-grid-row {
-  grid-template-columns: 90px 120px 260px 140px 180px 220px;
 }
 
 .admin-grid-row {
   display: grid;
+  grid-template-columns: 78px 210px 150px 96px 138px minmax(260px, 1fr) 132px 178px 180px;
+  gap: 8px;
   align-items: center;
   min-height: var(--promote-row-height);
-  border-bottom: 1px solid color-mix(in srgb, var(--studio-line) 62%, transparent);
+  border-radius: 8px;
 }
 
 .admin-grid-row--header {
-  min-height: var(--promote-header-height);
+  min-height: 42px;
   color: var(--studio-accent);
-  background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.admin-grid-row > div {
+.user-cell {
+  display: flex;
+  align-items: center;
   min-width: 0;
-  padding: 0 12px;
+  min-height: 100%;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 76%, transparent);
+  border-radius: 8px;
   overflow: hidden;
+  background: color-mix(in srgb, var(--studio-panel-strong) 76%, transparent);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.col-points {
-  width: 90px;
+.admin-grid-row--header .user-cell {
+  min-height: 42px;
+  border-color: color-mix(in srgb, var(--studio-accent) 28%, var(--studio-line));
+  background: color-mix(in srgb, var(--studio-panel-strong) 88%, transparent);
+  font-size: 0.78rem;
 }
 
-.col-email {
-  width: 260px;
+.user-row .user-cell {
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
-.col-status {
-  width: 120px;
-}
-
-.col-role {
-  width: 140px;
-}
-
-.col-created {
-  width: 180px;
-}
-
-.col-actions {
-  width: 150px;
-}
-
-.col-id {
-  width: 100px;
-}
-
-.col-username {
-  width: 190px;
-}
-
-.col-nickname {
-  width: 100px;
-}
-
-.user-row:hover,
-.frozen-table .user-row:hover {
-  background: color-mix(in srgb, var(--studio-accent) 7%, transparent);
+.user-row:hover .user-cell {
+  border-color: color-mix(in srgb, var(--studio-accent) 42%, var(--studio-line));
+  background: color-mix(in srgb, var(--studio-accent) 8%, var(--studio-panel-strong));
 }
 
 .user-info {
@@ -365,6 +320,7 @@
 }
 
 .actions {
+  justify-content: flex-start;
   text-align: left;
   white-space: nowrap;
 }
@@ -469,17 +425,17 @@
     grid-template-columns: 1fr;
   }
 
-  .admin-grid--scroll {
-    min-width: 840px;
-  }
-
   .admin-grid {
-    --promote-header-height: 44px;
-    --promote-row-height: 56px;
+    --promote-row-height: 64px;
+    min-width: 1040px;
     font-size: 0.8rem;
   }
 
-  .admin-grid-row > div {
+  .admin-grid-row {
+    grid-template-columns: 66px 180px 132px 86px 126px minmax(220px, 1fr) 118px 158px 166px;
+  }
+
+  .user-cell {
     padding: 0 8px;
   }
 

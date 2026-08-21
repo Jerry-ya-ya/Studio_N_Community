@@ -608,3 +608,7 @@
 ## 2026/08/20
 
 - Move private logs into admin logs.
+
+## 2026/08/21
+
+- Refactor superadmin promote user grid.
