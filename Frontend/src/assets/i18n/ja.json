@@ -1115,7 +1115,9 @@
     },
     "preview": {
       "placeholder": "画像プレビュー",
-      "imageAlt": "活動告知画像"
+      "imageAlt": "活動告知画像",
+      "titleFallback": "活動タイトルプレビュー",
+      "descriptionFallback": "活動説明はこのガラス風プレビュー内に表示されます。"
     },
     "form": {
       "image": "画像をアップロード",

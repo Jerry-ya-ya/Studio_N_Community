@@ -229,24 +229,76 @@
   align-content: start;
 }
 
-.activity-preview img,
-.preview-placeholder {
+.activity-user-preview {
+  position: relative;
+  overflow: hidden;
   width: 100%;
+  min-height: 360px;
   aspect-ratio: 16 / 9;
   border: 1px solid var(--studio-line);
   border-radius: 8px;
   background:
     radial-gradient(circle at 28% 22%, color-mix(in srgb, var(--studio-accent) 22%, transparent), transparent 34%),
     color-mix(in srgb, var(--studio-panel-strong) 76%, transparent);
+}
+
+.activity-user-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.preview-placeholder {
-  display: grid;
-  place-items: center;
+.activity-user-preview__glass {
+  position: absolute;
+  inset-inline: 14px;
+  bottom: 14px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--studio-line) 68%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--studio-surface-bg) 82%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.activity-user-preview__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.activity-user-preview__meta span {
+  border: 1px solid color-mix(in srgb, var(--studio-accent) 42%, transparent);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--studio-accent);
+  background: color-mix(in srgb, var(--studio-accent) 12%, transparent);
+  font-size: 0.76rem;
+}
+
+.activity-user-preview__meta .activity-user-preview__status--ended {
+  border-color: color-mix(in srgb, var(--studio-danger) 56%, transparent);
+  color: var(--studio-danger);
+  background: color-mix(in srgb, var(--studio-danger) 12%, transparent);
+}
+
+.activity-user-preview small {
+  display: block;
+  margin-bottom: 10px;
+  color: color-mix(in srgb, var(--studio-muted) 76%, var(--studio-accent));
+}
+
+.activity-user-preview h3 {
+  margin: 0 0 8px;
+  color: var(--studio-text);
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.activity-user-preview p {
+  margin: 0;
   color: var(--studio-muted);
-  font-weight: 900;
-  text-transform: uppercase;
+  line-height: 1.5;
 }
 
 .image-picker,

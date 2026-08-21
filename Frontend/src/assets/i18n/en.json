@@ -1115,7 +1115,9 @@
     },
     "preview": {
       "placeholder": "Image Preview",
-      "imageAlt": "Activity promotional image"
+      "imageAlt": "Activity promotional image",
+      "titleFallback": "Activity title preview",
+      "descriptionFallback": "The activity description will appear inside this glass preview."
     },
     "form": {
       "image": "Upload Image",

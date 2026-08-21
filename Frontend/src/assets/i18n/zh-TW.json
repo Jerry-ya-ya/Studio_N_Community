@@ -1115,7 +1115,9 @@
     },
     "preview": {
       "placeholder": "圖片預覽",
-      "imageAlt": "活動宣傳圖片"
+      "imageAlt": "活動宣傳圖片",
+      "titleFallback": "活動標題預覽",
+      "descriptionFallback": "活動敘述會顯示在這層玻璃預覽中。"
     },
     "form": {
       "image": "上傳圖片",

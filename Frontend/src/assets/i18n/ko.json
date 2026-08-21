@@ -1115,7 +1115,9 @@
     },
     "preview": {
       "placeholder": "이미지 미리보기",
-      "imageAlt": "활동 홍보 이미지"
+      "imageAlt": "활동 홍보 이미지",
+      "titleFallback": "활동 제목 미리보기",
+      "descriptionFallback": "활동 설명은 이 유리 느낌 미리보기 안에 표시됩니다."
     },
     "form": {
       "image": "이미지 업로드",

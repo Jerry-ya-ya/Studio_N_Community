@@ -614,3 +614,5 @@
 - Refactor superadmin promote user grid.
 
 - Add project tokens and user experience fields.
+
+- Improve admin activity user preview.

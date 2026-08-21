@@ -209,6 +209,31 @@ export class ActivityComponent implements OnInit {
     return activity.imagePreview || this.activityService.resolveImageUrl(activity.imageUrl);
   }
 
+  getTargetPreviewLabel(activity: ActivityDraft) {
+    return activity.targetFilter && this.isKnownTargetOption(activity.targetFilter)
+      ? `adminActivity.targetOptions.${activity.targetFilter}`
+      : activity.targetFilter || 'all';
+  }
+
+  getPreviewActivityTime(activity: ActivityDraft) {
+    const dateValue = this.getDateFromPicker(activity);
+    const startAt = this.combineDateTime(dateValue, activity.startTime);
+    const endAt = this.combineDateTime(dateValue, activity.endTime);
+
+    if (!startAt && !endAt) {
+      return 'Time pending';
+    }
+
+    const startText = startAt ? this.formatActivityDateTime(startAt) : 'Open start';
+    const endText = endAt ? this.formatActivityDateTime(endAt) : 'Open end';
+    return `${startText} - ${endText}`;
+  }
+
+  isPreviewEnded(activity: ActivityDraft) {
+    const endAt = this.combineDateTime(this.getDateFromPicker(activity), activity.endTime);
+    return endAt ? new Date(endAt).getTime() <= Date.now() : false;
+  }
+
   private uploadPendingImage(activity: ActivityDraft) {
     if (!activity.id || !activity.pendingImageFile) {
       return;
@@ -341,5 +366,20 @@ export class ActivityComponent implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  private formatActivityDateTime(value: string) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return date.toLocaleString([], {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }

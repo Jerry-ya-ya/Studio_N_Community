@@ -58,13 +58,23 @@
     @for (activity of filteredActivities; track activity.localId) {
       <article class="activity-card">
         <div class="activity-preview">
-          @if (previewImage(activity)) {
-            <img [src]="previewImage(activity)" [alt]="activity.title || ('adminActivity.preview.imageAlt' | translate)">
-          } @else {
-            <div class="preview-placeholder">
-              <span>{{ 'adminActivity.preview.placeholder' | translate }}</span>
+          <div class="activity-user-preview" [class.activity-user-preview--image]="previewImage(activity)">
+            @if (previewImage(activity)) {
+              <img [src]="previewImage(activity)" [alt]="activity.title || ('adminActivity.preview.imageAlt' | translate)">
+            }
+
+            <div class="activity-user-preview__glass">
+              <div class="activity-user-preview__meta">
+                <span>{{ getTargetPreviewLabel(activity) | translate }}</span>
+                <span [class.activity-user-preview__status--ended]="isPreviewEnded(activity)">
+                  {{ isPreviewEnded(activity) ? 'Ended' : 'Active' }}
+                </span>
+              </div>
+              <small>{{ getPreviewActivityTime(activity) }}</small>
+              <h3>{{ activity.title || ('adminActivity.preview.titleFallback' | translate) }}</h3>
+              <p>{{ activity.description || ('adminActivity.preview.descriptionFallback' | translate) }}</p>
             </div>
-          }
+          </div>
 
           <label class="image-picker">
             <span>{{ activity.imageName || ('adminActivity.form.image' | translate) }}</span>
