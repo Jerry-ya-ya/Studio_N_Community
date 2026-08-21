@@ -48,7 +48,8 @@
             <div class="user-cell">ID</div>
             <div class="user-cell">帳號</div>
             <div class="user-cell">暱稱</div>
-            <div class="user-cell">點數</div>
+            <div class="user-cell">Coins</div>
+            <div class="user-cell">經驗值</div>
             <div class="user-cell">帳號狀態</div>
             <div class="user-cell">Email</div>
             <div class="user-cell">角色</div>
@@ -76,7 +77,8 @@
                 </div>
               </div>
               <div class="user-cell nickname" data-label="暱稱">{{ user.nickname || '-' }}</div>
-              <div class="user-cell points" data-label="點數">{{ user.totalPoints ?? user.total_points ?? 0 }}</div>
+              <div class="user-cell points" data-label="Coins">{{ getUserCoins(user) }}</div>
+              <div class="user-cell experience" data-label="經驗值">{{ user.experience ?? 0 }}</div>
               <div class="user-cell" data-label="帳號狀態">
                 <span class="account-status" [class.account-status--deleted]="user.is_deleted">
                   {{ getAccountStatus(user) }}

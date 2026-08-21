@@ -650,6 +650,10 @@
       "progress": "{{ done }}/{{ total }} done",
       "unsorted": "Unsorted Project"
     },
+    "tokens": {
+      "used": "Used Tokens",
+      "remaining": "Remaining Tokens"
+    },
     "groups": {
       "unclaimed": "Unclaimed",
       "pendingCompletion": "To Complete",
@@ -935,7 +939,9 @@
       "creator": "Publisher",
       "createdAt": "Published",
       "contact": "Contact",
-      "reviewStatus": "Review Status"
+      "reviewStatus": "Review Status",
+      "tokenUsed": "Used Tokens",
+      "tokenRemaining": "Remaining Tokens"
     },
     "review": {
       "kicker": "Settlement Review",

@@ -15,6 +15,10 @@ interface User {
   avatar_source?: string;
   avatarSource?: string;
   created_at: string;
+  experience?: number;
+  coins?: number;
+  total_coins?: number;
+  totalCoins?: number;
   total_points?: number;
   totalPoints?: number;
   imageLoadFailed?: boolean;
@@ -82,6 +86,10 @@ export class PromoteComponent implements OnInit {
 
   getAccountStatus(user: User): string {
     return user.is_deleted ? '已刪除' : '啟用中';
+  }
+
+  getUserCoins(user: User): number {
+    return user.totalCoins ?? user.total_coins ?? user.coins ?? user.totalPoints ?? user.total_points ?? 0;
   }
 
   getUserAvatar(user: User): string {

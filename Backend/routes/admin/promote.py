@@ -39,6 +39,10 @@ def get_users():
         total_points = point_map.get(user.id, 0)
         user_data['total_points'] = total_points
         user_data['totalPoints'] = total_points
+        user_data['coins'] = total_points
+        user_data['total_coins'] = total_points
+        user_data['totalCoins'] = total_points
+        user_data['experience'] = user.experience or 0
         result.append(user_data)
 
     return jsonify(result)

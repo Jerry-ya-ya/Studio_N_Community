@@ -29,6 +29,7 @@ class User(db.Model):
     nickname = db.Column(db.String(80))
     github_url = db.Column(db.String(255))
     role = db.Column(db.String(20), default='user')  # 'user', 'admin', 'superadmin'
+    experience = db.Column(db.Integer, default=0, nullable=False)
 
     email = db.Column(db.String(120), unique=True)
     email_verified = db.Column(db.Boolean, default=False)
@@ -66,6 +67,7 @@ class User(db.Model):
             'github_url': self.github_url,
             'githubUrl': self.github_url,
             'role': self.role,
+            'experience': self.experience,
             'email_verified': self.email_verified,
             'is_deleted': self.is_deleted,
             'avatar_url': self.avatar_url,
@@ -179,6 +181,8 @@ class ProjectRecruitment(db.Model):
     role_needed = db.Column(db.String(120))
     contact = db.Column(db.String(160))
     max_members = db.Column(db.Integer)
+    token_budget = db.Column(db.Integer, default=100, nullable=False)
+    token_used = db.Column(db.Integer, default=0, nullable=False)
     review_status = db.Column(db.String(20), default='open', nullable=False)
     created_at = db.Column(db.DateTime, default=taipei_now)
 

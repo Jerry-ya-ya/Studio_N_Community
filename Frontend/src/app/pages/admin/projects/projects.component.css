@@ -209,6 +209,18 @@
   white-space: nowrap;
 }
 
+.project-meta .token-meta {
+  border-color: color-mix(in srgb, var(--studio-warm) 42%, var(--studio-line));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-warm) 12%, transparent), transparent 48%),
+    color-mix(in srgb, var(--studio-panel-strong) 76%, transparent);
+}
+
+.project-meta .token-meta strong {
+  color: var(--studio-warm);
+  font-size: 1.35rem;
+}
+
 .project-meta small {
   color: var(--studio-muted);
 }

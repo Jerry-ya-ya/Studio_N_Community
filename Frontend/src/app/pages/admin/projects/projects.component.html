@@ -85,6 +85,14 @@
               <span>{{ 'adminProjects.card.reviewStatus' | translate }}</span>
               <strong>{{ ('adminProjects.review.status.' + project.review_status) | translate }}</strong>
             </article>
+            <article class="token-meta">
+              <span>{{ 'adminProjects.card.tokenUsed' | translate }}</span>
+              <strong>{{ getTokenUsed(project) }}</strong>
+            </article>
+            <article class="token-meta">
+              <span>{{ 'adminProjects.card.tokenRemaining' | translate }}</span>
+              <strong>{{ getTokenRemaining(project) }}</strong>
+            </article>
           </div>
 
           <section class="member-panel">

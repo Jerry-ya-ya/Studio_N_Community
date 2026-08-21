@@ -39,6 +39,12 @@ interface AdminProject {
   role_needed?: string | null;
   contact?: string | null;
   max_members?: number | null;
+  token_budget?: number;
+  tokenBudget?: number;
+  token_used?: number;
+  tokenUsed?: number;
+  token_remaining?: number;
+  tokenRemaining?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
   created_at: string;
   creator: ProjectUser;
@@ -99,6 +105,18 @@ export class ProjectsComponent implements OnInit {
       return '-';
     }
     return user.nickname || user.username || '-';
+  }
+
+  getTokenBudget(project: AdminProject) {
+    return project.tokenBudget ?? project.token_budget ?? 100;
+  }
+
+  getTokenUsed(project: AdminProject) {
+    return project.tokenUsed ?? project.token_used ?? 0;
+  }
+
+  getTokenRemaining(project: AdminProject) {
+    return project.tokenRemaining ?? project.token_remaining ?? Math.max(this.getTokenBudget(project) - this.getTokenUsed(project), 0);
   }
 
   toggleTodos(projectId: number) {

@@ -650,6 +650,10 @@
       "progress": "{{ done }}/{{ total }} 완료",
       "unsorted": "미분류 프로젝트"
     },
+    "tokens": {
+      "used": "사용 Token",
+      "remaining": "남은 Token"
+    },
     "groups": {
       "unclaimed": "미인수",
       "pendingCompletion": "완료 대기",
@@ -935,7 +939,9 @@
       "creator": "게시자",
       "createdAt": "게시 시간",
       "contact": "연락처",
-      "reviewStatus": "검토 상태"
+      "reviewStatus": "검토 상태",
+      "tokenUsed": "사용 Token",
+      "tokenRemaining": "남은 Token"
     },
     "review": {
       "kicker": "Settlement Review",

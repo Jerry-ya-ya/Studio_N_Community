@@ -650,6 +650,10 @@
       "progress": "{{ done }}/{{ total }} 完成",
       "unsorted": "未分類專案"
     },
+    "tokens": {
+      "used": "已使用 Token",
+      "remaining": "剩餘 Token"
+    },
     "groups": {
       "unclaimed": "未認領",
       "pendingCompletion": "待完成",
@@ -935,7 +939,9 @@
       "creator": "發布者",
       "createdAt": "發布時間",
       "contact": "聯絡方式",
-      "reviewStatus": "審理狀態"
+      "reviewStatus": "審理狀態",
+      "tokenUsed": "已使用 Token",
+      "tokenRemaining": "剩餘 Token"
     },
     "review": {
       "kicker": "Settlement Review",

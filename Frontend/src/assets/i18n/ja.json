@@ -650,6 +650,10 @@
       "progress": "{{ done }}/{{ total }} 完了",
       "unsorted": "未分類プロジェクト"
     },
+    "tokens": {
+      "used": "使用済み Token",
+      "remaining": "残り Token"
+    },
     "groups": {
       "unclaimed": "未担当",
       "pendingCompletion": "完了待ち",
@@ -935,7 +939,9 @@
       "creator": "投稿者",
       "createdAt": "公開日時",
       "contact": "連絡先",
-      "reviewStatus": "審査状態"
+      "reviewStatus": "審査状態",
+      "tokenUsed": "使用済み Token",
+      "tokenRemaining": "残り Token"
     },
     "review": {
       "kicker": "Settlement Review",

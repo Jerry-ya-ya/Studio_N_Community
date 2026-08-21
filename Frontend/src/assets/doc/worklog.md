@@ -612,3 +612,5 @@
 ## 2026/08/21
 
 - Refactor superadmin promote user grid.
+
+- Add project tokens and user experience fields.

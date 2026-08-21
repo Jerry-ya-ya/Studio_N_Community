@@ -39,6 +39,12 @@ interface ProjectRecruitment {
   members: ProjectRecruitmentMember[];
   member_count: number;
   owned_by_me: boolean;
+  token_budget?: number;
+  tokenBudget?: number;
+  token_used?: number;
+  tokenUsed?: number;
+  token_remaining?: number;
+  tokenRemaining?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
 }
 
@@ -367,6 +373,18 @@ export class TodoComponent implements OnInit {
 
   canSubmitSettlementReview(project: ProjectRecruitment, todos: Todo[] = []) {
     return project.review_status !== 'pending' && this.getReviewPendingTodos(todos).length > 0;
+  }
+
+  getProjectTokenUsed(project?: ProjectRecruitment) {
+    return project?.tokenUsed ?? project?.token_used ?? 0;
+  }
+
+  getProjectTokenRemaining(project?: ProjectRecruitment) {
+    if (!project) {
+      return 0;
+    }
+
+    return project.tokenRemaining ?? project.token_remaining ?? Math.max((project.tokenBudget ?? project.token_budget ?? 100) - this.getProjectTokenUsed(project), 0);
   }
 
   getPendingCompletionTodos(todos: Todo[]): Todo[] {

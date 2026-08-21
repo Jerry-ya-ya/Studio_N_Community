@@ -114,6 +114,18 @@
           </div>
           <span>{{ 'privateTodo.projects.progress' | translate: { done: card.done, total: card.total } }}</span>
         </div>
+        @if (card.project) {
+          <div class="project-token-strip">
+            <article style="border-color: var(--studio-success); color: var(--studio-success);">
+              <span>{{ 'privateTodo.tokens.remaining' | translate }}</span>
+              <strong>{{ getProjectTokenRemaining(card.project) }}</strong>
+            </article>
+            <article>
+              <span>{{ 'privateTodo.tokens.used' | translate }}</span>
+              <strong>{{ getProjectTokenUsed(card.project) }}</strong>
+            </article>
+          </div>
+        }
 
         @if (card.project && card.canPublish) {
           <form class="todo-publisher" (ngSubmit)="publishProjectTodo(card.project)">
