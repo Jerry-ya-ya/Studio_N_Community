@@ -12,6 +12,7 @@ export interface Todo {
     project_id?: number;
     project_title?: string;
     assignee_name?: string;
+    created_by_name?: string;
     claimed_by_name?: string;
     created_at?: string;
 }

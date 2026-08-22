@@ -373,23 +373,20 @@ li.is-done span {
 
 .todo-priority {
   display: grid;
-  grid-template-columns: 120px 110px 64px minmax(0, 1fr);
+  grid-template-columns: 96px minmax(156px,190px) 92px 1fr;
   align-items: center;
   gap: 10px;
 }
 
 .todo-priority small { white-space: normal; }
 
-.todo-priority strong {
-  display: inline-grid;
-  place-items: center;
-  justify-self: center;
-  width: 64px;
-  height: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 50%;
-  color: #fff;
-  font-size: 18px;
+.priority-multiplier {
+  text-align: center;
+  line-height: 42px;
+  border: 1px solid var(--priority-color);
+  border-radius: 8px;
+  color: var(--priority-color);
+  background: color-mix(in srgb, var(--priority-color) 12%, transparent);
   font-weight: 900;
 }
 

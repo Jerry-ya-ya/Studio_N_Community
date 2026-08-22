@@ -616,3 +616,7 @@
 - Add project tokens and user experience fields.
 
 - Improve admin activity user preview.
+
+## 2026/08/22
+
+- Fix private todo team publishing and priority display.

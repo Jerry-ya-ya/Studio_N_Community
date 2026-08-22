@@ -70,7 +70,7 @@
             </small>
             @if (todo.project_title) {
               <small>
-                {{ todo.project_title }} · {{ todo.assignee_name }}
+                {{ todo.project_title }} · {{ todo.created_by_name || todo.assignee_name }}
               </small>
             }
             <button
@@ -158,7 +158,9 @@
                   </option>
                 }
               </select>
-              <strong [style.background]="getPriorityColor(todoPriorities[card.project.id])">
+              <strong
+                class="priority-multiplier"
+                [style.--priority-color]="getPriorityColor(todoPriorities[card.project.id])">
                 {{ getPriorityMultiplierLabel(getProjectTodoPriority(card.project.id)) }}
               </strong>
               <small>{{ 'privateTodo.dispatch.priorityHint' | translate }}</small>
@@ -306,7 +308,7 @@
             {{ 'privateTodo.claim.unclaimed' | translate }}
           }
         </small>
-        <small>{{ todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
+        <small>{{ todo.created_by_name || todo.assignee_name || ('privateTodo.assignee.unassigned' | translate) }}</small>
       </div>
       <button
         class="done-button"

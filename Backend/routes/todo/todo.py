@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from models import db, ProjectRecruitment, Todo
+from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
 from routes.auth.utils import get_current_user_from_token
 from time_utils import to_taipei_text
 
@@ -30,9 +30,21 @@ def serialize_todo(todo):
         'project_id': todo.project_id,
         'project_title': todo.project.title if todo.project else None,
         'assignee_name': display_user_name(todo.user),
+        'created_by_name': display_user_name(todo.creator),
         'claimed_by_name': display_user_name(todo.claimed_by),
         'created_at': to_taipei_text(todo.created_at),
     }
+
+
+def user_can_access_todo(todo, user):
+    if todo.user_id == user.id or todo.created_by_id == user.id:
+        return True
+
+    if todo.user_id is None and todo.project:
+        member_ids = {member.user_id for member in todo.project.members}
+        return user.id == todo.project.creator_id or user.id in member_ids
+
+    return False
 
 
 def get_project_assignee_ids(project, data):
@@ -40,8 +52,7 @@ def get_project_assignee_ids(project, data):
     assignee_user_id = data.get('assignee_user_id')
 
     if assign_to_team:
-        member_ids = [member.user_id for member in project.members]
-        return sorted({project.creator_id, *member_ids})
+        return [None]
 
     if not assignee_user_id:
         return [project.creator_id]
@@ -151,12 +162,29 @@ def get_todos():
     if created_by_me:
         query = query.filter_by(created_by_id=user.id)
     else:
-        query = query.filter_by(user_id=user.id)
+        query = query.outerjoin(
+            ProjectRecruitment,
+            Todo.project_id == ProjectRecruitment.id
+        ).outerjoin(
+            ProjectRecruitmentMember,
+            (ProjectRecruitmentMember.project_id == Todo.project_id) &
+            (ProjectRecruitmentMember.user_id == user.id)
+        ).filter(
+            (Todo.user_id == user.id) |
+            (
+                (Todo.user_id.is_(None)) &
+                (Todo.project_id.isnot(None)) &
+                (
+                    (ProjectRecruitment.creator_id == user.id) |
+                    (ProjectRecruitmentMember.user_id == user.id)
+                )
+            )
+        )
 
     if project_id:
-        query = query.filter_by(project_id=project_id)
+        query = query.filter(Todo.project_id == project_id)
 
-    todos = query.order_by(Todo.created_at.desc(), Todo.id.desc()).all()
+    todos = query.distinct().order_by(Todo.created_at.desc(), Todo.id.desc()).all()
 
     return jsonify([serialize_todo(t) for t in todos])
 
@@ -167,12 +195,9 @@ def update_todo(todo_id):
     user = get_current_user_from_token()
     if not user:
         return jsonify({'error': 'User not found'}), 404
-    todo = Todo.query.filter(
-        Todo.id == todo_id,
-        (Todo.user_id == user.id) | (Todo.created_by_id == user.id)
-    ).first()
+    todo = Todo.query.get(todo_id)
 
-    if not todo:
+    if not todo or not user_can_access_todo(todo, user):
         return jsonify({'error': 'Not found'}), 404
     
     data = request.get_json(silent=True) or {}
@@ -226,10 +251,7 @@ def delete_todo(todo_id):
     user = get_current_user_from_token()
     if not user:
         return jsonify({'error': 'User not found'}), 404
-    todo = Todo.query.filter(
-        Todo.id == todo_id,
-        (Todo.user_id == user.id) | (Todo.created_by_id == user.id)
-    ).first()
+    todo = Todo.query.filter_by(id=todo_id, created_by_id=user.id).first()
     
     if not todo:
             return jsonify({'error': 'Not found'}), 404
