@@ -622,3 +622,5 @@
 - Fix private todo team publishing and priority display.
 
 - Refactor private todo task card layout.
+
+- Refactor public tutorial comparison and step carousel.

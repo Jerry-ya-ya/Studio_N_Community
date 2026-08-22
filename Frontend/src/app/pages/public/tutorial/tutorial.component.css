@@ -96,18 +96,45 @@
   line-height: 1.6;
 }
 
-.compare-grid,
-.step-grid {
-  display: grid;
-  gap: 12px;
+.compare-shell {
+  padding: 12px;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--studio-accent) 12%, transparent), transparent 50%, color-mix(in srgb, var(--studio-warm) 10%, transparent)),
+    color-mix(in srgb, var(--studio-bg) 28%, transparent);
 }
 
 .compare-grid {
+  position: relative;
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
-.step-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.compare-grid::before {
+  content: "";
+  position: absolute;
+  inset: 14px auto 14px 50%;
+  width: 1px;
+  background: linear-gradient(transparent, var(--studio-line), transparent);
+}
+
+.step-scroll {
+  overflow-x: auto;
+  padding: 12px 12px 18px;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--studio-bg) 24%, transparent);
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--studio-accent) transparent;
+}
+
+.step-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 360px);
+  gap: 14px;
 }
 
 .compare-card,
@@ -180,6 +207,7 @@
 .step-card {
   display: flex;
   flex-direction: column;
+  scroll-snap-align: start;
 }
 
 .step-card__copy {
@@ -203,8 +231,10 @@
     grid-template-columns: 1fr;
   }
 
-  .step-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .compare-grid::before {
+    inset: 50% 14px auto;
+    width: auto;
+    height: 1px;
   }
 }
 
@@ -218,7 +248,7 @@
     padding: 22px;
   }
 
-  .step-grid {
-    grid-template-columns: 1fr;
+  .step-track {
+    grid-auto-columns: minmax(260px, 82vw);
   }
 }

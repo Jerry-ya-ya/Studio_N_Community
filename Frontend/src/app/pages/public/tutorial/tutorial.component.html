@@ -21,28 +21,30 @@
       <h2>{{ 'tutorial.compare.title' | translate }}</h2>
     </div>
 
-    <div class="compare-grid">
-      @for (item of compareItems; track item) {
-        <article
-          class="compare-card"
-          [class.compare-card--enabled]="item.type === 'enabled'"
-          >
-          <div class="compare-card__header">
-            <span>{{ item.labelKey | translate }}</span>
-            <h3>{{ item.titleKey | translate }}</h3>
-          </div>
-          <div class="device-frame">
-            <div class="device-screen">
-              <img [src]="item.image" [alt]="'tutorial.aria.compareDemo' | translate:{ title: (item.titleKey | translate) }" loading="lazy">
+    <div class="compare-shell">
+      <div class="compare-grid">
+        @for (item of compareItems; track item) {
+          <article
+            class="compare-card"
+            [class.compare-card--enabled]="item.type === 'enabled'"
+            >
+            <div class="compare-card__header">
+              <span>{{ item.labelKey | translate }}</span>
+              <h3>{{ item.titleKey | translate }}</h3>
             </div>
-          </div>
-          <ul>
-            @for (pointKey of item.pointKeys; track pointKey) {
-              <li>{{ pointKey | translate }}</li>
-            }
-          </ul>
-        </article>
-      }
+            <div class="device-frame">
+              <div class="device-screen">
+                <img [src]="item.image" [alt]="'tutorial.aria.compareDemo' | translate:{ title: (item.titleKey | translate) }" loading="lazy">
+              </div>
+            </div>
+            <ul>
+              @for (pointKey of item.pointKeys; track pointKey) {
+                <li>{{ pointKey | translate }}</li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
     </div>
   </section>
 
@@ -53,21 +55,23 @@
       <p>{{ 'tutorial.steps.description' | translate }}</p>
     </div>
 
-    <div class="step-grid">
-      @for (step of tutorialSteps; track step; let i = $index) {
-        <article class="step-card">
-          <div class="step-card__copy">
-            <span>{{ 'tutorial.steps.stepLabel' | translate:{ index: i + 1 } }}</span>
-            <h3>{{ step.titleKey | translate }}</h3>
-            <p>{{ step.detailKey | translate }}</p>
-          </div>
-          <div class="device-frame device-frame--step">
-            <div class="device-screen">
-              <img [src]="step.image" [alt]="step.titleKey | translate" loading="lazy">
+    <div class="step-scroll" tabindex="0">
+      <div class="step-track">
+        @for (step of tutorialSteps; track step; let i = $index) {
+          <article class="step-card">
+            <div class="step-card__copy">
+              <span>{{ 'tutorial.steps.stepLabel' | translate:{ index: i + 1 } }}</span>
+              <h3>{{ step.titleKey | translate }}</h3>
+              <p>{{ step.detailKey | translate }}</p>
             </div>
-          </div>
-        </article>
-      }
+            <div class="device-frame device-frame--step">
+              <div class="device-screen">
+                <img [src]="step.image" [alt]="step.titleKey | translate" loading="lazy">
+              </div>
+            </div>
+          </article>
+        }
+      </div>
     </div>
   </section>
 </main>
