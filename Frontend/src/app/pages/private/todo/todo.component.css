@@ -440,7 +440,4 @@ li.is-done span {
   .todo-publisher select {
     max-width: none;
   }
-  .project-task-list input[type="checkbox"] {
-    margin-right: 0;
-  }
 }

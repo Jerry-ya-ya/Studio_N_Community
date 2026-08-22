@@ -262,30 +262,32 @@
       [disabled]="!canToggleClaim(todo)"
       (change)="toggleClaim(todo)"
       [title]="'privateTodo.actions.claimTitle' | translate">
-    <div class="project-task-metrics">
-      <strong
-        class="priority-badge"
-        [style.background]="getPriorityColor(todo.priority)"
-        [title]="getPriorityMultiplierLabel(todo.priority)">
-        P{{ getPriorityLevel(todo.priority) }}
-      </strong>
-      @if (showTime) {
+    <div class="project-task-main">
+      <div class="project-task-content">
+        <span>{{ todo.text }}</span>
+      </div>
+      <div class="project-task-metrics">
         <strong
           class="priority-badge"
-          [style.background]="getEffortColor(getTodoDuration(todo))">
-          T{{ getTodoDuration(todo) }}
+          [style.background]="getPriorityColor(todo.priority)"
+          [title]="getPriorityMultiplierLabel(todo.priority)">
+          P{{ getPriorityLevel(todo.priority) }}
         </strong>
-      }
-      @if (showDifficulty) {
-        <strong
-          class="priority-badge"
-          [style.background]="getEffortColor(getTodoDifficulty(todo))">
-          D{{ getTodoDifficulty(todo) }}
-        </strong>
-      }
-    </div>
-    <div class="project-task-content">
-      <span>{{ todo.text }}</span>
+        @if (showTime) {
+          <strong
+            class="priority-badge"
+            [style.background]="getEffortColor(getTodoDuration(todo))">
+            T{{ getTodoDuration(todo) }}
+          </strong>
+        }
+        @if (showDifficulty) {
+          <strong
+            class="priority-badge"
+            [style.background]="getEffortColor(getTodoDifficulty(todo))">
+            D{{ getTodoDifficulty(todo) }}
+          </strong>
+        }
+      </div>
     </div>
     <div class="project-task-side">
       @if (showCompletionTime && todo.claimed_by_id === currentUserId && !todo.done) {

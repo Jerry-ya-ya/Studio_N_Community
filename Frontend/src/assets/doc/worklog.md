@@ -620,3 +620,5 @@
 ## 2026/08/22
 
 - Fix private todo team publishing and priority display.
+
+- Refactor private todo task card layout.

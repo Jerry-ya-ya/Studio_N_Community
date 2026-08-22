@@ -726,11 +726,12 @@ body.cmen-day-theme .language-menu button.active small {
 .difficulty-control button { min-height: 38px; border: 1px solid var(--studio-accent); border-radius: 7px; padding: 0 12px; color: var(--studio-bg); background: var(--studio-accent); cursor: pointer; font-weight: 900; }
 .difficulty-control button:disabled { cursor: not-allowed; opacity: 0.5; }
 
-.project-task-list li { display: grid; grid-template-columns: auto 48px minmax(0, 1fr) minmax(190px, auto); align-items: start; gap: 8px 12px; }
-.project-task-metrics { display: grid; gap: 6px; }
+.project-task-list li { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(190px, auto); align-items: center; gap: 10px 14px; }
+.project-task-list input[type="checkbox"] { margin-right: 0; }
+.project-task-main { min-width: 0; display: grid; gap: 8px; }
+.project-task-metrics { display: flex; flex-wrap: wrap; gap: 6px; }
 .project-task-metrics .priority-badge { margin-right: 0; }
-.project-task-content { min-width: 0; display: grid; gap: 6px; }
-.project-task-content span { line-height: 1.45; overflow-wrap: anywhere; }
+.project-task-content span { display: block; line-height: 1.45; overflow-wrap: anywhere; }
 .project-task-side { width: 100%; display: grid; justify-items: end; justify-self: end; gap: 8px; text-align: right; }
 .project-task-side .todo-time-select { justify-self: end; justify-content: flex-end; margin-left: 0; }
 .project-task-side .todo-time-select span { flex: 0 0 auto; }
@@ -825,8 +826,10 @@ body.cmen-day-theme .language-menu button.active small {
     margin-top: 92px;
   }
 
-  .project-task-list li { grid-template-columns: 1fr; }
-  .project-task-metrics { grid-auto-flow: column; justify-content: start; }
+  .project-task-list li { grid-template-columns: auto 1fr; }
+  .project-task-main,
+  .project-task-side { grid-column: 2; }
+  .project-task-metrics { justify-content: start; }
   .project-task-side,
   .project-task-meta { justify-items: stretch; justify-content: flex-start; }
 }
