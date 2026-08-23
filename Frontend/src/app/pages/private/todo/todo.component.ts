@@ -61,6 +61,13 @@ interface ProjectTodoCard {
   canPublish: boolean;
 }
 
+interface ProjectTodoPublishResponse {
+  todos: Todo[];
+  project?: Partial<ProjectRecruitment>;
+  token_cost?: number;
+  tokenCost?: number;
+}
+
 @Component({
   selector: 'app-todo',
   standalone: false,
@@ -69,7 +76,9 @@ interface ProjectTodoCard {
   styleUrl: './todo.component.css'
 })
 export class TodoComponent implements OnInit {
-  readonly priorityMultipliers = [1, 1.1, 1.2, 1.35, 1.5];
+  private readonly projectFoldStorageKey = 'privateTodo.projectFolds.v1';
+  private readonly projectGroupFoldStorageKey = 'privateTodo.projectGroupFolds.v1';
+  readonly priorityMultipliers = [1.5, 1.35, 1.2, 1.1, 1];
   readonly timeOptions = [
     { value: 0, labelKey: 'privateTodo.time.lessThan30' },
     { value: 1, labelKey: 'privateTodo.time.oneHour' },
@@ -90,6 +99,8 @@ export class TodoComponent implements OnInit {
   todoDurations: Record<number, number> = {};
   todoCompletionTimes: Record<number, number | null> = {};
   settlementLoading: Record<number, boolean> = {};
+  projectFoldState: Record<string, boolean> = {};
+  projectGroupFoldState: Record<string, boolean> = {};
   isAllTodosOpen = false;
   statusMessage = '';
   
@@ -99,6 +110,8 @@ export class TodoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadProjectFoldState();
+    this.loadProjectGroupFoldState();
     this.fetchTodos();
   }
 
@@ -165,14 +178,15 @@ export class TodoComponent implements OnInit {
     }
 
     this.todoLoading[project.id] = true;
-    this.apiService.post<Todo | Todo[]>(
+    this.apiService.post<Todo | Todo[] | ProjectTodoPublishResponse>(
       '/todos',
       payload,
       this.apiService.createAuthHeaders()
     ).subscribe({
       next: result => {
-        const createdTodos = Array.isArray(result) ? result : [result];
+        const createdTodos = this.getPublishedTodos(result);
         this.setTodos(this.mergeTodos(this.todos, createdTodos));
+        this.updateProjectTokenState(project.id, this.getPublishedProject(result));
         this.todoTexts[project.id] = '';
         this.todoTargets[project.id] = 'team';
         this.todoPriorities[project.id] = 0;
@@ -253,6 +267,28 @@ export class TodoComponent implements OnInit {
   private setTodos(todos: Todo[]) {
     this.todos = todos;
     this.projectTodoGroups = this.buildProjectTodoGroups(todos);
+  }
+
+  private getPublishedTodos(result: Todo | Todo[] | ProjectTodoPublishResponse): Todo[] {
+    if (Array.isArray(result)) {
+      return result;
+    }
+
+    return 'todos' in result ? result.todos : [result];
+  }
+
+  private getPublishedProject(result: Todo | Todo[] | ProjectTodoPublishResponse) {
+    return !Array.isArray(result) && 'project' in result ? result.project : undefined;
+  }
+
+  private updateProjectTokenState(projectId: number, tokenProject?: Partial<ProjectRecruitment>) {
+    if (!tokenProject) {
+      return;
+    }
+
+    this.projects = this.projects.map(project =>
+      project.id === projectId ? { ...project, ...tokenProject } : project
+    );
   }
 
   private buildProjectTodoGroups(todos: Todo[]): ProjectTodoGroup[] {
@@ -415,6 +451,68 @@ export class TodoComponent implements OnInit {
 
   toggleAllTodos() {
     this.isAllTodosOpen = !this.isAllTodosOpen;
+  }
+
+  isProjectCardOpen(projectKey: string) {
+    return this.projectFoldState[projectKey] ?? true;
+  }
+
+  toggleProjectCard(projectKey: string) {
+    this.projectFoldState = {
+      ...this.projectFoldState,
+      [projectKey]: !this.isProjectCardOpen(projectKey)
+    };
+    this.saveProjectFoldState();
+  }
+
+  isProjectGroupOpen(projectKey: string, groupKey: string, defaultOpen = true) {
+    return this.projectGroupFoldState[this.getProjectGroupFoldKey(projectKey, groupKey)] ?? defaultOpen;
+  }
+
+  setProjectGroupOpen(projectKey: string, groupKey: string, event: Event) {
+    const details = event.target as HTMLDetailsElement;
+    this.projectGroupFoldState = {
+      ...this.projectGroupFoldState,
+      [this.getProjectGroupFoldKey(projectKey, groupKey)]: details.open
+    };
+    this.saveProjectGroupFoldState();
+  }
+
+  private loadProjectFoldState() {
+    this.projectFoldState = this.readBooleanMap(this.projectFoldStorageKey);
+  }
+
+  private saveProjectFoldState() {
+    this.writeBooleanMap(this.projectFoldStorageKey, this.projectFoldState);
+  }
+
+  private loadProjectGroupFoldState() {
+    this.projectGroupFoldState = this.readBooleanMap(this.projectGroupFoldStorageKey);
+  }
+
+  private saveProjectGroupFoldState() {
+    this.writeBooleanMap(this.projectGroupFoldStorageKey, this.projectGroupFoldState);
+  }
+
+  private getProjectGroupFoldKey(projectKey: string, groupKey: string) {
+    return `${projectKey}:${groupKey}`;
+  }
+
+  private readBooleanMap(storageKey: string): Record<string, boolean> {
+    try {
+      const value = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private writeBooleanMap(storageKey: string, value: Record<string, boolean>) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(value));
+    } catch {
+      // Ignore storage failures so the Todo page remains usable in restricted browsers.
+    }
   }
 
   get completedTodoCount() {

@@ -624,3 +624,7 @@
 - Refactor private todo task card layout.
 
 - Refactor public tutorial comparison and step carousel.
+
+## 2026/08/23
+
+- Add todo token costs and persisted folds.

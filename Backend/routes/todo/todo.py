@@ -36,6 +36,22 @@ def serialize_todo(todo):
     }
 
 
+def serialize_project_tokens(project):
+    token_budget = project.token_budget or 0
+    token_used = project.token_used or 0
+    token_remaining = max(token_budget - token_used, 0)
+
+    return {
+        'id': project.id,
+        'token_budget': token_budget,
+        'tokenBudget': token_budget,
+        'token_used': token_used,
+        'tokenUsed': token_used,
+        'token_remaining': token_remaining,
+        'tokenRemaining': token_remaining,
+    }
+
+
 def user_can_access_todo(todo, user):
     if todo.user_id == user.id or todo.created_by_id == user.id:
         return True
@@ -116,6 +132,12 @@ def add_todo():
         if not assignee_ids:
             return jsonify({'error': '指定的成員不在這個招募團隊中'}), 400
 
+        token_cost = priority + 1
+        token_budget = project.token_budget or 0
+        token_used = project.token_used or 0
+        if token_used + token_cost > token_budget:
+            return jsonify({'error': '專案剩餘 Token 不足，無法發布這個 Todo'}), 409
+
         new_todos = [
             Todo(
                 text=text,
@@ -128,10 +150,16 @@ def add_todo():
             )
             for assignee_id in assignee_ids
         ]
+        project.token_used = token_used + token_cost
         db.session.add_all(new_todos)
         db.session.commit()
 
-        return jsonify([serialize_todo(todo) for todo in new_todos]), 201
+        return jsonify({
+            'todos': [serialize_todo(todo) for todo in new_todos],
+            'project': serialize_project_tokens(project),
+            'token_cost': token_cost,
+            'tokenCost': token_cost,
+        }), 201
 
     new_todo = Todo(
         text=text,

@@ -104,7 +104,7 @@
     }
 
     @for (card of projectTodoCards; track card.key) {
-      <article class="project-dispatch-card">
+      <article class="project-dispatch-card" [class.is-collapsed]="!isProjectCardOpen(card.key)">
         <div class="project-dispatch-card__summary">
           <div>
             <h4>{{ card.projectTitle === 'Unsorted Project' ? ('privateTodo.projects.unsorted' | translate) : card.projectTitle }}</h4>
@@ -112,142 +112,163 @@
               <p>{{ card.summary }}</p>
             }
           </div>
-          <span>{{ 'privateTodo.projects.progress' | translate: { done: card.done, total: card.total } }}</span>
-        </div>
-        @if (card.project) {
-          <div class="project-token-strip">
-            <article style="border-color: var(--studio-success); color: var(--studio-success);">
-              <span>{{ 'privateTodo.tokens.remaining' | translate }}</span>
-              <strong>{{ getProjectTokenRemaining(card.project) }}</strong>
-            </article>
-            <article>
-              <span>{{ 'privateTodo.tokens.used' | translate }}</span>
-              <strong>{{ getProjectTokenUsed(card.project) }}</strong>
-            </article>
-          </div>
-        }
-
-        @if (card.project && card.canPublish) {
-          <form class="todo-publisher" (ngSubmit)="publishProjectTodo(card.project)">
-            <div class="todo-publisher__header">
-              <div>
-                <p>{{ 'privateTodo.dispatch.publisherKicker' | translate }}</p>
-                <h5>{{ 'privateTodo.dispatch.publisherTitle' | translate }}</h5>
-              </div>
-              <select
-                [(ngModel)]="todoTargets[card.project.id]"
-                [name]="'todoTarget' + card.project.id">
-                <option value="team">{{ 'privateTodo.dispatch.team' | translate }}</option>
-                <option value="captain">{{ 'privateTodo.dispatch.captain' | translate }}</option>
-                @for (member of card.project.members; track member.id) {
-                  <option [value]="member.user.id">
-                    {{ member.user.nickname || member.user.username }}
-                  </option>
-                }
-              </select>
-            </div>
-
-            <label class="todo-priority">
-              <span>{{ 'privateTodo.dispatch.priority' | translate }}</span>
-              <select
-                [(ngModel)]="todoPriorities[card.project.id]"
-                [name]="'todoPriority' + card.project.id">
-                @for (multiplier of priorityMultipliers; track multiplier; let index = $index) {
-                  <option [ngValue]="index">
-                    {{ 'privateTodo.dispatch.priorityOption' | translate: { level: index + 1, multiplier: multiplier.toFixed(2) } }}
-                  </option>
-                }
-              </select>
-              <strong
-                class="priority-multiplier"
-                [style.--priority-color]="getPriorityColor(todoPriorities[card.project.id])">
-                {{ getPriorityMultiplierLabel(getProjectTodoPriority(card.project.id)) }}
-              </strong>
-              <small>{{ 'privateTodo.dispatch.priorityHint' | translate }}</small>
-            </label>
-
-            <div class="todo-publisher__controls">
-              <input
-                [(ngModel)]="todoTexts[card.project.id]"
-                [name]="'todoText' + card.project.id"
-                [placeholder]="'privateTodo.dispatch.placeholder' | translate">
-              <button
-                type="submit"
-                [disabled]="todoLoading[card.project.id]">
-                {{ (todoLoading[card.project.id] ? 'privateTodo.actions.publishing' : 'privateTodo.actions.publishTodo') | translate }}
-              </button>
-            </div>
-          </form>
-
-          <section class="settlement-panel">
-            <div>
-              <p>{{ 'privateTodo.settlement.kicker' | translate }}</p>
-              <h5>{{ 'privateTodo.settlement.title' | translate }}</h5>
-              <small>{{ ('privateTodo.settlement.status.' + card.project.review_status) | translate }}</small>
-            </div>
+          <div class="project-dispatch-card__actions">
+            <span>{{ 'privateTodo.projects.progress' | translate: { done: card.done, total: card.total } }}</span>
             <button
               type="button"
-              (click)="submitSettlementReview(card.project, card.todos)"
-              [disabled]="!canSubmitSettlementReview(card.project, card.todos) || settlementLoading[card.project.id]">
-              {{ (settlementLoading[card.project.id] ? 'privateTodo.actions.processing' : 'privateTodo.settlement.submit') | translate }}
+              class="project-card-toggle"
+              (click)="toggleProjectCard(card.key)"
+              [attr.aria-expanded]="isProjectCardOpen(card.key)">
+              {{ (isProjectCardOpen(card.key) ? 'privateTodo.actions.collapse' : 'privateTodo.actions.expand') | translate }}
             </button>
-          </section>
-        }
-
-        <div class="project-progress">
-          <div [style.width.%]="card.total ? (card.done / card.total) * 100 : 0"></div>
+          </div>
         </div>
 
-        @if (card.todos.length === 0) {
-          <div class="project-empty project-empty--compact">
-            {{ 'privateTodo.dispatch.noTodos' | translate }}
+        @if (isProjectCardOpen(card.key)) {
+          @if (card.project) {
+            <div class="project-token-strip">
+              <article style="border-color: var(--studio-success); color: var(--studio-success);">
+                <span>{{ 'privateTodo.tokens.remaining' | translate }}</span>
+                <strong>{{ getProjectTokenRemaining(card.project) }}</strong>
+              </article>
+              <article>
+                <span>{{ 'privateTodo.tokens.used' | translate }}</span>
+                <strong>{{ getProjectTokenUsed(card.project) }}</strong>
+              </article>
+            </div>
+          }
+
+          @if (card.project && card.canPublish) {
+            <form class="todo-publisher" (ngSubmit)="publishProjectTodo(card.project)">
+              <div class="todo-publisher__header">
+                <div>
+                  <p>{{ 'privateTodo.dispatch.publisherKicker' | translate }}</p>
+                  <h5>{{ 'privateTodo.dispatch.publisherTitle' | translate }}</h5>
+                </div>
+                <select
+                  [(ngModel)]="todoTargets[card.project.id]"
+                  [name]="'todoTarget' + card.project.id">
+                  <option value="team">{{ 'privateTodo.dispatch.team' | translate }}</option>
+                  <option value="captain">{{ 'privateTodo.dispatch.captain' | translate }}</option>
+                  @for (member of card.project.members; track member.id) {
+                    <option [value]="member.user.id">
+                      {{ member.user.nickname || member.user.username }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <label class="todo-priority">
+                <span>{{ 'privateTodo.dispatch.priority' | translate }}</span>
+                <select
+                  [(ngModel)]="todoPriorities[card.project.id]"
+                  [name]="'todoPriority' + card.project.id">
+                  @for (multiplier of priorityMultipliers; track multiplier; let index = $index) {
+                    <option [ngValue]="index">
+                      {{ 'privateTodo.dispatch.priorityOption' | translate: { level: index + 1, multiplier: multiplier.toFixed(2) } }}
+                    </option>
+                  }
+                </select>
+                <strong
+                  class="priority-multiplier"
+                  [style.--priority-color]="getPriorityColor(todoPriorities[card.project.id])">
+                  {{ getPriorityMultiplierLabel(getProjectTodoPriority(card.project.id)) }}
+                </strong>
+                <small>{{ 'privateTodo.dispatch.priorityHint' | translate }}</small>
+              </label>
+
+              <div class="todo-publisher__controls">
+                <input
+                  [(ngModel)]="todoTexts[card.project.id]"
+                  [name]="'todoText' + card.project.id"
+                  [placeholder]="'privateTodo.dispatch.placeholder' | translate">
+                <button
+                  type="submit"
+                  [disabled]="todoLoading[card.project.id]">
+                  {{ (todoLoading[card.project.id] ? 'privateTodo.actions.publishing' : 'privateTodo.actions.publishTodo') | translate }}
+                </button>
+              </div>
+            </form>
+
+            <section class="settlement-panel">
+              <div>
+                <p>{{ 'privateTodo.settlement.kicker' | translate }}</p>
+                <h5>{{ 'privateTodo.settlement.title' | translate }}</h5>
+                <small>{{ ('privateTodo.settlement.status.' + card.project.review_status) | translate }}</small>
+              </div>
+              <button
+                type="button"
+                (click)="submitSettlementReview(card.project, card.todos)"
+                [disabled]="!canSubmitSettlementReview(card.project, card.todos) || settlementLoading[card.project.id]">
+                {{ (settlementLoading[card.project.id] ? 'privateTodo.actions.processing' : 'privateTodo.settlement.submit') | translate }}
+              </button>
+            </section>
+          }
+
+          <div class="project-progress">
+            <div [style.width.%]="card.total ? (card.done / card.total) * 100 : 0"></div>
           </div>
-        }
 
-        @if (card.todos.length > 0) {
-          <div class="project-task-groups">
-            <details class="todo-publisher" open>
-              <summary>
-                <span>{{ 'privateTodo.groups.pendingCompletion' | translate }}</span>
-                <strong>{{ getPendingCompletionTodos(card.todos).length }}</strong>
-              </summary>
-              <ul class="project-task-list">
-                @for (todo of getPendingCompletionTodos(card.todos); track todo.id) {
-                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showCompletionTime: true, showTime: false, showDifficulty: false }"></ng-container>
-                } @empty {
-                  <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
-                }
-              </ul>
-            </details>
+          @if (card.todos.length === 0) {
+            <div class="project-empty project-empty--compact">
+              {{ 'privateTodo.dispatch.noTodos' | translate }}
+            </div>
+          }
 
-            <details class="todo-publisher" open>
-              <summary>
-                <span>{{ 'privateTodo.groups.reviewPending' | translate }}</span>
-                <strong>{{ getReviewPendingTodos(card.todos).length }}</strong>
-              </summary>
-              <ul class="project-task-list">
-                @for (todo of getReviewPendingTodos(card.todos); track todo.id) {
-                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: true, showDifficulty: false }"></ng-container>
-                } @empty {
-                  <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
-                }
-              </ul>
-            </details>
+          @if (card.todos.length > 0) {
+            <div class="project-task-groups">
+              <details
+                class="todo-publisher"
+                [open]="isProjectGroupOpen(card.key, 'pendingCompletion', true)"
+                (toggle)="setProjectGroupOpen(card.key, 'pendingCompletion', $event)">
+                <summary>
+                  <span>{{ 'privateTodo.groups.pendingCompletion' | translate }}</span>
+                  <strong>{{ getPendingCompletionTodos(card.todos).length }}</strong>
+                </summary>
+                <ul class="project-task-list">
+                  @for (todo of getPendingCompletionTodos(card.todos); track todo.id) {
+                    <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showCompletionTime: true, showTime: false, showDifficulty: false }"></ng-container>
+                  } @empty {
+                    <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
+                  }
+                </ul>
+              </details>
 
-            <details class="todo-publisher">
-              <summary>
-                <span>{{ 'privateTodo.groups.settled' | translate }}</span>
-                <strong>{{ getSettledTodos(card.todos).length }}</strong>
-              </summary>
-              <ul class="project-task-list">
-                @for (todo of getSettledTodos(card.todos); track todo.id) {
-                  <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: true, showDifficulty: true }"></ng-container>
-                } @empty {
-                  <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
-                }
-              </ul>
-            </details>
-          </div>
+              <details
+                class="todo-publisher"
+                [open]="isProjectGroupOpen(card.key, 'reviewPending', true)"
+                (toggle)="setProjectGroupOpen(card.key, 'reviewPending', $event)">
+                <summary>
+                  <span>{{ 'privateTodo.groups.reviewPending' | translate }}</span>
+                  <strong>{{ getReviewPendingTodos(card.todos).length }}</strong>
+                </summary>
+                <ul class="project-task-list">
+                  @for (todo of getReviewPendingTodos(card.todos); track todo.id) {
+                    <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: true, showDifficulty: false }"></ng-container>
+                  } @empty {
+                    <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
+                  }
+                </ul>
+              </details>
+
+              <details
+                class="todo-publisher"
+                [open]="isProjectGroupOpen(card.key, 'settled', false)"
+                (toggle)="setProjectGroupOpen(card.key, 'settled', $event)">
+                <summary>
+                  <span>{{ 'privateTodo.groups.settled' | translate }}</span>
+                  <strong>{{ getSettledTodos(card.todos).length }}</strong>
+                </summary>
+                <ul class="project-task-list">
+                  @for (todo of getSettledTodos(card.todos); track todo.id) {
+                    <ng-container *ngTemplateOutlet="projectTodoItem; context: { todo: todo, showTime: true, showDifficulty: true }"></ng-container>
+                  } @empty {
+                    <li class="project-task-empty">{{ 'privateTodo.groups.empty' | translate }}</li>
+                  }
+                </ul>
+              </details>
+            </div>
+          }
         }
       </article>
     }
