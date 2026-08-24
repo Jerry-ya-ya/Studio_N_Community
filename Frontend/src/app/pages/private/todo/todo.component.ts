@@ -78,7 +78,7 @@ interface ProjectTodoPublishResponse {
 export class TodoComponent implements OnInit {
   private readonly projectFoldStorageKey = 'privateTodo.projectFolds.v1';
   private readonly projectGroupFoldStorageKey = 'privateTodo.projectGroupFolds.v1';
-  readonly priorityMultipliers = [1.5, 1.35, 1.2, 1.1, 1];
+  readonly priorityMultipliers = [1.5, 1.3, 1.2, 1.1, 1];
   readonly timeOptions = [
     { value: 0, labelKey: 'privateTodo.time.lessThan30' },
     { value: 1, labelKey: 'privateTodo.time.oneHour' },

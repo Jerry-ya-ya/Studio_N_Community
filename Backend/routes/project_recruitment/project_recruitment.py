@@ -1,10 +1,11 @@
 import json
+from datetime import date
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
-from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
+from models import DailyCheckIn, db, ProjectRecruitment, ProjectRecruitmentMember, Todo
 from log_writer import get_backend_logger
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
@@ -12,6 +13,11 @@ from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
 project_logger = get_backend_logger('project_recruitment', 'project.log', message_only=True)
+
+PRIORITY_REWARD_MULTIPLIERS = [1.5, 1.3, 1.2, 1.1, 1.0]
+PRIORITY_REWARD_BONUSES = [1, 2, 3, 4, 5]
+DIFFICULTY_REWARD_POINTS = [2, 4, 6, 9, 13]
+TODO_REWARD_COIN_DATE = date(1970, 1, 1)
 
 
 def write_project_log(level, **payload):
@@ -54,8 +60,60 @@ def serialize_project_todo(todo):
         'claimed_by_id': todo.claimed_by_id,
         'assignee_name': todo.user.display_nickname or todo.user.display_username if todo.user else None,
         'claimed_by_name': todo.claimed_by.display_nickname or todo.claimed_by.display_username if todo.claimed_by else None,
+        'reward_coins': calculate_todo_reward(todo),
+        'rewardCoins': calculate_todo_reward(todo),
         'created_at': to_taipei_text(todo.created_at),
     }
+
+
+def get_priority_reward_index(priority):
+    try:
+        value = int(priority)
+    except (TypeError, ValueError):
+        value = 4
+    return min(len(PRIORITY_REWARD_MULTIPLIERS) - 1, max(0, value))
+
+
+def calculate_todo_reward(todo):
+    priority_index = get_priority_reward_index(todo.priority)
+    multiplier = PRIORITY_REWARD_MULTIPLIERS[priority_index]
+    priority_bonus = PRIORITY_REWARD_BONUSES[priority_index]
+
+    try:
+        difficulty_value = int(todo.difficulty)
+    except (TypeError, ValueError):
+        difficulty_value = 6
+    difficulty = difficulty_value if difficulty_value in DIFFICULTY_REWARD_POINTS else 6
+
+    try:
+        duration_value = int(todo.duration)
+    except (TypeError, ValueError):
+        duration_value = 0
+    duration = min(5, max(0, duration_value))
+
+    return int(((difficulty + duration + priority_bonus) * multiplier) + 0.5)
+
+
+def award_todo_reward(todo):
+    if not todo.claimed_by_id:
+        return 0
+
+    reward = calculate_todo_reward(todo)
+    coin_record = DailyCheckIn.query.filter_by(
+        user_id=todo.claimed_by_id,
+        checkin_date=TODO_REWARD_COIN_DATE
+    ).first()
+
+    if coin_record:
+        coin_record.points += reward
+    else:
+        db.session.add(DailyCheckIn(
+            user_id=todo.claimed_by_id,
+            checkin_date=TODO_REWARD_COIN_DATE,
+            points=reward
+        ))
+
+    return reward
 
 
 def serialize_project(project, current_user):
@@ -329,6 +387,7 @@ def review_project_recruitment(project_id):
 
         project.review_status = 'approved'
         for todo in pending_todos:
+            award_todo_reward(todo)
             todo.settled = True
     elif action == 'reject':
         project.review_status = 'rejected'

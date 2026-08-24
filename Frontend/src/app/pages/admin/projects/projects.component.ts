@@ -29,6 +29,8 @@ interface ProjectTodo {
   claimed_by_id?: number | null;
   assignee_name?: string | null;
   claimed_by_name?: string | null;
+  reward_coins?: number;
+  rewardCoins?: number;
   created_at: string;
 }
 
@@ -183,8 +185,12 @@ export class ProjectsComponent implements OnInit {
   }
 
   getPriorityMultiplierLabel(priority: number) {
-    const multipliers = [1, 1.1, 1.2, 1.35, 1.5];
+    const multipliers = [1.5, 1.3, 1.2, 1.1, 1];
     return `x${multipliers[this.getPriorityLevel(priority) - 1].toFixed(2)}`;
+  }
+
+  getTodoReward(todo: ProjectTodo) {
+    return todo.rewardCoins ?? todo.reward_coins ?? 0;
   }
 
   hasDifficultyChanged(todo: ProjectTodo) {

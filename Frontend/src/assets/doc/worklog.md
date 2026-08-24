@@ -628,3 +628,7 @@
 ## 2026/08/23
 
 - Add todo token costs and persisted folds.
+
+## 2026/08/24
+
+- Add todo settlement coin rewards.

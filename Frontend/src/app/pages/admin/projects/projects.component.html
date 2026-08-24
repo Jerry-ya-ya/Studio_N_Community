@@ -204,6 +204,7 @@
                       <span class="priority-badge" [title]="getPriorityMultiplierLabel(todo.priority)">P{{ getPriorityLevel(todo.priority) }}</span>
                       <span class="priority-badge">D{{ todo.difficulty }}</span>
                       <span class="priority-badge">T{{ todo.duration }}</span>
+                      <span class="priority-badge">+{{ getTodoReward(todo) }}C</span>
                       <div class="todo-card__body">
                         <strong>{{ todo.text }}</strong>
                         <small>{{ todo.claimed_by_name || todo.assignee_name || ('adminProjects.todos.unassigned' | translate) }}</small>
