@@ -44,6 +44,10 @@ export class LogsComponent implements OnInit, OnDestroy {
   newsLoading = false;
   newsError = '';
   newsSource = '';
+  todoSettlementItems: AuditLogItem[] = [];
+  todoSettlementLoading = false;
+  todoSettlementError = '';
+  todoSettlementSource = '';
   collapsedGroups: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private refreshRegisterLogs$ = new Subject<void>();
@@ -51,6 +55,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   private refreshSignInLogs$ = new Subject<void>();
   private refreshContentLogs$ = new Subject<void>();
   private refreshNewsLogs$ = new Subject<void>();
+  private refreshTodoSettlementLogs$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
@@ -70,6 +75,12 @@ export class LogsComponent implements OnInit, OnDestroy {
           description: 'Tracks who modified news content or background assets.',
           accent: 'var(--studio-accent)',
           logs: []
+        },
+        {
+          title: 'Todo Settlement Log',
+          description: 'Tracks Todo reward settlement parameters, formulas, coins, and reviewers.',
+          accent: 'var(--studio-warning)',
+          logs: []
         }
       ]
     }
@@ -85,6 +96,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.loadCollapsedGroups();
     this.initializeContentLogStream();
     this.initializeNewsLogStream();
+    this.initializeTodoSettlementLogStream();
   }
 
   ngOnDestroy() {
@@ -119,6 +131,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isNewsGroup(group)) {
       this.loadNewsLogs();
     }
+    if (this.isTodoSettlementGroup(group)) {
+      this.loadTodoSettlementLogs();
+    }
   }
 
   isRegisterGroup(group: AuditLogGroup) {
@@ -141,13 +156,18 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.title === 'News Log';
   }
 
+  isTodoSettlementGroup(group: AuditLogGroup) {
+    return group.title === 'Todo Settlement Log';
+  }
+
   isLiveLogGroup(group: AuditLogGroup) {
     return (
       this.isRegisterGroup(group) ||
       this.isProjectGroup(group) ||
       this.isSignInGroup(group) ||
       this.isContentGroup(group) ||
-      this.isNewsGroup(group)
+      this.isNewsGroup(group) ||
+      this.isTodoSettlementGroup(group)
     );
   }
 
@@ -166,6 +186,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isNewsGroup(group)) {
       return this.newsItems;
+    }
+    if (this.isTodoSettlementGroup(group)) {
+      return this.todoSettlementItems;
     }
     return group.logs;
   }
@@ -186,6 +209,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isNewsGroup(group)) {
       return this.newsSource;
     }
+    if (this.isTodoSettlementGroup(group)) {
+      return this.todoSettlementSource;
+    }
     return '';
   }
 
@@ -195,7 +221,8 @@ export class LogsComponent implements OnInit, OnDestroy {
       (this.isProjectGroup(group) && this.projectLoading) ||
       (this.isSignInGroup(group) && this.signInLoading) ||
       (this.isContentGroup(group) && this.contentLoading) ||
-      (this.isNewsGroup(group) && this.newsLoading)
+      (this.isNewsGroup(group) && this.newsLoading) ||
+      (this.isTodoSettlementGroup(group) && this.todoSettlementLoading)
     );
   }
 
@@ -214,6 +241,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isNewsGroup(group)) {
       return this.newsError;
+    }
+    if (this.isTodoSettlementGroup(group)) {
+      return this.todoSettlementError;
     }
     return '';
   }
@@ -240,6 +270,15 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.toggleGroup(section, group);
   }
 
+  getLogPayload(log: AuditLogItem): Record<string, unknown> | null {
+    return log.rawJson || log.raw_json || null;
+  }
+
+  getSettlementField(log: AuditLogItem, key: string) {
+    const payload = this.getLogPayload(log);
+    const value = payload?.[key];
+    return value === undefined || value === null || value === '' ? '-' : String(value);
+  }
   loadRegisterLogs() {
     this.refreshRegisterLogs$.next();
   }
@@ -260,6 +299,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshNewsLogs$.next();
   }
 
+  loadTodoSettlementLogs() {
+    this.refreshTodoSettlementLogs$.next();
+  }
+
   refreshGroup(group: AuditLogGroup) {
     if (this.isRegisterGroup(group)) {
       this.loadRegisterLogs();
@@ -275,6 +318,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isNewsGroup(group)) {
       this.loadNewsLogs();
+    }
+    if (this.isTodoSettlementGroup(group)) {
+      this.loadTodoSettlementLogs();
     }
   }
 
@@ -458,6 +504,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.newsLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeTodoSettlementLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.todoSettlementItems.length)
+    );
+
+    merge(initialRetry$, this.refreshTodoSettlementLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.todoSettlementLoading = true;
+        this.todoSettlementError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getTodoSettlementLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: 'Unable to load todo settlement logs.' }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.todoSettlementItems = Array.isArray(response.items) ? response.items : [];
+          this.todoSettlementSource = response.path ? `${response.path} / ${response.count ?? this.todoSettlementItems.length} records` : '';
+          this.todoSettlementError = '';
+        } else {
+          this.todoSettlementItems = [];
+          this.todoSettlementSource = '';
+          this.todoSettlementError = error;
+        }
+
+        this.todoSettlementLoading = false;
         this.changeDetector.detectChanges();
       });
     });

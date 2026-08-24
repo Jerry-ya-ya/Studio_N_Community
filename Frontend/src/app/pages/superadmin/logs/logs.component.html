@@ -92,6 +92,16 @@
                       <span>{{ log.target }}</span>
                       <small>{{ log.time }}</small>
                     </div>
+                    @if (isTodoSettlementGroup(group)) {
+                      <div class="settlement-summary" aria-label="Todo settlement details">
+                        <span><small>Priority</small><strong>P{{ getSettlementField(log, 'priority_level') }}</strong></span>
+                        <span><small>Time</small><strong>{{ getSettlementField(log, 'duration') }}</strong></span>
+                        <span><small>Difficulty</small><strong>{{ getSettlementField(log, 'difficulty') }}</strong></span>
+                        <span><small>Coins</small><strong>+{{ getSettlementField(log, 'reward_coins') }}</strong></span>
+                        <span class="settlement-formula"><small>Formula</small><strong>{{ getSettlementField(log, 'reward_formula') }}</strong></span>
+                        <span><small>Settled By</small><strong>{{ getSettlementField(log, 'settled_by_nickname') }}</strong></span>
+                      </div>
+                    }
                     @if (isLiveLogGroup(group) && (log.rawJson || log.raw_json)) {
                       <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>
                     }

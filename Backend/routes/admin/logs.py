@@ -307,6 +307,61 @@ def parse_content_log_line(line):
     }
 
 
+def parse_todo_settlement_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-todo-settlement-{abs(hash(line))}',
+            'actor': 'Todo Settlement',
+            'action': 'recorded settlement event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    status = payload.get('status') or 'notice'
+    reason = payload.get('reason') or '-'
+    settled_by = payload.get('settled_by_nickname') or payload.get('settled_by_username') or 'Admin'
+    completed_by = payload.get('completed_by_nickname') or payload.get('completed_by_username') or '-'
+    project_title = payload.get('project_title') or '-'
+    todo_text = payload.get('todo_text') or '-'
+    todo_id = payload.get('todo_id')
+    reward_coins = payload.get('reward_coins') or 0
+    formula = payload.get('reward_formula') or '-'
+    priority_level = payload.get('priority_level') or '-'
+    duration = payload.get('duration') if payload.get('duration') is not None else '-'
+    difficulty = payload.get('difficulty') if payload.get('difficulty') is not None else '-'
+
+    if status == 'success':
+        action = f'settled todo reward +{reward_coins} coins'
+        row_status = 'success'
+    else:
+        action = f'skipped todo settlement: {reason}'
+        row_status = 'notice'
+
+    target = (
+        f'{project_title} / {todo_text} / completed by {completed_by} / '
+        f'P{priority_level} T{duration} D{difficulty} / {formula}'
+    )
+    if todo_id:
+        target = f'#{todo_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{payload.get('todo_id') or 'todo'}-{payload.get('settled_by_id') or 'settlement'}",
+        'actor': settled_by,
+        'action': action,
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': row_status,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
 def parse_news_log_line(line):
     try:
         payload = json.loads(line)
@@ -461,6 +516,23 @@ def news_logs():
     response.headers['Cache-Control'] = 'no-store'
     return response
 
+
+
+@logs_bp.route('/superadmin/logs/todo-settlement', methods=['GET'])
+@superadmin_required
+def todo_settlement_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('todo_settlement.log', limit)
+    items = [parse_todo_settlement_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'todo-settlement',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 def build_project_logs_response():
     limit = read_limit()

@@ -632,3 +632,7 @@
 ## 2026/08/24
 
 - Add todo settlement coin rewards.
+
+## 2026/08/25
+
+- Add todo settlement audit logs.

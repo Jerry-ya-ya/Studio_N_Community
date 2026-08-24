@@ -13,6 +13,7 @@ from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
 project_logger = get_backend_logger('project_recruitment', 'project.log', message_only=True)
+todo_settlement_logger = get_backend_logger('todo_settlement', 'todo_settlement.log', message_only=True)
 
 PRIORITY_REWARD_MULTIPLIERS = [1.5, 1.3, 1.2, 1.1, 1.0]
 PRIORITY_REWARD_BONUSES = [1, 2, 3, 4, 5]
@@ -27,6 +28,12 @@ def write_project_log(level, **payload):
     log_method(json.dumps(payload, ensure_ascii=False))
 
 
+
+def write_todo_settlement_log(level, **payload):
+    payload.setdefault('event', 'todo_settlement')
+    payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
+    log_method = getattr(todo_settlement_logger, level, todo_settlement_logger.info)
+    log_method(json.dumps(payload, ensure_ascii=False))
 def serialize_user(user):
     return {
         'id': user.id,
@@ -74,7 +81,7 @@ def get_priority_reward_index(priority):
     return min(len(PRIORITY_REWARD_MULTIPLIERS) - 1, max(0, value))
 
 
-def calculate_todo_reward(todo):
+def get_todo_reward_breakdown(todo):
     priority_index = get_priority_reward_index(todo.priority)
     multiplier = PRIORITY_REWARD_MULTIPLIERS[priority_index]
     priority_bonus = PRIORITY_REWARD_BONUSES[priority_index]
@@ -91,14 +98,34 @@ def calculate_todo_reward(todo):
         duration_value = 0
     duration = min(5, max(0, duration_value))
 
-    return int(((difficulty + duration + priority_bonus) * multiplier) + 0.5)
+    subtotal = difficulty + duration + priority_bonus
+    raw_reward = subtotal * multiplier
+    reward = int(raw_reward + 0.5)
+
+    return {
+        'priority': todo.priority,
+        'priority_level': priority_index + 1,
+        'priority_multiplier': multiplier,
+        'priority_bonus': priority_bonus,
+        'duration': duration,
+        'difficulty': difficulty,
+        'subtotal': subtotal,
+        'raw_reward': round(raw_reward, 2),
+        'reward_coins': reward,
+        'reward_formula': f'round(({difficulty} + {duration} + {priority_bonus}) * {multiplier:.2f}) = {reward}',
+    }
+
+
+def calculate_todo_reward(todo):
+    return get_todo_reward_breakdown(todo)['reward_coins']
 
 
 def award_todo_reward(todo):
+    breakdown = get_todo_reward_breakdown(todo)
     if not todo.claimed_by_id:
-        return 0
+        return breakdown
 
-    reward = calculate_todo_reward(todo)
+    reward = breakdown['reward_coins']
     coin_record = DailyCheckIn.query.filter_by(
         user_id=todo.claimed_by_id,
         checkin_date=TODO_REWARD_COIN_DATE
@@ -113,7 +140,35 @@ def award_todo_reward(todo):
             points=reward
         ))
 
-    return reward
+    return breakdown
+
+
+def serialize_todo_settlement_log_payload(project, todo, settled_by, breakdown):
+    completed_by = todo.claimed_by
+    return {
+        'status': 'success' if todo.claimed_by_id else 'skipped',
+        'reason': 'settled' if todo.claimed_by_id else 'missing_claimed_by',
+        'project_id': project.id,
+        'project_title': project.title,
+        'todo_id': todo.id,
+        'todo_text': todo.text,
+        'priority': breakdown['priority'],
+        'priority_level': breakdown['priority_level'],
+        'priority_multiplier': breakdown['priority_multiplier'],
+        'priority_bonus': breakdown['priority_bonus'],
+        'duration': breakdown['duration'],
+        'difficulty': breakdown['difficulty'],
+        'subtotal': breakdown['subtotal'],
+        'raw_reward': breakdown['raw_reward'],
+        'reward_coins': breakdown['reward_coins'] if todo.claimed_by_id else 0,
+        'reward_formula': breakdown['reward_formula'] if todo.claimed_by_id else '0 coins: task has no claimant',
+        'completed_by_id': todo.claimed_by_id,
+        'completed_by_username': completed_by.display_username if completed_by else '-',
+        'completed_by_nickname': completed_by.display_nickname if completed_by else '-',
+        'settled_by_id': settled_by.id,
+        'settled_by_username': settled_by.display_username,
+        'settled_by_nickname': settled_by.display_nickname or '-',
+    }
 
 
 def serialize_project(project, current_user):
@@ -380,6 +435,8 @@ def review_project_recruitment(project_id):
 
     if project.review_status != 'pending':
         return jsonify({'error': '此專案目前不在待審理狀態'}), 409
+
+    settlement_log_payloads = []
     if action == 'approve':
         pending_todos = [todo for todo in project.todos if todo.done and not todo.settled]
         if not pending_todos:
@@ -387,7 +444,10 @@ def review_project_recruitment(project_id):
 
         project.review_status = 'approved'
         for todo in pending_todos:
-            award_todo_reward(todo)
+            breakdown = award_todo_reward(todo)
+            settlement_log_payloads.append(
+                serialize_todo_settlement_log_payload(project, todo, current_user, breakdown)
+            )
             todo.settled = True
     elif action == 'reject':
         project.review_status = 'rejected'
@@ -395,6 +455,9 @@ def review_project_recruitment(project_id):
         return jsonify({'error': '審理動作不正確'}), 400
 
     db.session.commit()
+
+    for payload in settlement_log_payloads:
+        write_todo_settlement_log('info', **payload)
 
     return jsonify(serialize_project(project, current_user))
 
