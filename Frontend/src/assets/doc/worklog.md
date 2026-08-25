@@ -636,3 +636,5 @@
 ## 2026/08/25
 
 - Add todo settlement audit logs.
+
+- Collapse raw audit log details by default.

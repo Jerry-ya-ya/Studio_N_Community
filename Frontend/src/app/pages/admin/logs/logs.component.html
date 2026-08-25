@@ -90,7 +90,20 @@
                       <small>{{ log.time }}</small>
                     </div>
                     @if (log.rawJson || log.raw_json) {
-                      <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>
+                      <button
+                        type="button"
+                        class="raw-log-toggle"
+                        (click)="toggleRawLog($event, group, log)"
+                        [attr.aria-expanded]="isRawLogExpanded(group, log)"
+                      >
+                        <span class="raw-log-toggle__icon" aria-hidden="true">
+                          {{ isRawLogExpanded(group, log) ? 'expand_less' : 'expand_more' }}
+                        </span>
+                        <span>{{ isRawLogExpanded(group, log) ? 'Hide raw log' : 'Show raw log' }}</span>
+                      </button>
+                      @if (isRawLogExpanded(group, log)) {
+                        <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>
+                      }
                     }
                   </div>
                 }

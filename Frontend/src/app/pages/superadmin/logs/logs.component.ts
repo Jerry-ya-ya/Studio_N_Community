@@ -49,6 +49,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   todoSettlementError = '';
   todoSettlementSource = '';
   collapsedGroups: Record<string, boolean> = {};
+  expandedRawLogs: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private refreshRegisterLogs$ = new Subject<void>();
   private refreshProjectLogs$ = new Subject<void>();
@@ -79,7 +80,7 @@ export class LogsComponent implements OnInit, OnDestroy {
         {
           title: 'Todo Settlement Log',
           description: 'Tracks Todo reward settlement parameters, formulas, coins, and reviewers.',
-          accent: 'var(--studio-warning)',
+          accent: '#facc15',
           logs: []
         }
       ]
@@ -278,6 +279,22 @@ export class LogsComponent implements OnInit, OnDestroy {
     const payload = this.getLogPayload(log);
     const value = payload?.[key];
     return value === undefined || value === null || value === '' ? '-' : String(value);
+  }
+  getRawLogKey(group: AuditLogGroup, log: AuditLogItem) {
+    return `${group.title}.${log.id || log.time + log.actor + log.action + log.target}`;
+  }
+
+  isRawLogExpanded(group: AuditLogGroup, log: AuditLogItem) {
+    return !!this.expandedRawLogs[this.getRawLogKey(group, log)];
+  }
+
+  toggleRawLog(event: Event, group: AuditLogGroup, log: AuditLogItem) {
+    event.stopPropagation();
+    const key = this.getRawLogKey(group, log);
+    this.expandedRawLogs = {
+      ...this.expandedRawLogs,
+      [key]: !this.expandedRawLogs[key]
+    };
   }
   loadRegisterLogs() {
     this.refreshRegisterLogs$.next();

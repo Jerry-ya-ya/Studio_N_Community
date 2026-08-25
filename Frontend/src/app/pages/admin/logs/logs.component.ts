@@ -59,6 +59,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   ];
 
   collapsedGroups: Record<string, boolean> = {};
+  expandedRawLogs: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'admin.logs.collapsed';
 
@@ -111,6 +112,22 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   refreshGroup(group: AuditLogGroup) {
     group.refresh$.next();
+  }
+  getRawLogKey(group: AuditLogGroup, log: AuditLogItem) {
+    return `${group.title}.${log.id || log.time + log.actor + log.action + log.target}`;
+  }
+
+  isRawLogExpanded(group: AuditLogGroup, log: AuditLogItem) {
+    return !!this.expandedRawLogs[this.getRawLogKey(group, log)];
+  }
+
+  toggleRawLog(event: Event, group: AuditLogGroup, log: AuditLogItem) {
+    event.stopPropagation();
+    const key = this.getRawLogKey(group, log);
+    this.expandedRawLogs = {
+      ...this.expandedRawLogs,
+      [key]: !this.expandedRawLogs[key]
+    };
   }
 
   private initializeLogStream(group: AuditLogGroup) {
