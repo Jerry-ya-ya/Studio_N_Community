@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 
 interface User {
@@ -38,7 +39,10 @@ export class PromoteComponent implements OnInit {
   searchTerm = '';
   promotingUserId: number | null = null;
   demotingUserId: number | null = null;
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private translate: TranslateService
+  ) {}
   public apiRoot: string = environment.apiUrl.replace('/api', '');
 
   ngOnInit(): void {
@@ -50,12 +54,12 @@ export class PromoteComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     this.http.get<User[]>(`${environment.apiUrl}/superadmin/promote`, { headers })
       .subscribe({
-        next: users => {
-          this.users = users;
-          this.filterUsers();
-        },
-        error: err => this.message = '載入用戶失敗'
-      });
+      next: users => {
+        this.users = users;
+        this.filterUsers();
+      },
+      error: err => this.message = this.translate.instant('superadminPromote.feedback.loadFailed')
+    });
   }
 
   filterUsers() {
@@ -76,16 +80,12 @@ export class PromoteComponent implements OnInit {
   }
 
   getRoleDisplayName(role: string): string {
-    const roleMap: { [key: string]: string } = {
-      'user': '一般用戶',
-      'admin': '管理員',
-      'superadmin': '最高管理員'
-    };
-    return roleMap[role] || role;
+    return this.translate.instant(`superadminPromote.roles.${role}`) || role;
   }
 
   getAccountStatus(user: User): string {
-    return user.is_deleted ? '已刪除' : '啟用中';
+    const statusKey = user.is_deleted ? 'deleted' : 'active';
+    return this.translate.instant(`superadminPromote.accountStatus.${statusKey}`);
   }
 
   getUserCoins(user: User): number {
@@ -118,13 +118,24 @@ export class PromoteComponent implements OnInit {
   formatDate(dateString: string): string {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleDateString('zh-TW', {
+    return date.toLocaleDateString(this.getDateLocale(), {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  private getDateLocale(): string {
+    const localeMap: { [key: string]: string } = {
+      en: 'en-US',
+      'zh-TW': 'zh-TW',
+      ja: 'ja-JP',
+      ko: 'ko-KR'
+    };
+    const language = localStorage.getItem('language') || 'en';
+    return localeMap[language] || 'en-US';
   }
 
   promote(userId: number) {
@@ -145,7 +156,7 @@ export class PromoteComponent implements OnInit {
           }, 3000);
         },
         error: err => {
-          this.message = err.error.error || '晉升失敗';
+          this.message = err.error.error || this.translate.instant('superadminPromote.feedback.promoteFailed');
           this.promotingUserId = null;
           
           // 3秒後清除錯誤訊息
@@ -169,7 +180,7 @@ export class PromoteComponent implements OnInit {
           setTimeout(() => this.message = '', 3000);
         },
         error: err => {
-          this.message = err.error.error || '降級失敗';
+          this.message = err.error.error || this.translate.instant('superadminPromote.feedback.demoteFailed');
           this.demotingUserId = null;
           setTimeout(() => this.message = '', 3000);
         }

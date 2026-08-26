@@ -1271,5 +1271,56 @@
     "source": {
       "records": "{{ path }} / {{ count }} records"
     }
+  },
+  "superadminPromote": {
+    "hero": {
+      "title": "Superadmin Console",
+      "subtitle": "User management and permission control"
+    },
+    "stats": {
+      "totalUsers": "Total users",
+      "admins": "Admins",
+      "users": "Users"
+    },
+    "table": {
+      "title": "User list",
+      "id": "ID",
+      "username": "Account",
+      "nickname": "Nickname",
+      "coins": "Coins",
+      "experience": "Experience",
+      "accountStatus": "Account status",
+      "email": "Email",
+      "role": "Role",
+      "createdAt": "Registered at",
+      "actions": "Actions"
+    },
+    "search": {
+      "placeholder": "Search users..."
+    },
+    "roles": {
+      "user": "User",
+      "admin": "Admin",
+      "superadmin": "Superadmin",
+      "member": "Member"
+    },
+    "accountStatus": {
+      "active": "Active",
+      "deleted": "Deleted"
+    },
+    "actions": {
+      "promote": "Promote to admin",
+      "demote": "Demote to user",
+      "processing": "Processing...",
+      "superadmin": "Superadmin"
+    },
+    "empty": {
+      "noUsers": "No matching users found."
+    },
+    "feedback": {
+      "loadFailed": "Failed to load users.",
+      "promoteFailed": "Promotion failed.",
+      "demoteFailed": "Demotion failed."
+    }
   }
 }

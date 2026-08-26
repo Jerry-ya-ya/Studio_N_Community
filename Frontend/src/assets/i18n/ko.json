@@ -1271,5 +1271,56 @@
     "source": {
       "records": "{{ path }} / {{ count }}개 기록"
     }
+  },
+  "superadminPromote": {
+    "hero": {
+      "title": "슈퍼 관리자 콘솔",
+      "subtitle": "사용자 관리 및 권한 제어"
+    },
+    "stats": {
+      "totalUsers": "전체 사용자",
+      "admins": "관리자",
+      "users": "일반 사용자"
+    },
+    "table": {
+      "title": "사용자 목록",
+      "id": "ID",
+      "username": "계정",
+      "nickname": "닉네임",
+      "coins": "Coins",
+      "experience": "경험치",
+      "accountStatus": "계정 상태",
+      "email": "Email",
+      "role": "역할",
+      "createdAt": "가입 시간",
+      "actions": "작업"
+    },
+    "search": {
+      "placeholder": "사용자 검색..."
+    },
+    "roles": {
+      "user": "일반 사용자",
+      "admin": "관리자",
+      "superadmin": "슈퍼 관리자",
+      "member": "멤버"
+    },
+    "accountStatus": {
+      "active": "활성",
+      "deleted": "삭제됨"
+    },
+    "actions": {
+      "promote": "관리자로 승격",
+      "demote": "일반 사용자로 강등",
+      "processing": "처리 중...",
+      "superadmin": "슈퍼 관리자"
+    },
+    "empty": {
+      "noUsers": "조건에 맞는 사용자가 없습니다"
+    },
+    "feedback": {
+      "loadFailed": "사용자를 불러오지 못했습니다",
+      "promoteFailed": "승격에 실패했습니다",
+      "demoteFailed": "강등에 실패했습니다"
+    }
   }
 }

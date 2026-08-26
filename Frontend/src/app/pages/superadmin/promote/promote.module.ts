@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { PromoteRoutingModule } from './promote-routing.module';
 import { PromoteComponent } from './promote.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { PromoteComponent } from './promote.component';
     CommonModule,
     FormsModule,
     HttpClientModule,
-    PromoteRoutingModule
+    PromoteRoutingModule,
+    TranslatePipe
   ]
 })
 export class PromoteModule { }

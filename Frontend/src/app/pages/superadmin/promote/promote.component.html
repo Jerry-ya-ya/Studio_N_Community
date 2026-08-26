@@ -1,9 +1,8 @@
 <div class="admin-dashboard">
   <div class="dashboard-header">
-    <h2>管理員後台</h2>
-    <p class="subtitle">用戶管理與權限控制</p>
+    <h2>{{ 'superadminPromote.hero.title' | translate }}</h2>
+    <p class="subtitle">{{ 'superadminPromote.hero.subtitle' | translate }}</p>
   </div>
-  <!-- 訊息提示 -->
   @if (message) {
     <div class="message-container">
       <div class="message success">
@@ -13,29 +12,27 @@
     </div>
   }
 
-  <!-- 統計卡片 -->
   <div class="stats-container">
     <div class="stat-card">
       <div class="stat-number">{{ users.length }}</div>
-      <div class="stat-label">總用戶數</div>
+      <div class="stat-label">{{ 'superadminPromote.stats.totalUsers' | translate }}</div>
     </div>
     <div class="stat-card">
       <div class="stat-number">{{ getUsersByRole('admin').length }}</div>
-      <div class="stat-label">管理員</div>
+      <div class="stat-label">{{ 'superadminPromote.stats.admins' | translate }}</div>
     </div>
     <div class="stat-card">
       <div class="stat-number">{{ getUsersByRole('user').length }}</div>
-      <div class="stat-label">一般用戶</div>
+      <div class="stat-label">{{ 'superadminPromote.stats.users' | translate }}</div>
     </div>
   </div>
-  <!-- 用戶表格 -->
   <div class="table-container">
     <div class="table-header">
-      <h3>用戶列表</h3>
+      <h3>{{ 'superadminPromote.table.title' | translate }}</h3>
       <div class="table-actions">
         <input
           type="text"
-          placeholder="搜尋用戶..."
+          [placeholder]="'superadminPromote.search.placeholder' | translate"
           [(ngModel)]="searchTerm"
           (ngModelChange)="filterUsers()"
           class="search-input"
@@ -45,21 +42,21 @@
       <div class="user-list-shell">
         <div class="admin-grid">
           <div class="admin-grid-row admin-grid-row--header">
-            <div class="user-cell">ID</div>
-            <div class="user-cell">帳號</div>
-            <div class="user-cell">暱稱</div>
-            <div class="user-cell">Coins</div>
-            <div class="user-cell">經驗值</div>
-            <div class="user-cell">帳號狀態</div>
-            <div class="user-cell">Email</div>
-            <div class="user-cell">角色</div>
-            <div class="user-cell">註冊時間</div>
-            <div class="user-cell">操作</div>
+            <div class="user-cell">{{ 'superadminPromote.table.id' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.username' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.nickname' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.coins' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.experience' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.accountStatus' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.email' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.role' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.createdAt' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.actions' | translate }}</div>
           </div>
           @for (user of filteredUsers; track user) {
             <div class="admin-grid-row user-row">
-              <div class="user-cell user-id" data-label="ID">{{ user.id }}</div>
-              <div class="user-cell username" data-label="帳號">
+              <div class="user-cell user-id" [attr.data-label]="'superadminPromote.table.id' | translate">{{ user.id }}</div>
+              <div class="user-cell username" [attr.data-label]="'superadminPromote.table.username' | translate">
                 <div class="user-info">
                   @if (getUserAvatar(user)) {
                     <img
@@ -76,22 +73,22 @@
                   <span>{{ user.username }}</span>
                 </div>
               </div>
-              <div class="user-cell nickname" data-label="暱稱">{{ user.nickname || '-' }}</div>
-              <div class="user-cell points" data-label="Coins">{{ getUserCoins(user) }}</div>
-              <div class="user-cell experience" data-label="經驗值">{{ user.experience ?? 0 }}</div>
-              <div class="user-cell" data-label="帳號狀態">
+              <div class="user-cell nickname" [attr.data-label]="'superadminPromote.table.nickname' | translate">{{ user.nickname || '-' }}</div>
+              <div class="user-cell points" [attr.data-label]="'superadminPromote.table.coins' | translate">{{ getUserCoins(user) }}</div>
+              <div class="user-cell experience" [attr.data-label]="'superadminPromote.table.experience' | translate">{{ user.experience ?? 0 }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.accountStatus' | translate">
                 <span class="account-status" [class.account-status--deleted]="user.is_deleted">
                   {{ getAccountStatus(user) }}
                 </span>
               </div>
-              <div class="user-cell email" data-label="Email">{{ user.email }}</div>
-              <div class="user-cell" data-label="角色">
+              <div class="user-cell email" [attr.data-label]="'superadminPromote.table.email' | translate">{{ user.email }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.role' | translate">
                 <span class="role-badge" [class]="'role-' + user.role">
                   {{ getRoleDisplayName(user.role) }}
                 </span>
               </div>
-              <div class="user-cell created-at" data-label="註冊時間">{{ formatDate(user.created_at) }}</div>
-              <div class="user-cell actions" data-label="操作">
+              <div class="user-cell created-at" [attr.data-label]="'superadminPromote.table.createdAt' | translate">{{ formatDate(user.created_at) }}</div>
+              <div class="user-cell actions" [attr.data-label]="'superadminPromote.table.actions' | translate">
                 @if (user.role === 'user') {
                   <button
                     (click)="promote(user.id)"
@@ -99,10 +96,10 @@
                     [disabled]="promotingUserId === user.id"
                     >
                     @if (promotingUserId !== user.id) {
-                      <span>晉升為管理員</span>
+                      <span>{{ 'superadminPromote.actions.promote' | translate }}</span>
                     }
                     @if (promotingUserId === user.id) {
-                      <span class="loading">處理中...</span>
+                      <span class="loading">{{ 'superadminPromote.actions.processing' | translate }}</span>
                     }
                   </button>
                 }
@@ -113,15 +110,15 @@
                     [disabled]="demotingUserId === user.id"
                     >
                     @if (demotingUserId !== user.id) {
-                      <span>降級為一般用戶</span>
+                      <span>{{ 'superadminPromote.actions.demote' | translate }}</span>
                     }
                     @if (demotingUserId === user.id) {
-                      <span class="loading">處理中...</span>
+                      <span class="loading">{{ 'superadminPromote.actions.processing' | translate }}</span>
                     }
                   </button>
                 }
                 @if (user.role === 'superadmin') {
-                  <span class="no-action">最高管理員</span>
+                  <span class="no-action">{{ 'superadminPromote.actions.superadmin' | translate }}</span>
                 }
               </div>
             </div>
@@ -129,11 +126,10 @@
         </div>
       </div>
 
-      <!-- 空狀態 -->
       @if (filteredUsers.length === 0) {
         <div class="empty-state">
-          <div class="empty-icon">👥</div>
-          <p>沒有找到符合條件的用戶</p>
+          <div class="empty-icon" aria-hidden="true">👥</div>
+          <p>{{ 'superadminPromote.empty.noUsers' | translate }}</p>
         </div>
       }
     </div>

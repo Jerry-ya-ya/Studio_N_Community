@@ -1271,5 +1271,56 @@
     "source": {
       "records": "{{ path }} / {{ count }} 筆紀錄"
     }
+  },
+  "superadminPromote": {
+    "hero": {
+      "title": "超級管理員後台",
+      "subtitle": "用戶管理與權限控制"
+    },
+    "stats": {
+      "totalUsers": "總用戶數",
+      "admins": "管理員",
+      "users": "一般用戶"
+    },
+    "table": {
+      "title": "用戶列表",
+      "id": "ID",
+      "username": "帳號",
+      "nickname": "暱稱",
+      "coins": "Coins",
+      "experience": "經驗值",
+      "accountStatus": "帳號狀態",
+      "email": "Email",
+      "role": "角色",
+      "createdAt": "註冊時間",
+      "actions": "操作"
+    },
+    "search": {
+      "placeholder": "搜尋用戶..."
+    },
+    "roles": {
+      "user": "一般用戶",
+      "admin": "管理員",
+      "superadmin": "超級管理員",
+      "member": "成員"
+    },
+    "accountStatus": {
+      "active": "啟用中",
+      "deleted": "已刪除"
+    },
+    "actions": {
+      "promote": "晉升為管理員",
+      "demote": "降級為一般用戶",
+      "processing": "處理中...",
+      "superadmin": "超級管理員"
+    },
+    "empty": {
+      "noUsers": "沒有找到符合條件的用戶"
+    },
+    "feedback": {
+      "loadFailed": "載入用戶失敗",
+      "promoteFailed": "晉升失敗",
+      "demoteFailed": "降級失敗"
+    }
   }
 }

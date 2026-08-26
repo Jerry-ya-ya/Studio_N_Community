@@ -1271,5 +1271,56 @@
     "source": {
       "records": "{{ path }} / {{ count }} 件"
     }
+  },
+  "superadminPromote": {
+    "hero": {
+      "title": "スーパー管理者コンソール",
+      "subtitle": "ユーザー管理と権限コントロール"
+    },
+    "stats": {
+      "totalUsers": "総ユーザー数",
+      "admins": "管理者",
+      "users": "一般ユーザー"
+    },
+    "table": {
+      "title": "ユーザー一覧",
+      "id": "ID",
+      "username": "アカウント",
+      "nickname": "ニックネーム",
+      "coins": "Coins",
+      "experience": "経験値",
+      "accountStatus": "アカウント状態",
+      "email": "Email",
+      "role": "ロール",
+      "createdAt": "登録日時",
+      "actions": "操作"
+    },
+    "search": {
+      "placeholder": "ユーザーを検索..."
+    },
+    "roles": {
+      "user": "一般ユーザー",
+      "admin": "管理者",
+      "superadmin": "スーパー管理者",
+      "member": "メンバー"
+    },
+    "accountStatus": {
+      "active": "有効",
+      "deleted": "削除済み"
+    },
+    "actions": {
+      "promote": "管理者に昇格",
+      "demote": "一般ユーザーに降格",
+      "processing": "処理中...",
+      "superadmin": "スーパー管理者"
+    },
+    "empty": {
+      "noUsers": "条件に一致するユーザーが見つかりません"
+    },
+    "feedback": {
+      "loadFailed": "ユーザーの読み込みに失敗しました",
+      "promoteFailed": "昇格に失敗しました",
+      "demoteFailed": "降格に失敗しました"
+    }
   }
 }
