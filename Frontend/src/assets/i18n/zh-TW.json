@@ -1139,8 +1139,8 @@
       "role:superadmin": "超級管理員"
     },
     "visibility": {
-      "public": "Public",
-      "private": "Private"
+      "public": "公開",
+      "private": "私人"
     },
     "filter": {
       "label": "活動可見範圍篩選"
@@ -1168,6 +1168,15 @@
       "imageUploadFailure": "上傳活動圖片失敗。",
       "imageRemoved": "活動圖片已移除。",
       "imageRemoveFailure": "移除活動圖片失敗。"
+    },
+    "status": {
+      "active": "進行中",
+      "ended": "已結束"
+    },
+    "time": {
+      "pending": "時間待定",
+      "openStart": "開始時間未定",
+      "openEnd": "結束時間未定"
     }
   },
   "activity": {

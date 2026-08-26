@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ActivityPayload, ActivityPromotion, ActivityService, ActivityVisibility } from '../../../core/services/activity.service';
 
 interface ActivityDraft {
@@ -40,6 +41,7 @@ export class ActivityComponent implements OnInit {
 
   constructor(
     private activityService: ActivityService,
+    private translate: TranslateService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -221,11 +223,11 @@ export class ActivityComponent implements OnInit {
     const endAt = this.combineDateTime(dateValue, activity.endTime);
 
     if (!startAt && !endAt) {
-      return 'Time pending';
+      return this.translate.instant('adminActivity.time.pending');
     }
 
-    const startText = startAt ? this.formatActivityDateTime(startAt) : 'Open start';
-    const endText = endAt ? this.formatActivityDateTime(endAt) : 'Open end';
+    const startText = startAt ? this.formatActivityDateTime(startAt) : this.translate.instant('adminActivity.time.openStart');
+    const endText = endAt ? this.formatActivityDateTime(endAt) : this.translate.instant('adminActivity.time.openEnd');
     return `${startText} - ${endText}`;
   }
 
@@ -370,16 +372,36 @@ export class ActivityComponent implements OnInit {
 
   private formatActivityDateTime(value: string) {
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return value;
+    if (!Number.isNaN(date.getTime())) {
+      return this.formatDateTimeParts(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes()
+      );
     }
 
-    return date.toLocaleString([], {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const normalized = value.trim().replace('T', ' ');
+    const match = normalized.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})\s+(\d{1,2}):(\d{2})/);
+    if (!match) {
+      return value.replace(/:\d{2}(\.\d+)?([+-]\d{2}:?\d{2}|Z)?$/, '').trim();
+    }
+
+    return this.formatDateTimeParts(
+      Number(match[1]),
+      Number(match[2]),
+      Number(match[3]),
+      Number(match[4]),
+      Number(match[5])
+    );
+  }
+
+  private formatDateTimeParts(year: number, month: number, day: number, hour: number, minute: number) {
+    return `${year}/${this.padDatePart(month)}/${this.padDatePart(day)} ${this.padDatePart(hour)}:${this.padDatePart(minute)}`;
+  }
+
+  private padDatePart(value: number) {
+    return String(value).padStart(2, '0');
   }
 }

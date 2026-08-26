@@ -1139,8 +1139,8 @@
       "role:superadmin": "スーパー管理者"
     },
     "visibility": {
-      "public": "Public",
-      "private": "Private"
+      "public": "公開",
+      "private": "非公開"
     },
     "filter": {
       "label": "活動の公開範囲フィルター"
@@ -1168,6 +1168,15 @@
       "imageUploadFailure": "活動画像のアップロードに失敗しました。",
       "imageRemoved": "活動画像を削除しました。",
       "imageRemoveFailure": "活動画像の削除に失敗しました。"
+    },
+    "status": {
+      "active": "開催中",
+      "ended": "終了"
+    },
+    "time": {
+      "pending": "時間未定",
+      "openStart": "開始未定",
+      "openEnd": "終了未定"
     }
   },
   "activity": {

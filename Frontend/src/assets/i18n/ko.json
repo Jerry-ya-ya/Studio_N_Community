@@ -1139,8 +1139,8 @@
       "role:superadmin": "슈퍼 관리자"
     },
     "visibility": {
-      "public": "Public",
-      "private": "Private"
+      "public": "공개",
+      "private": "비공개"
     },
     "filter": {
       "label": "활동 공개 범위 필터"
@@ -1168,6 +1168,15 @@
       "imageUploadFailure": "활동 이미지 업로드에 실패했습니다.",
       "imageRemoved": "활동 이미지가 제거되었습니다.",
       "imageRemoveFailure": "활동 이미지 제거에 실패했습니다."
+    },
+    "status": {
+      "active": "진행 중",
+      "ended": "종료됨"
+    },
+    "time": {
+      "pending": "시간 미정",
+      "openStart": "시작 미정",
+      "openEnd": "종료 미정"
     }
   },
   "activity": {

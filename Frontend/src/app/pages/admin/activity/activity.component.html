@@ -67,7 +67,7 @@
               <div class="activity-user-preview__meta">
                 <span>{{ getTargetPreviewLabel(activity) | translate }}</span>
                 <span [class.activity-user-preview__status--ended]="isPreviewEnded(activity)">
-                  {{ isPreviewEnded(activity) ? 'Ended' : 'Active' }}
+                  {{ (isPreviewEnded(activity) ? 'adminActivity.status.ended' : 'adminActivity.status.active') | translate }}
                 </span>
               </div>
               <small>{{ getPreviewActivityTime(activity) }}</small>

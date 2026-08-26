@@ -1168,6 +1168,15 @@
       "imageUploadFailure": "Failed to upload activity image.",
       "imageRemoved": "Activity image removed.",
       "imageRemoveFailure": "Failed to remove activity image."
+    },
+    "status": {
+      "active": "Active",
+      "ended": "Ended"
+    },
+    "time": {
+      "pending": "Time pending",
+      "openStart": "Open start",
+      "openEnd": "Open end"
     }
   },
   "activity": {
