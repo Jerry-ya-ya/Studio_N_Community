@@ -545,7 +545,6 @@
       "cancelJoin": "取消登記",
       "submitReview": "提交完成審理",
       "publishing": "發布中...",
-      "processing": "處理中...",
       "publishTodo": "發布 Todo",
       "deleting": "刪除中...",
       "deleteRecruitment": "刪除招募"
@@ -1017,13 +1016,13 @@
         "label": "System",
         "hint": "預留給全域內容切換。"
       }
-  },
-  "auth": {
-    "feedback": {
-      "sessionExpired": "登入狀態已過期，請重新登入"
-    }
-  },
-  "home": {
+    },
+    "auth": {
+      "feedback": {
+        "sessionExpired": "登入狀態已過期，請重新登入"
+      }
+    },
+    "home": {
       "kicker": "Homepage",
       "title": "Community News"
     },
@@ -1169,6 +1168,42 @@
       "imageUploadFailure": "上傳活動圖片失敗。",
       "imageRemoved": "活動圖片已移除。",
       "imageRemoveFailure": "移除活動圖片失敗。"
+    }
+  },
+  "activity": {
+    "hero": {
+      "kicker": "公開活動",
+      "title": "工作室活動",
+      "description": "來自管理員活動看板的公開公告與活動宣傳。"
+    },
+    "actions": {
+      "loading": "載入中",
+      "refresh": "重新整理",
+      "retry": "重試"
+    },
+    "state": {
+      "loading": "正在載入活動...",
+      "error": "無法載入公開活動。",
+      "empty": "目前尚無公開活動。"
+    },
+    "status": {
+      "active": "進行中",
+      "ended": "已結束"
+    },
+    "target": {
+      "all": "全部",
+      "admin": "管理員",
+      "member": "成員",
+      "user": "使用者",
+      "superadmin": "超級管理員"
+    },
+    "time": {
+      "pending": "時間待定",
+      "openStart": "開始時間未定",
+      "openEnd": "結束時間未定"
+    },
+    "meta": {
+      "created": "建立時間 {{ date }}"
     }
   }
 }

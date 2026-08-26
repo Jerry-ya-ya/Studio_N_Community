@@ -638,3 +638,7 @@
 - Add todo settlement audit logs.
 
 - Collapse raw audit log details by default.
+
+## 2026/08/26
+
+- Add i18n support to public activity page.

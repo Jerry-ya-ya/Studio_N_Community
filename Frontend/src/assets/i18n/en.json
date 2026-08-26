@@ -545,7 +545,6 @@
       "cancelJoin": "Cancel Registration",
       "submitReview": "Submit Completion Review",
       "publishing": "Publishing...",
-      "processing": "Processing...",
       "publishTodo": "Publish Todo",
       "deleting": "Deleting...",
       "deleteRecruitment": "Delete Recruitment"
@@ -1017,13 +1016,13 @@
         "label": "System",
         "hint": "Reserved for global content switches."
       }
-  },
-  "auth": {
-    "feedback": {
-      "sessionExpired": "Your login has expired. Please sign in again."
-    }
-  },
-  "home": {
+    },
+    "auth": {
+      "feedback": {
+        "sessionExpired": "Your login has expired. Please sign in again."
+      }
+    },
+    "home": {
       "kicker": "Homepage",
       "title": "Community News"
     },
@@ -1169,6 +1168,42 @@
       "imageUploadFailure": "Failed to upload activity image.",
       "imageRemoved": "Activity image removed.",
       "imageRemoveFailure": "Failed to remove activity image."
+    }
+  },
+  "activity": {
+    "hero": {
+      "kicker": "Public Activity",
+      "title": "Studio Events",
+      "description": "Open announcements and event promotions from the admin activity board."
+    },
+    "actions": {
+      "loading": "Loading",
+      "refresh": "Refresh",
+      "retry": "Retry"
+    },
+    "state": {
+      "loading": "Loading activities...",
+      "error": "Unable to load public activities.",
+      "empty": "No public activities yet."
+    },
+    "status": {
+      "active": "Active",
+      "ended": "Ended"
+    },
+    "target": {
+      "all": "All",
+      "admin": "Admin",
+      "member": "Member",
+      "user": "User",
+      "superadmin": "Superadmin"
+    },
+    "time": {
+      "pending": "Time pending",
+      "openStart": "Open start",
+      "openEnd": "Open end"
+    },
+    "meta": {
+      "created": "Created {{ date }}"
     }
   }
 }

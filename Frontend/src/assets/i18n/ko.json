@@ -545,7 +545,6 @@
       "cancelJoin": "등록 취소",
       "submitReview": "완료 검토 제출",
       "publishing": "게시 중...",
-      "processing": "처리 중...",
       "publishTodo": "Todo 게시",
       "deleting": "삭제 중...",
       "deleteRecruitment": "모집 삭제"
@@ -1017,13 +1016,13 @@
         "label": "System",
         "hint": "전역 콘텐츠 전환용으로 예약되어 있습니다."
       }
-  },
-  "auth": {
-    "feedback": {
-      "sessionExpired": "로그인이 만료되었습니다. 다시 로그인해 주세요."
-    }
-  },
-  "home": {
+    },
+    "auth": {
+      "feedback": {
+        "sessionExpired": "로그인이 만료되었습니다. 다시 로그인해 주세요."
+      }
+    },
+    "home": {
       "kicker": "Homepage",
       "title": "Community News"
     },
@@ -1169,6 +1168,42 @@
       "imageUploadFailure": "활동 이미지 업로드에 실패했습니다.",
       "imageRemoved": "활동 이미지가 제거되었습니다.",
       "imageRemoveFailure": "활동 이미지 제거에 실패했습니다."
+    }
+  },
+  "activity": {
+    "hero": {
+      "kicker": "공개 활동",
+      "title": "스튜디오 이벤트",
+      "description": "관리자 활동 보드에서 공개되는 공지와 이벤트 홍보입니다."
+    },
+    "actions": {
+      "loading": "불러오는 중",
+      "refresh": "새로고침",
+      "retry": "다시 시도"
+    },
+    "state": {
+      "loading": "활동을 불러오는 중...",
+      "error": "공개 활동을 불러올 수 없습니다.",
+      "empty": "아직 공개 활동이 없습니다."
+    },
+    "status": {
+      "active": "진행 중",
+      "ended": "종료됨"
+    },
+    "target": {
+      "all": "전체",
+      "admin": "관리자",
+      "member": "멤버",
+      "user": "사용자",
+      "superadmin": "슈퍼 관리자"
+    },
+    "time": {
+      "pending": "시간 미정",
+      "openStart": "시작 미정",
+      "openEnd": "종료 미정"
+    },
+    "meta": {
+      "created": "생성 시간 {{ date }}"
     }
   }
 }

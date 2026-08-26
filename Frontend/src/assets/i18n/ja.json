@@ -545,7 +545,6 @@
       "cancelJoin": "登録を取消",
       "submitReview": "完了審査を申請",
       "publishing": "公開中...",
-      "processing": "処理中...",
       "publishTodo": "Todo を公開",
       "deleting": "削除中...",
       "deleteRecruitment": "募集を削除"
@@ -1017,13 +1016,13 @@
         "label": "System",
         "hint": "全域コンテンツ切り替え用に予約されています。"
       }
-  },
-  "auth": {
-    "feedback": {
-      "sessionExpired": "ログインの有効期限が切れました。もう一度ログインしてください。"
-    }
-  },
-  "home": {
+    },
+    "auth": {
+      "feedback": {
+        "sessionExpired": "ログインの有効期限が切れました。もう一度ログインしてください。"
+      }
+    },
+    "home": {
       "kicker": "Homepage",
       "title": "Community News"
     },
@@ -1169,6 +1168,42 @@
       "imageUploadFailure": "活動画像のアップロードに失敗しました。",
       "imageRemoved": "活動画像を削除しました。",
       "imageRemoveFailure": "活動画像の削除に失敗しました。"
+    }
+  },
+  "activity": {
+    "hero": {
+      "kicker": "公開アクティビティ",
+      "title": "スタジオイベント",
+      "description": "管理者のアクティビティボードから公開される告知とイベント情報です。"
+    },
+    "actions": {
+      "loading": "読み込み中",
+      "refresh": "更新",
+      "retry": "再試行"
+    },
+    "state": {
+      "loading": "アクティビティを読み込み中...",
+      "error": "公開アクティビティを読み込めませんでした。",
+      "empty": "公開アクティビティはまだありません。"
+    },
+    "status": {
+      "active": "開催中",
+      "ended": "終了"
+    },
+    "target": {
+      "all": "すべて",
+      "admin": "管理者",
+      "member": "メンバー",
+      "user": "ユーザー",
+      "superadmin": "スーパー管理者"
+    },
+    "time": {
+      "pending": "時間未定",
+      "openStart": "開始未定",
+      "openEnd": "終了未定"
+    },
+    "meta": {
+      "created": "作成日時 {{ date }}"
     }
   }
 }
