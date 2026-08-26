@@ -642,3 +642,5 @@
 ## 2026/08/26
 
 - Add i18n support to public activity page.
+
+- Add i18n support to private activity page.

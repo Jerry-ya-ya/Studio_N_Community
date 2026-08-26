@@ -1203,7 +1203,17 @@
       "openEnd": "結束時間未定"
     },
     "meta": {
-      "created": "建立時間 {{ date }}"
+      "created": "建立時間 {{ date }}",
+      "publishedBy": "發布者 {{ name }}"
+    },
+    "privateHero": {
+      "kicker": "私人活動",
+      "title": "成員活動",
+      "description": "來自管理員活動看板，依角色發布的公告與內部活動宣傳。"
+    },
+    "privateState": {
+      "error": "無法載入私人活動。",
+      "empty": "目前你的帳號尚無私人活動。"
     }
   }
 }

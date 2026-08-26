@@ -1203,7 +1203,17 @@
       "openEnd": "종료 미정"
     },
     "meta": {
-      "created": "생성 시간 {{ date }}"
+      "created": "생성 시간 {{ date }}",
+      "publishedBy": "{{ name }} 님이 게시함"
+    },
+    "privateHero": {
+      "kicker": "비공개 활동",
+      "title": "멤버 이벤트",
+      "description": "관리자 활동 보드에서 역할별로 전달되는 공지와 내부 이벤트 홍보입니다."
+    },
+    "privateState": {
+      "error": "비공개 활동을 불러올 수 없습니다.",
+      "empty": "현재 계정에 표시할 비공개 활동이 없습니다."
     }
   }
 }

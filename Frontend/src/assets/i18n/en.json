@@ -1203,7 +1203,17 @@
       "openEnd": "Open end"
     },
     "meta": {
-      "created": "Created {{ date }}"
+      "created": "Created {{ date }}",
+      "publishedBy": "Published by {{ name }}"
+    },
+    "privateHero": {
+      "kicker": "Private Activity",
+      "title": "Member Events",
+      "description": "Role-targeted announcements and internal promotions from the admin activity board."
+    },
+    "privateState": {
+      "error": "Unable to load private activities.",
+      "empty": "No private activities for your account yet."
     }
   }
 }
