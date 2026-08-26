@@ -1215,5 +1215,52 @@
       "error": "Unable to load private activities.",
       "empty": "No private activities for your account yet."
     }
+  },
+  "adminLogs": {
+    "hero": {
+      "kicker": "Admin Audit",
+      "title": "Private Logs",
+      "description": "Account, project, and sign-in records shared with admins for daily moderation."
+    },
+    "aria": {
+      "summary": "Log summary"
+    },
+    "metrics": {
+      "logTypes": "Log Types",
+      "previewRows": "Preview Rows"
+    },
+    "section": {
+      "kicker": "Member Activity",
+      "title": "Private",
+      "description": "User-facing records for account creation, project publishing, and sign-in activity."
+    },
+    "groups": {
+      "register": {
+        "title": "Register Log",
+        "description": "Tracks who registered a new account."
+      },
+      "project": {
+        "title": "Project Log",
+        "description": "Tracks who created a project recruitment."
+      },
+      "signIn": {
+        "title": "Sign In Log",
+        "description": "Tracks successful and failed sign-in activity."
+      }
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "retry": "Retry",
+      "showRaw": "Show raw log",
+      "hideRaw": "Hide raw log"
+    },
+    "state": {
+      "loading": "Loading logs...",
+      "empty": "No records yet.",
+      "loadError": "Unable to load logs."
+    },
+    "source": {
+      "records": "{{ path }} / {{ count }} records"
+    }
   }
 }

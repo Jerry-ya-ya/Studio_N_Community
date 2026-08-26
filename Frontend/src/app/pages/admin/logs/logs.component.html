@@ -1,21 +1,21 @@
 <main class="logs-page">
   <section class="logs-hero">
     <div>
-      <p class="logs-kicker">Admin Audit</p>
-      <h1>Private Logs</h1>
+      <p class="logs-kicker">{{ 'adminLogs.hero.kicker' | translate }}</p>
+      <h1>{{ 'adminLogs.hero.title' | translate }}</h1>
       <p>
-        Account, project, and sign-in records shared with admins for daily moderation.
+        {{ 'adminLogs.hero.description' | translate }}
       </p>
     </div>
 
-    <div class="logs-metrics" aria-label="Log summary">
+    <div class="logs-metrics" aria-label="{{ 'adminLogs.aria.summary' | translate }}">
       <article>
         <span>{{ totalLogTypes }}</span>
-        <small>Log Types</small>
+        <small>{{ 'adminLogs.metrics.logTypes' | translate }}</small>
       </article>
       <article>
         <span>{{ totalPreviewRows }}</span>
-        <small>Preview Rows</small>
+        <small>{{ 'adminLogs.metrics.previewRows' | translate }}</small>
       </article>
     </div>
   </section>
@@ -24,15 +24,15 @@
     <article class="log-section">
       <header class="log-section__header">
         <div>
-          <p class="logs-kicker">Member Activity</p>
-          <h2>Private</h2>
-          <p>User-facing records for account creation, project publishing, and sign-in activity.</p>
+          <p class="logs-kicker">{{ 'adminLogs.section.kicker' | translate }}</p>
+          <h2>{{ 'adminLogs.section.title' | translate }}</h2>
+          <p>{{ 'adminLogs.section.description' | translate }}</p>
         </div>
         <strong>{{ groups.length }}</strong>
       </header>
 
       <div class="log-groups">
-        @for (group of groups; track group.title) {
+        @for (group of groups; track group.key) {
           <article class="log-card" [class.log-card--collapsed]="isGroupCollapsed(group)" [style.--log-accent]="group.accent">
             <header
               class="log-card__header"
@@ -48,15 +48,15 @@
                   <span class="log-card__chevron" aria-hidden="true">
                     {{ isGroupCollapsed(group) ? 'expand_more' : 'expand_less' }}
                   </span>
-                  <h3>{{ group.title }}</h3>
+                  <h3>{{ group.titleKey | translate }}</h3>
                 </div>
-                <p>{{ group.description }}</p>
+                <p>{{ group.descriptionKey | translate }}</p>
                 @if (group.source) {
-                  <small class="log-source">{{ group.source }}</small>
+                  <small class="log-source">{{ 'adminLogs.source.records' | translate:{ path: group.source, count: group.sourceCount } }}</small>
                 }
               </div>
               <div class="log-card__tools">
-                <button type="button" (click)="refreshGroup(group); $event.stopPropagation()">Refresh</button>
+                <button type="button" (click)="refreshGroup(group); $event.stopPropagation()">{{ 'adminLogs.actions.refresh' | translate }}</button>
                 <span>{{ group.logs.length }}</span>
               </div>
             </header>
@@ -65,16 +65,16 @@
               <div class="log-list">
                 @if (group.loading) {
                   <div class="log-state">
-                    Loading logs...
+                    {{ 'adminLogs.state.loading' | translate }}
                   </div>
                 } @else if (group.error) {
                   <div class="log-state log-state--error">
-                    <span>{{ group.error }}</span>
-                    <button type="button" (click)="refreshGroup(group)">Retry</button>
+                    <span>{{ group.error | translate }}</span>
+                    <button type="button" (click)="refreshGroup(group)">{{ 'adminLogs.actions.retry' | translate }}</button>
                   </div>
                 } @else if (group.logs.length === 0) {
                   <div class="log-state">
-                    No records yet.
+                    {{ 'adminLogs.state.empty' | translate }}
                   </div>
                 }
 
@@ -99,7 +99,7 @@
                         <span class="raw-log-toggle__icon" aria-hidden="true">
                           {{ isRawLogExpanded(group, log) ? 'expand_less' : 'expand_more' }}
                         </span>
-                        <span>{{ isRawLogExpanded(group, log) ? 'Hide raw log' : 'Show raw log' }}</span>
+                        <span>{{ (isRawLogExpanded(group, log) ? 'adminLogs.actions.hideRaw' : 'adminLogs.actions.showRaw') | translate }}</span>
                       </button>
                       @if (isRawLogExpanded(group, log)) {
                         <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>

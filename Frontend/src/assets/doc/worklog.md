@@ -644,3 +644,5 @@
 - Add i18n support to public activity page.
 
 - Add i18n support to private activity page.
+
+- Add i18n support to admin logs page.

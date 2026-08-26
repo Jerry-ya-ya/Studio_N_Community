@@ -1215,5 +1215,52 @@
       "error": "プライベートアクティビティを読み込めませんでした。",
       "empty": "このアカウント向けのプライベートアクティビティはまだありません。"
     }
+  },
+  "adminLogs": {
+    "hero": {
+      "kicker": "管理者監査",
+      "title": "プライベートログ",
+      "description": "日常のモデレーション用に管理者へ共有されるアカウント、プロジェクト、サインイン記録です。"
+    },
+    "aria": {
+      "summary": "ログ概要"
+    },
+    "metrics": {
+      "logTypes": "ログ種別",
+      "previewRows": "プレビュー行"
+    },
+    "section": {
+      "kicker": "メンバー活動",
+      "title": "プライベート",
+      "description": "アカウント作成、プロジェクト公開、サインイン活動に関するユーザー側の記録です。"
+    },
+    "groups": {
+      "register": {
+        "title": "登録ログ",
+        "description": "新しいアカウントを登録したユーザーを追跡します。"
+      },
+      "project": {
+        "title": "プロジェクトログ",
+        "description": "プロジェクト募集を作成したユーザーを追跡します。"
+      },
+      "signIn": {
+        "title": "サインインログ",
+        "description": "成功および失敗したサインイン活動を追跡します。"
+      }
+    },
+    "actions": {
+      "refresh": "更新",
+      "retry": "再試行",
+      "showRaw": "元ログを表示",
+      "hideRaw": "元ログを隠す"
+    },
+    "state": {
+      "loading": "ログを読み込み中...",
+      "empty": "記録はまだありません。",
+      "loadError": "ログを読み込めませんでした。"
+    },
+    "source": {
+      "records": "{{ path }} / {{ count }} 件"
+    }
   }
 }

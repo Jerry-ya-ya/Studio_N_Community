@@ -1215,5 +1215,52 @@
       "error": "無法載入私人活動。",
       "empty": "目前你的帳號尚無私人活動。"
     }
+  },
+  "adminLogs": {
+    "hero": {
+      "kicker": "管理員稽核",
+      "title": "私人紀錄",
+      "description": "提供給管理員日常管理使用的帳號、專案與登入紀錄。"
+    },
+    "aria": {
+      "summary": "紀錄摘要"
+    },
+    "metrics": {
+      "logTypes": "紀錄類型",
+      "previewRows": "預覽筆數"
+    },
+    "section": {
+      "kicker": "成員活動",
+      "title": "私人",
+      "description": "使用者註冊、專案發布與登入活動的前台相關紀錄。"
+    },
+    "groups": {
+      "register": {
+        "title": "註冊紀錄",
+        "description": "追蹤誰註冊了新帳號。"
+      },
+      "project": {
+        "title": "專案紀錄",
+        "description": "追蹤誰建立了專案招募。"
+      },
+      "signIn": {
+        "title": "登入紀錄",
+        "description": "追蹤成功與失敗的登入活動。"
+      }
+    },
+    "actions": {
+      "refresh": "重新整理",
+      "retry": "重試",
+      "showRaw": "顯示原始紀錄",
+      "hideRaw": "隱藏原始紀錄"
+    },
+    "state": {
+      "loading": "正在載入紀錄...",
+      "empty": "目前尚無紀錄。",
+      "loadError": "無法載入紀錄。"
+    },
+    "source": {
+      "records": "{{ path }} / {{ count }} 筆紀錄"
+    }
   }
 }

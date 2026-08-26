@@ -5,13 +5,14 @@ import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.
 
 interface AuditLogGroup {
   key: 'register' | 'project' | 'signIn';
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   accent: string;
   logs: AuditLogItem[];
   loading: boolean;
   error: string;
   source: string;
+  sourceCount: number;
   refresh$: Subject<void>;
 }
 
@@ -25,35 +26,38 @@ export class LogsComponent implements OnInit, OnDestroy {
   groups: AuditLogGroup[] = [
     {
       key: 'register',
-      title: 'Register Log',
-      description: 'Tracks who registered a new account.',
+      titleKey: 'adminLogs.groups.register.title',
+      descriptionKey: 'adminLogs.groups.register.description',
       accent: 'var(--studio-success)',
       logs: [],
       loading: false,
       error: '',
       source: '',
+      sourceCount: 0,
       refresh$: new Subject<void>()
     },
     {
       key: 'project',
-      title: 'Project Log',
-      description: 'Tracks who created a project recruitment.',
+      titleKey: 'adminLogs.groups.project.title',
+      descriptionKey: 'adminLogs.groups.project.description',
       accent: 'var(--studio-accent)',
       logs: [],
       loading: false,
       error: '',
       source: '',
+      sourceCount: 0,
       refresh$: new Subject<void>()
     },
     {
       key: 'signIn',
-      title: 'Sign In Log',
-      description: 'Tracks successful and failed sign-in activity.',
+      titleKey: 'adminLogs.groups.signIn.title',
+      descriptionKey: 'adminLogs.groups.signIn.description',
       accent: 'var(--studio-warm)',
       logs: [],
       loading: false,
       error: '',
       source: '',
+      sourceCount: 0,
       refresh$: new Subject<void>()
     }
   ];
@@ -114,7 +118,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     group.refresh$.next();
   }
   getRawLogKey(group: AuditLogGroup, log: AuditLogItem) {
-    return `${group.title}.${log.id || log.time + log.actor + log.action + log.target}`;
+    return `${group.key}.${log.id || log.time + log.actor + log.action + log.target}`;
   }
 
   isRawLogExpanded(group: AuditLogGroup, log: AuditLogItem) {
@@ -146,18 +150,20 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.fetchGroupLogs(group).pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: `Unable to load ${group.title.toLowerCase()}.` }))
+          catchError(() => of({ response: null, error: 'adminLogs.state.loadError' }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           group.logs = Array.isArray(response.items) ? response.items : [];
-          group.source = response.path ? `${response.path} / ${response.count ?? group.logs.length} records` : '';
+          group.source = response.path || '';
+          group.sourceCount = response.count ?? group.logs.length;
           group.error = '';
         } else {
           group.logs = [];
           group.source = '';
+          group.sourceCount = 0;
           group.error = error;
         }
 
@@ -189,7 +195,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   private getGroupKey(group: AuditLogGroup) {
-    return group.title.replace(/\s+/g, '-').toLowerCase();
+    return group.key;
   }
 
   private getCollapsedStorageKey(key: string) {
