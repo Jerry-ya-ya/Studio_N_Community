@@ -1,19 +1,20 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { merge, of, Subject, timer } from 'rxjs';
 import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
+type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'content' | 'news' | 'todoSettlement';
+type AuditLogSectionKey = 'admin';
+
 interface AuditLogGroup {
-  title: string;
-  description: string;
+  key: AuditLogGroupKey;
   accent: string;
   logs: AuditLogItem[];
 }
 
 interface AuditLogSection {
-  title: string;
-  eyebrow: string;
-  description: string;
+  key: AuditLogSectionKey;
   groups: AuditLogGroup[];
 }
 
@@ -61,25 +62,20 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   sections: AuditLogSection[] = [
     {
-      title: 'Admin',
-      eyebrow: 'Management Activity',
-      description: 'Administrative records for homepage content and news changes.',
+      key: 'admin',
       groups: [
         {
-          title: 'Content Log',
-          description: 'Tracks who modified public home content.',
+          key: 'content',
           accent: 'var(--studio-danger)',
           logs: []
         },
         {
-          title: 'News Log',
-          description: 'Tracks who modified news content or background assets.',
+          key: 'news',
           accent: 'var(--studio-accent)',
           logs: []
         },
         {
-          title: 'Todo Settlement Log',
-          description: 'Tracks Todo reward settlement parameters, formulas, coins, and reviewers.',
+          key: 'todoSettlement',
           accent: '#facc15',
           logs: []
         }
@@ -89,6 +85,7 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   constructor(
     private auditLogService: AuditLogService,
+    private translate: TranslateService,
     private zone: NgZone,
     private changeDetector: ChangeDetectorRef
   ) {}
@@ -138,27 +135,27 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   isRegisterGroup(group: AuditLogGroup) {
-    return group.title === 'Register Log';
+    return group.key === 'register';
   }
 
   isProjectGroup(group: AuditLogGroup) {
-    return group.title === 'Project Log';
+    return group.key === 'project';
   }
 
   isSignInGroup(group: AuditLogGroup) {
-    return group.title === 'Sign In Log';
+    return group.key === 'signIn';
   }
 
   isContentGroup(group: AuditLogGroup) {
-    return group.title === 'Content Log';
+    return group.key === 'content';
   }
 
   isNewsGroup(group: AuditLogGroup) {
-    return group.title === 'News Log';
+    return group.key === 'news';
   }
 
   isTodoSettlementGroup(group: AuditLogGroup) {
-    return group.title === 'Todo Settlement Log';
+    return group.key === 'todoSettlement';
   }
 
   isLiveLogGroup(group: AuditLogGroup) {
@@ -250,7 +247,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   getGroupKey(section: AuditLogSection, group: AuditLogGroup) {
-    return `${section.title}.${group.title}`.replace(/\s+/g, '-').toLowerCase();
+    return `${section.key}.${group.key}`;
   }
 
   isGroupCollapsed(section: AuditLogSection, group: AuditLogGroup) {
@@ -281,7 +278,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     return value === undefined || value === null || value === '' ? '-' : String(value);
   }
   getRawLogKey(group: AuditLogGroup, log: AuditLogItem) {
-    return `${group.title}.${log.id || log.time + log.actor + log.action + log.target}`;
+    return `${group.key}.${log.id || log.time + log.actor + log.action + log.target}`;
   }
 
   isRawLogExpanded(group: AuditLogGroup, log: AuditLogItem) {
@@ -357,14 +354,14 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.auditLogService.getRegisterLogs().pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: 'Unable to load register logs.' }))
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.registerLoadFailed') }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           this.registerItems = Array.isArray(response.items) ? response.items : [];
-          this.registerSource = response.path ? `${response.path} / ${response.count ?? this.registerItems.length} records` : '';
+          this.registerSource = this.formatSource(response.path, response.count ?? this.registerItems.length);
           this.registerError = '';
         } else {
           this.registerItems = [];
@@ -394,14 +391,14 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.auditLogService.getProjectLogs().pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: 'Unable to load project logs.' }))
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.projectLoadFailed') }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           this.projectItems = Array.isArray(response.items) ? response.items : [];
-          this.projectSource = response.path ? `${response.path} / ${response.count ?? this.projectItems.length} records` : '';
+          this.projectSource = this.formatSource(response.path, response.count ?? this.projectItems.length);
           this.projectError = '';
         } else {
           this.projectItems = [];
@@ -431,14 +428,14 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.auditLogService.getSignInLogs().pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: 'Unable to load sign in logs.' }))
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.signInLoadFailed') }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           this.signInItems = Array.isArray(response.items) ? response.items : [];
-          this.signInSource = response.path ? `${response.path} / ${response.count ?? this.signInItems.length} records` : '';
+          this.signInSource = this.formatSource(response.path, response.count ?? this.signInItems.length);
           this.signInError = '';
         } else {
           this.signInItems = [];
@@ -468,14 +465,14 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.auditLogService.getContentLogs().pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: 'Unable to load content logs.' }))
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.contentLoadFailed') }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           this.contentItems = Array.isArray(response.items) ? response.items : [];
-          this.contentSource = response.path ? `${response.path} / ${response.count ?? this.contentItems.length} records` : '';
+          this.contentSource = this.formatSource(response.path, response.count ?? this.contentItems.length);
           this.contentError = '';
         } else {
           this.contentItems = [];
@@ -505,14 +502,14 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.auditLogService.getNewsLogs().pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: 'Unable to load news logs.' }))
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.newsLoadFailed') }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           this.newsItems = Array.isArray(response.items) ? response.items : [];
-          this.newsSource = response.path ? `${response.path} / ${response.count ?? this.newsItems.length} records` : '';
+          this.newsSource = this.formatSource(response.path, response.count ?? this.newsItems.length);
           this.newsError = '';
         } else {
           this.newsItems = [];
@@ -542,14 +539,14 @@ export class LogsComponent implements OnInit, OnDestroy {
         this.auditLogService.getTodoSettlementLogs().pipe(
           timeout(10000),
           map(response => ({ response, error: '' })),
-          catchError(() => of({ response: null, error: 'Unable to load todo settlement logs.' }))
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.todoSettlementLoadFailed') }))
         )
       )
     ).subscribe(({ response, error }) => {
       this.zone.run(() => {
         if (response) {
           this.todoSettlementItems = Array.isArray(response.items) ? response.items : [];
-          this.todoSettlementSource = response.path ? `${response.path} / ${response.count ?? this.todoSettlementItems.length} records` : '';
+          this.todoSettlementSource = this.formatSource(response.path, response.count ?? this.todoSettlementItems.length);
           this.todoSettlementError = '';
         } else {
           this.todoSettlementItems = [];
@@ -578,6 +575,14 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   private saveCollapsedGroup(key: string, collapsed: boolean) {
     localStorage.setItem(this.getCollapsedStorageKey(key), String(collapsed));
+  }
+
+  private formatSource(path: string | undefined, count: number) {
+    if (!path) {
+      return '';
+    }
+
+    return this.translate.instant('superadminLogs.source.records', { path, count });
   }
 
   private getCollapsedStorageKey(key: string) {

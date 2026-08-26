@@ -650,3 +650,5 @@
 - Add i18n support to admin activity page.
 
 - Add i18n support to superadmin promote page.
+
+- Add i18n support to superadmin logs page.

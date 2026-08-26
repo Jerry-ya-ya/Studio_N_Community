@@ -1322,5 +1322,82 @@
       "promoteFailed": "晉升失敗",
       "demoteFailed": "降級失敗"
     }
+  },
+  "superadminLogs": {
+    "hero": {
+      "kicker": "超級管理稽核",
+      "title": "網站紀錄",
+      "subtitle": "檢視網站管理操作與 Todo 結算歷史。"
+    },
+    "metrics": {
+      "summaryLabel": "紀錄摘要",
+      "logTypes": "紀錄類型",
+      "previewRows": "預覽筆數"
+    },
+    "sections": {
+      "admin": {
+        "title": "管理紀錄",
+        "eyebrow": "管理活動",
+        "description": "記錄首頁內容、新聞變更與 Todo 結算審核。"
+      }
+    },
+    "groups": {
+      "register": {
+        "title": "註冊紀錄",
+        "description": "追蹤誰註冊了帳號。"
+      },
+      "project": {
+        "title": "專案紀錄",
+        "description": "追蹤誰建立了招募專案。"
+      },
+      "signIn": {
+        "title": "登入紀錄",
+        "description": "追蹤誰登入了網站。"
+      },
+      "content": {
+        "title": "內容紀錄",
+        "description": "追蹤誰修改了公開首頁內容。"
+      },
+      "news": {
+        "title": "新聞紀錄",
+        "description": "追蹤誰修改了新聞內容或背景素材。"
+      },
+      "todoSettlement": {
+        "title": "Todo 結算紀錄",
+        "description": "追蹤 Todo 獎勵結算參數、算式、coins 與審核者。"
+      }
+    },
+    "actions": {
+      "refresh": "刷新",
+      "retry": "重試"
+    },
+    "state": {
+      "loading": "正在載入紀錄...",
+      "empty": "目前沒有紀錄。"
+    },
+    "source": {
+      "records": "{{path}} / {{count}} 筆紀錄"
+    },
+    "settlement": {
+      "detailsLabel": "Todo 結算詳細資料",
+      "priority": "優先度",
+      "time": "耗時",
+      "difficulty": "難度",
+      "coins": "Coins",
+      "formula": "算式",
+      "settledBy": "結算人"
+    },
+    "raw": {
+      "show": "顯示原始紀錄",
+      "hide": "隱藏原始紀錄"
+    },
+    "feedback": {
+      "registerLoadFailed": "無法載入註冊紀錄。",
+      "projectLoadFailed": "無法載入專案紀錄。",
+      "signInLoadFailed": "無法載入登入紀錄。",
+      "contentLoadFailed": "無法載入內容紀錄。",
+      "newsLoadFailed": "無法載入新聞紀錄。",
+      "todoSettlementLoadFailed": "無法載入 Todo 結算紀錄。"
+    }
   }
 }

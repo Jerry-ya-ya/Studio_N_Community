@@ -1322,5 +1322,82 @@
       "promoteFailed": "Promotion failed.",
       "demoteFailed": "Demotion failed."
     }
+  },
+  "superadminLogs": {
+    "hero": {
+      "kicker": "Superadmin Audit",
+      "title": "Website Logs",
+      "subtitle": "Review admin activity and settlement history across the site."
+    },
+    "metrics": {
+      "summaryLabel": "Log summary",
+      "logTypes": "Log Types",
+      "previewRows": "Preview Rows"
+    },
+    "sections": {
+      "admin": {
+        "title": "Admin",
+        "eyebrow": "Management Activity",
+        "description": "Administrative records for homepage content, news changes, and Todo settlement reviews."
+      }
+    },
+    "groups": {
+      "register": {
+        "title": "Register Log",
+        "description": "Tracks who registered an account."
+      },
+      "project": {
+        "title": "Project Log",
+        "description": "Tracks who created recruitment projects."
+      },
+      "signIn": {
+        "title": "Sign In Log",
+        "description": "Tracks who signed in."
+      },
+      "content": {
+        "title": "Content Log",
+        "description": "Tracks who modified public home content."
+      },
+      "news": {
+        "title": "News Log",
+        "description": "Tracks who modified news content or background assets."
+      },
+      "todoSettlement": {
+        "title": "Todo Settlement Log",
+        "description": "Tracks Todo reward settlement parameters, formulas, coins, and reviewers."
+      }
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "retry": "Retry"
+    },
+    "state": {
+      "loading": "Loading logs...",
+      "empty": "No records yet."
+    },
+    "source": {
+      "records": "{{path}} / {{count}} records"
+    },
+    "settlement": {
+      "detailsLabel": "Todo settlement details",
+      "priority": "Priority",
+      "time": "Time",
+      "difficulty": "Difficulty",
+      "coins": "Coins",
+      "formula": "Formula",
+      "settledBy": "Settled By"
+    },
+    "raw": {
+      "show": "Show raw log",
+      "hide": "Hide raw log"
+    },
+    "feedback": {
+      "registerLoadFailed": "Unable to load register logs.",
+      "projectLoadFailed": "Unable to load project logs.",
+      "signInLoadFailed": "Unable to load sign in logs.",
+      "contentLoadFailed": "Unable to load content logs.",
+      "newsLoadFailed": "Unable to load news logs.",
+      "todoSettlementLoadFailed": "Unable to load todo settlement logs."
+    }
   }
 }

@@ -1,39 +1,39 @@
 <main class="logs-page">
   <section class="logs-hero">
     <div>
-      <p class="logs-kicker">Superadmin Audit</p>
-      <h1>Website Logs</h1>
+      <p class="logs-kicker">{{ 'superadminLogs.hero.kicker' | translate }}</p>
+      <h1>{{ 'superadminLogs.hero.title' | translate }}</h1>
       <p>
-        A frontend scaffold for reviewing private and admin activity across the site.
+        {{ 'superadminLogs.hero.subtitle' | translate }}
       </p>
     </div>
 
-    <div class="logs-metrics" aria-label="Log summary">
+    <div class="logs-metrics" [attr.aria-label]="'superadminLogs.metrics.summaryLabel' | translate">
       <article>
         <span>{{ totalLogTypes }}</span>
-        <small>Log Types</small>
+        <small>{{ 'superadminLogs.metrics.logTypes' | translate }}</small>
       </article>
       <article>
         <span>{{ totalPreviewRows }}</span>
-        <small>Preview Rows</small>
+        <small>{{ 'superadminLogs.metrics.previewRows' | translate }}</small>
       </article>
     </div>
   </section>
 
   <section class="logs-board">
-    @for (section of sections; track section.title) {
+    @for (section of sections; track section.key) {
       <article class="log-section">
         <header class="log-section__header">
           <div>
-            <p class="logs-kicker">{{ section.eyebrow }}</p>
-            <h2>{{ section.title }}</h2>
-            <p>{{ section.description }}</p>
+            <p class="logs-kicker">{{ 'superadminLogs.sections.' + section.key + '.eyebrow' | translate }}</p>
+            <h2>{{ 'superadminLogs.sections.' + section.key + '.title' | translate }}</h2>
+            <p>{{ 'superadminLogs.sections.' + section.key + '.description' | translate }}</p>
           </div>
           <strong>{{ section.groups.length }}</strong>
         </header>
 
         <div class="log-groups">
-          @for (group of section.groups; track group.title) {
+          @for (group of section.groups; track group.key) {
             <article class="log-card" [class.log-card--collapsed]="isGroupCollapsed(section, group)" [style.--log-accent]="group.accent">
               <header
                 class="log-card__header"
@@ -49,16 +49,18 @@
                     <span class="log-card__chevron" aria-hidden="true">
                       {{ isGroupCollapsed(section, group) ? 'expand_more' : 'expand_less' }}
                     </span>
-                    <h3>{{ group.title }}</h3>
+                    <h3>{{ 'superadminLogs.groups.' + group.key + '.title' | translate }}</h3>
                   </div>
-                  <p>{{ group.description }}</p>
+                  <p>{{ 'superadminLogs.groups.' + group.key + '.description' | translate }}</p>
                   @if (getGroupSource(group)) {
                     <small class="log-source">{{ getGroupSource(group) }}</small>
                   }
                 </div>
                 <div class="log-card__tools">
                   @if (isLiveLogGroup(group)) {
-                    <button type="button" (click)="refreshGroup(group); $event.stopPropagation()">Refresh</button>
+                    <button type="button" (click)="refreshGroup(group); $event.stopPropagation()">
+                      {{ 'superadminLogs.actions.refresh' | translate }}
+                    </button>
                   }
                   <span>{{ getGroupLogs(group).length }}</span>
                 </div>
@@ -68,16 +70,18 @@
               <div class="log-list">
                 @if (isGroupLoading(group)) {
                   <div class="log-state">
-                    Loading logs...
+                    {{ 'superadminLogs.state.loading' | translate }}
                   </div>
                 } @else if (getGroupError(group)) {
                   <div class="log-state log-state--error">
                     <span>{{ getGroupError(group) }}</span>
-                    <button type="button" (click)="refreshGroup(group)">Retry</button>
+                    <button type="button" (click)="refreshGroup(group)">
+                      {{ 'superadminLogs.actions.retry' | translate }}
+                    </button>
                   </div>
                 } @else if (getGroupLogs(group).length === 0) {
                   <div class="log-state">
-                    No records yet.
+                    {{ 'superadminLogs.state.empty' | translate }}
                   </div>
                 }
 
@@ -93,13 +97,13 @@
                       <small>{{ log.time }}</small>
                     </div>
                     @if (isTodoSettlementGroup(group)) {
-                      <div class="settlement-summary" aria-label="Todo settlement details">
-                        <span><small>Priority</small><strong>P{{ getSettlementField(log, 'priority_level') }}</strong></span>
-                        <span><small>Time</small><strong>{{ getSettlementField(log, 'duration') }}</strong></span>
-                        <span><small>Difficulty</small><strong>{{ getSettlementField(log, 'difficulty') }}</strong></span>
-                        <span><small>Coins</small><strong>+{{ getSettlementField(log, 'reward_coins') }}</strong></span>
-                        <span class="settlement-formula"><small>Formula</small><strong>{{ getSettlementField(log, 'reward_formula') }}</strong></span>
-                        <span><small>Settled By</small><strong>{{ getSettlementField(log, 'settled_by_nickname') }}</strong></span>
+                      <div class="settlement-summary" [attr.aria-label]="'superadminLogs.settlement.detailsLabel' | translate">
+                        <span><small>{{ 'superadminLogs.settlement.priority' | translate }}</small><strong>P{{ getSettlementField(log, 'priority_level') }}</strong></span>
+                        <span><small>{{ 'superadminLogs.settlement.time' | translate }}</small><strong>{{ getSettlementField(log, 'duration') }}</strong></span>
+                        <span><small>{{ 'superadminLogs.settlement.difficulty' | translate }}</small><strong>{{ getSettlementField(log, 'difficulty') }}</strong></span>
+                        <span><small>{{ 'superadminLogs.settlement.coins' | translate }}</small><strong>+{{ getSettlementField(log, 'reward_coins') }}</strong></span>
+                        <span class="settlement-formula"><small>{{ 'superadminLogs.settlement.formula' | translate }}</small><strong>{{ getSettlementField(log, 'reward_formula') }}</strong></span>
+                        <span><small>{{ 'superadminLogs.settlement.settledBy' | translate }}</small><strong>{{ getSettlementField(log, 'settled_by_nickname') }}</strong></span>
                       </div>
                     }
                     @if (isLiveLogGroup(group) && (log.rawJson || log.raw_json)) {
@@ -112,7 +116,9 @@
                         <span class="raw-log-toggle__icon" aria-hidden="true">
                           {{ isRawLogExpanded(group, log) ? 'expand_less' : 'expand_more' }}
                         </span>
-                        <span>{{ isRawLogExpanded(group, log) ? 'Hide raw log' : 'Show raw log' }}</span>
+                        <span>
+                          {{ (isRawLogExpanded(group, log) ? 'superadminLogs.raw.hide' : 'superadminLogs.raw.show') | translate }}
+                        </span>
                       </button>
                       @if (isRawLogExpanded(group, log)) {
                         <pre class="log-json">{{ log.rawJson || log.raw_json | json }}</pre>

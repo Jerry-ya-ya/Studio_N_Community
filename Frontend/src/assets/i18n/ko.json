@@ -1322,5 +1322,82 @@
       "promoteFailed": "승격에 실패했습니다",
       "demoteFailed": "강등에 실패했습니다"
     }
+  },
+  "superadminLogs": {
+    "hero": {
+      "kicker": "슈퍼 관리자 감사",
+      "title": "웹사이트 로그",
+      "subtitle": "사이트의 관리자 활동과 Todo 정산 기록을 확인합니다."
+    },
+    "metrics": {
+      "summaryLabel": "로그 요약",
+      "logTypes": "로그 유형",
+      "previewRows": "미리보기 항목"
+    },
+    "sections": {
+      "admin": {
+        "title": "관리 로그",
+        "eyebrow": "관리 활동",
+        "description": "홈 콘텐츠, 뉴스 변경, Todo 정산 검토 기록입니다."
+      }
+    },
+    "groups": {
+      "register": {
+        "title": "가입 로그",
+        "description": "누가 계정을 가입했는지 추적합니다."
+      },
+      "project": {
+        "title": "프로젝트 로그",
+        "description": "누가 모집 프로젝트를 만들었는지 추적합니다."
+      },
+      "signIn": {
+        "title": "로그인 로그",
+        "description": "누가 로그인했는지 추적합니다."
+      },
+      "content": {
+        "title": "콘텐츠 로그",
+        "description": "공개 홈 콘텐츠를 누가 수정했는지 추적합니다."
+      },
+      "news": {
+        "title": "뉴스 로그",
+        "description": "뉴스 콘텐츠나 배경 이미지를 누가 수정했는지 추적합니다."
+      },
+      "todoSettlement": {
+        "title": "Todo 정산 로그",
+        "description": "Todo 보상 정산 파라미터, 계산식, coins, 검토자를 추적합니다."
+      }
+    },
+    "actions": {
+      "refresh": "새로고침",
+      "retry": "다시 시도"
+    },
+    "state": {
+      "loading": "로그를 불러오는 중...",
+      "empty": "아직 기록이 없습니다."
+    },
+    "source": {
+      "records": "{{path}} / {{count}}개 기록"
+    },
+    "settlement": {
+      "detailsLabel": "Todo 정산 상세",
+      "priority": "우선순위",
+      "time": "시간",
+      "difficulty": "난이도",
+      "coins": "Coins",
+      "formula": "계산식",
+      "settledBy": "정산자"
+    },
+    "raw": {
+      "show": "원본 로그 보기",
+      "hide": "원본 로그 숨기기"
+    },
+    "feedback": {
+      "registerLoadFailed": "가입 로그를 불러오지 못했습니다.",
+      "projectLoadFailed": "프로젝트 로그를 불러오지 못했습니다.",
+      "signInLoadFailed": "로그인 로그를 불러오지 못했습니다.",
+      "contentLoadFailed": "콘텐츠 로그를 불러오지 못했습니다.",
+      "newsLoadFailed": "뉴스 로그를 불러오지 못했습니다.",
+      "todoSettlementLoadFailed": "Todo 정산 로그를 불러오지 못했습니다."
+    }
   }
 }

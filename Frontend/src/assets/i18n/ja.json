@@ -1322,5 +1322,82 @@
       "promoteFailed": "昇格に失敗しました",
       "demoteFailed": "降格に失敗しました"
     }
+  },
+  "superadminLogs": {
+    "hero": {
+      "kicker": "スーパー管理者監査",
+      "title": "サイトログ",
+      "subtitle": "サイト全体の管理操作と Todo 精算履歴を確認します。"
+    },
+    "metrics": {
+      "summaryLabel": "ログ概要",
+      "logTypes": "ログ種別",
+      "previewRows": "プレビュー件数"
+    },
+    "sections": {
+      "admin": {
+        "title": "管理ログ",
+        "eyebrow": "管理アクティビティ",
+        "description": "ホーム内容、ニュース変更、Todo 精算レビューの管理記録です。"
+      }
+    },
+    "groups": {
+      "register": {
+        "title": "登録ログ",
+        "description": "誰がアカウントを登録したかを記録します。"
+      },
+      "project": {
+        "title": "プロジェクトログ",
+        "description": "誰が募集プロジェクトを作成したかを記録します。"
+      },
+      "signIn": {
+        "title": "サインインログ",
+        "description": "誰がサインインしたかを記録します。"
+      },
+      "content": {
+        "title": "コンテンツログ",
+        "description": "公開ホーム内容を誰が変更したかを記録します。"
+      },
+      "news": {
+        "title": "ニュースログ",
+        "description": "ニュース内容や背景素材を誰が変更したかを記録します。"
+      },
+      "todoSettlement": {
+        "title": "Todo 精算ログ",
+        "description": "Todo 報酬精算のパラメータ、計算式、coins、レビュー担当者を記録します。"
+      }
+    },
+    "actions": {
+      "refresh": "更新",
+      "retry": "再試行"
+    },
+    "state": {
+      "loading": "ログを読み込み中...",
+      "empty": "まだ記録がありません。"
+    },
+    "source": {
+      "records": "{{path}} / {{count}} 件"
+    },
+    "settlement": {
+      "detailsLabel": "Todo 精算詳細",
+      "priority": "優先度",
+      "time": "時間",
+      "difficulty": "難易度",
+      "coins": "Coins",
+      "formula": "計算式",
+      "settledBy": "精算者"
+    },
+    "raw": {
+      "show": "生ログを表示",
+      "hide": "生ログを隠す"
+    },
+    "feedback": {
+      "registerLoadFailed": "登録ログを読み込めませんでした。",
+      "projectLoadFailed": "プロジェクトログを読み込めませんでした。",
+      "signInLoadFailed": "サインインログを読み込めませんでした。",
+      "contentLoadFailed": "コンテンツログを読み込めませんでした。",
+      "newsLoadFailed": "ニュースログを読み込めませんでした。",
+      "todoSettlementLoadFailed": "Todo 精算ログを読み込めませんでした。"
+    }
   }
 }
