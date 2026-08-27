@@ -145,6 +145,19 @@ class ScheduleState(db.Model):
     last_run = db.Column(db.DateTime)
     next_run = db.Column(db.DateTime)
 
+class UserSchedule(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('user_id', name='uq_user_schedule_user_id'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    blocks = db.Column(db.JSON, default=list, nullable=False)
+    created_at = db.Column(db.DateTime, default=taipei_now)
+    updated_at = db.Column(db.DateTime, default=taipei_now, onupdate=taipei_now)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('schedule', uselist=False))
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
@@ -253,6 +266,7 @@ def load_models():
         HomeNewsItem,
         MemberContentItem,
         ScheduleState,
+        UserSchedule,
         Post,
         PostLike,
         ProjectRecruitment,

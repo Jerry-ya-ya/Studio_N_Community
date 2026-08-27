@@ -37,6 +37,7 @@ from routes.crawler.crawler import crawler_bp
 from routes.post.post import post_bp
 from routes.project_recruitment.project_recruitment import project_recruitment_bp
 from routes.check_in.check_in import check_in_bp
+from routes.schedule.schedule import schedule_bp
 
 def setup_database(app, retries=5, wait=2, create_schema=True):
     db.init_app(app)
@@ -156,6 +157,7 @@ def create_app(config_name="none"):
     app.register_blueprint(post_bp, url_prefix='/api')
     app.register_blueprint(project_recruitment_bp, url_prefix='/api')
     app.register_blueprint(check_in_bp, url_prefix='/api')
+    app.register_blueprint(schedule_bp, url_prefix='/api')
     
     # 在開發和測試環境掛載測試工具
     if env in ['development', 'test']:

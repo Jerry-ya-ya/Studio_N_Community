@@ -6,13 +6,41 @@
       <p>{{ 'schedule.hero.subtitle' | translate }}</p>
     </div>
 
-    <button type="button" class="schedule-reset" (click)="resetSchedule()">
-      <span class="schedule-reset__icon" aria-hidden="true"></span>
-      {{ 'schedule.actions.reset' | translate }}
-    </button>
+    <div class="schedule-actions">
+      @if (hasUnsavedChanges) {
+        <span class="schedule-dirty">{{ 'schedule.state.unsaved' | translate }}</span>
+      }
+
+      <button type="button" class="schedule-reset" (click)="resetSchedule()" [disabled]="loading || saving">
+        <span class="material-symbols-outlined" aria-hidden="true">backspace</span>
+        {{ 'schedule.actions.reset' | translate }}
+      </button>
+
+      <button
+        type="button"
+        class="schedule-save"
+        (click)="saveSchedule()"
+        [disabled]="loading || saving || !hasUnsavedChanges"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">save</span>
+        {{ (saving ? 'schedule.actions.saving' : 'schedule.actions.save') | translate }}
+      </button>
+    </div>
   </section>
 
   <section class="schedule-shell">
+    @if (loading) {
+      <div class="schedule-feedback">
+        {{ 'schedule.state.loading' | translate }}
+      </div>
+    }
+
+    @if (feedbackMessage) {
+      <div class="schedule-feedback" [class.schedule-feedback--success]="feedbackType === 'success'" [class.schedule-feedback--error]="feedbackType === 'error'">
+        {{ feedbackMessage | translate }}
+      </div>
+    }
+
     <div class="schedule-guide">
       <span>{{ 'schedule.guide.columns' | translate: { count: columns.length } }}</span>
       <span>{{ 'schedule.guide.rows' | translate: { count: rows.length } }}</span>

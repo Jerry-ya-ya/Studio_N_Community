@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { finalize } from 'rxjs';
+import { ScheduleBlockDto, ScheduleService } from '../../../core/services/schedule.service';
 
-interface ScheduleBlock {
-  id: number;
-  column: number;
-  startRow: number;
-  span: number;
-  title: string;
-}
+type ScheduleBlock = ScheduleBlockDto;
 
 @Component({
   selector: 'app-schedule',
@@ -28,7 +24,14 @@ export class ScheduleComponent implements OnInit {
   blocks: ScheduleBlock[] = [];
   draggingBlockId: number | null = null;
   trashActive = false;
+  loading = false;
+  saving = false;
+  hasUnsavedChanges = false;
+  feedbackMessage = '';
+  feedbackType: 'success' | 'error' | '' = '';
   private nextBlockId = 1;
+
+  constructor(private scheduleService: ScheduleService) {}
 
   ngOnInit() {
     this.loadSchedule();
@@ -49,12 +52,12 @@ export class ScheduleComponent implements OnInit {
         title: 'New class'
       }
     ];
-    this.saveSchedule();
+    this.markScheduleChanged();
   }
 
   removeBlock(blockId: number) {
     this.blocks = this.blocks.filter(block => block.id !== blockId);
-    this.saveSchedule();
+    this.markScheduleChanged();
   }
 
   startDrag(event: DragEvent, block: ScheduleBlock) {
@@ -98,7 +101,7 @@ export class ScheduleComponent implements OnInit {
     this.blocks = this.blocks.map(item =>
       item.id === block.id ? { ...item, column, startRow: nextStartRow } : item
     );
-    this.saveSchedule();
+    this.markScheduleChanged();
     this.finishDrag();
   }
 
@@ -126,7 +129,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   updateBlockTitle() {
-    this.saveSchedule();
+    this.markScheduleChanged();
   }
 
   changeBlockSpan(block: ScheduleBlock, delta: number) {
@@ -164,7 +167,29 @@ export class ScheduleComponent implements OnInit {
   resetSchedule() {
     this.blocks = [];
     this.nextBlockId = this.getNextBlockId();
-    this.saveSchedule();
+    this.markScheduleChanged();
+  }
+
+  saveSchedule() {
+    this.saving = true;
+    this.clearFeedback();
+
+    this.scheduleService.saveSchedule(this.blocks)
+      .pipe(finalize(() => this.saving = false))
+      .subscribe({
+        next: response => {
+          this.blocks = this.getValidBlocks(response.blocks);
+          this.nextBlockId = this.getNextBlockId();
+          this.persistLocalDraft();
+          this.hasUnsavedChanges = false;
+          this.feedbackType = 'success';
+          this.feedbackMessage = 'schedule.feedback.saveSuccess';
+        },
+        error: () => {
+          this.feedbackType = 'error';
+          this.feedbackMessage = 'schedule.feedback.saveFailed';
+        }
+      });
   }
 
   private setBlockSpan(block: ScheduleBlock, span: number) {
@@ -178,7 +203,7 @@ export class ScheduleComponent implements OnInit {
     this.blocks = this.blocks.map(item =>
       item.id === block.id ? { ...item, span: nextSpan } : item
     );
-    this.saveSchedule();
+    this.markScheduleChanged();
   }
 
   private getMaxSpan(block: ScheduleBlock) {
@@ -215,18 +240,38 @@ export class ScheduleComponent implements OnInit {
   }
 
   private loadSchedule() {
+    this.loading = true;
+    this.clearFeedback();
+
+    this.scheduleService.getSchedule()
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: response => {
+          this.blocks = this.getValidBlocks(response.blocks);
+          this.nextBlockId = this.getNextBlockId();
+          this.persistLocalDraft();
+          this.hasUnsavedChanges = false;
+        },
+        error: () => {
+          this.loadLocalDraft();
+          this.feedbackType = 'error';
+          this.feedbackMessage = 'schedule.feedback.loadFailed';
+        }
+      });
+  }
+
+  private loadLocalDraft() {
     const rawBlocks = localStorage.getItem(this.storageKey);
 
     if (!rawBlocks) {
       this.blocks = [];
       this.nextBlockId = this.getNextBlockId();
-      this.saveSchedule();
       return;
     }
 
     try {
       const parsed = JSON.parse(rawBlocks) as ScheduleBlock[];
-      this.blocks = Array.isArray(parsed) ? parsed.filter(block => this.isValidBlock(block)) : [];
+      this.blocks = this.getValidBlocks(parsed);
     } catch {
       this.blocks = [];
     }
@@ -234,8 +279,19 @@ export class ScheduleComponent implements OnInit {
     this.nextBlockId = this.getNextBlockId();
   }
 
-  private saveSchedule() {
+  private markScheduleChanged() {
+    this.clearFeedback();
+    this.hasUnsavedChanges = true;
+    this.persistLocalDraft();
+  }
+
+  private persistLocalDraft() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.blocks));
+  }
+
+  private clearFeedback() {
+    this.feedbackMessage = '';
+    this.feedbackType = '';
   }
 
   private getNextBlockId() {
@@ -254,5 +310,9 @@ export class ScheduleComponent implements OnInit {
       block.span >= 1 &&
       block.startRow + block.span - 1 <= this.rows.length &&
       typeof block.title === 'string';
+  }
+
+  private getValidBlocks(blocks: ScheduleBlock[] | undefined | null) {
+    return Array.isArray(blocks) ? blocks.filter(block => this.isValidBlock(block)) : [];
   }
 }

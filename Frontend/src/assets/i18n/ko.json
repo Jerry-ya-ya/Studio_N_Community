@@ -1409,6 +1409,8 @@
     },
     "actions": {
       "reset": "시간표 비우기",
+      "save": "시간표 저장",
+      "saving": "저장 중...",
       "addAt": "{{ column }} {{ row }}행에 수업 추가",
       "delete": "수업 블록 삭제",
       "resize": "수업 길이 조정",
@@ -1442,6 +1444,15 @@
     },
     "length": {
       "rows": "{{ count }}행"
+    },
+    "state": {
+      "loading": "저장된 시간표를 불러오는 중...",
+      "unsaved": "저장되지 않은 변경"
+    },
+    "feedback": {
+      "loadFailed": "저장된 시간표를 불러오지 못했습니다. 로컬 초안은 유지됩니다.",
+      "saveSuccess": "시간표가 저장되었습니다.",
+      "saveFailed": "시간표를 저장하지 못했습니다. 로컬 초안은 유지됩니다."
     }
   }
 }

@@ -1409,6 +1409,8 @@
     },
     "actions": {
       "reset": "Clear schedule",
+      "save": "Save schedule",
+      "saving": "Saving...",
       "addAt": "Add class at {{ column }}, row {{ row }}",
       "delete": "Delete class block",
       "resize": "Resize class length",
@@ -1442,6 +1444,15 @@
     },
     "length": {
       "rows": "{{ count }} row(s)"
+    },
+    "state": {
+      "loading": "Loading saved schedule...",
+      "unsaved": "Unsaved changes"
+    },
+    "feedback": {
+      "loadFailed": "Unable to load your saved schedule. Local draft is still available.",
+      "saveSuccess": "Schedule saved.",
+      "saveFailed": "Unable to save schedule. Your local draft was kept."
     }
   }
 }

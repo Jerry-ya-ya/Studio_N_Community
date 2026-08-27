@@ -660,3 +660,7 @@
 - Refine private schedule class controls.
 
 - Clear private schedule by default.
+
+## 2026/08/28
+
+- Add user schedule persistence.

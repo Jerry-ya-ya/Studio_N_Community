@@ -1409,6 +1409,8 @@
     },
     "actions": {
       "reset": "清空課表",
+      "save": "儲存課表",
+      "saving": "儲存中...",
       "addAt": "在 {{ column }} 第 {{ row }} 列新增課程",
       "delete": "刪除課程區塊",
       "resize": "調整課程長度",
@@ -1442,6 +1444,15 @@
     },
     "length": {
       "rows": "{{ count }} 列"
+    },
+    "state": {
+      "loading": "正在載入已儲存課表...",
+      "unsaved": "尚未儲存"
+    },
+    "feedback": {
+      "loadFailed": "無法載入已儲存課表，本機草稿仍可使用。",
+      "saveSuccess": "課表已儲存。",
+      "saveFailed": "無法儲存課表，本機草稿已保留。"
     }
   }
 }
