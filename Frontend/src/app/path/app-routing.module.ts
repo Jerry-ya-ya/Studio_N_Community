@@ -60,6 +60,11 @@ const routes: Routes = [
       import('../pages/private/check-in/check-in.module').then(m => m.CheckInModule)
   },
   {
+    path: appPath.schedule,
+    loadChildren: () =>
+      import('../pages/private/schedule/schedule.module').then(m => m.ScheduleModule)
+  },
+  {
     path: appPath.promote,
     loadChildren: () =>
       import('../pages/superadmin/promote/promote.module').then(m => m.PromoteModule)

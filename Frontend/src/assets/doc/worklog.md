@@ -652,3 +652,7 @@
 - Add i18n support to superadmin promote page.
 
 - Add i18n support to superadmin logs page.
+
+## 2026/08/27
+
+- Add private schedule page.

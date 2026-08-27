@@ -66,7 +66,8 @@
       "setting": "設定",
       "profile": "個人資料",
       "crawler": "爬蟲",
-      "logout": "登出"
+      "logout": "登出",
+      "schedule": "課表"
     },
     "admin": {
       "user": "使用者",
@@ -1398,6 +1399,43 @@
       "contentLoadFailed": "無法載入內容紀錄。",
       "newsLoadFailed": "無法載入新聞紀錄。",
       "todoSettlementLoadFailed": "無法載入 Todo 結算紀錄。"
+    }
+  },
+  "schedule": {
+    "hero": {
+      "kicker": "課程排程",
+      "title": "Schedule Lab",
+      "subtitle": "建立五欄八列的課表。點擊空格新增課程，編輯區塊名稱，拖曳區塊底部調整課程長度。"
+    },
+    "actions": {
+      "reset": "重置課表",
+      "addAt": "在 {{ column }} 第 {{ row }} 列新增課程",
+      "delete": "刪除課程區塊",
+      "resize": "調整課程長度"
+    },
+    "guide": {
+      "columns": "{{ count }} 欄",
+      "rows": "{{ count }} 列",
+      "drag": "拖曳區塊底部可以調整長度"
+    },
+    "grid": {
+      "period": "節次",
+      "columnNumber": "第 {{ number }} 欄",
+      "rowLabel": "列"
+    },
+    "columns": {
+      "one": "第一欄",
+      "two": "第二欄",
+      "three": "第三欄",
+      "four": "第四欄",
+      "five": "第五欄"
+    },
+    "form": {
+      "blockName": "課程區塊名稱"
+    },
+    "trash": {
+      "title": "垃圾回收區",
+      "hint": "拖曳課程到這裡即可刪除"
     }
   }
 }

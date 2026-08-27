@@ -66,7 +66,8 @@
       "setting": "設定",
       "profile": "プロフィール",
       "crawler": "クローラー",
-      "logout": "ログアウト"
+      "logout": "ログアウト",
+      "schedule": "スケジュール"
     },
     "admin": {
       "user": "ユーザー",
@@ -1398,6 +1399,43 @@
       "contentLoadFailed": "コンテンツログを読み込めませんでした。",
       "newsLoadFailed": "ニュースログを読み込めませんでした。",
       "todoSettlementLoadFailed": "Todo 精算ログを読み込めませんでした。"
+    }
+  },
+  "schedule": {
+    "hero": {
+      "kicker": "クラス予定",
+      "title": "Schedule Lab",
+      "subtitle": "5列8行のクラスボードを作成します。空き枠をクリックしてブロックを追加し、名前を編集して、下端をドラッグすると長さを調整できます。"
+    },
+    "actions": {
+      "reset": "ボードをリセット",
+      "addAt": "{{ column }} の {{ row }} 行目にクラスを追加",
+      "delete": "クラスブロックを削除",
+      "resize": "クラスの長さを調整"
+    },
+    "guide": {
+      "columns": "{{ count }} 列",
+      "rows": "{{ count }} 行",
+      "drag": "ブロックの下端をドラッグしてサイズ変更"
+    },
+    "grid": {
+      "period": "時限",
+      "columnNumber": "列 {{ number }}",
+      "rowLabel": "行"
+    },
+    "columns": {
+      "one": "列 1",
+      "two": "列 2",
+      "three": "列 3",
+      "four": "列 4",
+      "five": "列 5"
+    },
+    "form": {
+      "blockName": "クラスブロック名"
+    },
+    "trash": {
+      "title": "削除エリア",
+      "hint": "クラスをここへドラッグして削除"
     }
   }
 }

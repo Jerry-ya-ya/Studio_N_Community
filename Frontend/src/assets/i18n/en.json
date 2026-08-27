@@ -66,7 +66,8 @@
       "setting": "Setting",
       "profile": "Profile",
       "crawler": "Crawler",
-      "logout": "Logout"
+      "logout": "Logout",
+      "schedule": "Schedule"
     },
     "admin": {
       "user": "User",
@@ -1398,6 +1399,43 @@
       "contentLoadFailed": "Unable to load content logs.",
       "newsLoadFailed": "Unable to load news logs.",
       "todoSettlementLoadFailed": "Unable to load todo settlement logs."
+    }
+  },
+  "schedule": {
+    "hero": {
+      "kicker": "Class Schedule",
+      "title": "Schedule Lab",
+      "subtitle": "Build a five-column, eight-row class board. Click an empty slot to add a block, edit its name, then drag the bottom edge to adjust class length."
+    },
+    "actions": {
+      "reset": "Reset board",
+      "addAt": "Add class at {{ column }}, row {{ row }}",
+      "delete": "Delete class block",
+      "resize": "Resize class length"
+    },
+    "guide": {
+      "columns": "{{ count }} columns",
+      "rows": "{{ count }} rows",
+      "drag": "Drag a block bottom edge to resize"
+    },
+    "grid": {
+      "period": "Period",
+      "columnNumber": "Column {{ number }}",
+      "rowLabel": "Row"
+    },
+    "columns": {
+      "one": "Column 1",
+      "two": "Column 2",
+      "three": "Column 3",
+      "four": "Column 4",
+      "five": "Column 5"
+    },
+    "form": {
+      "blockName": "Class block name"
+    },
+    "trash": {
+      "title": "Garbage collector",
+      "hint": "Drag a class here to remove it"
     }
   }
 }

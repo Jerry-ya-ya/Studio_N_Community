@@ -1,0 +1,106 @@
+<main class="schedule-page">
+  <section class="schedule-hero">
+    <div>
+      <p class="schedule-kicker">{{ 'schedule.hero.kicker' | translate }}</p>
+      <h1>{{ 'schedule.hero.title' | translate }}</h1>
+      <p>{{ 'schedule.hero.subtitle' | translate }}</p>
+    </div>
+
+    <button type="button" class="schedule-reset" (click)="resetSchedule()">
+      <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+      {{ 'schedule.actions.reset' | translate }}
+    </button>
+  </section>
+
+  <section class="schedule-shell">
+    <div class="schedule-guide">
+      <span>{{ 'schedule.guide.columns' | translate: { count: columns.length } }}</span>
+      <span>{{ 'schedule.guide.rows' | translate: { count: rows.length } }}</span>
+      <span>{{ 'schedule.guide.drag' | translate }}</span>
+    </div>
+
+    <div class="schedule-board">
+      <div class="schedule-corner">{{ 'schedule.grid.period' | translate }}</div>
+
+      @for (column of columns; track column; let columnIndex = $index) {
+        <div class="schedule-column-heading">
+          <span>{{ column | translate }}</span>
+          <small>{{ 'schedule.grid.columnNumber' | translate: { number: columnIndex + 1 } }}</small>
+        </div>
+      }
+
+      <div class="schedule-row-labels">
+        @for (row of rows; track row) {
+          <div>
+            <strong>{{ row }}</strong>
+            <small>{{ 'schedule.grid.rowLabel' | translate }}</small>
+          </div>
+        }
+      </div>
+
+      <div class="schedule-grid" #scheduleGrid>
+        @for (column of columns; track column; let columnIndex = $index) {
+          @for (row of rows; track row) {
+            <button
+              type="button"
+              class="schedule-cell"
+              [ngStyle]="getCellStyle(columnIndex, row)"
+              [class.schedule-cell--covered]="isCoveredByBlock(columnIndex, row)"
+              [attr.aria-label]="'schedule.actions.addAt' | translate: { column: column | translate, row }"
+              (click)="addBlock(columnIndex, row)"
+              (dragover)="allowDrop($event)"
+              (drop)="moveBlockToSlot($event, columnIndex, row)"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+            </button>
+          }
+        }
+
+        @for (block of blocks; track block.id) {
+          <article
+            class="schedule-block"
+            [class.schedule-block--dragging]="draggingBlockId === block.id"
+            [class.schedule-block--resizing]="resizingBlockId === block.id"
+            [ngStyle]="getBlockStyle(block)"
+            [draggable]="resizingBlockId !== block.id"
+            (dragstart)="startDrag($event, block)"
+            (dragend)="finishDrag()"
+          >
+            <div class="schedule-block__content">
+              <input
+                type="text"
+                [(ngModel)]="block.title"
+                (blur)="updateBlockTitle()"
+                (keydown.enter)="updateBlockTitle()"
+                [attr.aria-label]="'schedule.form.blockName' | translate"
+              />
+            </div>
+
+            <button
+              type="button"
+              class="schedule-block__resize"
+              [attr.aria-label]="'schedule.actions.resize' | translate"
+              (pointerdown)="startResize($event, block)"
+            >
+              <span></span>
+            </button>
+          </article>
+        }
+      </div>
+    </div>
+
+    <div
+      class="schedule-trash"
+      [class.schedule-trash--active]="trashActive"
+      (dragover)="showTrashDrop($event)"
+      (dragleave)="hideTrashDrop()"
+      (drop)="dropBlockToTrash($event)"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+      <div>
+        <strong>{{ 'schedule.trash.title' | translate }}</strong>
+        <small>{{ 'schedule.trash.hint' | translate }}</small>
+      </div>
+    </div>
+  </section>
+</main>

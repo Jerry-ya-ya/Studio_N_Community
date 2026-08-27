@@ -58,6 +58,7 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.private.friend', icon: 'diversity_3', route: appPath.friend },
         { labelKey: 'nav.private.todo', icon: 'task_alt', route: appPath.todo },
         { labelKey: 'nav.private.checkIn', icon: 'redeem', route: appPath.checkIn },
+        { labelKey: 'nav.private.schedule', icon: 'calendar_month', route: appPath.schedule },
         { labelKey: 'nav.private.activities', icon: 'celebration', route: appPath.privateActivities },
         { labelKey: 'nav.private.setting', icon: 'settings', route: appPath.setting },
         { labelKey: 'nav.private.profile', icon: 'account_circle', route: appPath.profile },

@@ -19,6 +19,8 @@ export const appPath = {
     todo: 'todo',
     //check in
     checkIn: 'check-in',
+    //schedule
+    schedule: 'schedule',
     //promote
     promote: 'promote',
     //superadmin logs

@@ -66,7 +66,8 @@
       "setting": "설정",
       "profile": "프로필",
       "crawler": "크롤러",
-      "logout": "로그아웃"
+      "logout": "로그아웃",
+      "schedule": "시간표"
     },
     "admin": {
       "user": "사용자",
@@ -1398,6 +1399,43 @@
       "contentLoadFailed": "콘텐츠 로그를 불러오지 못했습니다.",
       "newsLoadFailed": "뉴스 로그를 불러오지 못했습니다.",
       "todoSettlementLoadFailed": "Todo 정산 로그를 불러오지 못했습니다."
+    }
+  },
+  "schedule": {
+    "hero": {
+      "kicker": "수업 시간표",
+      "title": "Schedule Lab",
+      "subtitle": "5열 8행 수업 보드를 만듭니다. 빈 칸을 클릭해 블록을 추가하고, 이름을 편집한 뒤 아래쪽을 드래그해 수업 길이를 조정하세요."
+    },
+    "actions": {
+      "reset": "보드 초기화",
+      "addAt": "{{ column }} {{ row }}행에 수업 추가",
+      "delete": "수업 블록 삭제",
+      "resize": "수업 길이 조정"
+    },
+    "guide": {
+      "columns": "{{ count }}열",
+      "rows": "{{ count }}행",
+      "drag": "블록 아래쪽을 드래그해 크기 조정"
+    },
+    "grid": {
+      "period": "교시",
+      "columnNumber": "{{ number }}열",
+      "rowLabel": "행"
+    },
+    "columns": {
+      "one": "1열",
+      "two": "2열",
+      "three": "3열",
+      "four": "4열",
+      "five": "5열"
+    },
+    "form": {
+      "blockName": "수업 블록 이름"
+    },
+    "trash": {
+      "title": "삭제 영역",
+      "hint": "수업을 여기로 드래그하면 삭제됩니다"
     }
   }
 }
