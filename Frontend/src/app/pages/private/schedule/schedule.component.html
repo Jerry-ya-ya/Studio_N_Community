@@ -12,7 +12,7 @@
       }
 
       <button type="button" class="schedule-reset" (click)="resetSchedule()" [disabled]="loading || saving">
-        <span class="material-symbols-outlined" aria-hidden="true">backspace</span>
+        <mat-icon aria-hidden="true">backspace</mat-icon>
         {{ 'schedule.actions.reset' | translate }}
       </button>
 
@@ -22,7 +22,7 @@
         (click)="saveSchedule()"
         [disabled]="loading || saving || !hasUnsavedChanges"
       >
-        <span class="material-symbols-outlined" aria-hidden="true">save</span>
+        <mat-icon aria-hidden="true">save</mat-icon>
         {{ (saving ? 'schedule.actions.saving' : 'schedule.actions.save') | translate }}
       </button>
     </div>
@@ -79,7 +79,7 @@
               (dragover)="allowDrop($event)"
               (drop)="moveBlockToSlot($event, columnIndex, row)"
             >
-              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              <mat-icon aria-hidden="true">add</mat-icon>
             </button>
           }
         }
@@ -107,14 +107,24 @@
             </div>
 
             <div class="schedule-block__length">
-              <button
-                type="button"
-                [disabled]="!canChangeBlockSpan(block, -1)"
-                [attr.aria-label]="'schedule.actions.shorten' | translate"
-                (click)="changeBlockSpan(block, -1)"
-              >
-                <span aria-hidden="true">-</span>
-              </button>
+              @if (block.span === 1) {
+                <button
+                  type="button"
+                  class="schedule-block__delete"
+                  [attr.aria-label]="'schedule.actions.delete' | translate"
+                  (click)="removeBlock(block.id)"
+                >
+                  <mat-icon aria-hidden="true">delete</mat-icon>
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  [attr.aria-label]="'schedule.actions.shorten' | translate"
+                  (click)="changeBlockSpan(block, -1)"
+                >
+                  <span aria-hidden="true">-</span>
+                </button>
+              }
               <button
                 type="button"
                 [disabled]="!canChangeBlockSpan(block, 1)"
@@ -126,20 +136,6 @@
             </div>
           </article>
         }
-      </div>
-    </div>
-
-    <div
-      class="schedule-trash"
-      [class.schedule-trash--active]="trashActive"
-      (dragover)="showTrashDrop($event)"
-      (dragleave)="hideTrashDrop()"
-      (drop)="dropBlockToTrash($event)"
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">delete</span>
-      <div>
-        <strong>{{ 'schedule.trash.title' | translate }}</strong>
-        <small>{{ 'schedule.trash.hint' | translate }}</small>
       </div>
     </div>
   </section>

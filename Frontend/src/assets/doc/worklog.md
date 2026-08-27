@@ -664,3 +664,5 @@
 ## 2026/08/28
 
 - Add user schedule persistence.
+
+- Refine schedule loading and class controls.

@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { ScheduleBlockDto, ScheduleService } from '../../../core/services/schedule.service';
 
 type ScheduleBlock = ScheduleBlockDto;
@@ -23,7 +22,6 @@ export class ScheduleComponent implements OnInit {
 
   blocks: ScheduleBlock[] = [];
   draggingBlockId: number | null = null;
-  trashActive = false;
   loading = false;
   saving = false;
   hasUnsavedChanges = false;
@@ -31,7 +29,11 @@ export class ScheduleComponent implements OnInit {
   feedbackType: 'success' | 'error' | '' = '';
   private nextBlockId = 1;
 
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(
+    private scheduleService: ScheduleService,
+    private zone: NgZone,
+    private changeDetector: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadSchedule();
@@ -70,7 +72,6 @@ export class ScheduleComponent implements OnInit {
 
   finishDrag() {
     this.draggingBlockId = null;
-    this.trashActive = false;
   }
 
   allowDrop(event: DragEvent) {
@@ -102,29 +103,6 @@ export class ScheduleComponent implements OnInit {
       item.id === block.id ? { ...item, column, startRow: nextStartRow } : item
     );
     this.markScheduleChanged();
-    this.finishDrag();
-  }
-
-  showTrashDrop(event: DragEvent) {
-    this.allowDrop(event);
-    if (this.draggingBlockId !== null) {
-      this.trashActive = true;
-    }
-  }
-
-  hideTrashDrop() {
-    this.trashActive = false;
-  }
-
-  dropBlockToTrash(event: DragEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const block = this.getDraggedBlock(event);
-    if (block) {
-      this.removeBlock(block.id);
-    }
-
     this.finishDrag();
   }
 
@@ -175,19 +153,26 @@ export class ScheduleComponent implements OnInit {
     this.clearFeedback();
 
     this.scheduleService.saveSchedule(this.blocks)
-      .pipe(finalize(() => this.saving = false))
       .subscribe({
         next: response => {
-          this.blocks = this.getValidBlocks(response.blocks);
-          this.nextBlockId = this.getNextBlockId();
-          this.persistLocalDraft();
-          this.hasUnsavedChanges = false;
-          this.feedbackType = 'success';
-          this.feedbackMessage = 'schedule.feedback.saveSuccess';
+          this.zone.run(() => {
+            this.saving = false;
+            this.blocks = this.getValidBlocks(response.blocks);
+            this.nextBlockId = this.getNextBlockId();
+            this.persistLocalDraft();
+            this.hasUnsavedChanges = false;
+            this.feedbackType = 'success';
+            this.feedbackMessage = 'schedule.feedback.saveSuccess';
+            this.changeDetector.detectChanges();
+          });
         },
         error: () => {
-          this.feedbackType = 'error';
-          this.feedbackMessage = 'schedule.feedback.saveFailed';
+          this.zone.run(() => {
+            this.saving = false;
+            this.feedbackType = 'error';
+            this.feedbackMessage = 'schedule.feedback.saveFailed';
+            this.changeDetector.detectChanges();
+          });
         }
       });
   }
@@ -244,18 +229,25 @@ export class ScheduleComponent implements OnInit {
     this.clearFeedback();
 
     this.scheduleService.getSchedule()
-      .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: response => {
-          this.blocks = this.getValidBlocks(response.blocks);
-          this.nextBlockId = this.getNextBlockId();
-          this.persistLocalDraft();
-          this.hasUnsavedChanges = false;
+          this.zone.run(() => {
+            this.loading = false;
+            this.blocks = this.getValidBlocks(response.blocks);
+            this.nextBlockId = this.getNextBlockId();
+            this.persistLocalDraft();
+            this.hasUnsavedChanges = false;
+            this.changeDetector.detectChanges();
+          });
         },
         error: () => {
-          this.loadLocalDraft();
-          this.feedbackType = 'error';
-          this.feedbackMessage = 'schedule.feedback.loadFailed';
+          this.zone.run(() => {
+            this.loading = false;
+            this.loadLocalDraft();
+            this.feedbackType = 'error';
+            this.feedbackMessage = 'schedule.feedback.loadFailed';
+            this.changeDetector.detectChanges();
+          });
         }
       });
   }
