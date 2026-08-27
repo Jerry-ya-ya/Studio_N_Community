@@ -1411,12 +1411,15 @@
       "reset": "重置課表",
       "addAt": "在 {{ column }} 第 {{ row }} 列新增課程",
       "delete": "刪除課程區塊",
-      "resize": "調整課程長度"
+      "resize": "調整課程長度",
+      "move": "移動課程區塊",
+      "shorten": "縮短課程",
+      "prolong": "延長課程"
     },
     "guide": {
       "columns": "{{ count }} 欄",
       "rows": "{{ count }} 列",
-      "drag": "拖曳區塊底部可以調整長度"
+      "drag": "使用 - / + 調整課程長度"
     },
     "grid": {
       "period": "節次",
@@ -1436,6 +1439,9 @@
     "trash": {
       "title": "垃圾回收區",
       "hint": "拖曳課程到這裡即可刪除"
+    },
+    "length": {
+      "rows": "{{ count }} 列"
     }
   }
 }

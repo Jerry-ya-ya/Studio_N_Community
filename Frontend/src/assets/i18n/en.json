@@ -1411,12 +1411,15 @@
       "reset": "Reset board",
       "addAt": "Add class at {{ column }}, row {{ row }}",
       "delete": "Delete class block",
-      "resize": "Resize class length"
+      "resize": "Resize class length",
+      "move": "Move class block",
+      "shorten": "Shorten class",
+      "prolong": "Prolong class"
     },
     "guide": {
       "columns": "{{ count }} columns",
       "rows": "{{ count }} rows",
-      "drag": "Drag a block bottom edge to resize"
+      "drag": "Use - / + to choose class length"
     },
     "grid": {
       "period": "Period",
@@ -1436,6 +1439,9 @@
     "trash": {
       "title": "Garbage collector",
       "hint": "Drag a class here to remove it"
+    },
+    "length": {
+      "rows": "{{ count }} row(s)"
     }
   }
 }

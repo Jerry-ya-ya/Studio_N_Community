@@ -38,7 +38,7 @@
         }
       </div>
 
-      <div class="schedule-grid" #scheduleGrid>
+      <div class="schedule-grid">
         @for (column of columns; track column; let columnIndex = $index) {
           @for (row of rows; track row) {
             <button
@@ -60,30 +60,42 @@
           <article
             class="schedule-block"
             [class.schedule-block--dragging]="draggingBlockId === block.id"
-            [class.schedule-block--resizing]="resizingBlockId === block.id"
             [ngStyle]="getBlockStyle(block)"
-            [draggable]="resizingBlockId !== block.id"
-            (dragstart)="startDrag($event, block)"
-            (dragend)="finishDrag()"
           >
+            <div
+              class="schedule-block__move-strip"
+              draggable="true"
+              [attr.aria-label]="'schedule.actions.move' | translate"
+              (dragstart)="startDrag($event, block)"
+              (dragend)="finishDrag()"
+            ></div>
             <div class="schedule-block__content">
-              <input
-                type="text"
+              <textarea
                 [(ngModel)]="block.title"
                 (blur)="updateBlockTitle()"
                 (keydown.enter)="updateBlockTitle()"
                 [attr.aria-label]="'schedule.form.blockName' | translate"
-              />
+              ></textarea>
             </div>
 
-            <button
-              type="button"
-              class="schedule-block__resize"
-              [attr.aria-label]="'schedule.actions.resize' | translate"
-              (pointerdown)="startResize($event, block)"
-            >
-              <span></span>
-            </button>
+            <div class="schedule-block__length">
+              <button
+                type="button"
+                [disabled]="!canChangeBlockSpan(block, -1)"
+                [attr.aria-label]="'schedule.actions.shorten' | translate"
+                (click)="changeBlockSpan(block, -1)"
+              >
+                <span aria-hidden="true">-</span>
+              </button>
+              <button
+                type="button"
+                [disabled]="!canChangeBlockSpan(block, 1)"
+                [attr.aria-label]="'schedule.actions.prolong' | translate"
+                (click)="changeBlockSpan(block, 1)"
+              >
+                <span aria-hidden="true">+</span>
+              </button>
+            </div>
           </article>
         }
       </div>

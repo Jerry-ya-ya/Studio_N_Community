@@ -656,3 +656,5 @@
 ## 2026/08/27
 
 - Add private schedule page.
+
+- Refine private schedule class controls.

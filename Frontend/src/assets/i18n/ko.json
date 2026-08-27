@@ -1411,12 +1411,15 @@
       "reset": "보드 초기화",
       "addAt": "{{ column }} {{ row }}행에 수업 추가",
       "delete": "수업 블록 삭제",
-      "resize": "수업 길이 조정"
+      "resize": "수업 길이 조정",
+      "move": "수업 블록 이동",
+      "shorten": "수업 줄이기",
+      "prolong": "수업 늘리기"
     },
     "guide": {
       "columns": "{{ count }}열",
       "rows": "{{ count }}행",
-      "drag": "블록 아래쪽을 드래그해 크기 조정"
+      "drag": "- / + 로 수업 길이 조정"
     },
     "grid": {
       "period": "교시",
@@ -1436,6 +1439,9 @@
     "trash": {
       "title": "삭제 영역",
       "hint": "수업을 여기로 드래그하면 삭제됩니다"
+    },
+    "length": {
+      "rows": "{{ count }}행"
     }
   }
 }

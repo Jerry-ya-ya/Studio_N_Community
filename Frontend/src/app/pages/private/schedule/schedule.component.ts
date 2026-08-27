@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 interface ScheduleBlock {
   id: number;
@@ -8,24 +8,13 @@ interface ScheduleBlock {
   title: string;
 }
 
-interface ResizeState {
-  blockId: number;
-  startY: number;
-  initialSpan: number;
-  rowHeight: number;
-  pointerId: number;
-  handle: HTMLElement;
-}
-
 @Component({
   selector: 'app-schedule',
   standalone: false,
   templateUrl: './schedule.component.html',
   styleUrl: './schedule.component.css',
 })
-export class ScheduleComponent implements OnInit, OnDestroy {
-  @ViewChild('scheduleGrid') scheduleGrid?: ElementRef<HTMLElement>;
-
+export class ScheduleComponent implements OnInit {
   readonly columns = [
     'schedule.columns.one',
     'schedule.columns.two',
@@ -38,20 +27,11 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
   blocks: ScheduleBlock[] = [];
   draggingBlockId: number | null = null;
-  resizingBlockId: number | null = null;
   trashActive = false;
-  private resizing: ResizeState | null = null;
   private nextBlockId = 1;
-
-  private readonly handlePointerMove = (event: PointerEvent) => this.resizeBlock(event);
-  private readonly handlePointerUp = () => this.stopResize();
 
   ngOnInit() {
     this.loadSchedule();
-  }
-
-  ngOnDestroy() {
-    this.detachResizeListeners();
   }
 
   addBlock(column: number, startRow: number) {
@@ -78,11 +58,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   }
 
   startDrag(event: DragEvent, block: ScheduleBlock) {
-    if (this.resizing) {
-      event.preventDefault();
-      return;
-    }
-
     this.draggingBlockId = block.id;
     event.dataTransfer?.setData('text/plain', String(block.id));
     if (event.dataTransfer) {
@@ -154,29 +129,14 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.saveSchedule();
   }
 
-  startResize(event: PointerEvent, block: ScheduleBlock) {
-    event.preventDefault();
-    event.stopPropagation();
+  changeBlockSpan(block: ScheduleBlock, delta: number) {
+    const nextSpan = block.span + delta;
+    this.setBlockSpan(block, nextSpan);
+  }
 
-    this.draggingBlockId = null;
-    const gridElement = this.scheduleGrid?.nativeElement;
-    const gridRect = gridElement?.getBoundingClientRect();
-    const rowHeight = gridRect ? gridRect.height / this.rows.length : 72;
-    const handle = event.currentTarget as HTMLElement;
-    handle.setPointerCapture?.(event.pointerId);
-
-    this.resizing = {
-      blockId: block.id,
-      startY: event.clientY,
-      initialSpan: block.span,
-      rowHeight,
-      pointerId: event.pointerId,
-      handle
-    };
-    this.resizingBlockId = block.id;
-
-    window.addEventListener('pointermove', this.handlePointerMove);
-    window.addEventListener('pointerup', this.handlePointerUp, { once: true });
+  canChangeBlockSpan(block: ScheduleBlock, delta: number) {
+    const nextSpan = block.span + delta;
+    return nextSpan >= 1 && nextSpan <= this.getMaxSpan(block);
   }
 
   getBlockStyle(block: ScheduleBlock) {
@@ -207,41 +167,18 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.saveSchedule();
   }
 
-  private resizeBlock(event: PointerEvent) {
-    if (!this.resizing) {
-      return;
-    }
-
-    const block = this.blocks.find(item => item.id === this.resizing?.blockId);
-    if (!block) {
-      return;
-    }
-
+  private setBlockSpan(block: ScheduleBlock, span: number) {
     const maxSpan = this.getMaxSpan(block);
-    const rowDelta = Math.round((event.clientY - this.resizing.startY) / this.resizing.rowHeight);
-    const nextSpan = Math.max(1, Math.min(maxSpan, this.resizing.initialSpan + rowDelta));
+    const nextSpan = Math.max(1, Math.min(maxSpan, span));
 
-    if (nextSpan !== block.span) {
-      this.blocks = this.blocks.map(item =>
-        item.id === block.id ? { ...item, span: nextSpan } : item
-      );
-    }
-  }
-
-  private stopResize() {
-    if (this.resizing) {
-      this.resizing.handle.releasePointerCapture?.(this.resizing.pointerId);
-      this.saveSchedule();
+    if (nextSpan === block.span) {
+      return;
     }
 
-    this.resizing = null;
-    this.resizingBlockId = null;
-    this.detachResizeListeners();
-  }
-
-  private detachResizeListeners() {
-    window.removeEventListener('pointermove', this.handlePointerMove);
-    window.removeEventListener('pointerup', this.handlePointerUp);
+    this.blocks = this.blocks.map(item =>
+      item.id === block.id ? { ...item, span: nextSpan } : item
+    );
+    this.saveSchedule();
   }
 
   private getMaxSpan(block: ScheduleBlock) {
