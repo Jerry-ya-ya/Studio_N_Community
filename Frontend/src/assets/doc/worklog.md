@@ -658,3 +658,5 @@
 - Add private schedule page.
 
 - Refine private schedule class controls.
+
+- Clear private schedule by default.

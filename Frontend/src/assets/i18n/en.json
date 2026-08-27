@@ -1408,7 +1408,7 @@
       "subtitle": "Build a five-column, eight-row class board. Click an empty slot to add a block, edit its name, then drag the bottom edge to adjust class length."
     },
     "actions": {
-      "reset": "Reset board",
+      "reset": "Clear schedule",
       "addAt": "Add class at {{ column }}, row {{ row }}",
       "delete": "Delete class block",
       "resize": "Resize class length",

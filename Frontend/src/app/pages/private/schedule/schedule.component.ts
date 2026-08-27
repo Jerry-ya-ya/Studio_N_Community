@@ -162,7 +162,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   resetSchedule() {
-    this.blocks = this.createInitialBlocks();
+    this.blocks = [];
     this.nextBlockId = this.getNextBlockId();
     this.saveSchedule();
   }
@@ -218,7 +218,7 @@ export class ScheduleComponent implements OnInit {
     const rawBlocks = localStorage.getItem(this.storageKey);
 
     if (!rawBlocks) {
-      this.blocks = this.createInitialBlocks();
+      this.blocks = [];
       this.nextBlockId = this.getNextBlockId();
       this.saveSchedule();
       return;
@@ -226,9 +226,9 @@ export class ScheduleComponent implements OnInit {
 
     try {
       const parsed = JSON.parse(rawBlocks) as ScheduleBlock[];
-      this.blocks = Array.isArray(parsed) ? parsed.filter(block => this.isValidBlock(block)) : this.createInitialBlocks();
+      this.blocks = Array.isArray(parsed) ? parsed.filter(block => this.isValidBlock(block)) : [];
     } catch {
-      this.blocks = this.createInitialBlocks();
+      this.blocks = [];
     }
 
     this.nextBlockId = this.getNextBlockId();
@@ -236,16 +236,6 @@ export class ScheduleComponent implements OnInit {
 
   private saveSchedule() {
     localStorage.setItem(this.storageKey, JSON.stringify(this.blocks));
-  }
-
-  private createInitialBlocks(): ScheduleBlock[] {
-    return [
-      { id: 1, column: 0, startRow: 1, span: 2, title: 'Computing Lab' },
-      { id: 2, column: 1, startRow: 3, span: 2, title: 'Math Design' },
-      { id: 3, column: 2, startRow: 2, span: 3, title: 'Engineering Sprint' },
-      { id: 4, column: 3, startRow: 5, span: 2, title: 'Network Ops' },
-      { id: 5, column: 4, startRow: 1, span: 1, title: 'Review' }
-    ];
   }
 
   private getNextBlockId() {
