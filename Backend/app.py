@@ -99,18 +99,32 @@ def register_test_utils(app):
     if app.config.get('TESTING') is True:
         app.register_blueprint(test_utils, url_prefix='/api')
 
+
+def resolve_config_name(config_name):
+    """Resolve and validate the application environment once at startup."""
+    if config_name in [None, "none"]:
+        config_name = os.getenv('FLASK_ENV', 'development')
+
+    resolved_name = str(config_name).strip().lower()
+    if resolved_name not in config_map:
+        valid_names = ', '.join(sorted(config_map))
+        raise RuntimeError(
+            f"Invalid FLASK_ENV '{resolved_name}'. Expected one of: {valid_names}"
+        )
+    return resolved_name
+
+
 def create_app(config_name="none"):
     app = Flask(__name__)
-    
-    if config_name == "none":
-        config_name = os.getenv('FLASK_ENV', 'development')
+
+    config_name = resolve_config_name(config_name)
     app.config.from_object(config_map[config_name])
     
     # 初始化配置（設定資料庫連線等）
     config_map[config_name].init_app(app)
 
-    # 獲取環境變數
-    env = os.getenv('FLASK_ENV', config_name)
+    # 使用已驗證的單一環境來源，避免 config 與啟動行為不一致。
+    env = config_name
     
     # 設定 URL 相關環境變數
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:4200")
