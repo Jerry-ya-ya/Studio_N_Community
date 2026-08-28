@@ -672,3 +672,5 @@
 - Restrict destructive database test endpoints to explicit testing mode and preserve E2E test access through the test Compose environment.
 
 - Harden production startup with an explicit production environment, consistent configuration resolution, and regression coverage against test endpoint exposure.
+
+- Add Redis-backed IP and account rate limits for login, registration, and verification email resend requests, with hashed identifiers and backend regression coverage.

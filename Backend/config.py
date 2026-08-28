@@ -24,6 +24,10 @@ class BaseConfig:
     CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
     CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://redis:6379/0")
 
+    RATELIMIT_STORAGE_URI = os.environ.get("REDIS_URL", "memory://")
+    RATELIMIT_STRATEGY = "fixed-window"
+    RATELIMIT_HEADERS_ENABLED = True
+
     @classmethod
     def init_app(cls, app):
         if not app.config.get("JWT_SECRET_KEY") and not app.config.get("TESTING"):
@@ -66,6 +70,8 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_ENGINE_OPTIONS = {
         "echo": False
     }
+
+    RATELIMIT_STORAGE_URI = "memory://"
 
 
 class ProductionConfig(BaseConfig):

@@ -10,6 +10,8 @@ from flask import current_app
 from log_writer import get_backend_logger
 from time_utils import taipei_now, to_taipei_iso
 from datetime import timedelta
+from flask_limiter.util import get_remote_address
+from rate_limit import limiter, username_rate_limit_key, email_rate_limit_key, failed_response
 
 auth_bp = Blueprint('auth', __name__)
 register_logger = get_backend_logger('register', 'register.log', message_only=True)
@@ -31,6 +33,8 @@ def write_sign_in_log(level, **payload):
 
 # 註冊新用戶
 @auth_bp.route('/register', methods=['POST'])
+@limiter.limit("5 per hour", key_func=get_remote_address)
+@limiter.limit("3 per hour", key_func=email_rate_limit_key)
 def register():
     data = request.get_json(silent=True) or {}
 
@@ -139,6 +143,8 @@ def register():
 
 # 登入功能
 @auth_bp.route('/login', methods=['POST'])
+@limiter.limit("20 per minute", key_func=get_remote_address)
+@limiter.limit("5 per 15 minutes", key_func=username_rate_limit_key, deduct_when=failed_response)
 def login():
     data = request.get_json(silent=True) or {}
 

@@ -2,7 +2,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask
+from flask import Flask, jsonify
 from config import DevelopmentConfig, TestingConfig, ProductionConfig
 
 from flask_cors import CORS
@@ -17,6 +17,7 @@ import time
 
 # JWT 相關套件
 from flask_jwt_extended import JWTManager
+from flask_limiter.errors import RateLimitExceeded
 
 # 匯入 blueprint
 from routes.auth.auth import auth_bp
@@ -38,6 +39,7 @@ from routes.post.post import post_bp
 from routes.project_recruitment.project_recruitment import project_recruitment_bp
 from routes.check_in.check_in import check_in_bp
 from routes.schedule.schedule import schedule_bp
+from rate_limit import limiter
 
 def setup_database(app, retries=5, wait=2, create_schema=True):
     db.init_app(app)
@@ -152,6 +154,21 @@ def create_app(config_name="none"):
 
     # 初始化 JWT
     JWTManager(app)
+
+    # 初始化 API 限流；production 使用 Redis 讓所有 Gunicorn workers 共用計數。
+    limiter.init_app(app)
+
+    @app.errorhandler(RateLimitExceeded)
+    def handle_rate_limit_exceeded(error):
+        response = jsonify({
+            'error': '請求過於頻繁，請稍後再試',
+            'code': 'rate_limit_exceeded',
+        })
+        response.status_code = 429
+        retry_after = error.get_response().headers.get('Retry-After')
+        if retry_after:
+            response.headers['Retry-After'] = retry_after
+        return response
 
     # 初始化郵件
     init_mail(app)

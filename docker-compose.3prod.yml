@@ -16,6 +16,8 @@ services:
       - .env
     environment:
       FLASK_ENV: production
+    depends_on:
+      - redis
 
   db:
     image: postgres:16
@@ -28,11 +30,10 @@ services:
       - "5432:5432"
     container_name: pg-prod
 
-  # redis:
-  #   image: redis:latest
-  #   ports:
-  #     - "6379:6379"
-  #   container_name: redis
+  redis:
+    image: redis:7-alpine
+    restart: always
+    container_name: redis-prod
 
   # celery_worker:
   #   image: jerryzheng0907/celery-worker:latest

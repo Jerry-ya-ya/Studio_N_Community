@@ -5,6 +5,8 @@ from flask_jwt_extended import create_access_token
 from models import db, User
 
 from itsdangerous import URLSafeTimedSerializer
+from flask_limiter.util import get_remote_address
+from rate_limit import limiter, email_rate_limit_key
 
 email_bp = Blueprint('email', __name__)
 
@@ -63,6 +65,8 @@ def verify_email(token):
     })
 
 @email_bp.route('/resendverification', methods=['POST'])
+@limiter.limit("5 per hour", key_func=get_remote_address)
+@limiter.limit("3 per hour", key_func=email_rate_limit_key)
 def resend_verification():
     data = request.get_json(silent=True) or {}
     email = data.get('email')
