@@ -676,3 +676,7 @@
 - Add Redis-backed IP and account rate limits for login, registration, and verification email resend requests, with hashed identifiers and backend regression coverage.
 
 - Restrict production host exposure to the frontend entry point, proxy API and uploads through Nginx, preserve trusted client IPs, and reduce the frontend Docker build context.
+
+## 2026/08/29
+
+- Enforce server-side password strength rules for registration and password changes, update password field constraints and examples, and add regression coverage.

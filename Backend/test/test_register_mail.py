@@ -5,7 +5,7 @@ def test_register_email_contains_verify_url(client, mocker):
 
     payload = {
         "email": "testregisteremail@example.com",
-        "password": "123456",
+        "password": "Orbit!Cedar47Path",
         "username": "testregisteremail"
     }
 

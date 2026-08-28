@@ -32,7 +32,7 @@
 
       <label class="form-field" for="password">
         <span>{{ 'register.form.password' | translate }}</span>
-        <input id="password" type="password" [(ngModel)]="password" name="password" autocomplete="new-password" required [placeholder]="'register.form.passwordPlaceholder' | translate">
+        <input id="password" type="password" [(ngModel)]="password" name="password" autocomplete="new-password" required minlength="12" maxlength="128" [placeholder]="'register.form.passwordPlaceholder' | translate">
       </label>
 
       <button class="register-btn" type="submit" [disabled]="submitting">

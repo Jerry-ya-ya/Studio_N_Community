@@ -59,7 +59,7 @@
 
       <label class="form-field">
         <span>{{ 'privateSetting.form.newPassword' | translate }}</span>
-        <input type="password" name="newPassword" [(ngModel)]="newPassword" required [placeholder]="'privateSetting.form.newPasswordPlaceholder' | translate">
+        <input type="password" name="newPassword" [(ngModel)]="newPassword" required minlength="12" maxlength="128" [placeholder]="'privateSetting.form.newPasswordPlaceholder' | translate">
       </label>
 
       <button class="setting-button" type="submit" [disabled]="submitting">

@@ -12,6 +12,7 @@ from time_utils import taipei_now, to_taipei_iso
 from datetime import timedelta
 from flask_limiter.util import get_remote_address
 from rate_limit import limiter, username_rate_limit_key, email_rate_limit_key, failed_response
+from password_policy import password_error_response
 
 auth_bp = Blueprint('auth', __name__)
 register_logger = get_backend_logger('register', 'register.log', message_only=True)
@@ -57,6 +58,14 @@ def register():
             ip=client_ip
         )
         return jsonify({'error': '請填寫所有必填欄位'}), 400
+
+    password_error = password_error_response(
+        password,
+        username=username,
+        email=email,
+    )
+    if password_error:
+        return jsonify(password_error), 400
 
     hashed_pw = generate_password_hash(password)
 
