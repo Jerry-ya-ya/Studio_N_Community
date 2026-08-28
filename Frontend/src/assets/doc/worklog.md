@@ -674,3 +674,5 @@
 - Harden production startup with an explicit production environment, consistent configuration resolution, and regression coverage against test endpoint exposure.
 
 - Add Redis-backed IP and account rate limits for login, registration, and verification email resend requests, with hashed identifiers and backend regression coverage.
+
+- Restrict production host exposure to the frontend entry point, proxy API and uploads through Nginx, preserve trusted client IPs, and reduce the frontend Docker build context.

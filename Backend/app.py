@@ -18,6 +18,7 @@ import time
 # JWT 相關套件
 from flask_jwt_extended import JWTManager
 from flask_limiter.errors import RateLimitExceeded
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # 匯入 blueprint
 from routes.auth.auth import auth_bp
@@ -116,11 +117,24 @@ def resolve_config_name(config_name):
     return resolved_name
 
 
+def configure_trusted_proxy(app):
+    """Trust only the configured number of reverse-proxy hops."""
+    trusted_hops = int(app.config.get('TRUSTED_PROXY_HOPS', 0))
+    if trusted_hops > 0:
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app,
+            x_for=trusted_hops,
+            x_proto=trusted_hops,
+            x_host=trusted_hops,
+        )
+
+
 def create_app(config_name="none"):
     app = Flask(__name__)
 
     config_name = resolve_config_name(config_name)
     app.config.from_object(config_map[config_name])
+    configure_trusted_proxy(app)
     
     # 初始化配置（設定資料庫連線等）
     config_map[config_name].init_app(app)

@@ -77,6 +77,7 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
+    TRUSTED_PROXY_HOPS = 1
 
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or (
         f"postgresql+psycopg2://"

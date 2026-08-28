@@ -2,7 +2,7 @@ from flask import Flask
 
 import pytest
 
-from app import register_test_utils, resolve_config_name
+from app import configure_trusted_proxy, register_test_utils, resolve_config_name
 
 
 def test_destructive_test_endpoints_are_not_registered_by_default():
@@ -48,3 +48,26 @@ def test_unknown_environment_is_rejected(monkeypatch):
 
     with pytest.raises(RuntimeError, match="Invalid FLASK_ENV"):
         resolve_config_name("none")
+
+
+def test_production_proxy_uses_forwarded_client_address():
+    app = Flask(__name__)
+    app.config["TRUSTED_PROXY_HOPS"] = 1
+    configure_trusted_proxy(app)
+
+    @app.get("/client-ip")
+    def client_ip():
+        from flask import request
+
+        return {"ip": request.remote_addr, "scheme": request.scheme}
+
+    response = app.test_client().get(
+        "/client-ip",
+        headers={
+            "X-Forwarded-For": "203.0.113.25",
+            "X-Forwarded-Proto": "https",
+        },
+        environ_overrides={"REMOTE_ADDR": "172.20.0.2"},
+    )
+
+    assert response.get_json() == {"ip": "203.0.113.25", "scheme": "https"}
