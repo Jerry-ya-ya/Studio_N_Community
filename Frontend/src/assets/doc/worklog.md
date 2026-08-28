@@ -666,3 +666,5 @@
 - Add user schedule persistence.
 
 - Refine schedule loading and class controls.
+
+- Wire about page cards to theme colors.
