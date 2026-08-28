@@ -93,6 +93,12 @@ config_map = {
     "production": ProductionConfig,
 }
 
+
+def register_test_utils(app):
+    """Register destructive test helpers only for an explicit testing app."""
+    if app.config.get('TESTING') is True:
+        app.register_blueprint(test_utils, url_prefix='/api')
+
 def create_app(config_name="none"):
     app = Flask(__name__)
     
@@ -159,9 +165,9 @@ def create_app(config_name="none"):
     app.register_blueprint(check_in_bp, url_prefix='/api')
     app.register_blueprint(schedule_bp, url_prefix='/api')
     
-    # 在開發和測試環境掛載測試工具
-    if env in ['development', 'test']:
-        app.register_blueprint(test_utils, url_prefix='/api')
+    # 測試工具包含破壞性資料庫操作，只能在明確的 TestingConfig 下掛載。
+    # 不依賴 FLASK_ENV 字串，避免環境變數缺漏或拼字錯誤時意外公開端點。
+    register_test_utils(app)
 
     return app
 

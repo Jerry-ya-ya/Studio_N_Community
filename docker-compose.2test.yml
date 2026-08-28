@@ -26,6 +26,8 @@ services:
       - "5000:5000"
     env_file:
       - .env
+    environment:
+      FLASK_ENV: testing
     networks:
       - mynet
 

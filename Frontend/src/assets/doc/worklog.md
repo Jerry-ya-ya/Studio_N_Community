@@ -668,3 +668,5 @@
 - Refine schedule loading and class controls.
 
 - Wire about page cards to theme colors.
+
+- Restrict destructive database test endpoints to explicit testing mode and preserve E2E test access through the test Compose environment.
