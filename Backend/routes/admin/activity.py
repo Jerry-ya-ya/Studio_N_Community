@@ -1,26 +1,18 @@
 import os
-import uuid
 from datetime import datetime
 
 from flask import Blueprint, current_app, jsonify, request
 from flask_jwt_extended import jwt_required
-from werkzeug.utils import secure_filename
 
 from models import ActivityPromotion, db
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
+from image_upload import InvalidImageError, save_validated_image
 
 activity_bp = Blueprint('activity', __name__)
 
 VALID_VISIBILITIES = {'public', 'private'}
-ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-
-
-def is_allowed_image(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
-
-
 def serialize_activity(activity):
     creator = activity.created_by
     is_ended = bool(activity.end_at and activity.end_at <= taipei_now())
@@ -219,17 +211,11 @@ def upload_activity_image(activity_id):
         return jsonify({'error': 'No file part'}), 400
     if uploaded_file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-    if not is_allowed_image(uploaded_file.filename):
-        return jsonify({'error': 'Invalid file type'}), 400
-
     upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'activity')
-    os.makedirs(upload_folder, exist_ok=True)
-
-    original_name = secure_filename(uploaded_file.filename)
-    extension = original_name.rsplit('.', 1)[1].lower()
-    filename = f'{activity.id}_{uuid.uuid4().hex}.{extension}'
-    filepath = os.path.join(upload_folder, filename)
-    uploaded_file.save(filepath)
+    try:
+        filename = save_validated_image(uploaded_file, upload_folder, f'activity-{activity.id}')
+    except InvalidImageError as error:
+        return jsonify({'error': str(error), 'code': 'invalid_image'}), 400
 
     activity.image_url = f'/static/uploads/activity/{filename}'
     db.session.commit()

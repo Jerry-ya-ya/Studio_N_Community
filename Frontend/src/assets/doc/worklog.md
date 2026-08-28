@@ -680,3 +680,5 @@
 ## 2026/08/29
 
 - Enforce server-side password strength rules for registration and password changes, update password field constraints and examples, and add regression coverage.
+
+- Validate uploaded images by decoded content, enforce image and animation resource limits, re-encode files with generated names, strip metadata, and add malicious upload regression coverage.

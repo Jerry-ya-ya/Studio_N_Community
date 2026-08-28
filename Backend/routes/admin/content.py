@@ -1,15 +1,14 @@
 import os
-import uuid
 import json
 
 from flask import Blueprint, current_app, jsonify, request
-from werkzeug.utils import secure_filename
 
 from models import db, HomeNewsItem, User
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from log_writer import get_backend_logger
 from time_utils import taipei_now, to_taipei_iso
+from image_upload import InvalidImageError, save_validated_image
 
 content_bp = Blueprint('content', __name__)
 content_logger = get_backend_logger('content', 'content.log', message_only=True)
@@ -17,7 +16,6 @@ news_logger = get_backend_logger('news', 'news.log', message_only=True)
 
 VALID_THEMES = {'cmen', 'eden'}
 VALID_MEMBER_ROLES = {'superadmin', 'admin', 'member', 'user'}
-ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 HOME_NEWS_LOG_ACTIONS = {
     'replace_home_news',
     'create_home_news_item',
@@ -239,10 +237,6 @@ def read_item_payload(data, default_theme=None, default_order=0):
     }, None
 
 
-def is_allowed_image(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
-
-
 @content_bp.route('/content/home-news', methods=['GET'])
 def public_home_news():
     return jsonify(grouped_home_news())
@@ -424,27 +418,21 @@ def upload_home_news_background(item_id):
             title=item.title
         )
         return jsonify({'error': 'No selected file'}), 400
-    if not is_allowed_image(uploaded_file.filename):
+    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'home-news')
+    try:
+        filename = save_validated_image(uploaded_file, upload_folder, f'home-news-{item.id}')
+    except InvalidImageError as error:
         log_content_event(
             'warning',
             action='upload_home_news_background',
             status='failed',
-            reason='invalid_file_type',
+            reason='invalid_image',
             item_id=item.id,
             theme=item.theme,
             title=item.title,
             filename=uploaded_file.filename
         )
-        return jsonify({'error': 'Invalid file type'}), 400
-
-    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'home-news')
-    os.makedirs(upload_folder, exist_ok=True)
-
-    original_name = secure_filename(uploaded_file.filename)
-    extension = original_name.rsplit('.', 1)[1].lower()
-    filename = f'{item.id}_{uuid.uuid4().hex}.{extension}'
-    filepath = os.path.join(upload_folder, filename)
-    uploaded_file.save(filepath)
+        return jsonify({'error': str(error), 'code': 'invalid_image'}), 400
 
     item.background_url = f'/static/uploads/home-news/{filename}'
     db.session.commit()
