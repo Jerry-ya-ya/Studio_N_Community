@@ -8,10 +8,12 @@ from time_utils import to_taipei_iso
 from celery_worker.crawler.logic import fetch_and_store_news
 from celery_worker.task import hello
 from flask_jwt_extended import jwt_required
+from routes.admin.decorators import admin_required
 
 crawler_bp = Blueprint('crawler_bp', __name__)
 
 @crawler_bp.route('/crawler/fetch', methods=['POST'])
+@admin_required
 def fetch_news_api():
     added = fetch_and_store_news()
     return jsonify({'message': f'{added} new items added.'})
@@ -37,7 +39,8 @@ def get_schedule_info():
         'next_run': to_taipei_iso(state.next_run) if state else None
     })
 
-@crawler_bp.route('/crawler/test', methods=['GET'])
+@crawler_bp.route('/crawler/test', methods=['POST'])
+@admin_required
 def test_crawler():
     hello.delay()
     return jsonify({'message': 'Crawler is working!'})

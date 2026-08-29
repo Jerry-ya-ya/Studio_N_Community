@@ -16,6 +16,7 @@ import { ApiService } from '../../../core/services/api.service';
 export class CrawlerComponent implements OnInit, OnDestroy {
   news: any[] = [];
   scheduleInfo: any = null;
+  readonly canTriggerCrawler = ['admin', 'superadmin'].includes(localStorage.getItem('role') || '');
   private updateSubscription: Subscription;
   
   constructor(

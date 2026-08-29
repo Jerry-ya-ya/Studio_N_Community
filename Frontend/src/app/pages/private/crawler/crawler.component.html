@@ -18,7 +18,9 @@
 
     <section class="crawler-toolbar">
       <div class="toolbar-actions">
-        <button (click)="fetchNews()" class="crawler-button">{{ 'privateCrawler.actions.fetchLatest' | translate }}</button>
+        @if (canTriggerCrawler) {
+          <button (click)="fetchNews()" class="crawler-button">{{ 'privateCrawler.actions.fetchLatest' | translate }}</button>
+        }
         <button (click)="loadNews()" class="crawler-button crawler-button--ghost">{{ 'privateCrawler.actions.refresh' | translate }}</button>
       </div>
 

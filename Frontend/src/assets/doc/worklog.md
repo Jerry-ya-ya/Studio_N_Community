@@ -684,3 +684,5 @@
 - Validate uploaded images by decoded content, enforce image and animation resource limits, re-encode files with generated names, strip metadata, and add malicious upload regression coverage.
 
 - Move JWT refresh tokens from localStorage to scoped HttpOnly cookies, add CSRF-protected refresh requests and cookie-clearing logout flows, and add regression coverage for secure production cookie behavior.
+
+- Restrict crawler job triggers to administrators, replace the side-effecting test GET route with POST, hide manual triggers from regular users, and add authorization regression coverage.
