@@ -682,3 +682,5 @@
 - Enforce server-side password strength rules for registration and password changes, update password field constraints and examples, and add regression coverage.
 
 - Validate uploaded images by decoded content, enforce image and animation resource limits, re-encode files with generated names, strip metadata, and add malicious upload regression coverage.
+
+- Move JWT refresh tokens from localStorage to scoped HttpOnly cookies, add CSRF-protected refresh requests and cookie-clearing logout flows, and add regression coverage for secure production cookie behavior.

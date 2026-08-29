@@ -1,6 +1,13 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    jwt_required,
+    set_refresh_cookies,
+    unset_refresh_cookies,
+)
 from models import db, User
 from routes.auth.email import generate_confirmation_token, mail
 from flask_mail import Message
@@ -226,9 +233,8 @@ def login():
         refresh_expires_in_days=7 if remember_me else 1,
         ip=client_ip
     )
-    return jsonify({
+    response = jsonify({
         'access_token': token,
-        'refresh_token': refresh_token,
         'refresh_expires_in_days': 7 if remember_me else 1,
         'is_verified': True,  # 明確標示用戶已驗證
         'require_verification': False,  # 告訴前端不需要驗證
@@ -236,10 +242,12 @@ def login():
         'username': user.username,
         'user_id': user.id,
     })
+    set_refresh_cookies(response, refresh_token, max_age=int(refresh_expires.total_seconds()))
+    return response
 
 
 @auth_bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)
+@jwt_required(refresh=True, locations=['cookies'])
 def refresh_access_token():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
@@ -254,3 +262,10 @@ def refresh_access_token():
         'username': user.username,
         'user_id': user.id,
     })
+
+
+@auth_bp.route('/refresh', methods=['DELETE'])
+def clear_refresh_token():
+    response = jsonify({'message': 'Logged out'})
+    unset_refresh_cookies(response)
+    return response

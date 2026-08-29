@@ -31,6 +31,7 @@ export class ProfileComponent implements OnInit {
   }
 
   logout() {
+    this.http.delete(`${environment.apiUrl}/refresh`).subscribe({ error: () => undefined });
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');

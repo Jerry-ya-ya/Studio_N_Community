@@ -15,6 +15,12 @@ class BaseConfig:
 
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
+    JWT_TOKEN_LOCATION = ["headers", "cookies"]
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_COOKIE_SAMESITE = "Lax"
+    JWT_COOKIE_SECURE = False
+    JWT_REFRESH_COOKIE_PATH = "/api/refresh"
+    JWT_REFRESH_CSRF_COOKIE_PATH = "/"
 
     SUPERADMIN_EMAIL = os.environ.get("SUPERADMIN_EMAIL")
 
@@ -78,6 +84,7 @@ class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
     TRUSTED_PROXY_HOPS = 1
+    JWT_COOKIE_SECURE = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or (
         f"postgresql+psycopg2://"

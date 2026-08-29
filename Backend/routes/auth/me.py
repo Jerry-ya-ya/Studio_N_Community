@@ -1,7 +1,7 @@
 import os
 
 from flask import Blueprint, current_app, jsonify, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, unset_refresh_cookies
 from flask_mail import Message
 from models import db, User
 from routes.auth.email import generate_confirmation_token, mail
@@ -138,4 +138,6 @@ def delete_current_user():
     user.avatar_source = 'github'
     db.session.commit()
 
-    return jsonify({'message': 'Account deleted'})
+    response = jsonify({'message': 'Account deleted'})
+    unset_refresh_cookies(response)
+    return response

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { appPath } from '../../../path/app-path-const';
 import { ThemeService } from '../../../core/services/theme.service';
+import { ApiService } from '../../../core/services/api.service';
 
 type NavSectionKey = 'public' | 'private' | 'admin' | 'superadmin';
 const NAV_COLLAPSED_STORAGE_KEY = 'navbarCollapsed';
@@ -94,7 +95,8 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private injector: Injector,
     private translate: TranslateService,
-    public theme: ThemeService
+    public theme: ThemeService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
@@ -130,6 +132,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
+    this.apiService.delete('/refresh').subscribe({ error: () => undefined });
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');

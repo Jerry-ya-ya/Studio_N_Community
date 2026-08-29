@@ -50,7 +50,7 @@ export class LoginComponent {
     }).subscribe({
       next: res => {
         localStorage.setItem('token', res.access_token);
-        localStorage.setItem('refreshToken', res.refresh_token);
+        localStorage.removeItem('refreshToken'); // 清除舊版留下的 refresh token
         localStorage.setItem('username', res.username);
         localStorage.setItem('role', res.role);
         this.storeBrowserCredential(res.username || this.username);

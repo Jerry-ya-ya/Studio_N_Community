@@ -27,10 +27,10 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = localStorage.getItem('token');
     const isBackendApiRequest = this.isBackendApiRequest(req.url);
 
-    let authReq = req;
+    let authReq = isBackendApiRequest ? req.clone({ withCredentials: true }) : req;
     
     if (token && isBackendApiRequest && !this.isRefreshRequest(req.url)) {
-      authReq = req.clone({
+      authReq = authReq.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
         }
@@ -48,6 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
           return this.refreshAccessToken().pipe(
             switchMap(accessToken => {
               const retryReq = req.clone({
+                withCredentials: true,
                 setHeaders: {
                   Authorization: `Bearer ${accessToken}`
                 }
@@ -78,19 +79,14 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private refreshAccessToken(): Observable<string> {
-    const refreshToken = localStorage.getItem('refreshToken');
-
-    if (!refreshToken) {
-      return throwError(() => new Error('Missing refresh token'));
-    }
+    const csrfToken = this.readCookie('csrf_refresh_token');
 
     return this.http.post<{ access_token: string; role?: string; username?: string }>(
       `${this.apiBaseUrl}/refresh`,
       {},
       {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`
-        }
+        withCredentials: true,
+        headers: csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}
       }
     ).pipe(
       map(response => {
@@ -108,11 +104,16 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private clearSessionAndRedirect() {
     localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');
     localStorage.removeItem('username');
     this.openSessionExpiredSnack();
     this.router.navigate(['/login']);
+  }
+
+  private readCookie(name: string): string | null {
+    const prefix = `${encodeURIComponent(name)}=`;
+    const cookie = document.cookie.split('; ').find(item => item.startsWith(prefix));
+    return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
   }
 
   private async openSessionExpiredSnack() {

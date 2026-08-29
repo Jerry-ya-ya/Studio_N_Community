@@ -188,7 +188,7 @@ def create_app(config_name="none"):
     init_mail(app)
 
     # 設定 CORS - 使用環境變數中的前端 URL
-    CORS(app, origins=[frontend_url]) # 只允許前端 URL 的跨域請求
+    CORS(app, origins=[frontend_url], supports_credentials=True) # 只允許前端 URL 的跨域請求
     
     # 註冊藍圖
     app.register_blueprint(auth_bp, url_prefix='/api')
