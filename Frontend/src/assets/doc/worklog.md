@@ -686,3 +686,7 @@
 - Move JWT refresh tokens from localStorage to scoped HttpOnly cookies, add CSRF-protected refresh requests and cookie-clearing logout flows, and add regression coverage for secure production cookie behavior.
 
 - Restrict crawler job triggers to administrators, replace the side-effecting test GET route with POST, hide manual triggers from regular users, and add authorization regression coverage.
+
+## 2026/08/30
+
+- Add private achievement page with navigation and i18n support.

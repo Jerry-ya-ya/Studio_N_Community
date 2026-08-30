@@ -140,6 +140,11 @@ const routes: Routes = [
       import('../pages/private/activities/activities.module').then(m => m.ActivitiesModule)
   },
   {
+    path: appPath.achievement,
+    loadChildren: () =>
+      import('../pages/private/achievement/achievement.module').then(m => m.AchievementModule)
+  },
+  {
     path: '**',
     redirectTo: '',
   }

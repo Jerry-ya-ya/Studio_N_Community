@@ -67,7 +67,8 @@
       "profile": "Profile",
       "crawler": "Crawler",
       "logout": "Logout",
-      "schedule": "Schedule"
+      "schedule": "Schedule",
+      "achievement": "Achievements"
     },
     "admin": {
       "user": "User",
@@ -1453,6 +1454,19 @@
       "loadFailed": "Unable to load your saved schedule. Local draft is still available.",
       "saveSuccess": "Schedule saved.",
       "saveFailed": "Unable to save schedule. Your local draft was kept."
+    }
+  },
+  "privateAchievement": {
+    "eyebrow": "Your journey", "title": "Achievements", "subtitle": "Track the milestones you have reached and discover what to pursue next.",
+    "summaryLabel": "Achievement summary", "unlocked": "unlocked", "listLabel": "Achievement list",
+    "status": { "unlocked": "Unlocked", "inProgress": "In progress" },
+    "items": {
+      "firstStep": { "title": "First Step", "description": "Complete your first task." },
+      "social": { "title": "Growing Together", "description": "Connect with five friends." },
+      "focused": { "title": "Deep Focus", "description": "Complete ten tasks." },
+      "streak": { "title": "Seven-day Flame", "description": "Check in for seven consecutive days." },
+      "explorer": { "title": "Curious Explorer", "description": "Explore six community features." },
+      "community": { "title": "Community Star", "description": "Join ten community activities." }
     }
   }
 }

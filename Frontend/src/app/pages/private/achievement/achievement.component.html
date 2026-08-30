@@ -1,0 +1,35 @@
+<main class="achievement-page">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">{{ 'privateAchievement.eyebrow' | translate }}</p>
+      <h1>{{ 'privateAchievement.title' | translate }}</h1>
+      <p class="subtitle">{{ 'privateAchievement.subtitle' | translate }}</p>
+    </div>
+    <div class="summary" [attr.aria-label]="'privateAchievement.summaryLabel' | translate">
+      <strong>{{ unlockedCount }}/{{ achievements.length }}</strong>
+      <span>{{ 'privateAchievement.unlocked' | translate }}</span>
+    </div>
+  </header>
+
+  <section class="achievement-grid" [attr.aria-label]="'privateAchievement.listLabel' | translate">
+    @for (achievement of achievements; track achievement.key) {
+      <article class="achievement-card" [class.achievement-card--unlocked]="achievement.unlocked">
+        <div class="badge" aria-hidden="true">{{ achievement.icon }}</div>
+        <div class="card-copy">
+          <span class="status">
+            {{ (achievement.unlocked ? 'privateAchievement.status.unlocked' : 'privateAchievement.status.inProgress') | translate }}
+          </span>
+          <h2>{{ ('privateAchievement.items.' + achievement.key + '.title') | translate }}</h2>
+          <p>{{ ('privateAchievement.items.' + achievement.key + '.description') | translate }}</p>
+        </div>
+        <div class="progress-meta">
+          <span>{{ achievement.progress }}/{{ achievement.target }}</span>
+          <span>{{ progressPercent(achievement) }}%</span>
+        </div>
+        <div class="progress-track" role="progressbar" [attr.aria-valuenow]="achievement.progress" aria-valuemin="0" [attr.aria-valuemax]="achievement.target">
+          <span [style.width.%]="progressPercent(achievement)"></span>
+        </div>
+      </article>
+    }
+  </section>
+</main>

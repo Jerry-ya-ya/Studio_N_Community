@@ -51,4 +51,6 @@ export const appPath = {
     publicActivities: 'activities',
     //private activities
     privateActivities: 'private-activities',
+    //achievement
+    achievement: 'achievement',
 };

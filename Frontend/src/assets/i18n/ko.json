@@ -67,7 +67,8 @@
       "profile": "프로필",
       "crawler": "크롤러",
       "logout": "로그아웃",
-      "schedule": "시간표"
+      "schedule": "시간표",
+      "achievement": "업적"
     },
     "admin": {
       "user": "사용자",
@@ -1453,6 +1454,15 @@
       "loadFailed": "저장된 시간표를 불러오지 못했습니다. 로컬 초안은 유지됩니다.",
       "saveSuccess": "시간표가 저장되었습니다.",
       "saveFailed": "시간표를 저장하지 못했습니다. 로컬 초안은 유지됩니다."
+    }
+  },
+  "privateAchievement": {
+    "eyebrow": "나의 여정", "title": "업적", "subtitle": "달성한 이정표를 확인하고 다음 목표를 찾아보세요.",
+    "summaryLabel": "업적 요약", "unlocked": "잠금 해제", "listLabel": "업적 목록", "status": { "unlocked": "잠금 해제", "inProgress": "진행 중" },
+    "items": {
+      "firstStep": { "title": "첫걸음", "description": "첫 번째 할 일을 완료하세요." }, "social": { "title": "함께 성장", "description": "친구 다섯 명과 연결하세요." },
+      "focused": { "title": "집중의 달인", "description": "할 일 열 개를 완료하세요." }, "streak": { "title": "7일의 불꽃", "description": "7일 연속 출석하세요." },
+      "explorer": { "title": "호기심 많은 탐험가", "description": "커뮤니티 기능 여섯 개를 탐색하세요." }, "community": { "title": "커뮤니티 스타", "description": "커뮤니티 활동 열 개에 참여하세요." }
     }
   }
 }

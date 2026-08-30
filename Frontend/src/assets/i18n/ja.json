@@ -67,7 +67,8 @@
       "profile": "プロフィール",
       "crawler": "クローラー",
       "logout": "ログアウト",
-      "schedule": "スケジュール"
+      "schedule": "スケジュール",
+      "achievement": "実績"
     },
     "admin": {
       "user": "ユーザー",
@@ -1453,6 +1454,15 @@
       "loadFailed": "保存済み予定を読み込めませんでした。ローカル下書きは利用できます。",
       "saveSuccess": "予定を保存しました。",
       "saveFailed": "予定を保存できませんでした。ローカル下書きは保持されています。"
+    }
+  },
+  "privateAchievement": {
+    "eyebrow": "あなたの歩み", "title": "実績", "subtitle": "達成したマイルストーンと次の目標を確認しましょう。",
+    "summaryLabel": "実績サマリー", "unlocked": "解除済み", "listLabel": "実績一覧", "status": { "unlocked": "解除済み", "inProgress": "進行中" },
+    "items": {
+      "firstStep": { "title": "最初の一歩", "description": "最初のタスクを完了する。" }, "social": { "title": "共に成長", "description": "5人の友達とつながる。" },
+      "focused": { "title": "集中の達人", "description": "10件のタスクを完了する。" }, "streak": { "title": "七日間の炎", "description": "7日連続でチェックインする。" },
+      "explorer": { "title": "好奇心旺盛な探検家", "description": "6つのコミュニティ機能を探索する。" }, "community": { "title": "コミュニティスター", "description": "10件のコミュニティ活動に参加する。" }
     }
   }
 }
