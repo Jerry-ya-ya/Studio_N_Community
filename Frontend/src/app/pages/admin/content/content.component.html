@@ -40,7 +40,7 @@
         </div>
 
         <div class="news-editor">
-          @if (loading) {
+          @if (loadingHomeContent) {
             <p class="state-message">{{ 'adminContent.state.loading' | translate }}</p>
           }
 
@@ -149,7 +149,7 @@
         </div>
 
         <div class="news-editor member-editor">
-          @if (loading) {
+          @if (loadingMemberContent) {
             <p class="state-message">{{ 'adminContent.state.loadingMembers' | translate }}</p>
           }
 

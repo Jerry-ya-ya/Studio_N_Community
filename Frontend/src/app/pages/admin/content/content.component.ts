@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { finalize } from 'rxjs';
 import { CommunityNewsItem, HomeContentService, HomeNewsContent } from '../../../core/services/home-content.service';
 import { MemberContentItem, MemberContentService } from '../../../core/services/member-content.service';
 import { environment } from '../../../../environments/environment';
@@ -17,7 +18,8 @@ export class ContentComponent implements OnInit {
   activeTheme: keyof HomeNewsContent = 'cmen';
   savedMessage = '';
   errorMessage = '';
-  loading = false;
+  loadingHomeContent = false;
+  loadingMemberContent = false;
   saving = false;
 
   readonly sections: { key: ContentSection; labelKey: string; hintKey: string; disabled?: boolean }[] = [
@@ -45,19 +47,22 @@ export class ContentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = true;
-    this.homeContent.loadAdminContent().subscribe({
+    this.loadingHomeContent = true;
+    this.homeContent.loadAdminContent().pipe(
+      finalize(() => this.loadingHomeContent = false)
+    ).subscribe({
       next: content => {
         this.content = content;
-        this.loading = false;
       },
       error: error => {
         this.errorMessage = error?.error?.error || this.translate.instant('adminContent.feedback.loadFailure');
-        this.loading = false;
       }
     });
 
-    this.memberContent.loadAdminContent().subscribe({
+    this.loadingMemberContent = true;
+    this.memberContent.loadAdminContent().pipe(
+      finalize(() => this.loadingMemberContent = false)
+    ).subscribe({
       next: members => {
         this.members = members;
       },
