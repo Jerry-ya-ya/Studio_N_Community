@@ -906,6 +906,18 @@
       "title": "Last 7 Days",
       "progress": "{{ checked }} / {{ total }} days"
     },
+    "history": {
+      "kicker": "Yearly Trace",
+      "title": "Check-In Constellation",
+      "description": "Each glowing square marks a day you checked in.",
+      "year": "Year",
+      "loading": "Loading yearly history...",
+      "loadFailure": "Failed to load yearly check-in history.",
+      "checked": "Checked in",
+      "notChecked": "Not checked in",
+      "ariaLabel": "Yearly check-in history",
+      "weekdays": { "sun": "Sun", "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat" }
+    },
     "status": {
       "checked": "Checked In",
       "ready": "Ready"

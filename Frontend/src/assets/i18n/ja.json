@@ -906,6 +906,18 @@
       "title": "直近 7 日間",
       "progress": "{{ checked }} / {{ total }} 日"
     },
+    "history": {
+      "kicker": "Yearly Trace",
+      "title": "チェックイン星図",
+      "description": "光るマスはチェックインした日を表します。",
+      "year": "年",
+      "loading": "年間履歴を読み込み中...",
+      "loadFailure": "年間チェックイン履歴を読み込めませんでした。",
+      "checked": "チェックイン済み",
+      "notChecked": "未チェックイン",
+      "ariaLabel": "年間チェックイン履歴",
+      "weekdays": { "sun": "日", "mon": "月", "tue": "火", "wed": "水", "thu": "木", "fri": "金", "sat": "土" }
+    },
     "status": {
       "checked": "チェックイン済み",
       "ready": "受け取り可能"

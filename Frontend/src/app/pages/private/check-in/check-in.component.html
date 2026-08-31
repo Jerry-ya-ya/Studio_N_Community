@@ -76,4 +76,49 @@
       <p class="error-message">{{ errorMessage | translate }}</p>
     }
   </section>
+
+  <section class="history-panel" [attr.aria-label]="'checkIn.history.ariaLabel' | translate">
+    <div class="history-header">
+      <div>
+        <p class="check-in-kicker">{{ 'checkIn.history.kicker' | translate }}</p>
+        <h2>{{ 'checkIn.history.title' | translate }}</h2>
+        <p>{{ 'checkIn.history.description' | translate }}</p>
+      </div>
+      <label class="year-picker">
+        <span>{{ 'checkIn.history.year' | translate }}</span>
+        <select [value]="selectedYear" (change)="loadHistory(+$any($event.target).value)" [disabled]="historyLoading">
+          @for (year of availableYears; track year) {
+            <option [value]="year">{{ year }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (historyLoading) {
+      <p class="state-message">{{ 'checkIn.history.loading' | translate }}</p>
+    } @else if (historyError) {
+      <p class="error-message">{{ historyError | translate }}</p>
+    } @else {
+      <div class="history-scroll">
+        <div class="history-chart">
+          <div class="weekday-labels" aria-hidden="true">
+            @for (weekday of weekdays; track weekday) {
+              <span>{{ ('checkIn.history.weekdays.' + weekday) | translate }}</span>
+            }
+          </div>
+          <div class="history-grid">
+            @for (day of calendarDays; track day.date) {
+              <span class="history-day" [class.history-day--checked]="day.checked" [class.history-day--outside]="day.outsideYear"
+                [attr.title]="day.date + ' · ' + ((day.checked ? 'checkIn.history.checked' : 'checkIn.history.notChecked') | translate)"
+                [attr.aria-label]="day.date + ' ' + ((day.checked ? 'checkIn.history.checked' : 'checkIn.history.notChecked') | translate)"></span>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="history-legend">
+        <span><i class="history-day"></i>{{ 'checkIn.history.notChecked' | translate }}</span>
+        <span><i class="history-day history-day--checked"></i>{{ 'checkIn.history.checked' | translate }}</span>
+      </div>
+    }
+  </section>
 </main>

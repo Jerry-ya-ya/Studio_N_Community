@@ -22,6 +22,12 @@ export interface CheckInStatus {
   message?: string;
 }
 
+export interface CheckInHistory {
+  year: number;
+  checkedDates: string[];
+  availableYears: number[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,6 +36,10 @@ export class CheckInService {
 
   getStatus(): Observable<CheckInStatus> {
     return this.apiService.get<CheckInStatus>('/check-in/status', this.apiService.createAuthHeaders());
+  }
+
+  getHistory(year: number): Observable<CheckInHistory> {
+    return this.apiService.get<CheckInHistory>(`/check-in/history?year=${year}`, this.apiService.createAuthHeaders());
   }
 
   checkIn(): Observable<CheckInStatus> {

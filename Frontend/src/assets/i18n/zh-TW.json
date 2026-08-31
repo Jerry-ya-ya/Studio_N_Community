@@ -906,6 +906,18 @@
       "title": "近 7 天簽到",
       "progress": "{{ checked }} / {{ total }} 天"
     },
+    "history": {
+      "kicker": "Yearly Trace",
+      "title": "簽到星點圖",
+      "description": "每個亮起的格子，代表當天曾完成簽到。",
+      "year": "年份",
+      "loading": "正在載入年度簽到紀錄...",
+      "loadFailure": "無法載入年度簽到紀錄。",
+      "checked": "已簽到",
+      "notChecked": "未簽到",
+      "ariaLabel": "年度簽到紀錄",
+      "weekdays": { "sun": "日", "mon": "一", "tue": "二", "wed": "三", "thu": "四", "fri": "五", "sat": "六" }
+    },
     "status": {
       "checked": "已簽到",
       "ready": "可簽到"

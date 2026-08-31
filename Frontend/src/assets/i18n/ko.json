@@ -906,6 +906,18 @@
       "title": "최근 7일 출석",
       "progress": "{{ checked }} / {{ total }}일"
     },
+    "history": {
+      "kicker": "Yearly Trace",
+      "title": "출석 별자리",
+      "description": "빛나는 칸은 출석한 날을 나타냅니다.",
+      "year": "연도",
+      "loading": "연간 출석 기록을 불러오는 중...",
+      "loadFailure": "연간 출석 기록을 불러오지 못했습니다.",
+      "checked": "출석 완료",
+      "notChecked": "미출석",
+      "ariaLabel": "연간 출석 기록",
+      "weekdays": { "sun": "일", "mon": "월", "tue": "화", "wed": "수", "thu": "목", "fri": "금", "sat": "토" }
+    },
     "status": {
       "checked": "출석 완료",
       "ready": "출석 가능"
