@@ -29,6 +29,8 @@ h1 { margin: 8px 0 10px; font-size: clamp(34px, 6vw, 64px); line-height: 1; }
 .summary span { color: var(--studio-muted); font-size: 13px; }
 
 .achievement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; max-width: 1180px; margin: 0 auto; }
+.page-message { max-width: 1180px; margin: 0 auto 18px; padding: 16px 18px; border: 1px solid var(--studio-line); border-radius: var(--studio-control-radius, 12px); color: var(--studio-muted); background: var(--studio-surface-bg); }
+.page-message--error { color: var(--studio-warm); }
 .achievement-card { display: grid; grid-template-columns: auto 1fr; gap: 18px; padding: 24px; border: 1px solid var(--studio-line); border-radius: var(--studio-control-radius, 12px); background: color-mix(in srgb, var(--studio-panel-strong) 88%, transparent); box-shadow: 0 16px 36px rgba(0, 0, 0, .18); opacity: .72; }
 .achievement-card--unlocked { border-color: color-mix(in srgb, var(--studio-accent) 60%, var(--studio-line)); opacity: 1; }
 .badge { display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid var(--studio-line); border-radius: 16px; background: color-mix(in srgb, var(--studio-accent) 12%, var(--studio-panel)); font-size: 30px; filter: grayscale(.8); }

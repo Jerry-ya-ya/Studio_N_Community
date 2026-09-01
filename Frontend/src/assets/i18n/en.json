@@ -1458,15 +1458,10 @@
   },
   "privateAchievement": {
     "eyebrow": "Your journey", "title": "Achievements", "subtitle": "Track the milestones you have reached and discover what to pursue next.",
-    "summaryLabel": "Achievement summary", "unlocked": "unlocked", "listLabel": "Achievement list",
+    "summaryLabel": "Achievement summary", "unlocked": "unlocked", "listLabel": "Achievement list", "loading": "Loading your achievements…", "loadFailed": "We couldn't load your coin balance. Please try again later.",
     "status": { "unlocked": "Unlocked", "inProgress": "In progress" },
     "items": {
-      "firstStep": { "title": "First Step", "description": "Complete your first task." },
-      "social": { "title": "Growing Together", "description": "Connect with five friends." },
-      "focused": { "title": "Deep Focus", "description": "Complete ten tasks." },
-      "streak": { "title": "Seven-day Flame", "description": "Check in for seven consecutive days." },
-      "explorer": { "title": "Curious Explorer", "description": "Explore six community features." },
-      "community": { "title": "Community Star", "description": "Join ten community activities." }
+      "firstPotOfGold": { "title": "First Pot of Gold", "description": "Earn a total of 100 coins." }
     }
   }
 }

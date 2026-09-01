@@ -1458,11 +1458,9 @@
   },
   "privateAchievement": {
     "eyebrow": "あなたの歩み", "title": "実績", "subtitle": "達成したマイルストーンと次の目標を確認しましょう。",
-    "summaryLabel": "実績サマリー", "unlocked": "解除済み", "listLabel": "実績一覧", "status": { "unlocked": "解除済み", "inProgress": "進行中" },
+    "summaryLabel": "実績サマリー", "unlocked": "解除済み", "listLabel": "実績一覧", "loading": "実績を読み込んでいます…", "loadFailed": "コイン残高を読み込めませんでした。後でもう一度お試しください。", "status": { "unlocked": "解除済み", "inProgress": "進行中" },
     "items": {
-      "firstStep": { "title": "最初の一歩", "description": "最初のタスクを完了する。" }, "social": { "title": "共に成長", "description": "5人の友達とつながる。" },
-      "focused": { "title": "集中の達人", "description": "10件のタスクを完了する。" }, "streak": { "title": "七日間の炎", "description": "7日連続でチェックインする。" },
-      "explorer": { "title": "好奇心旺盛な探検家", "description": "6つのコミュニティ機能を探索する。" }, "community": { "title": "コミュニティスター", "description": "10件のコミュニティ活動に参加する。" }
+      "firstPotOfGold": { "title": "最初の財産", "description": "合計100 coinsを獲得する。" }
     }
   }
 }

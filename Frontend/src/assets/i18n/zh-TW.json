@@ -1458,15 +1458,10 @@
   },
   "privateAchievement": {
     "eyebrow": "你的旅程", "title": "成就", "subtitle": "回顧一路達成的里程碑，探索下一個值得挑戰的目標。",
-    "summaryLabel": "成就總覽", "unlocked": "已解鎖", "listLabel": "成就列表",
+    "summaryLabel": "成就總覽", "unlocked": "已解鎖", "listLabel": "成就列表", "loading": "正在載入你的成就…", "loadFailed": "無法載入 coins 餘額，請稍後再試。",
     "status": { "unlocked": "已解鎖", "inProgress": "進行中" },
     "items": {
-      "firstStep": { "title": "第一步", "description": "完成第一項待辦任務。" },
-      "social": { "title": "一起成長", "description": "與五位好友建立連結。" },
-      "focused": { "title": "專注達人", "description": "累積完成十項待辦任務。" },
-      "streak": { "title": "七日之焰", "description": "連續七天完成簽到。" },
-      "explorer": { "title": "好奇探險家", "description": "探索六項社群功能。" },
-      "community": { "title": "社群之星", "description": "參與十場社群活動。" }
+      "firstPotOfGold": { "title": "第一桶金", "description": "累積獲得 100 coins。" }
     }
   }
 }

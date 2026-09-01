@@ -3,7 +3,7 @@ import os
 from flask import Blueprint, current_app, jsonify, request
 from flask_jwt_extended import jwt_required, unset_refresh_cookies
 from flask_mail import Message
-from models import db, User
+from models import DailyCheckIn, db, User
 from routes.auth.email import generate_confirmation_token, mail
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
@@ -19,6 +19,10 @@ def get_current_user():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
+    total_coins = int(db.session.query(
+        db.func.coalesce(db.func.sum(DailyCheckIn.points), 0)
+    ).filter(DailyCheckIn.user_id == user.id).scalar() or 0)
+
     return jsonify({
         'id': user.id,
         'username': user.username,
@@ -31,6 +35,9 @@ def get_current_user():
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
         'role': user.role,
+        'coins': total_coins,
+        'total_coins': total_coins,
+        'totalCoins': total_coins,
     })
 
 # PUT：更新使用者資訊

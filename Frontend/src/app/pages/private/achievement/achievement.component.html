@@ -11,7 +11,13 @@
     </div>
   </header>
 
-  <section class="achievement-grid" [attr.aria-label]="'privateAchievement.listLabel' | translate">
+  @if (loading) {
+    <p class="page-message" role="status">{{ 'privateAchievement.loading' | translate }}</p>
+  } @else if (loadFailed) {
+    <p class="page-message page-message--error" role="alert">{{ 'privateAchievement.loadFailed' | translate }}</p>
+  }
+
+  <section class="achievement-grid" [attr.aria-label]="'privateAchievement.listLabel' | translate" [attr.aria-busy]="loading">
     @for (achievement of achievements; track achievement.key) {
       <article class="achievement-card" [class.achievement-card--unlocked]="achievement.unlocked">
         <div class="badge" aria-hidden="true">{{ achievement.icon }}</div>
@@ -23,7 +29,7 @@
           <p>{{ ('privateAchievement.items.' + achievement.key + '.description') | translate }}</p>
         </div>
         <div class="progress-meta">
-          <span>{{ achievement.progress }}/{{ achievement.target }}</span>
+          <span>{{ achievement.progress }}/{{ achievement.target }} coins</span>
           <span>{{ progressPercent(achievement) }}%</span>
         </div>
         <div class="progress-track" role="progressbar" [attr.aria-valuenow]="achievement.progress" aria-valuemin="0" [attr.aria-valuemax]="achievement.target">

@@ -1458,11 +1458,9 @@
   },
   "privateAchievement": {
     "eyebrow": "나의 여정", "title": "업적", "subtitle": "달성한 이정표를 확인하고 다음 목표를 찾아보세요.",
-    "summaryLabel": "업적 요약", "unlocked": "잠금 해제", "listLabel": "업적 목록", "status": { "unlocked": "잠금 해제", "inProgress": "진행 중" },
+    "summaryLabel": "업적 요약", "unlocked": "잠금 해제", "listLabel": "업적 목록", "loading": "업적을 불러오는 중…", "loadFailed": "코인 잔액을 불러오지 못했습니다. 나중에 다시 시도해 주세요.", "status": { "unlocked": "잠금 해제", "inProgress": "진행 중" },
     "items": {
-      "firstStep": { "title": "첫걸음", "description": "첫 번째 할 일을 완료하세요." }, "social": { "title": "함께 성장", "description": "친구 다섯 명과 연결하세요." },
-      "focused": { "title": "집중의 달인", "description": "할 일 열 개를 완료하세요." }, "streak": { "title": "7일의 불꽃", "description": "7일 연속 출석하세요." },
-      "explorer": { "title": "호기심 많은 탐험가", "description": "커뮤니티 기능 여섯 개를 탐색하세요." }, "community": { "title": "커뮤니티 스타", "description": "커뮤니티 활동 열 개에 참여하세요." }
+      "firstPotOfGold": { "title": "첫 목돈", "description": "총 100 coins를 획득하세요." }
     }
   }
 }
