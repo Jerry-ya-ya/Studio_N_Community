@@ -690,3 +690,7 @@
 ## 2026/08/30
 
 - Add private achievement page with navigation and i18n support.
+
+## 2026/09/01
+
+- Display earned check-in coins on the private achievement page with localized labels and regression coverage.
