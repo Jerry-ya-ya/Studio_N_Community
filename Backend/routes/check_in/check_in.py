@@ -1,6 +1,6 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
 from models import DailyCheckIn, db
@@ -74,6 +74,42 @@ def get_check_in_status():
         return jsonify({'error': 'User not found'}), 404
 
     return jsonify(serialize_status(user))
+
+
+@check_in_bp.route('/check-in/history', methods=['GET'])
+@jwt_required()
+def get_check_in_history():
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    current_year = taipei_now().year
+    try:
+        year = int(request.args.get('year', current_year))
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Year must be a number'}), 400
+
+    if year < 2000 or year > current_year:
+        return jsonify({'error': f'Year must be between 2000 and {current_year}'}), 400
+
+    start_date = date(year, 1, 1)
+    end_date = date(year, 12, 31)
+    check_ins = DailyCheckIn.query.filter(
+        DailyCheckIn.user_id == user.id,
+        DailyCheckIn.checkin_date >= start_date,
+        DailyCheckIn.checkin_date <= end_date,
+    ).order_by(DailyCheckIn.checkin_date.asc()).all()
+
+    first_check_in = db.session.query(db.func.min(DailyCheckIn.checkin_date)).filter(
+        DailyCheckIn.user_id == user.id
+    ).scalar()
+    first_year = first_check_in.year if first_check_in else current_year
+
+    return jsonify({
+        'year': year,
+        'checkedDates': [check_in.checkin_date.isoformat() for check_in in check_ins],
+        'availableYears': list(range(current_year, first_year - 1, -1)),
+    })
 
 
 @check_in_bp.route('/check-in', methods=['POST'])
