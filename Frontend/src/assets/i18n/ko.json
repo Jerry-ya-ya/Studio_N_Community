@@ -1470,8 +1470,23 @@
   },
   "privateAchievement": {
     "eyebrow": "나의 여정", "title": "업적", "subtitle": "달성한 이정표를 확인하고 다음 목표를 찾아보세요.",
-    "summaryLabel": "업적 요약", "unlocked": "잠금 해제", "listLabel": "업적 목록", "loading": "업적을 불러오는 중…", "loadFailed": "코인 잔액을 불러오지 못했습니다. 나중에 다시 시도해 주세요.", "status": { "unlocked": "잠금 해제", "inProgress": "진행 중" },
+    "summaryLabel": "업적 요약", "unlocked": "잠금 해제", "listLabel": "업적 목록", "loading": "업적을 불러오는 중…", "loadFailed": "업적 진행 상황을 불러오지 못했습니다. 나중에 다시 시도해 주세요.", "status": { "unlocked": "잠금 해제", "inProgress": "진행 중" },
+    "units": { "days": "일", "projects": "개 프로젝트", "tokens": "tokens", "tasks": "개 작업", "posts": "개 게시물", "friends": "명", "coins": "coins" },
     "items": {
+      "firstCheckIn": { "title": "첫 체크인", "description": "첫 체크인을 완료하세요." },
+      "checkInWeek": { "title": "체크인 새싹", "description": "누적 7일 체크인하세요." },
+      "checkInMonth": { "title": "체크인 단골", "description": "누적 30일 체크인하세요." },
+      "streakThree": { "title": "연속의 불씨", "description": "3일 연속 체크인하세요." },
+      "streakWeek": { "title": "불타는 일주일", "description": "7일 연속 체크인하세요." },
+      "streakMonth": { "title": "끈기의 빛", "description": "30일 연속 체크인하세요." },
+      "firstProject": { "title": "프로젝트 출항", "description": "첫 프로젝트를 만드세요." },
+      "projectBuilder": { "title": "프로젝트 설계자", "description": "누적 5개 프로젝트를 만드세요." },
+      "tokenSpender": { "title": "100 토큰 연료", "description": "만든 프로젝트에서 누적 100 tokens를 사용하세요." },
+      "tokenMaster": { "title": "에너지 코어", "description": "만든 프로젝트에서 누적 500 tokens를 사용하세요." },
+      "firstTask": { "title": "임무 완료", "description": "첫 작업을 완료하세요." },
+      "taskMaster": { "title": "작업 달인", "description": "누적 10개 작업을 완료하세요." },
+      "firstPost": { "title": "첫 발신", "description": "첫 게시물을 올리세요." },
+      "socialCircle": { "title": "동료의 모임", "description": "친구 5명을 만드세요." },
       "firstPotOfGold": { "title": "첫 목돈", "description": "총 100 coins를 획득하세요." }
     }
   }

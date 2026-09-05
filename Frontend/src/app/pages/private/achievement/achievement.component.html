@@ -29,7 +29,7 @@
           <p>{{ ('privateAchievement.items.' + achievement.key + '.description') | translate }}</p>
         </div>
         <div class="progress-meta">
-          <span>{{ achievement.progress }}/{{ achievement.target }} coins</span>
+          <span>{{ achievement.progress }}/{{ achievement.target }} {{ ('privateAchievement.units.' + achievement.unit) | translate }}</span>
           <span>{{ progressPercent(achievement) }}%</span>
         </div>
         <div class="progress-track" role="progressbar" [attr.aria-valuenow]="achievement.progress" aria-valuemin="0" [attr.aria-valuemax]="achievement.target">
