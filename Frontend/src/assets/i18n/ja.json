@@ -1470,8 +1470,23 @@
   },
   "privateAchievement": {
     "eyebrow": "あなたの歩み", "title": "実績", "subtitle": "達成したマイルストーンと次の目標を確認しましょう。",
-    "summaryLabel": "実績サマリー", "unlocked": "解除済み", "listLabel": "実績一覧", "loading": "実績を読み込んでいます…", "loadFailed": "コイン残高を読み込めませんでした。後でもう一度お試しください。", "status": { "unlocked": "解除済み", "inProgress": "進行中" },
+    "summaryLabel": "実績サマリー", "unlocked": "解除済み", "listLabel": "実績一覧", "loading": "実績を読み込んでいます…", "loadFailed": "実績の進捗を読み込めませんでした。後でもう一度お試しください。", "status": { "unlocked": "解除済み", "inProgress": "進行中" },
+    "units": { "days": "日", "projects": "件", "tokens": "tokens", "tasks": "件", "posts": "件", "friends": "人", "coins": "coins" },
     "items": {
+      "firstCheckIn": { "title": "初チェックイン", "description": "初めてチェックインする。" },
+      "checkInWeek": { "title": "チェックインの芽", "description": "合計7日チェックインする。" },
+      "checkInMonth": { "title": "チェックイン常連", "description": "合計30日チェックインする。" },
+      "streakThree": { "title": "連続の火花", "description": "3日連続でチェックインする。" },
+      "streakWeek": { "title": "燃える一週間", "description": "7日連続でチェックインする。" },
+      "streakMonth": { "title": "継続の光", "description": "30日連続でチェックインする。" },
+      "firstProject": { "title": "プロジェクト始動", "description": "最初のプロジェクトを作成する。" },
+      "projectBuilder": { "title": "プロジェクト設計者", "description": "合計5件のプロジェクトを作成する。" },
+      "tokenSpender": { "title": "100トークン燃料", "description": "作成したプロジェクトで合計100 tokensを使用する。" },
+      "tokenMaster": { "title": "エネルギーコア", "description": "作成したプロジェクトで合計500 tokensを使用する。" },
+      "firstTask": { "title": "ミッション完了", "description": "最初のタスクを完了する。" },
+      "taskMaster": { "title": "タスクマスター", "description": "合計10件のタスクを完了する。" },
+      "firstPost": { "title": "最初の発信", "description": "最初の投稿を公開する。" },
+      "socialCircle": { "title": "仲間の輪", "description": "友達を5人作る。" },
       "firstPotOfGold": { "title": "最初の財産", "description": "合計100 coinsを獲得する。" }
     }
   }

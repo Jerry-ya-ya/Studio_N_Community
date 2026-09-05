@@ -1470,9 +1470,24 @@
   },
   "privateAchievement": {
     "eyebrow": "Your journey", "title": "Achievements", "subtitle": "Track the milestones you have reached and discover what to pursue next.",
-    "summaryLabel": "Achievement summary", "unlocked": "unlocked", "listLabel": "Achievement list", "loading": "Loading your achievements…", "loadFailed": "We couldn't load your coin balance. Please try again later.",
+    "summaryLabel": "Achievement summary", "unlocked": "unlocked", "listLabel": "Achievement list", "loading": "Loading your achievements…", "loadFailed": "We couldn't load your achievement progress. Please try again later.",
     "status": { "unlocked": "Unlocked", "inProgress": "In progress" },
+    "units": { "days": "days", "projects": "projects", "tokens": "tokens", "tasks": "tasks", "posts": "posts", "friends": "friends", "coins": "coins" },
     "items": {
+      "firstCheckIn": { "title": "First Check-In", "description": "Complete your first check-in." },
+      "checkInWeek": { "title": "Check-In Sprout", "description": "Check in on 7 days in total." },
+      "checkInMonth": { "title": "Check-In Regular", "description": "Check in on 30 days in total." },
+      "streakThree": { "title": "Spark the Streak", "description": "Check in for 3 consecutive days." },
+      "streakWeek": { "title": "A Week on Fire", "description": "Check in for 7 consecutive days." },
+      "streakMonth": { "title": "Beacon of Persistence", "description": "Check in for 30 consecutive days." },
+      "firstProject": { "title": "Project Launch", "description": "Create your first project." },
+      "projectBuilder": { "title": "Project Architect", "description": "Create 5 projects in total." },
+      "tokenSpender": { "title": "Hundred-Token Fuel", "description": "Use 100 tokens across projects you created." },
+      "tokenMaster": { "title": "Energy Core", "description": "Use 500 tokens across projects you created." },
+      "firstTask": { "title": "Mission Complete", "description": "Complete your first task." },
+      "taskMaster": { "title": "Task Master", "description": "Complete 10 tasks in total." },
+      "firstPost": { "title": "First Broadcast", "description": "Publish your first post." },
+      "socialCircle": { "title": "Circle of Allies", "description": "Make 5 friends." },
       "firstPotOfGold": { "title": "First Pot of Gold", "description": "Earn a total of 100 coins." }
     }
   }

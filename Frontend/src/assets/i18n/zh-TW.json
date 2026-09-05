@@ -1470,9 +1470,24 @@
   },
   "privateAchievement": {
     "eyebrow": "你的旅程", "title": "成就", "subtitle": "回顧一路達成的里程碑，探索下一個值得挑戰的目標。",
-    "summaryLabel": "成就總覽", "unlocked": "已解鎖", "listLabel": "成就列表", "loading": "正在載入你的成就…", "loadFailed": "無法載入 coins 餘額，請稍後再試。",
+    "summaryLabel": "成就總覽", "unlocked": "已解鎖", "listLabel": "成就列表", "loading": "正在載入你的成就…", "loadFailed": "無法載入成就進度，請稍後再試。",
     "status": { "unlocked": "已解鎖", "inProgress": "進行中" },
+    "units": { "days": "天", "projects": "個專案", "tokens": "tokens", "tasks": "個任務", "posts": "篇貼文", "friends": "位好友", "coins": "coins" },
     "items": {
+      "firstCheckIn": { "title": "初次簽到", "description": "完成第一次簽到。" },
+      "checkInWeek": { "title": "簽到新芽", "description": "累積簽到 7 天。" },
+      "checkInMonth": { "title": "簽到常客", "description": "累積簽到 30 天。" },
+      "streakThree": { "title": "火苗初燃", "description": "連續簽到 3 天。" },
+      "streakWeek": { "title": "熱力一週", "description": "連續簽到 7 天。" },
+      "streakMonth": { "title": "恆心之光", "description": "連續簽到 30 天。" },
+      "firstProject": { "title": "專案啟航", "description": "建立第一個專案。" },
+      "projectBuilder": { "title": "專案建築師", "description": "累積建立 5 個專案。" },
+      "tokenSpender": { "title": "百點燃料", "description": "建立的專案累積消耗 100 tokens。" },
+      "tokenMaster": { "title": "能量核心", "description": "建立的專案累積消耗 500 tokens。" },
+      "firstTask": { "title": "使命完成", "description": "完成第一個任務。" },
+      "taskMaster": { "title": "任務達人", "description": "累積完成 10 個任務。" },
+      "firstPost": { "title": "初次發聲", "description": "發布第一篇貼文。" },
+      "socialCircle": { "title": "夥伴成群", "description": "結交 5 位好友。" },
       "firstPotOfGold": { "title": "第一桶金", "description": "累積獲得 100 coins。" }
     }
   }

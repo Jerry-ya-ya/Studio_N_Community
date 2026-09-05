@@ -14,31 +14,63 @@ describe('AchievementComponent', () => {
     changeDetector = { markForCheck: vi.fn() };
   });
 
-  it('unlocks 第一桶金 after earning 100 coins', () => {
-    vi.mocked(api.get).mockReturnValue(of({ coins: 100 }));
+  it('defines 15 achievements across check-ins, projects, tokens, tasks, posts and friends', () => {
+    const component = new AchievementComponent(api as ApiService, changeDetector as ChangeDetectorRef);
+
+    expect(component.achievements).toHaveLength(15);
+    expect(new Set(component.achievements.map(achievement => achievement.key)).size).toBe(15);
+    expect(component.achievements.map(achievement => achievement.stat)).toEqual(expect.arrayContaining([
+      'totalCheckIns',
+      'longestCheckInStreak',
+      'createdProjects',
+      'projectTokensUsed',
+      'completedTodos',
+      'createdPosts',
+      'friends',
+      'coins'
+    ]));
+  });
+
+  it('maps profile statistics to each achievement and unlocks reached targets', () => {
+    vi.mocked(api.get).mockReturnValue(of({
+      coins: 100,
+      achievementStats: {
+        totalCheckIns: 7,
+        longestCheckInStreak: 3,
+        createdProjects: 1,
+        projectTokensUsed: 100,
+        completedTodos: 1,
+        createdPosts: 1,
+        friends: 5
+      }
+    }));
     const component = new AchievementComponent(api as ApiService, changeDetector as ChangeDetectorRef);
 
     component.ngOnInit();
 
-    expect(component.achievements[0]).toEqual(expect.objectContaining({
-      key: 'firstPotOfGold',
+    expect(component.achievements.find(achievement => achievement.key === 'firstPotOfGold')).toEqual(expect.objectContaining({
       progress: 100,
       target: 100,
       unlocked: true
     }));
-    expect(component.unlockedCount).toBe(1);
+    expect(component.achievements.find(achievement => achievement.key === 'checkInWeek')?.unlocked).toBe(true);
+    expect(component.achievements.find(achievement => achievement.key === 'streakWeek')?.unlocked).toBe(false);
+    expect(component.achievements.find(achievement => achievement.key === 'tokenSpender')?.unlocked).toBe(true);
+    expect(component.unlockedCount).toBe(9);
     expect(component.loading).toBe(false);
   });
 
-  it('keeps 第一桶金 in progress before the user reaches 100 coins', () => {
+  it('keeps 第一桶金 in progress before the user reaches 100 coins and defaults missing stats to zero', () => {
     vi.mocked(api.get).mockReturnValue(of({ total_coins: 99 }));
     const component = new AchievementComponent(api as ApiService, changeDetector as ChangeDetectorRef);
 
     component.ngOnInit();
 
-    expect(component.achievements[0].progress).toBe(99);
-    expect(component.achievements[0].unlocked).toBe(false);
-    expect(component.progressPercent(component.achievements[0])).toBe(99);
+    const coinAchievement = component.achievements.find(achievement => achievement.key === 'firstPotOfGold')!;
+    expect(coinAchievement.progress).toBe(99);
+    expect(coinAchievement.unlocked).toBe(false);
+    expect(component.progressPercent(coinAchievement)).toBe(99);
+    expect(component.achievements.find(achievement => achievement.key === 'firstProject')?.progress).toBe(0);
   });
 
   it('caps visual progress at 100 percent when the balance exceeds the target', () => {
@@ -47,7 +79,8 @@ describe('AchievementComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.progressPercent(component.achievements[0])).toBe(100);
+    const coinAchievement = component.achievements.find(achievement => achievement.key === 'firstPotOfGold')!;
+    expect(component.progressPercent(coinAchievement)).toBe(100);
   });
 
   it('shows the load failure state when the profile request fails', () => {

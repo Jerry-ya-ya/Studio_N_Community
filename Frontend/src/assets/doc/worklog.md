@@ -694,3 +694,7 @@
 ## 2026/09/01
 
 - Display earned check-in coins on the private achievement page with localized labels and regression coverage.
+
+## 2026/09/05
+
+- Expand achievements to 15 data-driven milestones for check-ins, projects, token usage, tasks, posts, friends, and coins.
