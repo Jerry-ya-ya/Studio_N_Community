@@ -698,3 +698,7 @@
 ## 2026/09/05
 
 - Expand achievements to 15 data-driven milestones for check-ins, projects, token usage, tasks, posts, friends, and coins.
+
+## 2026/09/08
+
+- Add pytest coverage for Todo authentication, CRUD validation, ownership, team claims, assignments, and project token budgets.
