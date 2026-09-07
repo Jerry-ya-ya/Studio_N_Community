@@ -41,6 +41,7 @@ from routes.project_recruitment.project_recruitment import project_recruitment_b
 from routes.check_in.check_in import check_in_bp
 from routes.schedule.schedule import schedule_bp
 from rate_limit import limiter
+from achievements import init_achievement_listener
 
 def setup_database(app, retries=5, wait=2, create_schema=True):
     db.init_app(app)
@@ -209,6 +210,9 @@ def create_app(config_name="none"):
     app.register_blueprint(project_recruitment_bp, url_prefix='/api')
     app.register_blueprint(check_in_bp, url_prefix='/api')
     app.register_blueprint(schedule_bp, url_prefix='/api')
+
+    # Centralized listener for APIs that can unlock server-verified achievements.
+    init_achievement_listener(app)
     
     # 測試工具包含破壞性資料庫操作，只能在明確的 TestingConfig 下掛載。
     # 不依賴 FLASK_ENV 字串，避免環境變數缺漏或拼字錯誤時意外公開端點。

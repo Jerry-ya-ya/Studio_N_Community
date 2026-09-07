@@ -235,6 +235,23 @@ class DailyCheckIn(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='daily_check_ins')
 
+
+class UserAchievement(db.Model):
+    """An immutable record that a server-verified achievement was unlocked."""
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'achievement_key', name='uq_user_achievement_key'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    achievement_key = db.Column(db.String(50), nullable=False)
+    unlocked_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    user = db.relationship(
+        'User',
+        backref=db.backref('unlocked_achievements', cascade='all, delete-orphan'),
+    )
+
 class ActivityPromotion(db.Model):
     __table_args__ = (
         db.CheckConstraint("visibility IN ('public', 'private')", name='ck_activity_promotion_visibility'),
@@ -272,5 +289,6 @@ def load_models():
         ProjectRecruitment,
         ProjectRecruitmentMember,
         DailyCheckIn,
+        UserAchievement,
         ActivityPromotion,
     )

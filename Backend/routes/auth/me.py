@@ -3,56 +3,19 @@ import os
 from flask import Blueprint, current_app, jsonify, request
 from flask_jwt_extended import jwt_required, unset_refresh_cookies
 from flask_mail import Message
-from models import DailyCheckIn, db, Post, ProjectRecruitment, Todo, User
+from achievements import (
+    calculate_longest_checkin_streak,
+    evaluate_achievements,
+    get_achievement_stats,
+    serialize_achievements,
+)
+from models import User, db
 from routes.auth.email import generate_confirmation_token, mail
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
 
 me_bp = Blueprint('me', __name__)
 
-
-def calculate_longest_checkin_streak(checkin_dates):
-    """Return the longest run of consecutive dates in a check-in history."""
-    longest = 0
-    current = 0
-    previous = None
-
-    for checkin_date in sorted(set(checkin_dates)):
-        if previous and (checkin_date - previous).days == 1:
-            current += 1
-        else:
-            current = 1
-        longest = max(longest, current)
-        previous = checkin_date
-
-    return longest
-
-
-def get_achievement_stats(user):
-    checkin_dates = [
-        row[0]
-        for row in db.session.query(DailyCheckIn.checkin_date)
-        .filter(DailyCheckIn.user_id == user.id)
-        .order_by(DailyCheckIn.checkin_date.asc())
-        .all()
-    ]
-    created_projects = ProjectRecruitment.query.filter_by(creator_id=user.id).count()
-    project_tokens_used = int(db.session.query(
-        db.func.coalesce(db.func.sum(ProjectRecruitment.token_used), 0)
-    ).filter(ProjectRecruitment.creator_id == user.id).scalar() or 0)
-
-    return {
-        'totalCheckIns': len(checkin_dates),
-        'longestCheckInStreak': calculate_longest_checkin_streak(checkin_dates),
-        'createdProjects': created_projects,
-        'projectTokensUsed': project_tokens_used,
-        'completedTodos': Todo.query.filter(
-            Todo.claimed_by_id == user.id,
-            Todo.done.is_(True),
-        ).count(),
-        'createdPosts': Post.query.filter_by(user_id=user.id).count(),
-        'friends': len(user.friends),
-    }
 
 # GET：取得目前登入使用者資訊
 @me_bp.route('/me', methods=['GET'])
@@ -63,10 +26,8 @@ def get_current_user():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    total_coins = int(db.session.query(
-        db.func.coalesce(db.func.sum(DailyCheckIn.points), 0)
-    ).filter(DailyCheckIn.user_id == user.id).scalar() or 0)
-    achievement_stats = get_achievement_stats(user)
+    achievement_stats, achievement_records, _ = evaluate_achievements(user)
+    total_coins = achievement_stats['coins']
 
     return jsonify({
         'id': user.id,
@@ -83,7 +44,10 @@ def get_current_user():
         'coins': total_coins,
         'total_coins': total_coins,
         'totalCoins': total_coins,
-        'achievementStats': achievement_stats,
+        'achievementStats': {
+            key: value for key, value in achievement_stats.items() if key != 'coins'
+        },
+        'achievements': serialize_achievements(achievement_stats, achievement_records),
     })
 
 # PUT：更新使用者資訊

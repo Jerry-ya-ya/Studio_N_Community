@@ -1,10 +1,11 @@
 from flask import Blueprint, request
-from models import db, User
+from models import db, User, UserAchievement
 
 test_utils = Blueprint('test_utils', __name__)
 
 @test_utils.route('/test/clear-db', methods=['POST'])
 def clear_db():
+    UserAchievement.query.delete()
     User.query.delete()
     db.session.commit()
     return {'status': 'cleared'}

@@ -73,6 +73,25 @@ describe('AchievementComponent', () => {
     expect(component.achievements.find(achievement => achievement.key === 'firstProject')?.progress).toBe(0);
   });
 
+  it('uses the persistent backend verdict instead of inferring unlocks in the client', () => {
+    vi.mocked(api.get).mockReturnValue(of({
+      achievementStats: { totalCheckIns: 30 },
+      achievements: [{
+        key: 'checkInMonth',
+        progress: 30,
+        target: 30,
+        unlocked: false
+      }]
+    }));
+    const component = new AchievementComponent(api as ApiService, changeDetector as ChangeDetectorRef);
+
+    component.ngOnInit();
+
+    expect(component.achievements.find(achievement => achievement.key === 'checkInMonth')).toEqual(
+      expect.objectContaining({ progress: 30, target: 30, unlocked: false })
+    );
+  });
+
   it('caps visual progress at 100 percent when the balance exceeds the target', () => {
     vi.mocked(api.get).mockReturnValue(of({ totalCoins: 250 }));
     const component = new AchievementComponent(api as ApiService, changeDetector as ChangeDetectorRef);

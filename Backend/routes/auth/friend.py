@@ -2,6 +2,7 @@ from flask_jwt_extended import jwt_required
 from models import db, User, FriendRequest
 from flask import request, jsonify, Blueprint
 from routes.auth.utils import get_current_user_from_token
+from achievements import queue_achievement_check
 
 friend_bp = Blueprint('friend_bp', __name__)
 
@@ -127,6 +128,8 @@ def accept_friend_request(request_id):
         current_user.friends.append(from_user)
     if current_user not in from_user.friends:
         from_user.friends.append(current_user)
+
+    queue_achievement_check(from_user.id)
 
     db.session.delete(req)
     db.session.commit()

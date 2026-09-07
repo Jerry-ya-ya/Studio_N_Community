@@ -10,6 +10,7 @@ from log_writer import get_backend_logger
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso, to_taipei_text
+from achievements import queue_achievement_check
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
 project_logger = get_backend_logger('project_recruitment', 'project.log', message_only=True)
@@ -445,6 +446,7 @@ def review_project_recruitment(project_id):
         project.review_status = 'approved'
         for todo in pending_todos:
             breakdown = award_todo_reward(todo)
+            queue_achievement_check(todo.claimed_by_id)
             settlement_log_payloads.append(
                 serialize_todo_settlement_log_payload(project, todo, current_user, breakdown)
             )

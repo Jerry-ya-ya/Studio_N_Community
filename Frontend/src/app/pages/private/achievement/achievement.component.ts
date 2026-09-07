@@ -27,6 +27,7 @@ interface CurrentUser {
   total_coins?: number;
   totalCoins?: number;
   achievementStats?: Partial<Omit<AchievementStats, 'coins'>>;
+  achievements?: Array<Pick<Achievement, 'key' | 'progress' | 'target' | 'unlocked'>>;
 }
 
 @Component({
@@ -74,11 +75,20 @@ export class AchievementComponent implements OnInit {
           createdPosts: this.normalizeProgress(rawStats.createdPosts),
           friends: this.normalizeProgress(rawStats.friends)
         };
-        this.achievements = this.achievements.map(achievement => ({
-          ...achievement,
-          progress: stats[achievement.stat],
-          unlocked: stats[achievement.stat] >= achievement.target
-        }));
+        const verifiedAchievements = new Map(
+          (user.achievements ?? []).map(achievement => [achievement.key, achievement])
+        );
+        this.achievements = this.achievements.map(achievement => {
+          const verified = verifiedAchievements.get(achievement.key);
+          return {
+            ...achievement,
+            progress: this.normalizeProgress(verified?.progress ?? stats[achievement.stat]),
+            target: this.normalizeProgress(verified?.target ?? achievement.target),
+            // Prefer the persistent backend verdict. The fallback keeps the UI
+            // compatible while older backend instances are being upgraded.
+            unlocked: verified?.unlocked ?? stats[achievement.stat] >= achievement.target
+          };
+        });
         this.loading = false;
         this.cdr.markForCheck();
       },
