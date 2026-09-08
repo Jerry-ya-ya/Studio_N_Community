@@ -428,6 +428,54 @@ def parse_news_log_line(line):
     }
 
 
+def parse_activity_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-activity-{abs(hash(line))}',
+            'actor': 'Activity',
+            'action': 'recorded activity event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    action_key = payload.get('action') or 'activity_event'
+    action_labels = {
+        'create_activity': 'created activity',
+        'update_activity': 'updated activity',
+        'delete_activity': 'deleted activity',
+        'upload_activity_image': 'uploaded activity image',
+        'clear_activity_image': 'cleared activity image',
+    }
+    status = payload.get('status') or 'notice'
+    activity_id = payload.get('activity_id')
+    title = payload.get('title') or '-'
+    visibility = payload.get('visibility') or '-'
+    role = payload.get('role') or '-'
+    ip = payload.get('ip') or '-'
+    target = f'{title} / {visibility} / role {role} / IP {ip}'
+    if activity_id is not None:
+        target = f'#{activity_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{activity_id or payload.get('admin_id') or action_key}",
+        'actor': payload.get('username') or 'Admin',
+        'action': action_labels.get(action_key, 'recorded activity event'),
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': 'success' if status == 'success' else 'pending',
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 def build_register_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('register.log', limit)
@@ -481,6 +529,27 @@ def sign_in_logs():
 @admin_required
 def admin_sign_in_logs():
     return build_sign_in_logs_response()
+
+
+def build_activity_logs_response():
+    limit = read_limit()
+    log_path, lines = read_backend_log('activity.log', limit)
+    items = [parse_activity_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'activity',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/admin/logs/activity', methods=['GET'])
+@admin_required
+def admin_activity_logs():
+    return build_activity_logs_response()
 
 
 @logs_bp.route('/superadmin/logs/content', methods=['GET'])

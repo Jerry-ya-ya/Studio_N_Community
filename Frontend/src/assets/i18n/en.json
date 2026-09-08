@@ -1243,7 +1243,7 @@
     "hero": {
       "kicker": "Admin Audit",
       "title": "Private Logs",
-      "description": "Account, project, and sign-in records shared with admins for daily moderation."
+      "description": "Account, project, sign-in, and activity-management records shared with admins for daily moderation."
     },
     "aria": {
       "summary": "Log summary"
@@ -1255,7 +1255,7 @@
     "section": {
       "kicker": "Member Activity",
       "title": "Private",
-      "description": "User-facing records for account creation, project publishing, and sign-in activity."
+      "description": "Records for account creation, project publishing, sign-in, and activity management."
     },
     "groups": {
       "register": {
@@ -1269,6 +1269,10 @@
       "signIn": {
         "title": "Sign In Log",
         "description": "Tracks successful and failed sign-in activity."
+      },
+      "activity": {
+        "title": "Activity Log",
+        "description": "Tracks activity creation, edits, deletion, and image changes."
       }
     },
     "actions": {

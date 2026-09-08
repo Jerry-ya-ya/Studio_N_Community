@@ -702,3 +702,7 @@
 ## 2026/09/08
 
 - Add pytest coverage for Todo authentication, CRUD validation, ownership, team claims, assignments, and project token budgets.
+
+- Add centralized server-side achievement verification with persistent unlock records and API-triggered progress checks.
+
+- Add activity audit logging for admin mutations and expose the records in the admin logs page.

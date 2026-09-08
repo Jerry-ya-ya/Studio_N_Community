@@ -4,7 +4,7 @@ import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } fro
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
 interface AuditLogGroup {
-  key: 'register' | 'project' | 'signIn';
+  key: 'register' | 'project' | 'signIn' | 'activity';
   titleKey: string;
   descriptionKey: string;
   accent: string;
@@ -53,6 +53,18 @@ export class LogsComponent implements OnInit, OnDestroy {
       titleKey: 'adminLogs.groups.signIn.title',
       descriptionKey: 'adminLogs.groups.signIn.description',
       accent: 'var(--studio-warm)',
+      logs: [],
+      loading: false,
+      error: '',
+      source: '',
+      sourceCount: 0,
+      refresh$: new Subject<void>()
+    },
+    {
+      key: 'activity',
+      titleKey: 'adminLogs.groups.activity.title',
+      descriptionKey: 'adminLogs.groups.activity.description',
+      accent: 'var(--studio-danger)',
       logs: [],
       loading: false,
       error: '',
@@ -179,6 +191,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (group.key === 'project') {
       return this.auditLogService.getProjectLogs();
+    }
+    if (group.key === 'activity') {
+      return this.auditLogService.getActivityLogs();
     }
     return this.auditLogService.getSignInLogs();
   }
