@@ -13,7 +13,7 @@ from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 from achievements import queue_achievement_check
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
-project_logger = get_backend_logger('project_recruitment', 'project.log', message_only=True)
+project_logger = get_backend_logger('project_member', 'project_member.log', message_only=True)
 todo_settlement_logger = get_backend_logger('todo_settlement', 'todo_settlement.log', message_only=True)
 
 PRIORITY_REWARD_MULTIPLIERS = [1.5, 1.3, 1.2, 1.1, 1.0]
@@ -23,11 +23,23 @@ TODO_REWARD_COIN_DATE = date(1970, 1, 1)
 
 
 def write_project_log(level, **payload):
-    payload.setdefault('event', 'project_recruitment')
+    payload.setdefault('event', 'project_member')
     payload.setdefault('logged_at', to_taipei_iso(taipei_now()))
     log_method = getattr(project_logger, level, project_logger.info)
     log_method(json.dumps(payload, ensure_ascii=False))
 
+
+def get_client_ip():
+    return request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+
+
+def get_project_log_actor(user):
+    return {
+        'user_id': user.id,
+        'username': user.display_username,
+        'nickname': user.display_nickname or '-',
+        'role': user.role,
+    }
 
 
 def write_todo_settlement_log(level, **payload):
@@ -264,11 +276,12 @@ def create_project_recruitment():
     role_needed = data.get('role_needed', '').strip() or None
     contact = data.get('contact', '').strip() or None
     max_members = data.get('max_members')
-    client_ip = request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+    client_ip = get_client_ip()
 
     if not title:
         write_project_log(
             'warning',
+            action='create_project_recruitment',
             status='failed',
             reason='missing_title',
             creator_id=current_user.id,
@@ -285,6 +298,7 @@ def create_project_recruitment():
     if not summary:
         write_project_log(
             'warning',
+            action='create_project_recruitment',
             status='failed',
             reason='missing_summary',
             creator_id=current_user.id,
@@ -307,6 +321,7 @@ def create_project_recruitment():
         except (TypeError, ValueError):
             write_project_log(
                 'warning',
+                action='create_project_recruitment',
                 status='failed',
                 reason='invalid_max_members',
                 creator_id=current_user.id,
@@ -323,6 +338,7 @@ def create_project_recruitment():
         if max_members < 1:
             write_project_log(
                 'warning',
+                action='create_project_recruitment',
                 status='failed',
                 reason='max_members_too_low',
                 creator_id=current_user.id,
@@ -349,6 +365,7 @@ def create_project_recruitment():
     db.session.commit()
     write_project_log(
         'info',
+        action='create_project_recruitment',
         status='success',
         reason='created',
         project_id=project.id,
@@ -397,6 +414,20 @@ def join_project_recruitment(project_id):
         db.session.rollback()
         return jsonify({'message': '你已經登記加入此招募'}), 200
 
+    write_project_log(
+        'info',
+        action='join_project_recruitment',
+        status='success',
+        reason='joined',
+        project_id=project.id,
+        title=project.title,
+        membership_id=membership.id,
+        message=membership.message or '-',
+        member_count=len(project.members),
+        ip=get_client_ip(),
+        **get_project_log_actor(current_user),
+    )
+
     return jsonify(serialize_project(project, current_user))
 
 
@@ -419,6 +450,19 @@ def submit_project_review(project_id):
 
     project.review_status = 'pending'
     db.session.commit()
+
+    write_project_log(
+        'info',
+        action='submit_project_review',
+        status='success',
+        reason='submitted',
+        project_id=project.id,
+        title=project.title,
+        pending_todo_count=len(pending_todos),
+        review_status=project.review_status,
+        ip=get_client_ip(),
+        **get_project_log_actor(current_user),
+    )
 
     return jsonify(serialize_project(project, current_user))
 
@@ -461,6 +505,20 @@ def review_project_recruitment(project_id):
     for payload in settlement_log_payloads:
         write_todo_settlement_log('info', **payload)
 
+    if action == 'reject':
+        write_project_log(
+            'info',
+            action='reject_project_review',
+            status='success',
+            reason='rejected',
+            project_id=project.id,
+            title=project.title,
+            creator_id=project.creator_id,
+            review_status=project.review_status,
+            ip=get_client_ip(),
+            **get_project_log_actor(current_user),
+        )
+
     return jsonify(serialize_project(project, current_user))
 
 
@@ -475,8 +533,20 @@ def delete_project_recruitment(project_id):
     if project.creator_id != current_user.id:
         return jsonify({'error': '只能刪除自己發布的招募'}), 403
 
+    project_log_payload = {
+        'action': 'delete_project_recruitment',
+        'status': 'success',
+        'reason': 'deleted',
+        'project_id': project.id,
+        'title': project.title,
+        'member_count': len(project.members),
+        'review_status': project.review_status,
+        'ip': get_client_ip(),
+        **get_project_log_actor(current_user),
+    }
     db.session.delete(project)
     db.session.commit()
+    write_project_log('info', **project_log_payload)
 
     return jsonify({'message': '招募已刪除', 'id': project_id})
 
@@ -497,7 +567,21 @@ def leave_project_recruitment(project_id):
         return jsonify({'error': '你尚未登記加入此招募'}), 404
 
     project = membership.project
+    membership_id = membership.id
     db.session.delete(membership)
     db.session.commit()
+
+    write_project_log(
+        'info',
+        action='leave_project_recruitment',
+        status='success',
+        reason='left',
+        project_id=project.id,
+        title=project.title,
+        membership_id=membership_id,
+        member_count=len(project.members),
+        ip=get_client_ip(),
+        **get_project_log_actor(current_user),
+    )
 
     return jsonify(serialize_project(project, current_user))

@@ -167,15 +167,38 @@ def parse_project_log_line(line):
     ip = payload.get('ip') or '-'
     role_needed = payload.get('role_needed') or '-'
     max_members = payload.get('max_members') or '-'
+    action_name = payload.get('action')
 
-    if status == 'success':
+    action_labels = {
+        'create_project_recruitment': 'created project recruitment',
+        'join_project_recruitment': 'joined project recruitment',
+        'leave_project_recruitment': 'left project recruitment',
+        'delete_project_recruitment': 'deleted project recruitment',
+        'submit_project_review': 'submitted project settlement review',
+        'reject_project_review': 'rejected project settlement review',
+    }
+
+    if status == 'success' and action_name in action_labels:
+        action = action_labels[action_name]
+        row_status = 'success'
+    elif status == 'success':
+        # Keep compatibility with project logs written before action names were added.
         action = 'created project recruitment'
         row_status = 'success'
     else:
         action = f'failed project recruitment: {reason}'
         row_status = 'pending'
 
-    target = f'{title} / role {role_needed} / max {max_members} / IP {ip}'
+    if action_name in {'join_project_recruitment', 'leave_project_recruitment'}:
+        target = f"{title} / members {payload.get('member_count', '-')} / IP {ip}"
+    elif action_name in {
+        'delete_project_recruitment',
+        'submit_project_review',
+        'reject_project_review',
+    }:
+        target = f"{title} / review {payload.get('review_status', '-')} / IP {ip}"
+    else:
+        target = f'{title} / role {role_needed} / max {max_members} / IP {ip}'
     if project_id:
         target = f'#{project_id} {target}'
 
@@ -747,7 +770,7 @@ def todo_action_logs():
 
 def build_project_logs_response():
     limit = read_limit()
-    log_path, lines = read_backend_log('project.log', limit)
+    log_path, lines = read_backend_log('project_member.log', limit)
     items = [parse_project_log_line(line) for line in reversed(lines)]
 
     response = jsonify({

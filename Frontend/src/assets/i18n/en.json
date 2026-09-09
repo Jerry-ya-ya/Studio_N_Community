@@ -1264,7 +1264,7 @@
       },
       "project": {
         "title": "Project Log",
-        "description": "Tracks who created a project recruitment."
+        "description": "Tracks project recruitment membership, deletion, and settlement review activity."
       },
       "activity": {
         "title": "Activity Log",

@@ -1264,7 +1264,7 @@
       },
       "project": {
         "title": "專案紀錄",
-        "description": "追蹤誰建立了專案招募。"
+        "description": "追蹤專案招募的加入、退出、刪除與結算審查操作。"
       },
       "activity": {
         "title": "活動紀錄",

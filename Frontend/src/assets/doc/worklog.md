@@ -715,6 +715,8 @@
 
 - Move sign-in audit logs from the admin console to a superadmin-only route and view with authorization coverage.
 
+- Log project recruitment joins, departures, deletions, review submissions, and rejections to project_member.log with admin display coverage.
+
 ## 2026/09/10
 
 - Keep account audit logs in the admin view while moving sign-in audit logs to the superadmin-only view.
