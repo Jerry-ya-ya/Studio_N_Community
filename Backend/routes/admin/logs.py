@@ -362,6 +362,60 @@ def parse_todo_settlement_log_line(line):
         'raw': line,
     }
 
+
+def parse_todo_action_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-todo-action-{abs(hash(line))}',
+            'actor': 'Todo',
+            'action': 'recorded Todo action',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    action_key = payload.get('action') or 'todo_event'
+    action_labels = {
+        'create': 'created Todo',
+        'claim': 'claimed Todo',
+        'unclaim': 'unclaimed Todo',
+        'fill_time': 'filled Todo time',
+        'complete': 'completed Todo',
+        'delete': 'deleted Todo',
+        'deduct_project_token': 'deducted project tokens',
+    }
+    todo_id = payload.get('todo_id')
+    todo_text = payload.get('todo_text') or '-'
+    project_title = payload.get('project_title') or 'Personal Todo'
+    target = f'{todo_text} / {project_title}'
+    if action_key == 'fill_time':
+        target = f'{target} / Time {payload.get("duration_before", "-")} -> {payload.get("duration_after", "-")}'
+    elif action_key == 'deduct_project_token':
+        target = (
+            f'{target} / -{payload.get("token_cost", 0)} tokens / '
+            f'used {payload.get("token_used_before", "-")} -> {payload.get("token_used_after", "-")}'
+        )
+    if todo_id is not None:
+        target = f'#{todo_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{todo_id or 'todo'}-{action_key}",
+        'actor': payload.get('actor_nickname') or payload.get('actor_username') or 'Todo user',
+        'action': action_labels.get(action_key, 'recorded Todo action'),
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': 'success' if payload.get('status') == 'success' else 'notice',
+        'ip': payload.get('ip') or '-',
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
 def parse_news_log_line(line):
     try:
         payload = json.loads(line)
@@ -667,6 +721,23 @@ def todo_settlement_logs():
 
     response = jsonify({
         'type': 'todo-settlement',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/superadmin/logs/todo-action', methods=['GET'])
+@superadmin_required
+def todo_action_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('todo_action.log', limit)
+    items = [parse_todo_action_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'todo-action',
         'path': str(log_path),
         'count': len(lines),
         'items': items,

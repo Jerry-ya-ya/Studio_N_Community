@@ -1380,6 +1380,10 @@
         "title": "뉴스 로그",
         "description": "뉴스 콘텐츠나 배경 이미지를 누가 수정했는지 추적합니다."
       },
+      "todoAction": {
+        "title": "Todo 작업 로그",
+        "description": "Todo 생성, 할당, 할당 취소, 시간 입력, 완료, 삭제 및 프로젝트 토큰 차감을 추적합니다."
+      },
       "todoSettlement": {
         "title": "Todo 정산 로그",
         "description": "Todo 보상 정산 파라미터, 계산식, coins, 검토자를 추적합니다."
@@ -1415,6 +1419,7 @@
       "signInLoadFailed": "로그인 로그를 불러오지 못했습니다.",
       "contentLoadFailed": "콘텐츠 로그를 불러오지 못했습니다.",
       "newsLoadFailed": "뉴스 로그를 불러오지 못했습니다.",
+      "todoActionLoadFailed": "Todo 작업 로그를 불러오지 못했습니다.",
       "todoSettlementLoadFailed": "Todo 정산 로그를 불러오지 못했습니다."
     }
   },

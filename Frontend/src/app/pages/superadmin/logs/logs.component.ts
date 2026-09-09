@@ -4,7 +4,7 @@ import { merge, of, Subject, timer } from 'rxjs';
 import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
-type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'content' | 'news' | 'todoSettlement';
+type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'content' | 'news' | 'todoAction' | 'todoSettlement';
 type AuditLogSectionKey = 'admin';
 
 interface AuditLogGroup {
@@ -49,6 +49,10 @@ export class LogsComponent implements OnInit, OnDestroy {
   todoSettlementLoading = false;
   todoSettlementError = '';
   todoSettlementSource = '';
+  todoActionItems: AuditLogItem[] = [];
+  todoActionLoading = false;
+  todoActionError = '';
+  todoActionSource = '';
   collapsedGroups: Record<string, boolean> = {};
   expandedRawLogs: Record<string, boolean> = {};
   private destroy$ = new Subject<void>();
@@ -58,6 +62,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   private refreshContentLogs$ = new Subject<void>();
   private refreshNewsLogs$ = new Subject<void>();
   private refreshTodoSettlementLogs$ = new Subject<void>();
+  private refreshTodoActionLogs$ = new Subject<void>();
   private readonly collapsedStoragePrefix = 'superadmin.logs.collapsed';
 
   sections: AuditLogSection[] = [
@@ -77,6 +82,11 @@ export class LogsComponent implements OnInit, OnDestroy {
         {
           key: 'news',
           accent: 'var(--studio-accent)',
+          logs: []
+        },
+        {
+          key: 'todoAction',
+          accent: '#38bdf8',
           logs: []
         },
         {
@@ -100,6 +110,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.initializeSignInLogStream();
     this.initializeContentLogStream();
     this.initializeNewsLogStream();
+    this.initializeTodoActionLogStream();
     this.initializeTodoSettlementLogStream();
   }
 
@@ -138,6 +149,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isTodoSettlementGroup(group)) {
       this.loadTodoSettlementLogs();
     }
+    if (this.isTodoActionGroup(group)) {
+      this.loadTodoActionLogs();
+    }
   }
 
   isRegisterGroup(group: AuditLogGroup) {
@@ -164,6 +178,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.key === 'todoSettlement';
   }
 
+  isTodoActionGroup(group: AuditLogGroup) {
+    return group.key === 'todoAction';
+  }
+
   isLiveLogGroup(group: AuditLogGroup) {
     return (
       this.isRegisterGroup(group) ||
@@ -171,6 +189,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       this.isSignInGroup(group) ||
       this.isContentGroup(group) ||
       this.isNewsGroup(group) ||
+      this.isTodoActionGroup(group) ||
       this.isTodoSettlementGroup(group)
     );
   }
@@ -194,6 +213,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isTodoSettlementGroup(group)) {
       return this.todoSettlementItems;
     }
+    if (this.isTodoActionGroup(group)) {
+      return this.todoActionItems;
+    }
     return group.logs;
   }
 
@@ -216,6 +238,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isTodoSettlementGroup(group)) {
       return this.todoSettlementSource;
     }
+    if (this.isTodoActionGroup(group)) {
+      return this.todoActionSource;
+    }
     return '';
   }
 
@@ -226,6 +251,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       (this.isSignInGroup(group) && this.signInLoading) ||
       (this.isContentGroup(group) && this.contentLoading) ||
       (this.isNewsGroup(group) && this.newsLoading) ||
+      (this.isTodoActionGroup(group) && this.todoActionLoading) ||
       (this.isTodoSettlementGroup(group) && this.todoSettlementLoading)
     );
   }
@@ -248,6 +274,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isTodoSettlementGroup(group)) {
       return this.todoSettlementError;
+    }
+    if (this.isTodoActionGroup(group)) {
+      return this.todoActionError;
     }
     return '';
   }
@@ -323,6 +352,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshTodoSettlementLogs$.next();
   }
 
+  loadTodoActionLogs() {
+    this.refreshTodoActionLogs$.next();
+  }
+
   refreshGroup(group: AuditLogGroup) {
     if (this.isRegisterGroup(group)) {
       this.loadRegisterLogs();
@@ -341,6 +374,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isTodoSettlementGroup(group)) {
       this.loadTodoSettlementLogs();
+    }
+    if (this.isTodoActionGroup(group)) {
+      this.loadTodoActionLogs();
     }
   }
 
@@ -561,6 +597,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.todoSettlementLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeTodoActionLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.todoActionItems.length)
+    );
+
+    merge(initialRetry$, this.refreshTodoActionLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.todoActionLoading = true;
+        this.todoActionError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getTodoActionLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.todoActionLoadFailed') }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.todoActionItems = Array.isArray(response.items) ? response.items : [];
+          this.todoActionSource = this.formatSource(response.path, response.count ?? this.todoActionItems.length);
+          this.todoActionError = '';
+        } else {
+          this.todoActionItems = [];
+          this.todoActionSource = '';
+          this.todoActionError = error;
+        }
+
+        this.todoActionLoading = false;
         this.changeDetector.detectChanges();
       });
     });

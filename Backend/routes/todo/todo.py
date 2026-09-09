@@ -1,10 +1,14 @@
+import json
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
+from log_writer import get_backend_logger
 from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
 from routes.auth.utils import get_current_user_from_token
-from time_utils import to_taipei_text
+from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 
 todo_bp = Blueprint('todo', __name__)
+todo_action_logger = get_backend_logger('todo_action', 'todo_action.log', message_only=True)
 
 # Todos API
 
@@ -13,6 +17,52 @@ def display_user_name(user):
     if not user:
         return None
     return user.display_nickname or user.display_username
+
+
+def write_todo_action_log(action, user, todo, **details):
+    """Write one structured audit record after a successful Todo transaction."""
+    if isinstance(todo, dict):
+        todo_data = todo
+        project_title = todo_data.get('project_title')
+    else:
+        todo_data = {
+            'id': todo.id,
+            'text': todo.text,
+            'project_id': todo.project_id,
+            'created_by_id': todo.created_by_id,
+            'user_id': todo.user_id,
+            'claimed_by_id': todo.claimed_by_id,
+            'priority': todo.priority,
+            'difficulty': todo.difficulty,
+            'duration': todo.duration,
+            'done': todo.done,
+        }
+        project_title = todo.project.title if todo.project else None
+
+    payload = {
+        'event': 'todo_action',
+        'action': action,
+        'status': 'success',
+        'logged_at': to_taipei_iso(taipei_now()),
+        'actor_id': user.id,
+        'actor_username': user.display_username,
+        'actor_nickname': user.display_nickname,
+        'actor_role': user.role,
+        'ip': request.headers.get('X-Forwarded-For', request.remote_addr),
+        'todo_id': todo_data['id'],
+        'todo_text': todo_data['text'],
+        'project_id': todo_data.get('project_id'),
+        'project_title': project_title,
+        'created_by_id': todo_data.get('created_by_id'),
+        'assignee_id': todo_data.get('user_id'),
+        'claimed_by_id': todo_data.get('claimed_by_id'),
+        'priority': todo_data.get('priority'),
+        'difficulty': todo_data.get('difficulty'),
+        'duration': todo_data.get('duration'),
+        'done': todo_data.get('done'),
+    }
+    payload.update(details)
+    todo_action_logger.info(json.dumps(payload, ensure_ascii=False))
 
 
 def serialize_todo(todo):
@@ -154,6 +204,18 @@ def add_todo():
         db.session.add_all(new_todos)
         db.session.commit()
 
+        for todo in new_todos:
+            write_todo_action_log('create', user, todo)
+        write_todo_action_log(
+            'deduct_project_token',
+            user,
+            new_todos[0],
+            token_cost=token_cost,
+            token_used_before=token_used,
+            token_used_after=project.token_used,
+            token_budget=token_budget,
+        )
+
         return jsonify({
             'todos': [serialize_todo(todo) for todo in new_todos],
             'project': serialize_project_tokens(project),
@@ -172,6 +234,7 @@ def add_todo():
 
     db.session.add(new_todo)
     db.session.commit()
+    write_todo_action_log('create', user, new_todo)
 
     return jsonify(serialize_todo(new_todo))
 
@@ -229,6 +292,7 @@ def update_todo(todo_id):
         return jsonify({'error': 'Not found'}), 404
     
     data = request.get_json(silent=True) or {}
+    actions = []
     text = data.get('text')
     if text is not None:
         text = text.strip()
@@ -250,6 +314,11 @@ def update_todo(todo_id):
         duration = parse_level(data.get('duration'))
         if duration is None:
             return jsonify({'error': 'Todo duration must be between 0 and 9'}), 400
+        if todo.duration != duration:
+            actions.append(('fill_time', {
+                'duration_before': todo.duration,
+                'duration_after': duration,
+            }))
         todo.duration = duration
 
     if 'claimed' in data:
@@ -257,8 +326,12 @@ def update_todo(todo_id):
         if claimed:
             if todo.claimed_by_id and todo.claimed_by_id != user.id:
                 return jsonify({'error': '此任務已被其他成員佔領'}), 409
+            if todo.claimed_by_id != user.id:
+                actions.append(('claim', {}))
             todo.claimed_by_id = user.id
         elif todo.claimed_by_id in [None, user.id] or todo.created_by_id == user.id:
+            if todo.claimed_by_id is not None:
+                actions.append(('unclaim', {'previous_claimed_by_id': todo.claimed_by_id}))
             todo.claimed_by_id = None
         else:
             return jsonify({'error': '只能取消自己佔領的任務'}), 403
@@ -266,9 +339,14 @@ def update_todo(todo_id):
     if 'done' in data:
         if data.get('done') and todo.claimed_by_id != user.id:
             return jsonify({'error': '只能完成自己佔領的任務'}), 403
-        todo.done = bool(data.get('done'))
+        done = bool(data.get('done'))
+        if done and not todo.done:
+            actions.append(('complete', {}))
+        todo.done = done
 
     db.session.commit()
+    for action, details in actions:
+        write_todo_action_log(action, user, todo, **details)
 
     return jsonify(serialize_todo(todo))
 
@@ -284,6 +362,20 @@ def delete_todo(todo_id):
     if not todo:
             return jsonify({'error': 'Not found'}), 404
 
+    deleted_todo = {
+        'id': todo.id,
+        'text': todo.text,
+        'project_id': todo.project_id,
+        'project_title': todo.project.title if todo.project else None,
+        'created_by_id': todo.created_by_id,
+        'user_id': todo.user_id,
+        'claimed_by_id': todo.claimed_by_id,
+        'priority': todo.priority,
+        'difficulty': todo.difficulty,
+        'duration': todo.duration,
+        'done': todo.done,
+    }
     db.session.delete(todo)
     db.session.commit()
+    write_todo_action_log('delete', user, deleted_todo)
     return jsonify({'message': 'Deleted'})

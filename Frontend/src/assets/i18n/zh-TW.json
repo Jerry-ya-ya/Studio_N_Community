@@ -1380,6 +1380,10 @@
         "title": "新聞紀錄",
         "description": "追蹤誰修改了新聞內容或背景素材。"
       },
+      "todoAction": {
+        "title": "Todo 操作紀錄",
+        "description": "追蹤 Todo 建立、認領、取消認領、填 Time、完成、刪除與專案 Token 扣除。"
+      },
       "todoSettlement": {
         "title": "Todo 結算紀錄",
         "description": "追蹤 Todo 獎勵結算參數、算式、coins 與審核者。"
@@ -1415,6 +1419,7 @@
       "signInLoadFailed": "無法載入登入紀錄。",
       "contentLoadFailed": "無法載入內容紀錄。",
       "newsLoadFailed": "無法載入新聞紀錄。",
+      "todoActionLoadFailed": "無法載入 Todo 操作紀錄。",
       "todoSettlementLoadFailed": "無法載入 Todo 結算紀錄。"
     }
   },

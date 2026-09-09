@@ -1380,6 +1380,10 @@
         "title": "News Log",
         "description": "Tracks who modified news content or background assets."
       },
+      "todoAction": {
+        "title": "Todo Action Log",
+        "description": "Tracks Todo creation, claims, unclaims, time entry, completion, deletion, and project token deductions."
+      },
       "todoSettlement": {
         "title": "Todo Settlement Log",
         "description": "Tracks Todo reward settlement parameters, formulas, coins, and reviewers."
@@ -1415,6 +1419,7 @@
       "signInLoadFailed": "Unable to load sign in logs.",
       "contentLoadFailed": "Unable to load content logs.",
       "newsLoadFailed": "Unable to load news logs.",
+      "todoActionLoadFailed": "Unable to load Todo action logs.",
       "todoSettlementLoadFailed": "Unable to load todo settlement logs."
     }
   },

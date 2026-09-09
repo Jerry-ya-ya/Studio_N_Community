@@ -1380,6 +1380,10 @@
         "title": "ニュースログ",
         "description": "ニュース内容や背景素材を誰が変更したかを記録します。"
       },
+      "todoAction": {
+        "title": "Todo 操作ログ",
+        "description": "Todo の作成、担当、担当解除、時間入力、完了、削除、プロジェクトトークン控除を記録します。"
+      },
       "todoSettlement": {
         "title": "Todo 精算ログ",
         "description": "Todo 報酬精算のパラメータ、計算式、coins、レビュー担当者を記録します。"
@@ -1415,6 +1419,7 @@
       "signInLoadFailed": "サインインログを読み込めませんでした。",
       "contentLoadFailed": "コンテンツログを読み込めませんでした。",
       "newsLoadFailed": "ニュースログを読み込めませんでした。",
+      "todoActionLoadFailed": "Todo 操作ログを読み込めませんでした。",
       "todoSettlementLoadFailed": "Todo 精算ログを読み込めませんでした。"
     }
   },
