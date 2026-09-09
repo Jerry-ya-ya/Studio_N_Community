@@ -7,6 +7,7 @@ from models import db, User
 from itsdangerous import URLSafeTimedSerializer
 from flask_limiter.util import get_remote_address
 from rate_limit import limiter, email_rate_limit_key
+from routes.auth.security_log import log_security_event
 
 email_bp = Blueprint('email', __name__)
 
@@ -52,6 +53,7 @@ def verify_email(token):
 
     user.email_verified = True
     db.session.commit()
+    log_security_event('verify_email', user)
 
     # 生成 access token
     access_token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
@@ -87,5 +89,6 @@ def resend_verification():
     msg = Message('重新寄送帳號驗證信', sender='jerry0907zheng@gmail.com', recipients=[email])
     msg.body = f'請點擊以下連結完成帳號驗證：{link}'
     mail.send(msg)
+    log_security_event('resend_verification_email', user)
 
     return jsonify({'message': '驗證信已重新寄送'})

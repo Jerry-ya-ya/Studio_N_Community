@@ -1356,7 +1356,7 @@
       "admin": {
         "title": "管理ログ",
         "eyebrow": "管理アクティビティ",
-        "description": "サインイン、ホーム内容、ニュース変更、Todo 精算レビューの管理記録です。"
+        "description": "サインイン、セキュリティイベント、ホーム内容、ニュース変更、Todo 精算レビューの管理記録です。"
       }
     },
     "groups": {
@@ -1371,6 +1371,10 @@
       "signIn": {
         "title": "サインインログ",
         "description": "誰がサインインしたかを記録します。"
+      },
+      "security": {
+        "title": "セキュリティログ",
+        "description": "パスワード、メール認証、セッションのセキュリティイベントを記録します。"
       },
       "content": {
         "title": "コンテンツログ",
@@ -1417,6 +1421,7 @@
       "registerLoadFailed": "登録ログを読み込めませんでした。",
       "projectLoadFailed": "プロジェクトログを読み込めませんでした。",
       "signInLoadFailed": "サインインログを読み込めませんでした。",
+      "securityLoadFailed": "セキュリティログを読み込めませんでした。",
       "contentLoadFailed": "コンテンツログを読み込めませんでした。",
       "newsLoadFailed": "ニュースログを読み込めませんでした。",
       "todoActionLoadFailed": "Todo 操作ログを読み込めませんでした。",

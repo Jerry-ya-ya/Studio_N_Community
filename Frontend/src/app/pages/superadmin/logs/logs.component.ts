@@ -4,7 +4,7 @@ import { merge, of, Subject, timer } from 'rxjs';
 import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
-type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'content' | 'news' | 'todoAction' | 'todoSettlement';
+type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'security' | 'content' | 'news' | 'todoAction' | 'todoSettlement';
 type AuditLogSectionKey = 'admin';
 
 interface AuditLogGroup {
@@ -37,6 +37,10 @@ export class LogsComponent implements OnInit, OnDestroy {
   signInLoading = false;
   signInError = '';
   signInSource = '';
+  securityItems: AuditLogItem[] = [];
+  securityLoading = false;
+  securityError = '';
+  securitySource = '';
   contentItems: AuditLogItem[] = [];
   contentLoading = false;
   contentError = '';
@@ -59,6 +63,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   private refreshRegisterLogs$ = new Subject<void>();
   private refreshProjectLogs$ = new Subject<void>();
   private refreshSignInLogs$ = new Subject<void>();
+  private refreshSecurityLogs$ = new Subject<void>();
   private refreshContentLogs$ = new Subject<void>();
   private refreshNewsLogs$ = new Subject<void>();
   private refreshTodoSettlementLogs$ = new Subject<void>();
@@ -72,6 +77,11 @@ export class LogsComponent implements OnInit, OnDestroy {
         {
           key: 'signIn',
           accent: 'var(--studio-warm)',
+          logs: []
+        },
+        {
+          key: 'security',
+          accent: '#a78bfa',
           logs: []
         },
         {
@@ -108,6 +118,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadCollapsedGroups();
     this.initializeSignInLogStream();
+    this.initializeSecurityLogStream();
     this.initializeContentLogStream();
     this.initializeNewsLogStream();
     this.initializeTodoActionLogStream();
@@ -140,6 +151,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isSignInGroup(group)) {
       this.loadSignInLogs();
     }
+    if (this.isSecurityGroup(group)) {
+      this.loadSecurityLogs();
+    }
     if (this.isContentGroup(group)) {
       this.loadContentLogs();
     }
@@ -166,6 +180,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.key === 'signIn';
   }
 
+  isSecurityGroup(group: AuditLogGroup) {
+    return group.key === 'security';
+  }
+
   isContentGroup(group: AuditLogGroup) {
     return group.key === 'content';
   }
@@ -187,6 +205,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       this.isRegisterGroup(group) ||
       this.isProjectGroup(group) ||
       this.isSignInGroup(group) ||
+      this.isSecurityGroup(group) ||
       this.isContentGroup(group) ||
       this.isNewsGroup(group) ||
       this.isTodoActionGroup(group) ||
@@ -203,6 +222,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSignInGroup(group)) {
       return this.signInItems;
+    }
+    if (this.isSecurityGroup(group)) {
+      return this.securityItems;
     }
     if (this.isContentGroup(group)) {
       return this.contentItems;
@@ -229,6 +251,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isSignInGroup(group)) {
       return this.signInSource;
     }
+    if (this.isSecurityGroup(group)) {
+      return this.securitySource;
+    }
     if (this.isContentGroup(group)) {
       return this.contentSource;
     }
@@ -249,6 +274,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       (this.isRegisterGroup(group) && this.registerLoading) ||
       (this.isProjectGroup(group) && this.projectLoading) ||
       (this.isSignInGroup(group) && this.signInLoading) ||
+      (this.isSecurityGroup(group) && this.securityLoading) ||
       (this.isContentGroup(group) && this.contentLoading) ||
       (this.isNewsGroup(group) && this.newsLoading) ||
       (this.isTodoActionGroup(group) && this.todoActionLoading) ||
@@ -265,6 +291,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSignInGroup(group)) {
       return this.signInError;
+    }
+    if (this.isSecurityGroup(group)) {
+      return this.securityError;
     }
     if (this.isContentGroup(group)) {
       return this.contentError;
@@ -340,6 +369,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshSignInLogs$.next();
   }
 
+  loadSecurityLogs() {
+    this.refreshSecurityLogs$.next();
+  }
+
   loadContentLogs() {
     this.refreshContentLogs$.next();
   }
@@ -365,6 +398,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSignInGroup(group)) {
       this.loadSignInLogs();
+    }
+    if (this.isSecurityGroup(group)) {
+      this.loadSecurityLogs();
     }
     if (this.isContentGroup(group)) {
       this.loadContentLogs();
@@ -486,6 +522,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.signInLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeSecurityLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.securityItems.length)
+    );
+
+    merge(initialRetry$, this.refreshSecurityLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.securityLoading = true;
+        this.securityError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getSecurityLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.securityLoadFailed') }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.securityItems = Array.isArray(response.items) ? response.items : [];
+          this.securitySource = this.formatSource(response.path, response.count ?? this.securityItems.length);
+          this.securityError = '';
+        } else {
+          this.securityItems = [];
+          this.securitySource = '';
+          this.securityError = error;
+        }
+
+        this.securityLoading = false;
         this.changeDetector.detectChanges();
       });
     });

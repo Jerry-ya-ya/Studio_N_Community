@@ -609,6 +609,51 @@ def parse_account_log_line(line):
     }
 
 
+def parse_security_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-security-{abs(hash(line))}',
+            'actor': 'Security',
+            'action': 'recorded security event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    action_key = payload.get('action') or 'security_event'
+    action_labels = {
+        'change_password': 'changed password',
+        'verify_email': 'verified email',
+        'resend_verification_email': 'resent verification email',
+        'clear_refresh_token': 'cleared refresh token / logged out',
+    }
+    user_id = payload.get('user_id')
+    email = payload.get('email') or '-'
+    role = payload.get('role') or '-'
+    ip = payload.get('ip') or '-'
+    target = f'{email} / role {role} / IP {ip}'
+    if user_id is not None:
+        target = f'#{user_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{user_id or payload.get('username') or 'security'}-{action_key}",
+        'actor': payload.get('username') or 'Anonymous',
+        'action': action_labels.get(action_key, 'recorded security event'),
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': 'success' if payload.get('status') == 'success' else 'notice',
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 def build_register_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('register.log', limit)
@@ -698,6 +743,23 @@ def build_account_logs_response():
 @admin_required
 def admin_account_logs():
     return build_account_logs_response()
+
+
+@logs_bp.route('/superadmin/logs/security', methods=['GET'])
+@superadmin_required
+def security_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('security.log', limit)
+    items = [parse_security_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'security',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 
 @logs_bp.route('/superadmin/logs/content', methods=['GET'])

@@ -717,6 +717,8 @@
 
 - Log project recruitment joins, departures, deletions, review submissions, and rejections to project_member.log with admin display coverage.
 
+- Add security audit logging for password changes, email verification and resend events, and refresh-token logout clearing with superadmin visibility and regression coverage.
+
 ## 2026/09/10
 
 - Keep account audit logs in the admin view while moving sign-in audit logs to the superadmin-only view.

@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db
 from routes.auth.utils import get_current_user_from_token
+from routes.auth.security_log import log_security_event
 from password_policy import password_error_response
 
 changepassword_bp = Blueprint('changepassword', __name__)
@@ -35,5 +36,6 @@ def changepassword():
 
     user.password = generate_password_hash(new_pw)
     db.session.commit()
+    log_security_event('change_password', user)
 
     return jsonify({'message': '密碼修改成功'})

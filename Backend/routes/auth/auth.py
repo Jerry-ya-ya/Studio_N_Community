@@ -7,6 +7,7 @@ from flask_jwt_extended import (
     jwt_required,
     set_refresh_cookies,
     unset_refresh_cookies,
+    decode_token,
 )
 from models import db, User
 from routes.auth.email import generate_confirmation_token, mail
@@ -20,6 +21,7 @@ from datetime import timedelta
 from flask_limiter.util import get_remote_address
 from rate_limit import limiter, username_rate_limit_key, email_rate_limit_key, failed_response
 from password_policy import password_error_response
+from routes.auth.security_log import log_security_event
 
 auth_bp = Blueprint('auth', __name__)
 register_logger = get_backend_logger('register', 'register.log', message_only=True)
@@ -266,6 +268,17 @@ def refresh_access_token():
 
 @auth_bp.route('/refresh', methods=['DELETE'])
 def clear_refresh_token():
+    refresh_cookie = request.cookies.get(current_app.config.get('JWT_REFRESH_COOKIE_NAME', 'refresh_token_cookie'))
+    user = None
+    if refresh_cookie:
+        try:
+            user_id = decode_token(refresh_cookie, allow_expired=True).get('sub')
+            user = db.session.get(User, user_id)
+        except Exception:
+            pass
+
     response = jsonify({'message': 'Logged out'})
     unset_refresh_cookies(response)
+    if refresh_cookie:
+        log_security_event('clear_refresh_token', user, had_refresh_cookie=True)
     return response
