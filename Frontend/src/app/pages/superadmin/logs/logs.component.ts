@@ -4,7 +4,7 @@ import { merge, of, Subject, timer } from 'rxjs';
 import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } from 'rxjs/operators';
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
-type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'security' | 'content' | 'news' | 'todoAction' | 'todoSettlement';
+type AuditLogGroupKey = 'register' | 'project' | 'signIn' | 'security' | 'adminRole' | 'content' | 'news' | 'todoAction' | 'todoSettlement';
 type AuditLogSectionKey = 'admin';
 
 interface AuditLogGroup {
@@ -41,6 +41,10 @@ export class LogsComponent implements OnInit, OnDestroy {
   securityLoading = false;
   securityError = '';
   securitySource = '';
+  adminRoleItems: AuditLogItem[] = [];
+  adminRoleLoading = false;
+  adminRoleError = '';
+  adminRoleSource = '';
   contentItems: AuditLogItem[] = [];
   contentLoading = false;
   contentError = '';
@@ -64,6 +68,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   private refreshProjectLogs$ = new Subject<void>();
   private refreshSignInLogs$ = new Subject<void>();
   private refreshSecurityLogs$ = new Subject<void>();
+  private refreshAdminRoleLogs$ = new Subject<void>();
   private refreshContentLogs$ = new Subject<void>();
   private refreshNewsLogs$ = new Subject<void>();
   private refreshTodoSettlementLogs$ = new Subject<void>();
@@ -82,6 +87,11 @@ export class LogsComponent implements OnInit, OnDestroy {
         {
           key: 'security',
           accent: '#a78bfa',
+          logs: []
+        },
+        {
+          key: 'adminRole',
+          accent: '#fb7185',
           logs: []
         },
         {
@@ -119,6 +129,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.loadCollapsedGroups();
     this.initializeSignInLogStream();
     this.initializeSecurityLogStream();
+    this.initializeAdminRoleLogStream();
     this.initializeContentLogStream();
     this.initializeNewsLogStream();
     this.initializeTodoActionLogStream();
@@ -154,6 +165,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isSecurityGroup(group)) {
       this.loadSecurityLogs();
     }
+    if (this.isAdminRoleGroup(group)) {
+      this.loadAdminRoleLogs();
+    }
     if (this.isContentGroup(group)) {
       this.loadContentLogs();
     }
@@ -184,6 +198,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     return group.key === 'security';
   }
 
+  isAdminRoleGroup(group: AuditLogGroup) {
+    return group.key === 'adminRole';
+  }
+
   isContentGroup(group: AuditLogGroup) {
     return group.key === 'content';
   }
@@ -206,6 +224,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       this.isProjectGroup(group) ||
       this.isSignInGroup(group) ||
       this.isSecurityGroup(group) ||
+      this.isAdminRoleGroup(group) ||
       this.isContentGroup(group) ||
       this.isNewsGroup(group) ||
       this.isTodoActionGroup(group) ||
@@ -225,6 +244,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSecurityGroup(group)) {
       return this.securityItems;
+    }
+    if (this.isAdminRoleGroup(group)) {
+      return this.adminRoleItems;
     }
     if (this.isContentGroup(group)) {
       return this.contentItems;
@@ -254,6 +276,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     if (this.isSecurityGroup(group)) {
       return this.securitySource;
     }
+    if (this.isAdminRoleGroup(group)) {
+      return this.adminRoleSource;
+    }
     if (this.isContentGroup(group)) {
       return this.contentSource;
     }
@@ -275,6 +300,7 @@ export class LogsComponent implements OnInit, OnDestroy {
       (this.isProjectGroup(group) && this.projectLoading) ||
       (this.isSignInGroup(group) && this.signInLoading) ||
       (this.isSecurityGroup(group) && this.securityLoading) ||
+      (this.isAdminRoleGroup(group) && this.adminRoleLoading) ||
       (this.isContentGroup(group) && this.contentLoading) ||
       (this.isNewsGroup(group) && this.newsLoading) ||
       (this.isTodoActionGroup(group) && this.todoActionLoading) ||
@@ -294,6 +320,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSecurityGroup(group)) {
       return this.securityError;
+    }
+    if (this.isAdminRoleGroup(group)) {
+      return this.adminRoleError;
     }
     if (this.isContentGroup(group)) {
       return this.contentError;
@@ -373,6 +402,10 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.refreshSecurityLogs$.next();
   }
 
+  loadAdminRoleLogs() {
+    this.refreshAdminRoleLogs$.next();
+  }
+
   loadContentLogs() {
     this.refreshContentLogs$.next();
   }
@@ -401,6 +434,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     }
     if (this.isSecurityGroup(group)) {
       this.loadSecurityLogs();
+    }
+    if (this.isAdminRoleGroup(group)) {
+      this.loadAdminRoleLogs();
     }
     if (this.isContentGroup(group)) {
       this.loadContentLogs();
@@ -559,6 +595,43 @@ export class LogsComponent implements OnInit, OnDestroy {
         }
 
         this.securityLoading = false;
+        this.changeDetector.detectChanges();
+      });
+    });
+  }
+
+  private initializeAdminRoleLogStream() {
+    const initialRetry$ = timer(0, 1000).pipe(
+      take(8),
+      filter(() => !this.adminRoleItems.length)
+    );
+
+    merge(initialRetry$, this.refreshAdminRoleLogs$).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        this.adminRoleLoading = true;
+        this.adminRoleError = '';
+      }),
+      switchMap(() =>
+        this.auditLogService.getAdminRoleLogs().pipe(
+          timeout(10000),
+          map(response => ({ response, error: '' })),
+          catchError(() => of({ response: null, error: this.translate.instant('superadminLogs.feedback.adminRoleLoadFailed') }))
+        )
+      )
+    ).subscribe(({ response, error }) => {
+      this.zone.run(() => {
+        if (response) {
+          this.adminRoleItems = Array.isArray(response.items) ? response.items : [];
+          this.adminRoleSource = this.formatSource(response.path, response.count ?? this.adminRoleItems.length);
+          this.adminRoleError = '';
+        } else {
+          this.adminRoleItems = [];
+          this.adminRoleSource = '';
+          this.adminRoleError = error;
+        }
+
+        this.adminRoleLoading = false;
         this.changeDetector.detectChanges();
       });
     });

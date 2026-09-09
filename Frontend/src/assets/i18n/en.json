@@ -1356,7 +1356,7 @@
       "admin": {
         "title": "Admin",
         "eyebrow": "Management Activity",
-        "description": "Administrative records for sign-ins, security events, homepage content, news changes, and Todo settlement reviews."
+        "description": "Administrative records for sign-ins, security events, role changes, homepage content, news changes, and Todo settlement reviews."
       }
     },
     "groups": {
@@ -1375,6 +1375,10 @@
       "security": {
         "title": "Security Log",
         "description": "Tracks password, email verification, and session security events."
+      },
+      "adminRole": {
+        "title": "Admin Role Log",
+        "description": "Tracks superadmin promotions and demotions from the promote page."
       },
       "content": {
         "title": "Content Log",
@@ -1422,6 +1426,7 @@
       "projectLoadFailed": "Unable to load project logs.",
       "signInLoadFailed": "Unable to load sign in logs.",
       "securityLoadFailed": "Unable to load security logs.",
+      "adminRoleLoadFailed": "Unable to load admin role logs.",
       "contentLoadFailed": "Unable to load content logs.",
       "newsLoadFailed": "Unable to load news logs.",
       "todoActionLoadFailed": "Unable to load Todo action logs.",

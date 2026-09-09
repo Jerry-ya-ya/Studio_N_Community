@@ -54,6 +54,10 @@ export class AuditLogService {
     return this.getLogs('/superadmin/logs/security', limit);
   }
 
+  getAdminRoleLogs(limit = 50): Observable<AuditLogResponse> {
+    return this.getLogs('/superadmin/logs/admin-role', limit);
+  }
+
   getContentLogs(limit = 50): Observable<AuditLogResponse> {
     return this.getLogs('/superadmin/logs/content', limit);
   }

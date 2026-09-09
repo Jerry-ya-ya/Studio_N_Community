@@ -724,3 +724,5 @@
 - Keep account audit logs in the admin view while moving sign-in audit logs to the superadmin-only view.
 
 - Add Todo action audit logging for lifecycle events and project token deductions with superadmin visibility and regression coverage.
+
+- Expose superadmin promotion and demotion audit logs in the frontend logs dashboard with localized labels and regression coverage.

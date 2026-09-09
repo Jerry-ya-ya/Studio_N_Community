@@ -654,6 +654,50 @@ def parse_security_log_line(line):
     }
 
 
+def parse_admin_role_log_line(line):
+    try:
+        payload = json.loads(line)
+    except (TypeError, ValueError):
+        return {
+            'id': f'legacy-admin-role-{abs(hash(line))}',
+            'actor': 'Superadmin',
+            'action': 'recorded admin role event',
+            'target': line,
+            'time': '-',
+            'status': 'notice',
+            'rawJson': None,
+            'raw_json': None,
+            'raw': line,
+        }
+
+    action_key = payload.get('action') or 'admin_role_event'
+    action_labels = {
+        'promote_user': 'promoted user to admin',
+        'demote_user': 'demoted admin to user',
+    }
+    target_user_id = payload.get('target_user_id')
+    target_name = payload.get('target_nickname') or payload.get('target_username') or 'Unknown user'
+    previous_role = payload.get('previous_role') or '-'
+    new_role = payload.get('new_role') or '-'
+    ip = payload.get('ip') or '-'
+    target = f'{target_name} / {previous_role} -> {new_role} / IP {ip}'
+    if target_user_id is not None:
+        target = f'#{target_user_id} {target}'
+
+    return {
+        'id': f"{payload.get('logged_at') or '-'}-{target_user_id or payload.get('target_username') or 'user'}-{action_key}",
+        'actor': payload.get('nickname') or payload.get('username') or 'Superadmin',
+        'action': action_labels.get(action_key, 'changed admin role'),
+        'target': target,
+        'time': payload.get('logged_at') or '-',
+        'status': 'success' if payload.get('status') == 'success' else 'notice',
+        'ip': ip,
+        'rawJson': payload,
+        'raw_json': payload,
+        'raw': line,
+    }
+
+
 def build_register_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('register.log', limit)
@@ -754,6 +798,23 @@ def security_logs():
 
     response = jsonify({
         'type': 'security',
+        'path': str(log_path),
+        'count': len(lines),
+        'items': items,
+    })
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@logs_bp.route('/superadmin/logs/admin-role', methods=['GET'])
+@superadmin_required
+def admin_role_logs():
+    limit = read_limit()
+    log_path, lines = read_backend_log('admin_role.log', limit)
+    items = [parse_admin_role_log_line(line) for line in reversed(lines)]
+
+    response = jsonify({
+        'type': 'admin-role',
         'path': str(log_path),
         'count': len(lines),
         'items': items,

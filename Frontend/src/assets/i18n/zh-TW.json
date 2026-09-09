@@ -1356,7 +1356,7 @@
       "admin": {
         "title": "管理紀錄",
         "eyebrow": "管理活動",
-        "description": "記錄登入、安全事件、首頁內容、新聞變更與 Todo 結算審核。"
+        "description": "記錄登入、安全事件、角色異動、首頁內容、新聞變更與 Todo 結算審核。"
       }
     },
     "groups": {
@@ -1375,6 +1375,10 @@
       "security": {
         "title": "安全紀錄",
         "description": "追蹤密碼、Email 驗證與登出階段的安全事件。"
+      },
+      "adminRole": {
+        "title": "管理員角色紀錄",
+        "description": "追蹤超級管理員在權限頁面的晉升與降級操作。"
       },
       "content": {
         "title": "內容紀錄",
@@ -1422,6 +1426,7 @@
       "projectLoadFailed": "無法載入專案紀錄。",
       "signInLoadFailed": "無法載入登入紀錄。",
       "securityLoadFailed": "無法載入安全紀錄。",
+      "adminRoleLoadFailed": "無法載入管理員角色紀錄。",
       "contentLoadFailed": "無法載入內容紀錄。",
       "newsLoadFailed": "無法載入新聞紀錄。",
       "todoActionLoadFailed": "無法載入 Todo 操作紀錄。",
