@@ -10,6 +10,7 @@ from achievements import (
     serialize_achievements,
 )
 from models import User, db
+from routes.auth.account_log import log_account_event
 from routes.auth.email import generate_confirmation_token, mail
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
@@ -62,6 +63,12 @@ def update_current_user():
     data = request.get_json(silent=True) or {}
     new_email = data.get('email')
     email_changed = False
+    previous_values = {
+        'email': user.email,
+        'nickname': user.nickname,
+        'github_url': user.github_url,
+        'avatar_source': user.avatar_source or 'github',
+    }
 
     if new_email is not None:
         new_email = new_email.strip()
@@ -86,6 +93,20 @@ def update_current_user():
             return jsonify({'error': 'Avatar source must be local or github'}), 400
         user.avatar_source = avatar_source
     db.session.commit()
+
+    current_values = {
+        'email': user.email,
+        'nickname': user.nickname,
+        'github_url': user.github_url,
+        'avatar_source': user.avatar_source or 'github',
+    }
+    changes = {
+        field: {'from': previous_values[field], 'to': value}
+        for field, value in current_values.items()
+        if previous_values[field] != value
+    }
+    if changes:
+        log_account_event('update_profile', user, changes=changes)
 
     if email_changed:
         token = generate_confirmation_token(user.email)
@@ -144,6 +165,14 @@ def delete_current_user():
         return jsonify({'error': 'Type DELETE to confirm account deletion'}), 400
 
     deleted_label = f'deleted_user_{user.id}'
+    deleted_identity = {
+        'username': user.username,
+        'nickname': user.nickname,
+        'email': user.email,
+        'github_url': user.github_url,
+        'avatar_url': user.avatar_url,
+        'avatar_source': user.avatar_source or 'github',
+    }
     user.is_deleted = True
     user.deleted_at = taipei_now()
     user.email_verified = False
@@ -154,6 +183,14 @@ def delete_current_user():
     user.avatar_url = None
     user.avatar_source = 'github'
     db.session.commit()
+    log_account_event(
+        'soft_delete_account',
+        user,
+        username=deleted_identity['username'],
+        nickname=deleted_identity['nickname'] or '-',
+        previous_identity=deleted_identity,
+        deleted_at=to_taipei_iso(user.deleted_at),
+    )
 
     response = jsonify({'message': 'Account deleted'})
     unset_refresh_cookies(response)

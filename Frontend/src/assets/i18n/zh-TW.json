@@ -1273,6 +1273,10 @@
       "activity": {
         "title": "活動紀錄",
         "description": "追蹤活動的建立、修改、刪除與圖片變更。"
+      },
+      "account": {
+        "title": "帳號紀錄",
+        "description": "追蹤個人資料修改、頭像上傳與帳號刪除。"
       }
     },
     "actions": {

@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required
 from models import db
 from routes.auth.utils import get_current_user_from_token
+from routes.auth.account_log import log_account_event
 from image_upload import InvalidImageError, save_validated_image
 
 avatar_bp = Blueprint('avatar', __name__)
@@ -29,9 +30,20 @@ def upload_avatar():
     except InvalidImageError as error:
         return jsonify({'error': str(error), 'code': 'invalid_image'}), 400
 
+    previous_avatar_url = user.avatar_url
+    previous_avatar_source = user.avatar_source or 'github'
     user.avatar_url = f'/static/uploads/avatar/{filename}'
     user.avatar_source = 'local'
     db.session.commit()
+    log_account_event(
+        'upload_avatar',
+        user,
+        filename=filename,
+        avatar_url=user.avatar_url,
+        previous_avatar_url=previous_avatar_url,
+        previous_avatar_source=previous_avatar_source,
+        avatar_source=user.avatar_source,
+    )
 
     return jsonify({
         'message': 'Avatar uploaded',

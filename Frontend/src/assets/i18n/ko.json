@@ -1273,6 +1273,10 @@
       "activity": {
         "title": "활동 로그",
         "description": "활동 생성, 수정, 삭제 및 이미지 변경을 추적합니다."
+      },
+      "account": {
+        "title": "계정 로그",
+        "description": "프로필 변경, 아바타 업로드 및 계정 삭제를 추적합니다."
       }
     },
     "actions": {

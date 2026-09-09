@@ -1273,6 +1273,10 @@
       "activity": {
         "title": "Activity Log",
         "description": "Tracks activity creation, edits, deletion, and image changes."
+      },
+      "account": {
+        "title": "Account Log",
+        "description": "Tracks profile changes, avatar uploads, and account deletion."
       }
     },
     "actions": {

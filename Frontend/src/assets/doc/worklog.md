@@ -706,3 +706,9 @@
 - Add centralized server-side achievement verification with persistent unlock records and API-triggered progress checks.
 
 - Add activity audit logging for admin mutations and expose the records in the admin logs page.
+
+## 2026/09/09
+
+- Add admin role audit logging for superadmin promotions and demotions with regression coverage.
+
+- Add account audit logging for profile changes, avatar uploads, and soft deletion with admin visibility and regression coverage.
