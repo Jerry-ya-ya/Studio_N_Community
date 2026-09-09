@@ -1243,7 +1243,7 @@
     "hero": {
       "kicker": "管理員稽核",
       "title": "私人紀錄",
-      "description": "提供給管理員日常管理使用的帳號、專案、登入與活動管理紀錄。"
+      "description": "提供給管理員日常管理使用的帳號、專案與活動管理紀錄。"
     },
     "aria": {
       "summary": "紀錄摘要"
@@ -1255,7 +1255,7 @@
     "section": {
       "kicker": "成員活動",
       "title": "私人",
-      "description": "使用者註冊、專案發布、登入與活動管理的相關紀錄。"
+      "description": "使用者註冊、專案發布與活動管理的相關紀錄。"
     },
     "groups": {
       "register": {
@@ -1265,10 +1265,6 @@
       "project": {
         "title": "專案紀錄",
         "description": "追蹤誰建立了專案招募。"
-      },
-      "signIn": {
-        "title": "登入紀錄",
-        "description": "追蹤成功與失敗的登入活動。"
       },
       "activity": {
         "title": "活動紀錄",
@@ -1360,7 +1356,7 @@
       "admin": {
         "title": "管理紀錄",
         "eyebrow": "管理活動",
-        "description": "記錄首頁內容、新聞變更與 Todo 結算審核。"
+        "description": "記錄登入、首頁內容、新聞變更與 Todo 結算審核。"
       }
     },
     "groups": {

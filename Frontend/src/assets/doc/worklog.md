@@ -712,3 +712,9 @@
 - Add admin role audit logging for superadmin promotions and demotions with regression coverage.
 
 - Add account audit logging for profile changes, avatar uploads, and soft deletion with admin visibility and regression coverage.
+
+- Move sign-in audit logs from the admin console to a superadmin-only route and view with authorization coverage.
+
+## 2026/09/10
+
+- Keep account audit logs in the admin view while moving sign-in audit logs to the superadmin-only view.

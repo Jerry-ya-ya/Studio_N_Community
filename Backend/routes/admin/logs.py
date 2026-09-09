@@ -581,12 +581,6 @@ def sign_in_logs():
     return build_sign_in_logs_response()
 
 
-@logs_bp.route('/admin/logs/sign-in', methods=['GET'])
-@admin_required
-def admin_sign_in_logs():
-    return build_sign_in_logs_response()
-
-
 def build_activity_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('activity.log', limit)

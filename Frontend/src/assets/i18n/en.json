@@ -1243,7 +1243,7 @@
     "hero": {
       "kicker": "Admin Audit",
       "title": "Private Logs",
-      "description": "Account, project, sign-in, and activity-management records shared with admins for daily moderation."
+      "description": "Account, project, and activity-management records shared with admins for daily moderation."
     },
     "aria": {
       "summary": "Log summary"
@@ -1255,7 +1255,7 @@
     "section": {
       "kicker": "Member Activity",
       "title": "Private",
-      "description": "Records for account creation, project publishing, sign-in, and activity management."
+      "description": "Records for account creation, project publishing, and activity management."
     },
     "groups": {
       "register": {
@@ -1265,10 +1265,6 @@
       "project": {
         "title": "Project Log",
         "description": "Tracks who created a project recruitment."
-      },
-      "signIn": {
-        "title": "Sign In Log",
-        "description": "Tracks successful and failed sign-in activity."
       },
       "activity": {
         "title": "Activity Log",
@@ -1360,7 +1356,7 @@
       "admin": {
         "title": "Admin",
         "eyebrow": "Management Activity",
-        "description": "Administrative records for homepage content, news changes, and Todo settlement reviews."
+        "description": "Administrative records for sign-ins, homepage content, news changes, and Todo settlement reviews."
       }
     },
     "groups": {

@@ -39,7 +39,7 @@ export class AuditLogService {
   }
 
   getSignInLogs(limit = 50): Observable<AuditLogResponse> {
-    return this.getLogs('/admin/logs/sign-in', limit);
+    return this.getLogs('/superadmin/logs/sign-in', limit);
   }
 
   getActivityLogs(limit = 50): Observable<AuditLogResponse> {

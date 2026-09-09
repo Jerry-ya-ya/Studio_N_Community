@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 //AppPath
 import { appPath } from '../path/app-path-const'; // Adjust the import path as necessary
+import { superadminGuard } from '../core/guards/superadmin.guard';
 
 const routes: Routes = [
   {
@@ -71,6 +72,7 @@ const routes: Routes = [
   },
   {
     path: appPath.superadminLogs,
+    canMatch: [superadminGuard],
     loadChildren: () =>
       import('../pages/superadmin/logs/logs.module').then(m => m.LogsModule)
   },
