@@ -720,12 +720,6 @@ def register_logs():
     return build_register_logs_response()
 
 
-@logs_bp.route('/admin/logs/register', methods=['GET'])
-@admin_required
-def admin_register_logs():
-    return build_register_logs_response()
-
-
 def build_sign_in_logs_response():
     limit = read_limit()
     log_path, lines = read_backend_log('sign_in.log', limit)

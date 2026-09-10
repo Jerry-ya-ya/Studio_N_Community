@@ -80,6 +80,11 @@ export class LogsComponent implements OnInit, OnDestroy {
       key: 'admin',
       groups: [
         {
+          key: 'register',
+          accent: 'var(--studio-success)',
+          logs: []
+        },
+        {
           key: 'signIn',
           accent: 'var(--studio-warm)',
           logs: []
@@ -127,6 +132,7 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadCollapsedGroups();
+    this.initializeRegisterLogStream();
     this.initializeSignInLogStream();
     this.initializeSecurityLogStream();
     this.initializeAdminRoleLogStream();

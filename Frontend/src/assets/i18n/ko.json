@@ -1243,7 +1243,7 @@
     "hero": {
       "kicker": "관리자 감사",
       "title": "비공개 로그",
-      "description": "일상적인 관리를 위해 관리자에게 공유되는 계정, 프로젝트 및 활동 관리 기록입니다."
+      "description": "일상적인 관리를 위해 관리자에게 공유되는 프로젝트 및 활동 관리 기록입니다."
     },
     "aria": {
       "summary": "로그 요약"
@@ -1255,13 +1255,9 @@
     "section": {
       "kicker": "멤버 활동",
       "title": "비공개",
-      "description": "계정 생성, 프로젝트 게시 및 활동 관리에 대한 기록입니다."
+      "description": "프로젝트 게시 및 활동 관리에 대한 기록입니다."
     },
     "groups": {
-      "register": {
-        "title": "가입 로그",
-        "description": "새 계정을 등록한 사용자를 추적합니다."
-      },
       "project": {
         "title": "프로젝트 로그",
         "description": "프로젝트 모집 참여, 탈퇴, 삭제 및 정산 심사 활동을 추적합니다."
@@ -1362,7 +1358,7 @@
     "groups": {
       "register": {
         "title": "가입 로그",
-        "description": "누가 계정을 가입했는지 추적합니다."
+        "description": "새 계정을 등록한 사용자를 추적합니다."
       },
       "project": {
         "title": "프로젝트 로그",

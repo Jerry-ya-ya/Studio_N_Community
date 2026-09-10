@@ -728,3 +728,5 @@
 - Expose superadmin promotion and demotion audit logs in the frontend logs dashboard with localized labels and regression coverage.
 
 - Add token-driven project levels with persisted migration, automatic consumption upgrades, Roman-numeral UI labels, and regression coverage.
+
+- Move registration audit logs from the admin console to a superadmin-only route and dashboard with authorization coverage.

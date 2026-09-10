@@ -31,7 +31,7 @@ export class AuditLogService {
   constructor(private apiService: ApiService) {}
 
   getRegisterLogs(limit = 50): Observable<AuditLogResponse> {
-    return this.getLogs('/admin/logs/register', limit);
+    return this.getLogs('/superadmin/logs/register', limit);
   }
 
   getProjectLogs(limit = 50): Observable<AuditLogResponse> {

@@ -4,7 +4,7 @@ import { catchError, filter, map, switchMap, take, takeUntil, tap, timeout } fro
 import { AuditLogItem, AuditLogService } from '../../../core/services/audit-log.service';
 
 interface AuditLogGroup {
-  key: 'register' | 'project' | 'activity' | 'account';
+  key: 'project' | 'activity' | 'account';
   titleKey: string;
   descriptionKey: string;
   accent: string;
@@ -24,18 +24,6 @@ interface AuditLogGroup {
 })
 export class LogsComponent implements OnInit, OnDestroy {
   groups: AuditLogGroup[] = [
-    {
-      key: 'register',
-      titleKey: 'adminLogs.groups.register.title',
-      descriptionKey: 'adminLogs.groups.register.description',
-      accent: 'var(--studio-success)',
-      logs: [],
-      loading: false,
-      error: '',
-      source: '',
-      sourceCount: 0,
-      refresh$: new Subject<void>()
-    },
     {
       key: 'project',
       titleKey: 'adminLogs.groups.project.title',
@@ -186,9 +174,6 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   private fetchGroupLogs(group: AuditLogGroup) {
-    if (group.key === 'register') {
-      return this.auditLogService.getRegisterLogs();
-    }
     if (group.key === 'project') {
       return this.auditLogService.getProjectLogs();
     }
