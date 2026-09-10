@@ -740,3 +740,5 @@
 - Add pytest coverage for admin home news validation, CRUD, image uploads, member listings, and superadmin role management.
 
 - Add pytest coverage for post CRUD validation, authorization, likes, serialization, and pagination.
+
+- Add pytest coverage for friend request validation, listing, acceptance, rejection, deletion, authorization, and profile serialization.
