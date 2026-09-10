@@ -730,3 +730,5 @@
 - Add token-driven project levels with persisted migration, automatic consumption upgrades, Roman-numeral UI labels, and regression coverage.
 
 - Move registration audit logs from the admin console to a superadmin-only route and dashboard with authorization coverage.
+
+- Add pytest coverage for project recruitment creation, membership, review authorization, difficulty scoring, and Todo reward settlement.
