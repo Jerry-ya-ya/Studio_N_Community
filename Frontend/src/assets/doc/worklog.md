@@ -732,3 +732,5 @@
 - Move registration audit logs from the admin console to a superadmin-only route and dashboard with authorization coverage.
 
 - Add pytest coverage for project recruitment creation, membership, review authorization, difficulty scoring, and Todo reward settlement.
+
+- Add comprehensive pytest coverage for backend audit log parsing, file fallback behavior, limits, responses, and role authorization.
