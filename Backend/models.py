@@ -196,6 +196,7 @@ class ProjectRecruitment(db.Model):
     max_members = db.Column(db.Integer)
     token_budget = db.Column(db.Integer, default=100, nullable=False)
     token_used = db.Column(db.Integer, default=0, nullable=False)
+    level = db.Column(db.Integer, default=1, nullable=False)
     review_status = db.Column(db.String(20), default='open', nullable=False)
     created_at = db.Column(db.DateTime, default=taipei_now)
 

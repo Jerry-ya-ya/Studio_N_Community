@@ -341,3 +341,34 @@ def test_project_todo_can_be_assigned_to_a_team_member(client, todo_accounts):
     todo = response.get_json()['todos'][0]
     assert todo['user_id'] == todo_accounts['member_id']
     assert todo['assignee_name'] == 'Todo Member'
+
+
+def test_project_token_consumption_triggers_level_upgrade(client, app, todo_accounts):
+    with app.app_context():
+        project = db.session.get(ProjectRecruitment, todo_accounts['project_id'])
+        project.token_budget = 200
+        project.token_used = 99
+        project.level = 1
+        db.session.commit()
+
+    response = client.post(
+        '/api/todos',
+        json={
+            'text': 'Level-up task',
+            'project_id': todo_accounts['project_id'],
+            'assign_to_team': True,
+            'priority': 0,
+        },
+        headers=auth_headers(todo_accounts['leader_token']),
+    )
+
+    assert response.status_code == 201
+    payload = response.get_json()
+    assert payload['project']['token_used'] == 100
+    assert payload['project']['token_remaining'] == 100
+    assert payload['project']['level'] == 2
+    assert payload['level_upgraded'] is True
+
+    with app.app_context():
+        project = db.session.get(ProjectRecruitment, todo_accounts['project_id'])
+        assert project.level == 2

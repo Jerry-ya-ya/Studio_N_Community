@@ -10,6 +10,8 @@ from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 todo_bp = Blueprint('todo', __name__)
 todo_action_logger = get_backend_logger('todo_action', 'todo_action.log', message_only=True)
 
+PROJECT_LEVEL_TOKEN_STEP = 100
+
 # Todos API
 
 
@@ -99,7 +101,16 @@ def serialize_project_tokens(project):
         'tokenUsed': token_used,
         'token_remaining': token_remaining,
         'tokenRemaining': token_remaining,
+        'level': project.level or 1,
     }
+
+
+def check_project_level_after_token_consumption(project):
+    """Synchronize a project's stored level after its consumed-token total changes."""
+    previous_level = max(int(project.level or 1), 1)
+    calculated_level = max(int(project.token_used or 0) // PROJECT_LEVEL_TOKEN_STEP + 1, 1)
+    project.level = max(previous_level, calculated_level)
+    return previous_level, project.level
 
 
 def user_can_access_todo(todo, user):
@@ -201,6 +212,7 @@ def add_todo():
             for assignee_id in assignee_ids
         ]
         project.token_used = token_used + token_cost
+        level_before, level_after = check_project_level_after_token_consumption(project)
         db.session.add_all(new_todos)
         db.session.commit()
 
@@ -214,6 +226,9 @@ def add_todo():
             token_used_before=token_used,
             token_used_after=project.token_used,
             token_budget=token_budget,
+            project_level_before=level_before,
+            project_level_after=level_after,
+            project_level_upgraded=level_after > level_before,
         )
 
         return jsonify({
@@ -221,6 +236,8 @@ def add_todo():
             'project': serialize_project_tokens(project),
             'token_cost': token_cost,
             'tokenCost': token_cost,
+            'level_upgraded': level_after > level_before,
+            'levelUpgraded': level_after > level_before,
         }), 201
 
     new_todo = Todo(

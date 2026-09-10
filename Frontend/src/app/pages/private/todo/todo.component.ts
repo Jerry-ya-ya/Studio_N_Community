@@ -8,6 +8,7 @@ import { ApiService } from '../../../core/services/api.service';
 
 // Models
 import { Todo } from './todo.model';
+import { toRomanNumeral } from '../../../shared/project-level';
 
 interface ProjectTodoGroup {
   key: string;
@@ -45,6 +46,7 @@ interface ProjectRecruitment {
   tokenUsed?: number;
   token_remaining?: number;
   tokenRemaining?: number;
+  level?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
 }
 
@@ -413,6 +415,10 @@ export class TodoComponent implements OnInit {
 
   getProjectTokenUsed(project?: ProjectRecruitment) {
     return project?.tokenUsed ?? project?.token_used ?? 0;
+  }
+
+  getProjectLevel(project?: ProjectRecruitment) {
+    return toRomanNumeral(project?.level);
   }
 
   getProjectTokenRemaining(project?: ProjectRecruitment) {

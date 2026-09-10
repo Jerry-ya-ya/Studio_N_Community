@@ -726,3 +726,5 @@
 - Add Todo action audit logging for lifecycle events and project token deductions with superadmin visibility and regression coverage.
 
 - Expose superadmin promotion and demotion audit logs in the frontend logs dashboard with localized labels and regression coverage.
+
+- Add token-driven project levels with persisted migration, automatic consumption upgrades, Roman-numeral UI labels, and regression coverage.

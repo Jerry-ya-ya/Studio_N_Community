@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../core/services/api.service';
+import { toRomanNumeral } from '../../../shared/project-level';
 
 interface ProjectUser {
   id: number;
@@ -47,6 +48,7 @@ interface AdminProject {
   tokenUsed?: number;
   token_remaining?: number;
   tokenRemaining?: number;
+  level?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
   created_at: string;
   creator: ProjectUser;
@@ -119,6 +121,10 @@ export class ProjectsComponent implements OnInit {
 
   getTokenRemaining(project: AdminProject) {
     return project.tokenRemaining ?? project.token_remaining ?? Math.max(this.getTokenBudget(project) - this.getTokenUsed(project), 0);
+  }
+
+  getProjectLevel(project: AdminProject) {
+    return toRomanNumeral(project.level);
   }
 
   toggleTodos(projectId: number) {

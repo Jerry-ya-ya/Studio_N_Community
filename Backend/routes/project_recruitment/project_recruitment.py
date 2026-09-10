@@ -200,6 +200,7 @@ def serialize_project(project, current_user):
         'tokenUsed': project.token_used,
         'token_remaining': max((project.token_budget or 0) - (project.token_used or 0), 0),
         'tokenRemaining': max((project.token_budget or 0) - (project.token_used or 0), 0),
+        'level': project.level or 1,
         'review_status': project.review_status,
         'created_at': to_taipei_text(project.created_at),
         'creator': serialize_user(project.creator),

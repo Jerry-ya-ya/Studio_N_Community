@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
+import { toRomanNumeral } from '../../../shared/project-level';
 
 interface ProjectRecruitmentMember {
   id: number;
@@ -33,6 +34,7 @@ interface ProjectRecruitment {
   };
   members: ProjectRecruitmentMember[];
   member_count: number;
+  level?: number;
   joined_by_me: boolean;
   owned_by_me: boolean;
 }
@@ -184,6 +186,10 @@ export class ProjectRecruitmentComponent implements OnInit {
 
   isFull(project: ProjectRecruitment) {
     return !!project.max_members && project.member_count >= project.max_members;
+  }
+
+  getProjectLevel(project: ProjectRecruitment) {
+    return toRomanNumeral(project.level);
   }
 
   get ownedProjects() {
