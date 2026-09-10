@@ -742,3 +742,5 @@
 - Add pytest coverage for post CRUD validation, authorization, likes, serialization, and pagination.
 
 - Add pytest coverage for friend request validation, listing, acceptance, rejection, deletion, authorization, and profile serialization.
+
+- Add pytest coverage for check-in status, history validation, daily rewards, duplicate prevention, and authentication.
