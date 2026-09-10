@@ -744,3 +744,5 @@
 - Add pytest coverage for friend request validation, listing, acceptance, rejection, deletion, authorization, and profile serialization.
 
 - Add pytest coverage for check-in status, history validation, daily rewards, duplicate prevention, and authentication.
+
+- Add pytest coverage for profile retrieval, updates, email reverification, public serialization, and protected account deletion.
