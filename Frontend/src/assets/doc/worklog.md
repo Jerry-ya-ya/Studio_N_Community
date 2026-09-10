@@ -734,3 +734,5 @@
 - Add pytest coverage for project recruitment creation, membership, review authorization, difficulty scoring, and Todo reward settlement.
 
 - Add comprehensive pytest coverage for backend audit log parsing, file fallback behavior, limits, responses, and role authorization.
+
+- Add pytest coverage for activity payload validation, audience filtering, CRUD authorization, feed ordering, and image management.
