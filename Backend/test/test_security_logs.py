@@ -73,7 +73,7 @@ def test_security_mutations_are_logged_and_visible_to_superadmin(app, client, mo
         f'/api/verify-email/{verification_token}',
         environ_overrides={'REMOTE_ADDR': '203.0.113.81'},
     )
-    assert verify_response.status_code == 200
+    assert verify_response.status_code == 302
 
     resend_response = client.post(
         '/api/resendverification',

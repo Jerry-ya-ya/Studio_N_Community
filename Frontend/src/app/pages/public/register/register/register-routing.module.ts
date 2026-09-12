@@ -13,6 +13,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('../resendverification/resendverification.module').then(m => m.ResendverificationModule)
   },
+  {
+    path: 'verified',
+    loadChildren: () =>
+      import('../verified/verified.module').then(m => m.VerifiedModule)
+  },
 ];
 
 @NgModule({

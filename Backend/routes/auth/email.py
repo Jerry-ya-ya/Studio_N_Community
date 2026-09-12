@@ -1,7 +1,6 @@
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, redirect, request
 from flask_mail import Mail, Message
 import os
-from flask_jwt_extended import create_access_token
 from models import db, User
 
 from itsdangerous import URLSafeTimedSerializer
@@ -48,23 +47,19 @@ def verify_email(token):
     if not user:
         return jsonify({'error': '用戶不存在'}), 404
 
-    if user.email_verified:
-        return jsonify({'error': '此郵箱已經驗證過了'}), 400
+    verified_now = User.query.filter(
+        User.id == user.id,
+        User.email_verified.is_(False),
+    ).update({User.email_verified: True}, synchronize_session='fetch')
+    if verified_now:
+        db.session.commit()
+        log_security_event('verify_email', user)
 
-    user.email_verified = True
-    db.session.commit()
-    log_security_event('verify_email', user)
-
-    # 生成 access token
-    access_token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
-    
-    return jsonify({
-        'message': 'Email 驗證成功',
-        'access_token': access_token,
-        'username': user.username,
-        'role': user.role,
-        'user_id': user.id
-    })
+    frontend_url = current_app.config.get('FRONTEND_URL', 'http://localhost:4200').rstrip('/')
+    response = redirect(f'{frontend_url}/register/verified')
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    return response
 
 @email_bp.route('/resendverification', methods=['POST'])
 @limiter.limit("5 per hour", key_func=get_remote_address)

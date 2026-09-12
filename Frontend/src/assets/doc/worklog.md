@@ -760,3 +760,5 @@
 - Restrict member email and audit-log IP/email exposure to superadmins.
 
 - Keep access tokens in memory, centralize safe refresh retries, and enforce a restrictive Nginx Content Security Policy.
+
+- Redirect email verification to an idempotent frontend completion flow without issuing access tokens.
