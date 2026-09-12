@@ -60,11 +60,10 @@ class User(db.Model):
     def display_nickname(self):
         return '已刪除' if self.is_deleted else self.nickname
 
-    def to_dict(self):
-        return {
+    def to_dict(self, include_sensitive=False):
+        data = {
             'id': self.id,
             'username': self.display_username,
-            'email': self.display_email,
             'nickname': self.display_nickname,
             'github_url': self.github_url,
             'githubUrl': self.github_url,
@@ -72,13 +71,16 @@ class User(db.Model):
             'experience': self.experience,
             'review_experience': self.review_experience,
             'pm_experience': self.pm_experience,
-            'email_verified': self.email_verified,
             'is_deleted': self.is_deleted,
             'avatar_url': self.avatar_url,
             'avatar_source': self.avatar_source,
             'avatarSource': self.avatar_source,
             'created_at': to_taipei_iso(self.created_at)
         }
+        if include_sensitive:
+            data['email'] = self.display_email
+            data['email_verified'] = self.email_verified
+        return data
 
 
 class RefreshToken(db.Model):

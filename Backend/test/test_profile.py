@@ -236,7 +236,7 @@ def test_public_profile_returns_active_and_deleted_display_values(
     assert active_response.status_code == 200
     active = active_response.get_json()
     assert active["id"] == profile_accounts["duplicate_id"]
-    assert active["email"] == profile_accounts["duplicate_email"]
+    assert "email" not in active
     assert active["avatar_source"] == active["avatarSource"] == "github"
     assert active["github_url"] == active["githubUrl"] is None
     assert active["created_at"]
@@ -254,7 +254,17 @@ def test_public_profile_returns_active_and_deleted_display_values(
     deleted = deleted_response.get_json()
     assert deleted["username"] == "已刪除"
     assert deleted["nickname"] == "已刪除"
-    assert deleted["email"] == "已刪除"
+    assert "email" not in deleted
+
+
+def test_public_profile_only_exposes_email_to_superadmin(client, profile_accounts):
+    response = client.get(
+        f"/api/public/{profile_accounts['duplicate_id']}",
+        headers=bearer(profile_accounts["superadmin_token"]),
+    )
+
+    assert response.status_code == 200
+    assert response.get_json()["email"] == profile_accounts["duplicate_email"]
 
 
 def test_public_profile_returns_not_found(client, profile_accounts):

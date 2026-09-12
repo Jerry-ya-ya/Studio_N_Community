@@ -131,23 +131,30 @@ def update_current_user():
 @me_bp.route('/public/<int:user_id>', methods=['GET'])
 @jwt_required()
 def public_user(user_id):
+    viewer = get_current_user_from_token()
+    if not viewer:
+        return jsonify({'error': 'User not found'}), 404
+
     user = User.query.get(user_id)
     if not user:
         return jsonify({'error': '用戶不存在'}), 404
 
-    return jsonify({
+    profile = {
         'id': user.id,
         'username': user.display_username,
         'nickname': user.display_nickname,
         'github_url': user.github_url,
         'githubUrl': user.github_url,
-        'email': user.display_email,
         'avatar_url': user.avatar_url,
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
         'role': user.role,
         'created_at': to_taipei_iso(user.created_at)
-    })
+    }
+    if viewer.role == 'superadmin':
+        profile['email'] = user.display_email
+
+    return jsonify(profile)
 
 
 @me_bp.route('/me', methods=['DELETE'])

@@ -51,7 +51,7 @@
               </span>
               <span class="friend-identity">
                 <strong>{{ f.name || f.nickname || f.username }}</strong>
-                <small>{{ f.username }}（{{ f.email }}）</small>
+                <small>{{ f.username }}</small>
               </span>
             </a>
             <button class="btn btn-danger" (click)="removeFriend(f.id)">{{ 'privateFriend.actions.remove' | translate }}</button>

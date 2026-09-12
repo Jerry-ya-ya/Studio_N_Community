@@ -393,6 +393,59 @@ def test_log_endpoints_return_newest_first_without_caching(
     assert body["type"] == log_type
     assert body["path"] == str(file_path)
     assert body["count"] == 2
-    assert body["items"][0]["raw"] == line
+    if role == "admin":
+        assert "j@example.com" not in json.dumps(body)
+        assert "203.0.113.10" not in json.dumps(body)
+        assert "ip" not in body["items"][0]
+    else:
+        assert body["items"][0]["raw"] == line
     assert body["items"][1]["raw"] == "legacy text"
     read_log.assert_called_once_with(filename, 2)
+
+
+def test_admin_log_response_removes_nested_email_and_ip(client):
+    line = structured(
+        action="update_profile",
+        changes={"email": {"from": "old@example.com", "to": "new@example.com"}},
+        previous_identity={"email": "old@example.com", "ip_address": "198.51.100.4"},
+    )
+    with (
+        patch("routes.admin.decorators.verify_jwt_in_request"),
+        patch(
+            "routes.admin.decorators.get_current_user_from_token",
+            return_value=SimpleNamespace(role="admin"),
+        ),
+        patch(
+            "routes.admin.logs.read_backend_log",
+            return_value=(Path("logs/account.log"), [line]),
+        ),
+    ):
+        response = client.get("/api/admin/logs/account")
+
+    assert response.status_code == 200
+    serialized = json.dumps(response.get_json())
+    assert "old@example.com" not in serialized
+    assert "new@example.com" not in serialized
+    assert "198.51.100.4" not in serialized
+    assert "203.0.113.10" not in serialized
+
+
+def test_superadmin_keeps_sensitive_fields_on_admin_log_response(client):
+    line = structured(email="member@example.com")
+    with (
+        patch("routes.admin.decorators.verify_jwt_in_request"),
+        patch(
+            "routes.admin.decorators.get_current_user_from_token",
+            return_value=SimpleNamespace(role="superadmin"),
+        ),
+        patch(
+            "routes.admin.logs.read_backend_log",
+            return_value=(Path("logs/account.log"), [line]),
+        ),
+    ):
+        response = client.get("/api/admin/logs/account")
+
+    assert response.status_code == 200
+    serialized = json.dumps(response.get_json())
+    assert "member@example.com" in serialized
+    assert "203.0.113.10" in serialized

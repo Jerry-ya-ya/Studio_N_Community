@@ -123,6 +123,8 @@ def test_get_users_supports_sorting_and_coin_aliases(
     member = next(
         item for item in body if item["id"] == management_accounts["member_id"]
     )
+    assert "email" in member
+    assert "email_verified" in member
     assert member["total_points"] == 0
 
 

@@ -374,7 +374,6 @@ def test_get_friends_serializes_profile_fields_and_fallbacks(
             "username": friend_accounts["alice_username"],
             "name": "Alice",
             "nickname": "Alice",
-            "email": friend_accounts["alice_email"],
             "githubUrl": "https://github.com/alice",
             "avatarUrl": "https://example.com/alice.png",
             "avatarSource": "upload",

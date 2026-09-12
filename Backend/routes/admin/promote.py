@@ -35,7 +35,7 @@ def get_users():
 
     result = []
     for user in users:
-        user_data = user.to_dict()
+        user_data = user.to_dict(include_sensitive=True)
         total_points = point_map.get(user.id, 0)
         user_data['total_points'] = total_points
         user_data['totalPoints'] = total_points

@@ -51,21 +51,24 @@ def get_friends():
     user = get_current_user_from_token()
     if not user:
         return jsonify({'error': 'User not found'}), 404
-    
-    return jsonify([
-        {
-            'id': f.id,
-            'username': f.display_username,
-            'name': f.display_nickname or f.display_username,
-            'nickname': f.display_nickname,
-            'email': f.display_email,
-            'githubUrl': f.github_url or '',
-            'avatarUrl': f.avatar_url,
-            'avatarSource': f.avatar_source or 'github',
-            'role': f.role,
+
+    friends = []
+    for friend in user.friends:
+        friend_data = {
+            'id': friend.id,
+            'username': friend.display_username,
+            'name': friend.display_nickname or friend.display_username,
+            'nickname': friend.display_nickname,
+            'githubUrl': friend.github_url or '',
+            'avatarUrl': friend.avatar_url,
+            'avatarSource': friend.avatar_source or 'github',
+            'role': friend.role,
         }
-        for f in user.friends
-    ])
+        if user.role == 'superadmin':
+            friend_data['email'] = friend.display_email
+        friends.append(friend_data)
+
+    return jsonify(friends)
 
 @friend_bp.route('/friends/request', methods=['POST'])
 @jwt_required()

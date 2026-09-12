@@ -14,7 +14,6 @@ interface FriendItem {
   username: string;
   name?: string | null;
   nickname?: string | null;
-  email?: string | null;
   githubUrl?: string | null;
   avatarUrl?: string | null;
   avatarSource?: 'local' | 'github';

@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 import re
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, g, jsonify, request
 
 from log_writer import LOG_DIR
 from routes.admin.decorators import admin_required, superadmin_required
@@ -11,6 +11,89 @@ logs_bp = Blueprint('logs', __name__)
 
 LOG_LINE_PATTERN = re.compile(r'^(?P<time>.*?) - (?P<level>[A-Z]+) - (?P<message>.*)$')
 REGISTER_FIELD_PATTERN = re.compile(r'(\w+)=([^\s]+)')
+EMAIL_PATTERN = re.compile(r'(?<![\w.+-])[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}(?![\w.-])')
+IPV4_PATTERN = re.compile(
+    r'(?<![\d.])(?:25[0-5]|2[0-4]\d|1?\d?\d)'
+    r'(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}(?![\d.])'
+)
+LEGACY_IP_FIELD_PATTERN = re.compile(
+    r'(?i)(\b(?:ip|user_ip|client_ip|ip_address|remote_addr)=)([^\s,}]+)'
+)
+SENSITIVE_LOG_KEYS = {
+    'email',
+    'ip',
+    'useremail',
+    'userip',
+    'clientip',
+    'ipaddress',
+    'remoteaddr',
+}
+
+
+def iter_scalar_values(value):
+    if isinstance(value, dict):
+        for child in value.values():
+            yield from iter_scalar_values(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from iter_scalar_values(child)
+    elif value not in (None, '', '-'):
+        yield str(value)
+
+
+def collect_sensitive_values(value):
+    sensitive_values = set()
+    if not isinstance(value, dict):
+        return sensitive_values
+
+    for key, child in value.items():
+        normalized_key = re.sub(r'[^a-z0-9]', '', str(key).lower())
+        if normalized_key in SENSITIVE_LOG_KEYS:
+            sensitive_values.update(iter_scalar_values(child))
+        else:
+            sensitive_values.update(collect_sensitive_values(child))
+    return sensitive_values
+
+
+def redact_sensitive_text(value, sensitive_values=()):
+    if not isinstance(value, str):
+        return value
+    for sensitive_value in sorted(sensitive_values, key=len, reverse=True):
+        value = value.replace(sensitive_value, '[redacted]')
+    value = EMAIL_PATTERN.sub('[redacted]', value)
+    value = IPV4_PATTERN.sub('[redacted]', value)
+    return LEGACY_IP_FIELD_PATTERN.sub(r'\1[redacted]', value)
+
+
+def sanitize_log_value(value, sensitive_values=()):
+    if isinstance(value, dict):
+        sanitized = {}
+        for key, child in value.items():
+            normalized_key = re.sub(r'[^a-z0-9]', '', str(key).lower())
+            if normalized_key in SENSITIVE_LOG_KEYS:
+                continue
+            sanitized[key] = sanitize_log_value(child, sensitive_values)
+        return sanitized
+    if isinstance(value, list):
+        return [sanitize_log_value(child, sensitive_values) for child in value]
+    if isinstance(value, str):
+        return redact_sensitive_text(value, sensitive_values)
+    return value
+
+
+def sanitize_log_items(items):
+    sanitized_items = []
+    for item in items:
+        sensitive_values = collect_sensitive_values(item)
+        sanitized = sanitize_log_value(item, sensitive_values)
+        sanitized.pop('ip', None)
+        sanitized_items.append(sanitized)
+    return sanitized_items
+
+
+def can_view_sensitive_logs():
+    user = getattr(g, 'current_user', None)
+    return bool(user and user.role == 'superadmin')
 
 
 def read_recent_lines(path, limit):
@@ -741,10 +824,12 @@ def sign_in_logs():
     return build_sign_in_logs_response()
 
 
-def build_activity_logs_response():
+def build_activity_logs_response(include_sensitive=True):
     limit = read_limit()
     log_path, lines = read_backend_log('activity.log', limit)
     items = [parse_activity_log_line(line) for line in reversed(lines)]
+    if not include_sensitive:
+        items = sanitize_log_items(items)
 
     response = jsonify({
         'type': 'activity',
@@ -759,13 +844,15 @@ def build_activity_logs_response():
 @logs_bp.route('/admin/logs/activity', methods=['GET'])
 @admin_required
 def admin_activity_logs():
-    return build_activity_logs_response()
+    return build_activity_logs_response(include_sensitive=can_view_sensitive_logs())
 
 
-def build_account_logs_response():
+def build_account_logs_response(include_sensitive=True):
     limit = read_limit()
     log_path, lines = read_backend_log('account.log', limit)
     items = [parse_account_log_line(line) for line in reversed(lines)]
+    if not include_sensitive:
+        items = sanitize_log_items(items)
 
     response = jsonify({
         'type': 'account',
@@ -780,7 +867,7 @@ def build_account_logs_response():
 @logs_bp.route('/admin/logs/account', methods=['GET'])
 @admin_required
 def admin_account_logs():
-    return build_account_logs_response()
+    return build_account_logs_response(include_sensitive=can_view_sensitive_logs())
 
 
 @logs_bp.route('/superadmin/logs/security', methods=['GET'])
@@ -885,10 +972,12 @@ def todo_action_logs():
     response.headers['Cache-Control'] = 'no-store'
     return response
 
-def build_project_logs_response():
+def build_project_logs_response(include_sensitive=True):
     limit = read_limit()
     log_path, lines = read_backend_log('project_member.log', limit)
     items = [parse_project_log_line(line) for line in reversed(lines)]
+    if not include_sensitive:
+        items = sanitize_log_items(items)
 
     response = jsonify({
         'type': 'project',
@@ -909,4 +998,4 @@ def project_logs():
 @logs_bp.route('/admin/logs/project', methods=['GET'])
 @admin_required
 def admin_project_logs():
-    return build_project_logs_response()
+    return build_project_logs_response(include_sensitive=can_view_sensitive_logs())
