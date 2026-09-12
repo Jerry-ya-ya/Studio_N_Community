@@ -30,6 +30,7 @@ class User(db.Model):
     github_url = db.Column(db.String(255))
     role = db.Column(db.String(20), default='user')  # 'user', 'admin', 'superadmin'
     experience = db.Column(db.Integer, default=0, nullable=False)
+    review_experience = db.Column(db.Integer, default=0, nullable=False)
 
     email = db.Column(db.String(120), unique=True)
     email_verified = db.Column(db.Boolean, default=False)
@@ -68,6 +69,7 @@ class User(db.Model):
             'githubUrl': self.github_url,
             'role': self.role,
             'experience': self.experience,
+            'review_experience': self.review_experience,
             'email_verified': self.email_verified,
             'is_deleted': self.is_deleted,
             'avatar_url': self.avatar_url,

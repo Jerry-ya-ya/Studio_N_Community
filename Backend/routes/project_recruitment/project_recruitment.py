@@ -5,7 +5,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
-from models import DailyCheckIn, db, ProjectRecruitment, ProjectRecruitmentMember, Todo
+from models import DailyCheckIn, db, ProjectRecruitment, ProjectRecruitmentMember, Todo, User
 from log_writer import get_backend_logger
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
@@ -20,6 +20,7 @@ PRIORITY_REWARD_MULTIPLIERS = [1.5, 1.3, 1.2, 1.1, 1.0]
 PRIORITY_REWARD_BONUSES = [1, 2, 3, 4, 5]
 DIFFICULTY_REWARD_POINTS = [2, 4, 6, 9, 13]
 TODO_REWARD_COIN_DATE = date(1970, 1, 1)
+TODO_REVIEW_EXPERIENCE = 2
 
 
 def write_project_log(level, **payload):
@@ -496,6 +497,10 @@ def review_project_recruitment(project_id):
                 serialize_todo_settlement_log_payload(project, todo, current_user, breakdown)
             )
             todo.settled = True
+        current_user.review_experience = (
+            db.func.coalesce(User.review_experience, 0)
+            + TODO_REVIEW_EXPERIENCE * len(pending_todos)
+        )
     elif action == 'reject':
         project.review_status = 'rejected'
     else:
