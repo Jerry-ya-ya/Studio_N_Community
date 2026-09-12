@@ -21,6 +21,7 @@ PRIORITY_REWARD_BONUSES = [1, 2, 3, 4, 5]
 DIFFICULTY_REWARD_POINTS = [2, 4, 6, 9, 13]
 TODO_REWARD_COIN_DATE = date(1970, 1, 1)
 TODO_REVIEW_EXPERIENCE = 2
+TODO_PM_EXPERIENCE = 2
 
 
 def write_project_log(level, **payload):
@@ -500,6 +501,10 @@ def review_project_recruitment(project_id):
         current_user.review_experience = (
             db.func.coalesce(User.review_experience, 0)
             + TODO_REVIEW_EXPERIENCE * len(pending_todos)
+        )
+        project.creator.pm_experience = (
+            db.func.coalesce(User.pm_experience, 0)
+            + TODO_PM_EXPERIENCE * len(pending_todos)
         )
     elif action == 'reject':
         project.review_status = 'rejected'

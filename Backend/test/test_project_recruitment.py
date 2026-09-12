@@ -8,6 +8,7 @@ from flask_jwt_extended import create_access_token
 
 from models import DailyCheckIn, ProjectRecruitment, ProjectRecruitmentMember, Todo, User, db
 from routes.project_recruitment.project_recruitment import (
+    TODO_PM_EXPERIENCE,
     TODO_REVIEW_EXPERIENCE,
     TODO_REWARD_COIN_DATE,
     get_todo_reward_breakdown,
@@ -498,6 +499,7 @@ def test_admin_approval_settles_todos_and_accumulates_rewards(
     assert skipped['completed_by_username'] == '-'
 
     with app.app_context():
+        project_owner = db.session.get(User, recruitment_accounts['leader_id'])
         reviewer = db.session.get(User, recruitment_accounts['admin_id'])
         member_coins = DailyCheckIn.query.filter_by(
             user_id=recruitment_accounts['member_id'],
@@ -509,11 +511,16 @@ def test_admin_approval_settles_todos_and_accumulates_rewards(
         ).one()
         assert member_coins.points == 29
         assert outsider_coins.points == 14
+        assert project_owner.pm_experience == TODO_PM_EXPERIENCE * 3
         assert reviewer.review_experience == TODO_REVIEW_EXPERIENCE * 3
         assert db.session.get(Todo, unclaimed_todo).settled is True
 
 
-def test_admin_rejection_does_not_award_review_experience(client, app, recruitment_accounts):
+def test_admin_rejection_does_not_award_review_or_pm_experience(
+    client,
+    app,
+    recruitment_accounts,
+):
     project_id = add_project(
         app,
         recruitment_accounts['leader_id'],
@@ -529,7 +536,9 @@ def test_admin_rejection_does_not_award_review_experience(client, app, recruitme
 
     assert response.status_code == 200
     with app.app_context():
+        project_owner = db.session.get(User, recruitment_accounts['leader_id'])
         reviewer = db.session.get(User, recruitment_accounts['admin_id'])
+        assert project_owner.pm_experience == 0
         assert reviewer.review_experience == 0
 
 

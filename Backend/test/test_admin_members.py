@@ -27,6 +27,7 @@ def management_accounts(app):
             email_verified=True,
             experience=17,
             review_experience=5,
+            pm_experience=9,
         )
         member = User(
             username=f"manage-member-{suffix}",
@@ -118,6 +119,7 @@ def test_get_users_supports_sorting_and_coin_aliases(
     assert admin["coins"] == admin["total_coins"] == admin["totalCoins"] == 10
     assert admin["experience"] == 17
     assert admin["review_experience"] == 5
+    assert admin["pm_experience"] == 9
     member = next(
         item for item in body if item["id"] == management_accounts["member_id"]
     )

@@ -752,3 +752,5 @@
 - Upgrade vulnerable Flask, Werkzeug, Requests, urllib3, and python-dotenv dependencies across backend services.
 
 - Add per-Todo reviewer experience rewards with user persistence, migration, API serialization, and regression coverage.
+
+- Add per-Todo PM experience rewards for project owners with user persistence, migration, API serialization, and regression coverage.
