@@ -746,3 +746,7 @@
 - Add pytest coverage for check-in status, history validation, daily rewards, duplicate prevention, and authentication.
 
 - Add pytest coverage for profile retrieval, updates, email reverification, public serialization, and protected account deletion.
+
+## 2026/09/12
+
+- Upgrade vulnerable Flask, Werkzeug, Requests, urllib3, and python-dotenv dependencies across backend services.
