@@ -1,4 +1,4 @@
-import { chromium, FullConfig, request } from '@playwright/test';
+import { FullConfig, request } from '@playwright/test';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -40,23 +40,9 @@ async function globalSetup(config: FullConfig) {
     throw new Error(`❌ 登入失敗：${body}`);
   }
 
-  const loginData = await loginResponse.json();
-  const accessToken = loginData.access_token;
-
-  console.log('✅ 取得 access_token');
-
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-
-  await page.goto('http://localhost:4200');
-  await page.evaluate(({ token, username }: { token: string; username: string }) => {
-    localStorage.setItem('token', token); // 名稱要跟 interceptor 對！
-    localStorage.setItem('username', username); // 加入 username
-  }, { token: accessToken, username });
-
-  await page.context().storageState({ path: './test/storageState.json' });
-
-  await browser.close();
+  // Persist only the HttpOnly refresh and CSRF cookies. The application obtains
+  // an access token into memory on its first authenticated API request.
+  await apiContext.storageState({ path: './test/storageState.json' });
   await apiContext.dispose();
 
   console.log('✅ 已寫入 storageState.json');

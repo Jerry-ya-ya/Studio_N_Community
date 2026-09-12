@@ -758,3 +758,5 @@
 - Add persisted refresh-token rotation, family-wide replay revocation, logout and account-security revocation, migration, and regression coverage.
 
 - Restrict member email and audit-log IP/email exposure to superadmins.
+
+- Keep access tokens in memory, centralize safe refresh retries, and enforce a restrictive Nginx Content Security Policy.

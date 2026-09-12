@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { appPath } from './path/app-path-const';
 import { ThemeService } from './core/services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthSessionService } from './core/services/auth-session.service';
 
 const NAV_COLLAPSED_STORAGE_KEY = 'navbarCollapsed';
 
@@ -27,7 +28,8 @@ export class AppComponent {
 
   constructor(
     public theme: ThemeService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authSession: AuthSessionService
   ) {
     this.translate.use(this.currentLanguage);
   }
@@ -48,7 +50,7 @@ export class AppComponent {
   }
 
   get isLoggedIn() {
-    return !!localStorage.getItem('token');
+    return this.authSession.isAuthenticated;
   }
 
   get topActionPath() {

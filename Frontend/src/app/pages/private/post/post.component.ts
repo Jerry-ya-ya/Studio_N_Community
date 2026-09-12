@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 
@@ -31,11 +31,6 @@ export class PostComponent {
     private translate: TranslateService
   ) {}
 
-  get headers() {
-    const token = localStorage.getItem('token');
-    return { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) };
-  }
-
   ngOnInit(): void {
     this.loadMyPosts();
     this.loadProfile();
@@ -51,7 +46,7 @@ export class PostComponent {
   }
 
   loadMyPosts() {
-    this.http.get<any[]>(`${environment.apiUrl}/post/me`, this.headers)
+    this.http.get<any[]>(`${environment.apiUrl}/post/me`)
       .subscribe(data => this.posts = data);
   }
 
@@ -60,7 +55,7 @@ export class PostComponent {
   }
 
   submitPost() {
-    this.http.post<any>(`${environment.apiUrl}/post`, { content: this.content }, this.headers)
+    this.http.post<any>(`${environment.apiUrl}/post`, { content: this.content })
       .subscribe({
         next: res => {
           this.message = res.message;
@@ -84,7 +79,7 @@ export class PostComponent {
   
   updatePost(postId: number) {
     const newContent = this.editContent[postId];
-    this.http.put(`${environment.apiUrl}/post/${postId}`, { content: newContent }, this.headers)
+    this.http.put(`${environment.apiUrl}/post/${postId}`, { content: newContent })
       .subscribe({
         next: res => {
           this.message = (res as any).message;
@@ -100,7 +95,7 @@ export class PostComponent {
   deletePost(postId: number) {
     if (!confirm(this.translate.instant('postWall.confirm.delete'))) return;
   
-    this.http.delete(`${environment.apiUrl}/post/${postId}`, this.headers)
+    this.http.delete(`${environment.apiUrl}/post/${postId}`)
       .subscribe({
         next: res => {
           this.message = (res as any).message;

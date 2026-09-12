@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthSessionService } from '../../../core/services/auth-session.service';
 
 @Component({
   selector: 'app-profile',
@@ -23,28 +23,23 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authSession: AuthSessionService
   ) {}
   isLoggedIn() {
-    const token = localStorage.getItem('token');
-    return !!localStorage.getItem('token');
+    return this.authSession.isAuthenticated;
   }
 
   logout() {
     this.http.delete(`${environment.apiUrl}/refresh`).subscribe({ error: () => undefined });
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('role');
-    localStorage.removeItem('username');
+    this.authSession.clear();
     location.reload();  // 或導向登入頁
   }
 
   ngOnInit() {
-    if (this.isLoggedIn()) {
-      const token = localStorage.getItem('token');
-      const headers = new HttpHeaders({Authorization: `Bearer ${token}`});
-      // 取得使用者資料
-      this.http.get<any>(`${environment.apiUrl}/me`, { headers }).subscribe({
+    // The first request after a reload can restore the in-memory access token
+    // through the HttpOnly refresh cookie in AuthInterceptor.
+    this.http.get<any>(`${environment.apiUrl}/me`).subscribe({
         next: (data) => {
           this.user = {
             ...data,
@@ -52,17 +47,8 @@ export class ProfileComponent implements OnInit {
           };
           console.log('Loaded user successfully', this.user);
         },
-        error: (err) => {
-          if (err.status === 401) {
-            // Token 無效才登出
-            this.logout();
-          } else {
-            // 其他錯誤：只記錄錯誤，不登出
-            console.error('Failed to get user data:', err);
-          }
-        }
-      });
-    }
+        error: (err) => console.error('Failed to get user data:', err)
+    });
   }
 
   loadProfile() {
@@ -124,13 +110,11 @@ export class ProfileComponent implements OnInit {
 
   uploadAvatar() {
     if (!this.selectedFile) return;
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({Authorization: `Bearer ${token}`});
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    this.http.post<any>(`${environment.apiUrl}/avatar`, formData, { headers }).subscribe({
+    this.http.post<any>(`${environment.apiUrl}/avatar`, formData).subscribe({
       next: res => {
         this.user.avatar_url = res.avatar_url;
         this.user.avatarSource = 'local';

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 import { StudioThemeId, ThemeService } from '../../../core/services/theme.service';
 import { appPath } from '../../../path/app-path-const';
+import { AuthSessionService } from '../../../core/services/auth-session.service';
 
 @Component({
   selector: 'app-setting',
@@ -28,7 +29,8 @@ export class SettingComponent {
     private http: HttpClient,
     private router: Router,
     private translate: TranslateService,
-    public theme: ThemeService
+    public theme: ThemeService,
+    private authSession: AuthSessionService
   ) {}
 
   changePassword() {
@@ -79,10 +81,7 @@ export class SettingComponent {
       body: { confirmation: this.deleteConfirmation }
     }).subscribe({
       next: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('role');
-        localStorage.removeItem('username');
+        this.authSession.clear();
         this.router.navigate([appPath.login]);
       },
       error: (err) => {

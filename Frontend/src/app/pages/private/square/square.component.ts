@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
@@ -32,19 +31,11 @@ export class SquareComponent implements OnInit {
     private translate: TranslateService
   ) {}
   
-  get headers() {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
-
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({Authorization: `Bearer ${token}`});
-    
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
 
     // 取得使用者資料
-    this.http.get<any[]>(`${environment.apiUrl}/square`, {headers}).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/square`).subscribe({
       next: data => {
         this.users = data;
         console.log('Loaded square users', this.users);
@@ -57,7 +48,7 @@ export class SquareComponent implements OnInit {
   }
 
   loadCurrentUser() {
-    this.http.get<any>(`${environment.apiUrl}/me`, { headers: this.headers }).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/me`).subscribe({
       next: user => {
         this.currentUserId = user.id;
       },
@@ -68,7 +59,7 @@ export class SquareComponent implements OnInit {
   }
 
   loadFriends() {
-    this.http.get<any[]>(`${environment.apiUrl}/friends/list`, { headers: this.headers }).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/friends/list`).subscribe({
       next: friends => {
         this.friendIds = new Set(friends.map(friend => friend.id));
       },
@@ -98,8 +89,7 @@ export class SquareComponent implements OnInit {
     this.friendActionLoading[user.id] = true;
     this.http.post<any>(
       `${environment.apiUrl}/friends/request`,
-      { to_username: user.username },
-      { headers: this.headers }
+      { to_username: user.username }
     ).subscribe({
       next: res => {
         this.friendMessages[user.id] = res.message || this.translate.instant('privateSquare.feedback.inviteSent');
@@ -119,8 +109,7 @@ export class SquareComponent implements OnInit {
 
     this.friendActionLoading[user.id] = true;
     this.http.delete<any>(
-      `${environment.apiUrl}/friends/remove/${user.id}`,
-      { headers: this.headers }
+      `${environment.apiUrl}/friends/remove/${user.id}`
     ).subscribe({
       next: res => {
         this.friendIds.delete(user.id);

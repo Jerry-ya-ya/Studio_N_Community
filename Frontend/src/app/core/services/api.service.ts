@@ -40,11 +40,9 @@ export class ApiService {
     return this.http.delete<T>(`${this.baseUrl}${endpoint}`, { headers });
   }
 
-  // 創建帶有認證 token 的 headers
+  // 保留共用 headers 介面；認證 token 由 interceptor 統一附加
   createAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    // AuthInterceptor adds the in-memory access token to backend requests.
+    return new HttpHeaders();
   }
 }

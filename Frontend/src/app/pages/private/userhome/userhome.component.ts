@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -24,15 +24,10 @@ export class UserhomeComponent {
   
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
   
-  get headers() {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
-
   loadAllUsers() {
     console.log('Loading all users');
     
-    this.http.get<any[]>(`${environment.apiUrl}/square`, { headers: this.headers })
+    this.http.get<any[]>(`${environment.apiUrl}/square`)
       .subscribe({
         next: (usersData) => {
           console.log('Users data received:', usersData);
@@ -55,7 +50,7 @@ export class UserhomeComponent {
   loadAllPosts() {
     console.log('Loading all posts');
     
-    this.http.get<any[]>(`${environment.apiUrl}/post`, { headers: this.headers })
+    this.http.get<any[]>(`${environment.apiUrl}/post`)
       .subscribe({
         next: (postsData) => {
           console.log('Posts data received:', postsData);
@@ -92,8 +87,7 @@ export class UserhomeComponent {
     post.likePending = true;
     this.http.post<{ liked_by_me: boolean; like_count: number }>(
       `${environment.apiUrl}/post/${post.id}/like`,
-      {},
-      { headers: this.headers }
+      {}
     ).subscribe({
       next: response => {
         post.liked_by_me = response.liked_by_me;

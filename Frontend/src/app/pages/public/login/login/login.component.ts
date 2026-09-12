@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ApiService } from '../../../../core/services/api.service';
 import { appPath } from '../../../../path/app-path-const';
+import { AuthSessionService } from '../../../../core/services/auth-session.service';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +29,8 @@ export class LoginComponent {
     private apiService: ApiService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authSession: AuthSessionService
   ) {}
 
   get loginAction() {
@@ -49,10 +51,7 @@ export class LoginComponent {
       remember_me: this.rememberLogin,
     }).subscribe({
       next: res => {
-        localStorage.setItem('token', res.access_token);
-        localStorage.removeItem('refreshToken'); // 清除舊版留下的 refresh token
-        localStorage.setItem('username', res.username);
-        localStorage.setItem('role', res.role);
+        this.authSession.setSession(res);
         this.storeBrowserCredential(res.username || this.username);
         this.openLoginSnack('login.feedback.success', 'studio-snackbar-success');
         this.router.navigate([appPath.userhome]);
