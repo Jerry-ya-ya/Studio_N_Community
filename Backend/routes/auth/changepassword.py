@@ -5,6 +5,7 @@ from models import db
 from routes.auth.utils import get_current_user_from_token
 from routes.auth.security_log import log_security_event
 from password_policy import password_error_response
+from routes.auth.refresh_tokens import revoke_all_user_tokens
 
 changepassword_bp = Blueprint('changepassword', __name__)
 
@@ -35,6 +36,7 @@ def changepassword():
         return jsonify(password_error), 400
 
     user.password = generate_password_hash(new_pw)
+    revoke_all_user_tokens(user.id)
     db.session.commit()
     log_security_event('change_password', user)
 

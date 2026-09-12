@@ -14,6 +14,7 @@ from routes.auth.account_log import log_account_event
 from routes.auth.email import generate_confirmation_token, mail
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
+from routes.auth.refresh_tokens import revoke_all_user_tokens
 
 me_bp = Blueprint('me', __name__)
 
@@ -182,6 +183,7 @@ def delete_current_user():
     user.github_url = None
     user.avatar_url = None
     user.avatar_source = 'github'
+    revoke_all_user_tokens(user.id)
     db.session.commit()
     log_account_event(
         'soft_delete_account',

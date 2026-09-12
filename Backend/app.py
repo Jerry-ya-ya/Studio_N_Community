@@ -42,6 +42,7 @@ from routes.check_in.check_in import check_in_bp
 from routes.schedule.schedule import schedule_bp
 from rate_limit import limiter
 from achievements import init_achievement_listener
+from routes.auth.refresh_tokens import is_refresh_token_revoked
 
 def setup_database(app, retries=5, wait=2, create_schema=True):
     db.init_app(app)
@@ -168,7 +169,11 @@ def create_app(config_name="none"):
     setup_database(app, create_schema=env != 'production')
 
     # 初始化 JWT
-    JWTManager(app)
+    jwt = JWTManager(app)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_refresh_token_is_revoked(_jwt_header, jwt_payload):
+        return is_refresh_token_revoked(jwt_payload)
 
     # 初始化 API 限流；production 使用 Redis 讓所有 Gunicorn workers 共用計數。
     limiter.init_app(app)

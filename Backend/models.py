@@ -80,6 +80,32 @@ class User(db.Model):
             'created_at': to_taipei_iso(self.created_at)
         }
 
+
+class RefreshToken(db.Model):
+    """Server-side state for a rotating refresh-token family."""
+    __table_args__ = (
+        db.Index('ix_refresh_token_family_revoked', 'family_id', 'revoked_at'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), unique=True, nullable=False, index=True)
+    family_id = db.Column(db.String(36), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+    revoked_at = db.Column(db.DateTime)
+    replaced_by_jti = db.Column(db.String(36))
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='CASCADE'),
+        nullable=False,
+        index=True,
+    )
+    user = db.relationship(
+        'User',
+        backref=db.backref('refresh_tokens', cascade='all, delete-orphan'),
+    )
+
 class FriendRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     from_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -282,6 +308,7 @@ def load_models():
     """Keep all table models registered from one place before schema creation."""
     return (
         User,
+        RefreshToken,
         FriendRequest,
         Todo,
         News,

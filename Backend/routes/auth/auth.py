@@ -2,14 +2,14 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import (
     create_access_token,
-    create_refresh_token,
+    get_jwt,
     get_jwt_identity,
     jwt_required,
     set_refresh_cookies,
     unset_refresh_cookies,
     decode_token,
 )
-from models import db, User
+from models import db, RefreshToken, User
 from routes.auth.email import generate_confirmation_token, mail
 from flask_mail import Message
 import os
@@ -22,6 +22,7 @@ from flask_limiter.util import get_remote_address
 from rate_limit import limiter, username_rate_limit_key, email_rate_limit_key, failed_response
 from password_policy import password_error_response
 from routes.auth.security_log import log_security_event
+from routes.auth.refresh_tokens import issue_refresh_token, revoke_family, revoke_token
 
 auth_bp = Blueprint('auth', __name__)
 register_logger = get_backend_logger('register', 'register.log', message_only=True)
@@ -217,11 +218,8 @@ def login():
 
     refresh_expires = timedelta(days=7 if remember_me else 1)
     token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
-    refresh_token = create_refresh_token(
-        identity=str(user.id),
-        additional_claims={'role': user.role, 'remember_me': remember_me},
-        expires_delta=refresh_expires
-    )
+    refresh_token, _ = issue_refresh_token(user, remember_me, refresh_expires)
+    db.session.commit()
     write_sign_in_log(
         'info',
         status='success',
@@ -249,21 +247,75 @@ def login():
 
 
 @auth_bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True, locations=['cookies'])
+@jwt_required(refresh=True, locations=['cookies'], skip_revocation_check=True)
 def refresh_access_token():
     user_id = get_jwt_identity()
+    jwt_payload = get_jwt()
+    refresh_record = RefreshToken.query.filter_by(jti=jwt_payload['jti']).first()
+
+    if not refresh_record or str(refresh_record.user_id) != str(user_id):
+        response = jsonify({'error': 'Refresh token has been revoked'})
+        unset_refresh_cookies(response)
+        return response, 401
+
+    if refresh_record.revoked_at is not None:
+        revoke_family(refresh_record.family_id)
+        db.session.commit()
+        response = jsonify({'error': 'Refresh token reuse detected'})
+        unset_refresh_cookies(response)
+        return response, 401
+
     user = User.query.get(user_id)
 
-    if not user or user.is_deleted:
-        return jsonify({'error': 'User not found'}), 404
+    if not user or user.is_deleted or not user.email_verified:
+        revoke_family(refresh_record.family_id)
+        db.session.commit()
+        if not user or user.is_deleted:
+            return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'Email verification required'}), 403
+
+    remember_me = bool(jwt_payload.get('remember_me'))
+    refresh_expires = timedelta(days=7 if remember_me else 1)
+    new_refresh_token, new_record = issue_refresh_token(
+        user,
+        remember_me,
+        refresh_expires,
+        family_id=refresh_record.family_id,
+    )
+    db.session.flush()
+    rotated = RefreshToken.query.filter(
+        RefreshToken.jti == refresh_record.jti,
+        RefreshToken.revoked_at.is_(None),
+    ).update(
+        {
+            'revoked_at': taipei_now(),
+            'replaced_by_jti': new_record.jti,
+        },
+        synchronize_session=False,
+    )
+    if rotated != 1:
+        db.session.rollback()
+        revoke_family(refresh_record.family_id)
+        db.session.commit()
+        response = jsonify({'error': 'Refresh token reuse detected'})
+        unset_refresh_cookies(response)
+        return response, 401
+    db.session.commit()
 
     token = create_access_token(identity=str(user.id), additional_claims={'role': user.role})
-    return jsonify({
+    response = jsonify({
         'access_token': token,
+        'refresh_expires_in_days': 7 if remember_me else 1,
         'role': user.role,
         'username': user.username,
         'user_id': user.id,
     })
+    set_refresh_cookies(
+        response,
+        new_refresh_token,
+        max_age=int(refresh_expires.total_seconds()),
+    )
+    return response
 
 
 @auth_bp.route('/refresh', methods=['DELETE'])
@@ -272,9 +324,15 @@ def clear_refresh_token():
     user = None
     if refresh_cookie:
         try:
-            user_id = decode_token(refresh_cookie, allow_expired=True).get('sub')
+            payload = decode_token(refresh_cookie, allow_expired=True)
+            user_id = payload.get('sub')
             user = db.session.get(User, user_id)
+            refresh_record = RefreshToken.query.filter_by(jti=payload.get('jti')).first()
+            if refresh_record:
+                revoke_token(refresh_record)
+                db.session.commit()
         except Exception:
+            db.session.rollback()
             pass
 
     response = jsonify({'message': 'Logged out'})

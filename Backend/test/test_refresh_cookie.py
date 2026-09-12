@@ -1,8 +1,9 @@
 from uuid import uuid4
 
 from werkzeug.security import generate_password_hash
+from flask_jwt_extended import decode_token
 
-from models import User, db
+from models import RefreshToken, User, db
 
 
 def create_verified_user(app):
@@ -54,14 +55,70 @@ def test_refresh_requires_cookie_csrf_header(app, client):
     assert refreshed.get_json()["access_token"]
 
 
+def test_refresh_rotates_cookie_and_revokes_previous_token(app, client):
+    login(client, create_verified_user(app))
+    old_refresh = client.get_cookie("refresh_token_cookie", path="/api/refresh").value
+    old_csrf = client.get_cookie("csrf_refresh_token").value
+
+    refreshed = client.post(
+        "/api/refresh",
+        headers={"X-CSRF-TOKEN": old_csrf},
+    )
+
+    assert refreshed.status_code == 200
+    new_refresh = client.get_cookie("refresh_token_cookie", path="/api/refresh").value
+    assert new_refresh != old_refresh
+
+    with app.app_context():
+        old_record = RefreshToken.query.filter_by(jti=decode_token(old_refresh)["jti"]).one()
+        new_record = RefreshToken.query.filter_by(jti=decode_token(new_refresh)["jti"]).one()
+        assert old_record.revoked_at is not None
+        assert old_record.replaced_by_jti == new_record.jti
+        assert old_record.family_id == new_record.family_id
+        assert new_record.revoked_at is None
+
+
+def test_replayed_refresh_token_revokes_its_rotated_family(app, client):
+    login(client, create_verified_user(app))
+    stolen_refresh = client.get_cookie("refresh_token_cookie", path="/api/refresh").value
+    stolen_csrf = client.get_cookie("csrf_refresh_token").value
+    assert client.post(
+        "/api/refresh",
+        headers={"X-CSRF-TOKEN": stolen_csrf},
+    ).status_code == 200
+    rotated_csrf = client.get_cookie("csrf_refresh_token").value
+
+    attacker = app.test_client()
+    attacker.set_cookie("refresh_token_cookie", stolen_refresh, path="/api/refresh")
+    attacker.set_cookie("csrf_refresh_token", stolen_csrf)
+    replay = attacker.post(
+        "/api/refresh",
+        headers={"X-CSRF-TOKEN": stolen_csrf},
+    )
+
+    assert replay.status_code == 401
+    assert replay.get_json()["error"] == "Refresh token reuse detected"
+
+    rejected = client.post(
+        "/api/refresh",
+        headers={"X-CSRF-TOKEN": rotated_csrf},
+    )
+    assert rejected.status_code == 401
+    assert rejected.get_json()["error"] == "Refresh token reuse detected"
+
+
 def test_logout_clears_refresh_and_csrf_cookies(app, client):
     login(client, create_verified_user(app))
+    refresh_token = client.get_cookie("refresh_token_cookie", path="/api/refresh").value
 
     response = client.delete("/api/refresh")
 
     assert response.status_code == 200
     assert client.get_cookie("refresh_token_cookie", path="/api/refresh") is None
     assert client.get_cookie("csrf_refresh_token") is None
+    with app.app_context():
+        record = RefreshToken.query.filter_by(jti=decode_token(refresh_token)["jti"]).one()
+        assert record.revoked_at is not None
 
 
 def test_production_refresh_cookie_is_secure():
