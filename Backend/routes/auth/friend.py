@@ -3,6 +3,7 @@ from models import db, User, FriendRequest
 from flask import request, jsonify, Blueprint
 from routes.auth.utils import get_current_user_from_token
 from achievements import queue_achievement_check
+from rate_limit import member_write_rate_limited
 
 friend_bp = Blueprint('friend_bp', __name__)
 
@@ -72,6 +73,7 @@ def get_friends():
 
 @friend_bp.route('/friends/request', methods=['POST'])
 @jwt_required()
+@member_write_rate_limited
 def send_friend_request():
     current_user = get_current_user_from_token()
     if not current_user:

@@ -5,6 +5,7 @@ import pytest
 from flask_jwt_extended import create_access_token
 
 from models import Post, PostLike, User, db
+from routes.post.post import POST_CONTENT_MAX_LENGTH
 
 
 def bearer(token):
@@ -112,6 +113,39 @@ def test_create_post_rejects_empty_content(client, post_accounts, payload):
 
     assert response.status_code == 400
     assert response.get_json() == {"error": "內容不能為空"}
+
+
+def test_post_content_length_is_enforced_on_create_and_update(
+    client, app, post_accounts
+):
+    headers = bearer(post_accounts["owner_token"])
+    accepted_content = "文" * POST_CONTENT_MAX_LENGTH
+    created = client.post(
+        "/api/post", json={"content": accepted_content}, headers=headers
+    )
+    assert created.status_code == 200
+
+    with app.app_context():
+        post = Post.query.filter_by(user_id=post_accounts["owner_id"]).one()
+        post_id = post.id
+        assert post.content == accepted_content
+
+    too_long = "文" * (POST_CONTENT_MAX_LENGTH + 1)
+    rejected_create = client.post(
+        "/api/post", json={"content": too_long}, headers=headers
+    )
+    rejected_update = client.put(
+        f"/api/post/{post_id}", json={"content": too_long}, headers=headers
+    )
+
+    expected = {"error": f"內容不可超過 {POST_CONTENT_MAX_LENGTH} 個字元"}
+    assert rejected_create.status_code == 400
+    assert rejected_create.get_json() == expected
+    assert rejected_update.status_code == 400
+    assert rejected_update.get_json() == expected
+
+    with app.app_context():
+        assert db.session.get(Post, post_id).content == accepted_content
 
 
 def test_post_crud_and_owner_permissions(client, app, post_accounts):

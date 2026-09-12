@@ -1,6 +1,7 @@
 import hashlib
 
 from flask import request
+from flask_jwt_extended import get_jwt_identity
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -11,6 +12,13 @@ limiter = Limiter(
     headers_enabled=True,
     key_prefix="jack-and-beanstalks",
 )
+
+
+# Resource-creating member endpoints share one quota so switching endpoints
+# cannot bypass the protection. Apply this inside @jwt_required() so its key is
+# based on a verified identity rather than attacker-controlled token contents.
+MEMBER_WRITE_RATE_LIMIT = "30 per minute"
+MEMBER_WRITE_RATE_SCOPE = "member-resource-writes"
 
 
 def _hashed_request_value(field):
@@ -27,6 +35,20 @@ def username_rate_limit_key():
 
 def email_rate_limit_key():
     return f"email:{_hashed_request_value('email')}"
+
+
+def authenticated_user_rate_limit_key():
+    identity = get_jwt_identity()
+    if identity is None:
+        return f"ip:{get_remote_address()}"
+    return f"user:{identity}"
+
+
+member_write_rate_limited = limiter.shared_limit(
+    MEMBER_WRITE_RATE_LIMIT,
+    key_func=authenticated_user_rate_limit_key,
+    scope=MEMBER_WRITE_RATE_SCOPE,
+)
 
 
 def failed_response(response):

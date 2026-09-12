@@ -11,6 +11,7 @@ from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 from achievements import queue_achievement_check
+from rate_limit import member_write_rate_limited
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
 project_logger = get_backend_logger('project_member', 'project_member.log', message_only=True)
@@ -22,6 +23,11 @@ DIFFICULTY_REWARD_POINTS = [2, 4, 6, 9, 13]
 TODO_REWARD_COIN_DATE = date(1970, 1, 1)
 TODO_REVIEW_EXPERIENCE = 2
 TODO_PM_EXPERIENCE = 2
+PROJECT_TITLE_MAX_LENGTH = 120
+PROJECT_SUMMARY_MAX_LENGTH = 2000
+PROJECT_ROLE_MAX_LENGTH = 120
+PROJECT_CONTACT_MAX_LENGTH = 160
+PROJECT_JOIN_MESSAGE_MAX_LENGTH = 500
 
 
 def write_project_log(level, **payload):
@@ -268,6 +274,7 @@ def admin_update_project_todo_difficulty(todo_id):
 
 @project_recruitment_bp.route('/project-recruitments', methods=['POST'])
 @jwt_required()
+@member_write_rate_limited
 def create_project_recruitment():
     current_user = get_current_user_from_token()
     if not current_user:
@@ -280,6 +287,16 @@ def create_project_recruitment():
     contact = data.get('contact', '').strip() or None
     max_members = data.get('max_members')
     client_ip = get_client_ip()
+
+    length_limits = (
+        ('專案名稱', title, PROJECT_TITLE_MAX_LENGTH),
+        ('招募內容', summary, PROJECT_SUMMARY_MAX_LENGTH),
+        ('需求角色', role_needed, PROJECT_ROLE_MAX_LENGTH),
+        ('聯絡方式', contact, PROJECT_CONTACT_MAX_LENGTH),
+    )
+    for label, value, maximum in length_limits:
+        if value and len(value) > maximum:
+            return jsonify({'error': f'{label}不可超過 {maximum} 個字元'}), 400
 
     if not title:
         write_project_log(
@@ -390,6 +407,7 @@ def create_project_recruitment():
 
 @project_recruitment_bp.route('/project-recruitments/<int:project_id>/join', methods=['POST'])
 @jwt_required()
+@member_write_rate_limited
 def join_project_recruitment(project_id):
     current_user = get_current_user_from_token()
     if not current_user:
@@ -404,6 +422,10 @@ def join_project_recruitment(project_id):
 
     data = request.get_json(silent=True) or {}
     message = data.get('message', '').strip() or None
+    if message and len(message) > PROJECT_JOIN_MESSAGE_MAX_LENGTH:
+        return jsonify({
+            'error': f'加入訊息不可超過 {PROJECT_JOIN_MESSAGE_MAX_LENGTH} 個字元'
+        }), 400
     membership = ProjectRecruitmentMember(
         project_id=project.id,
         user_id=current_user.id,

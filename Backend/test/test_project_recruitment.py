@@ -10,6 +10,11 @@ from models import DailyCheckIn, ProjectRecruitment, ProjectRecruitmentMember, T
 from routes.project_recruitment.project_recruitment import (
     TODO_PM_EXPERIENCE,
     TODO_REVIEW_EXPERIENCE,
+    PROJECT_CONTACT_MAX_LENGTH,
+    PROJECT_JOIN_MESSAGE_MAX_LENGTH,
+    PROJECT_ROLE_MAX_LENGTH,
+    PROJECT_SUMMARY_MAX_LENGTH,
+    PROJECT_TITLE_MAX_LENGTH,
     TODO_REWARD_COIN_DATE,
     get_todo_reward_breakdown,
 )
@@ -201,6 +206,35 @@ def test_create_project_recruitment_validates_required_fields(
     assert response.get_json() == {'error': error}
 
 
+@pytest.mark.parametrize(
+    ('field', 'maximum', 'label'),
+    [
+        ('title', PROJECT_TITLE_MAX_LENGTH, '專案名稱'),
+        ('summary', PROJECT_SUMMARY_MAX_LENGTH, '招募內容'),
+        ('role_needed', PROJECT_ROLE_MAX_LENGTH, '需求角色'),
+        ('contact', PROJECT_CONTACT_MAX_LENGTH, '聯絡方式'),
+    ],
+)
+def test_create_project_recruitment_rejects_oversized_text_fields(
+    client,
+    recruitment_accounts,
+    field,
+    maximum,
+    label,
+):
+    payload = {'title': 'Title', 'summary': 'Summary'}
+    payload[field] = '字' * (maximum + 1)
+
+    response = client.post(
+        '/api/project-recruitments',
+        json=payload,
+        headers=auth_headers(recruitment_accounts['leader_token']),
+    )
+
+    assert response.status_code == 400
+    assert response.get_json() == {'error': f'{label}不可超過 {maximum} 個字元'}
+
+
 def test_create_project_accepts_an_unlimited_member_count(client, recruitment_accounts):
     response = client.post(
         '/api/project-recruitments',
@@ -256,6 +290,27 @@ def test_join_duplicate_capacity_and_leave_flows(client, app, recruitment_accoun
     assert left.status_code == 200
     assert left.get_json()['joined_by_me'] is False
     assert left.get_json()['member_count'] == 0
+
+
+def test_join_project_rejects_oversized_message(
+    client, app, recruitment_accounts
+):
+    project_id = add_project(app, recruitment_accounts['leader_id'])
+    response = client.post(
+        f'/api/project-recruitments/{project_id}/join',
+        json={'message': '字' * (PROJECT_JOIN_MESSAGE_MAX_LENGTH + 1)},
+        headers=auth_headers(recruitment_accounts['member_token']),
+    )
+
+    assert response.status_code == 400
+    assert response.get_json() == {
+        'error': f'加入訊息不可超過 {PROJECT_JOIN_MESSAGE_MAX_LENGTH} 個字元'
+    }
+    with app.app_context():
+        assert ProjectRecruitmentMember.query.filter_by(
+            project_id=project_id,
+            user_id=recruitment_accounts['member_id'],
+        ).count() == 0
 
 
 def test_admin_listing_and_project_deletion_permissions(client, app, recruitment_accounts):

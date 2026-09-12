@@ -6,6 +6,7 @@ from log_writer import get_backend_logger
 from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso, to_taipei_text
+from rate_limit import member_write_rate_limited
 
 todo_bp = Blueprint('todo', __name__)
 todo_action_logger = get_backend_logger('todo_action', 'todo_action.log', message_only=True)
@@ -163,6 +164,7 @@ def parse_level(value, maximum=9, default=5):
 # C 新增待辦事項
 @todo_bp.route('/todos', methods=['POST'])
 @jwt_required()# 登入保護
+@member_write_rate_limited
 def add_todo():
     user = get_current_user_from_token()
     if not user:

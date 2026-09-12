@@ -22,18 +22,18 @@
 
       <label class="form-field">
         <span>{{ 'privateRecruit.create.projectName' | translate }}</span>
-        <input name="title" [(ngModel)]="form.title" [placeholder]="'privateRecruit.create.projectNamePlaceholder' | translate" required>
+        <input name="title" [(ngModel)]="form.title" [placeholder]="'privateRecruit.create.projectNamePlaceholder' | translate" maxlength="120" required>
       </label>
 
       <label class="form-field">
         <span>{{ 'privateRecruit.create.summary' | translate }}</span>
-        <textarea name="summary" [(ngModel)]="form.summary" rows="5" [placeholder]="'privateRecruit.create.summaryPlaceholder' | translate" required></textarea>
+        <textarea name="summary" [(ngModel)]="form.summary" rows="5" [placeholder]="'privateRecruit.create.summaryPlaceholder' | translate" maxlength="2000" required></textarea>
       </label>
 
       <div class="form-row">
         <label class="form-field">
           <span>{{ 'privateRecruit.create.roleNeeded' | translate }}</span>
-          <input name="role_needed" [(ngModel)]="form.role_needed" [placeholder]="'privateRecruit.create.roleNeededPlaceholder' | translate">
+          <input name="role_needed" [(ngModel)]="form.role_needed" [placeholder]="'privateRecruit.create.roleNeededPlaceholder' | translate" maxlength="120">
         </label>
 
         <label class="form-field">
@@ -44,7 +44,7 @@
 
       <label class="form-field">
         <span>{{ 'privateRecruit.create.contact' | translate }}</span>
-        <input name="contact" [(ngModel)]="form.contact" [placeholder]="'privateRecruit.create.contactPlaceholder' | translate">
+        <input name="contact" [(ngModel)]="form.contact" [placeholder]="'privateRecruit.create.contactPlaceholder' | translate" maxlength="160">
       </label>
 
       <button class="recruit-button" type="submit" [disabled]="submitting">
@@ -102,6 +102,7 @@
               <input
                 [(ngModel)]="joinMessages[project.id]"
                 [name]="'joinMessage' + project.id"
+                maxlength="500"
                 [placeholder]="'privateRecruit.join.messagePlaceholder' | translate">
                 <button class="recruit-button" type="button" (click)="joinProject(project)" [disabled]="actionLoading[project.id]">
                   {{ (actionLoading[project.id] ? 'privateRecruit.actions.joining' : 'privateRecruit.actions.join') | translate }}

@@ -3,8 +3,10 @@ from flask_jwt_extended import jwt_required
 from models import db, Post, PostLike
 from routes.auth.utils import get_current_user_from_token
 from time_utils import to_taipei_text
+from rate_limit import member_write_rate_limited
 
 post_bp = Blueprint('post', __name__)
+POST_CONTENT_MAX_LENGTH = 500
 
 def get_pagination_args(default_per_page=20, max_per_page=50):
     page = request.args.get('page', 1, type=int)
@@ -37,6 +39,7 @@ def serialize_post(post, include_user=False, current_user_id=None):
 
 @post_bp.route('/post', methods=['POST'])
 @jwt_required()
+@member_write_rate_limited
 def create_post():
     user = get_current_user_from_token()
     if not user:
@@ -47,6 +50,8 @@ def create_post():
 
     if not content:
         return jsonify({'error': '內容不能為空'}), 400
+    if len(content) > POST_CONTENT_MAX_LENGTH:
+        return jsonify({'error': f'內容不可超過 {POST_CONTENT_MAX_LENGTH} 個字元'}), 400
 
     post = Post(content=content, user_id=user.id)
     db.session.add(post)
@@ -130,6 +135,8 @@ def update_post(post_id):
     content = data.get('content', '').strip()
     if not content:
         return jsonify({'error': '內容不能為空'}), 400
+    if len(content) > POST_CONTENT_MAX_LENGTH:
+        return jsonify({'error': f'內容不可超過 {POST_CONTENT_MAX_LENGTH} 個字元'}), 400
 
     post.content = content
     db.session.commit()
