@@ -76,6 +76,7 @@
       "logs": "ログ",
       "announce": "告知",
       "events": "イベント",
+      "formBuilder": "フォームビルダー",
       "projects": "プロジェクト",
       "member": "メンバー"
     },
@@ -84,6 +85,15 @@
       "logs": "ログ",
       "feature": "機能"
     }
+  },
+  "formBuilder": {
+    "hero": { "kicker": "管理ツール / JSONB", "title": "フォームビルダー", "lead": "構造化された質問で安全なフォームを作成・編集します。", "newForm": "新規フォーム" },
+    "list": { "title": "フォーム一覧", "loading": "読み込み中…", "empty": "フォームはまだありません。", "questions": "問" },
+    "editor": { "emptyTitle": "フォームを選択または作成", "emptyLead": "左側のフォームを選択するか、新しく作成してください。", "editing": "フォームを編集中", "creating": "新規フォーム", "untitled": "無題のフォーム", "title": "フォーム名", "titlePlaceholder": "例：イベント申込", "description": "説明", "descriptionPlaceholder": "フォームの目的を入力", "save": "保存", "saving": "保存中…", "delete": "削除", "deleteConfirm": "このフォームを削除しますか？" },
+    "questions": { "title": "質問", "add": "質問を追加", "number": "質問 {{ number }}", "prompt": "質問タイトル", "promptPlaceholder": "質問内容を入力", "type": "質問タイプ", "helpText": "補足説明", "helpPlaceholder": "任意の案内文", "required": "必須", "moveUp": "上へ", "moveDown": "下へ", "remove": "質問を削除", "empty": "質問がありません。最初の質問を追加してください。" },
+    "options": { "title": "選択肢", "add": "選択肢を追加", "placeholder": "選択肢の文字", "remove": "選択肢を削除" },
+    "types": { "shortText": "短文", "longText": "段落", "singleChoice": "単一選択", "multipleChoice": "複数選択", "dropdown": "ドロップダウン", "number": "数値", "date": "日付", "boolean": "はい／いいえ" },
+    "feedback": { "loadFailure": "フォームを読み込めませんでした。", "saveSuccess": "フォームを保存しました。", "saveFailure": "フォームを保存できませんでした。", "deleteSuccess": "フォームを削除しました。", "deleteFailure": "フォームを削除できませんでした。", "versionConflict": "他の管理者が変更しました。再読み込みしてからお試しください。", "titleRequired": "フォーム名を入力してください。", "questionsInvalid": "各質問にはタイトルが必要で、選択式には2つ以上の完全な選択肢が必要です。" }
   },
   "world": {
     "mode": {

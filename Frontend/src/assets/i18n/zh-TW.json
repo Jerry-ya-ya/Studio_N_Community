@@ -76,6 +76,7 @@
       "logs": "紀錄",
       "announce": "公告",
       "events": "活動",
+      "formBuilder": "表單建立器",
       "projects": "專案",
       "member": "成員"
     },
@@ -84,6 +85,15 @@
       "logs": "紀錄",
       "feature": "功能"
     }
+  },
+  "formBuilder": {
+    "hero": { "kicker": "管理員工具 / JSONB", "title": "表單建立器", "lead": "建立安全、可重複編輯的結構化表單。", "newForm": "建立新表單" },
+    "list": { "title": "表單庫", "loading": "載入表單中…", "empty": "尚未建立表單。", "questions": "題" },
+    "editor": { "emptyTitle": "選擇或建立表單", "emptyLead": "從左側選擇既有表單，或開始建立新表單。", "editing": "編輯表單", "creating": "新表單", "untitled": "未命名表單", "title": "表單名稱", "titlePlaceholder": "例如：活動報名表", "description": "表單說明", "descriptionPlaceholder": "告訴填寫者這份表單的用途", "save": "儲存表單", "saving": "儲存中…", "delete": "刪除", "deleteConfirm": "確定要刪除這份表單嗎？" },
+    "questions": { "title": "問題", "add": "新增問題", "number": "問題 {{ number }}", "prompt": "問題標題", "promptPlaceholder": "輸入要詢問的內容", "type": "問題種類", "helpText": "補充說明", "helpPlaceholder": "選填的提示文字", "required": "必填", "moveUp": "向上移動", "moveDown": "向下移動", "remove": "移除問題", "empty": "目前沒有問題，請新增第一題。" },
+    "options": { "title": "選項", "add": "新增選項", "placeholder": "選項文字", "remove": "移除選項" },
+    "types": { "shortText": "簡答", "longText": "段落", "singleChoice": "單選", "multipleChoice": "複選", "dropdown": "下拉選單", "number": "數字", "date": "日期", "boolean": "是／否" },
+    "feedback": { "loadFailure": "無法載入表單。", "saveSuccess": "表單已安全儲存。", "saveFailure": "無法儲存表單。", "deleteSuccess": "表單已刪除。", "deleteFailure": "無法刪除表單。", "versionConflict": "這份表單已被其他管理員修改，請重新載入後再試。", "titleRequired": "請輸入表單名稱。", "questionsInvalid": "每題都需要標題，選項題至少要有兩個完整選項。" }
   },
   "world": {
     "mode": {

@@ -1,0 +1,181 @@
+<main class="form-builder" [attr.aria-label]="'formBuilder.hero.title' | translate">
+  <header class="builder-hero">
+    <div>
+      <p class="admin-kicker">{{ 'formBuilder.hero.kicker' | translate }}</p>
+      <h1>{{ 'formBuilder.hero.title' | translate }}</h1>
+      <p>{{ 'formBuilder.hero.lead' | translate }}</p>
+    </div>
+    <button class="primary-action" type="button" (click)="createNewForm()">
+      <mat-icon>add</mat-icon>
+      {{ 'formBuilder.hero.newForm' | translate }}
+    </button>
+  </header>
+
+  <section class="builder-workspace">
+    <aside class="form-library" [attr.aria-label]="'formBuilder.list.title' | translate">
+      <div class="section-heading">
+        <h2>{{ 'formBuilder.list.title' | translate }}</h2>
+        <span>{{ forms.length }}</span>
+      </div>
+
+      @if (loading) {
+        <p class="state-message">{{ 'formBuilder.list.loading' | translate }}</p>
+      } @else if (!forms.length) {
+        <p class="state-message">{{ 'formBuilder.list.empty' | translate }}</p>
+      } @else {
+        <div class="form-list">
+          @for (form of forms; track form.id) {
+            <button
+              type="button"
+              class="form-list-item"
+              [class.active]="draft?.id === form.id"
+              (click)="selectForm(form)"
+            >
+              <strong>{{ form.title }}</strong>
+              <small>{{ form.schema.questions.length }} {{ 'formBuilder.list.questions' | translate }}</small>
+            </button>
+          }
+        </div>
+      }
+    </aside>
+
+    <section class="editor-shell">
+      @if (!draft) {
+        <div class="empty-editor">
+          <mat-icon>dynamic_form</mat-icon>
+          <h2>{{ 'formBuilder.editor.emptyTitle' | translate }}</h2>
+          <p>{{ 'formBuilder.editor.emptyLead' | translate }}</p>
+          <button class="primary-action" type="button" (click)="createNewForm()">
+            {{ 'formBuilder.hero.newForm' | translate }}
+          </button>
+        </div>
+      } @else {
+        <div class="editor-toolbar">
+          <div>
+            <p class="admin-kicker">
+              {{ (draft.id ? 'formBuilder.editor.editing' : 'formBuilder.editor.creating') | translate }}
+            </p>
+            <h2>{{ draft.title || ('formBuilder.editor.untitled' | translate) }}</h2>
+          </div>
+          <div class="toolbar-actions">
+            @if (draft.id) {
+              <button class="danger-action" type="button" [disabled]="deleting || saving" (click)="deleteForm()">
+                <mat-icon>delete</mat-icon>
+                {{ 'formBuilder.editor.delete' | translate }}
+              </button>
+            }
+            <button class="primary-action" type="button" [disabled]="saving || deleting" (click)="saveForm()">
+              <mat-icon>save</mat-icon>
+              {{ (saving ? 'formBuilder.editor.saving' : 'formBuilder.editor.save') | translate }}
+            </button>
+          </div>
+        </div>
+
+        @if (feedbackKey) {
+          <p class="feedback success" role="status">{{ feedbackKey | translate }}</p>
+        }
+        @if (errorKey || errorText) {
+          <p class="feedback error" role="alert">{{ errorText || (errorKey | translate) }}</p>
+        }
+
+        <div class="form-settings">
+          <label>
+            <span>{{ 'formBuilder.editor.title' | translate }}</span>
+            <input [(ngModel)]="draft.title" maxlength="120" [placeholder]="'formBuilder.editor.titlePlaceholder' | translate">
+          </label>
+          <label>
+            <span>{{ 'formBuilder.editor.description' | translate }}</span>
+            <textarea [(ngModel)]="draft.description" maxlength="1000" rows="3" [placeholder]="'formBuilder.editor.descriptionPlaceholder' | translate"></textarea>
+          </label>
+        </div>
+
+        <div class="questions-heading">
+          <div>
+            <h3>{{ 'formBuilder.questions.title' | translate }}</h3>
+            <p>{{ draft.schema.questions.length }} / {{ maxQuestions }}</p>
+          </div>
+          <button
+            type="button"
+            class="secondary-action"
+            [disabled]="draft.schema.questions.length >= maxQuestions"
+            (click)="addQuestion()"
+          >
+            <mat-icon>add</mat-icon>
+            {{ 'formBuilder.questions.add' | translate }}
+          </button>
+        </div>
+
+        <div class="question-list">
+          @for (question of draft.schema.questions; track trackQuestion($index, question); let questionIndex = $index) {
+            <article class="question-card">
+              <header class="question-toolbar">
+                <span>{{ 'formBuilder.questions.number' | translate: { number: questionIndex + 1 } }}</span>
+                <div>
+                  <button type="button" [disabled]="questionIndex === 0" (click)="moveQuestion(questionIndex, -1)" [attr.aria-label]="'formBuilder.questions.moveUp' | translate">
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button type="button" [disabled]="questionIndex === draft.schema.questions.length - 1" (click)="moveQuestion(questionIndex, 1)" [attr.aria-label]="'formBuilder.questions.moveDown' | translate">
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button type="button" class="icon-danger" (click)="removeQuestion(questionIndex)" [attr.aria-label]="'formBuilder.questions.remove' | translate">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </header>
+
+              <div class="question-grid">
+                <label class="question-title-field">
+                  <span>{{ 'formBuilder.questions.prompt' | translate }}</span>
+                  <input [(ngModel)]="question.title" maxlength="300" [placeholder]="'formBuilder.questions.promptPlaceholder' | translate">
+                </label>
+                <label>
+                  <span>{{ 'formBuilder.questions.type' | translate }}</span>
+                  <select [(ngModel)]="question.type" (ngModelChange)="onQuestionTypeChange(question)">
+                    @for (type of questionTypes; track type.value) {
+                      <option [value]="type.value">{{ type.labelKey | translate }}</option>
+                    }
+                  </select>
+                </label>
+              </div>
+
+              <label>
+                <span>{{ 'formBuilder.questions.helpText' | translate }}</span>
+                <input [(ngModel)]="question.description" maxlength="500" [placeholder]="'formBuilder.questions.helpPlaceholder' | translate">
+              </label>
+
+              <label class="required-toggle">
+                <input type="checkbox" [(ngModel)]="question.required">
+                <span>{{ 'formBuilder.questions.required' | translate }}</span>
+              </label>
+
+              @if (isChoiceQuestion(question)) {
+                <div class="option-editor">
+                  <div class="option-heading">
+                    <strong>{{ 'formBuilder.options.title' | translate }}</strong>
+                    <button type="button" [disabled]="question.options.length >= maxOptions" (click)="addOption(question)">
+                      <mat-icon>add</mat-icon>
+                      {{ 'formBuilder.options.add' | translate }}
+                    </button>
+                  </div>
+                  @for (option of question.options; track trackOption($index, option); let optionIndex = $index) {
+                    <div class="option-row">
+                      <span>{{ optionIndex + 1 }}</span>
+                      <input [(ngModel)]="option.label" maxlength="200" [placeholder]="'formBuilder.options.placeholder' | translate">
+                      <button type="button" [disabled]="question.options.length <= 2" (click)="removeOption(question, optionIndex)" [attr.aria-label]="'formBuilder.options.remove' | translate">
+                        <mat-icon>remove_circle_outline</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </article>
+          } @empty {
+            <div class="question-empty">
+              <p>{{ 'formBuilder.questions.empty' | translate }}</p>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </section>
+</main>

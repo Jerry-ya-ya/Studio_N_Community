@@ -2,6 +2,7 @@
 # 定義資料庫模型
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from time_utils import taipei_now, to_taipei_iso
 from role_groups import DEFAULT_ROLE
@@ -319,6 +320,35 @@ class ActivityPromotion(db.Model):
     created_by = db.relationship('User', backref='activity_promotions')
 
 
+class FormTemplate(db.Model):
+    """An admin-managed form whose constrained definition is stored as JSONB."""
+    __tablename__ = 'form_template'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=False, default='')
+    definition = db.Column(
+        JSONB().with_variant(db.JSON(), 'sqlite'),
+        nullable=False,
+        default=lambda: {'schemaVersion': 1, 'questions': []},
+    )
+    version = db.Column(db.Integer, nullable=False, default=1)
+    created_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+    updated_at = db.Column(
+        db.DateTime,
+        default=taipei_now,
+        onupdate=taipei_now,
+        nullable=False,
+    )
+
+    created_by_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='SET NULL'),
+        index=True,
+    )
+    created_by = db.relationship('User', backref='form_templates')
+
+
 def load_models():
     """Keep all table models registered from one place before schema creation."""
     return (
@@ -338,4 +368,5 @@ def load_models():
         DailyCheckIn,
         UserAchievement,
         ActivityPromotion,
+        FormTemplate,
     )

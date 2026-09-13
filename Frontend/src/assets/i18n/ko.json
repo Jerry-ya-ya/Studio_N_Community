@@ -76,6 +76,7 @@
       "logs": "로그",
       "announce": "공지",
       "events": "이벤트",
+      "formBuilder": "양식 빌더",
       "projects": "프로젝트",
       "member": "멤버"
     },
@@ -84,6 +85,15 @@
       "logs": "로그",
       "feature": "기능"
     }
+  },
+  "formBuilder": {
+    "hero": { "kicker": "관리 도구 / JSONB", "title": "양식 빌더", "lead": "구조화된 질문으로 안전한 양식을 만들고 수정합니다.", "newForm": "새 양식" },
+    "list": { "title": "양식 목록", "loading": "불러오는 중…", "empty": "아직 양식이 없습니다.", "questions": "문항" },
+    "editor": { "emptyTitle": "양식 선택 또는 만들기", "emptyLead": "왼쪽에서 저장된 양식을 선택하거나 새로 만드세요.", "editing": "양식 수정", "creating": "새 양식", "untitled": "제목 없는 양식", "title": "양식 제목", "titlePlaceholder": "예: 이벤트 등록", "description": "설명", "descriptionPlaceholder": "응답자에게 양식의 목적을 알려주세요", "save": "저장", "saving": "저장 중…", "delete": "삭제", "deleteConfirm": "이 양식을 삭제할까요?" },
+    "questions": { "title": "질문", "add": "질문 추가", "number": "질문 {{ number }}", "prompt": "질문 제목", "promptPlaceholder": "질문 내용을 입력하세요", "type": "질문 종류", "helpText": "도움말", "helpPlaceholder": "선택 안내 문구", "required": "필수", "moveUp": "위로 이동", "moveDown": "아래로 이동", "remove": "질문 삭제", "empty": "질문이 없습니다. 첫 질문을 추가하세요." },
+    "options": { "title": "선택지", "add": "선택지 추가", "placeholder": "선택지 내용", "remove": "선택지 삭제" },
+    "types": { "shortText": "짧은 답변", "longText": "긴 답변", "singleChoice": "단일 선택", "multipleChoice": "복수 선택", "dropdown": "드롭다운", "number": "숫자", "date": "날짜", "boolean": "예 / 아니요" },
+    "feedback": { "loadFailure": "양식을 불러올 수 없습니다.", "saveSuccess": "양식이 안전하게 저장되었습니다.", "saveFailure": "양식을 저장할 수 없습니다.", "deleteSuccess": "양식이 삭제되었습니다.", "deleteFailure": "양식을 삭제할 수 없습니다.", "versionConflict": "다른 관리자가 이 양식을 변경했습니다. 다시 불러온 후 시도하세요.", "titleRequired": "양식 제목을 입력하세요.", "questionsInvalid": "모든 질문에는 제목이 필요하며 선택형 질문에는 두 개 이상의 완성된 선택지가 필요합니다." }
   },
   "world": {
     "mode": {

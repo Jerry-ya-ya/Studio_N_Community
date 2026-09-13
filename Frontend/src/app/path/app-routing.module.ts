@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 //AppPath
 import { appPath } from '../path/app-path-const'; // Adjust the import path as necessary
 import { superadminGuard } from '../core/guards/superadmin.guard';
+import { adminGuard } from '../core/guards/admin.guard';
 
 const routes: Routes = [
   {
@@ -95,6 +96,12 @@ const routes: Routes = [
     path: appPath.adminLogs,
     loadChildren: () =>
       import('../pages/admin/logs/logs.module').then(m => m.LogsModule)
+  },
+  {
+    path: appPath.formBuilder,
+    canMatch: [adminGuard],
+    loadChildren: () =>
+      import('../pages/admin/form-builder/form-builder.module').then(m => m.FormBuilderModule)
   },
   {
     path: appPath.friend,

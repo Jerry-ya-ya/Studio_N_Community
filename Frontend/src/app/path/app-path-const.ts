@@ -33,6 +33,8 @@ export const appPath = {
     activity: 'activity',
     //admin logs
     adminLogs: 'admin-logs',
+    //admin form builder
+    formBuilder: 'form-builder',
     //friend
     friend: 'friend',
     //project recruitment

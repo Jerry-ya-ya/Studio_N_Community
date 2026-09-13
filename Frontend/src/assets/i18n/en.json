@@ -76,6 +76,7 @@
       "logs": "Logs",
       "announce": "Announce",
       "events": "Events",
+      "formBuilder": "Form builder",
       "projects": "Projects",
       "member": "Member"
     },
@@ -84,6 +85,15 @@
       "logs": "Logs",
       "feature": "Feature"
     }
+  },
+  "formBuilder": {
+    "hero": { "kicker": "Admin tool / JSONB", "title": "Form builder", "lead": "Create secure, reusable forms with structured questions.", "newForm": "New form" },
+    "list": { "title": "Form library", "loading": "Loading forms…", "empty": "No forms have been created.", "questions": "questions" },
+    "editor": { "emptyTitle": "Select or create a form", "emptyLead": "Choose a saved form on the left or start a new one.", "editing": "Editing form", "creating": "New form", "untitled": "Untitled form", "title": "Form title", "titlePlaceholder": "For example: Event registration", "description": "Description", "descriptionPlaceholder": "Tell respondents what this form is for", "save": "Save form", "saving": "Saving…", "delete": "Delete", "deleteConfirm": "Delete this form?" },
+    "questions": { "title": "Questions", "add": "Add question", "number": "Question {{ number }}", "prompt": "Question title", "promptPlaceholder": "Enter what you want to ask", "type": "Question type", "helpText": "Help text", "helpPlaceholder": "Optional guidance", "required": "Required", "moveUp": "Move up", "moveDown": "Move down", "remove": "Remove question", "empty": "There are no questions yet. Add the first one." },
+    "options": { "title": "Options", "add": "Add option", "placeholder": "Option label", "remove": "Remove option" },
+    "types": { "shortText": "Short text", "longText": "Paragraph", "singleChoice": "Single choice", "multipleChoice": "Multiple choice", "dropdown": "Dropdown", "number": "Number", "date": "Date", "boolean": "Yes / No" },
+    "feedback": { "loadFailure": "Forms could not be loaded.", "saveSuccess": "The form was saved securely.", "saveFailure": "The form could not be saved.", "deleteSuccess": "The form was deleted.", "deleteFailure": "The form could not be deleted.", "versionConflict": "Another administrator changed this form. Reload it and try again.", "titleRequired": "Enter a form title.", "questionsInvalid": "Every question needs a title, and choice questions need at least two complete options." }
   },
   "world": {
     "mode": {

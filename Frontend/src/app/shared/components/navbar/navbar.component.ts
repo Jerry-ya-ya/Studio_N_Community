@@ -78,6 +78,7 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.admin.logs', icon: 'article', route: appPath.adminLogs },
         { labelKey: 'nav.admin.announce', icon: 'notifications_active', route: appPath.home },
         { labelKey: 'nav.admin.events', icon: 'event', route: appPath.activity },
+        { labelKey: 'nav.admin.formBuilder', icon: 'dynamic_form', route: appPath.formBuilder },
         { labelKey: 'nav.admin.projects', icon: 'workspaces', route: appPath.projects },
         { labelKey: 'nav.admin.member', icon: 'badge', route: appPath.home }
       ]

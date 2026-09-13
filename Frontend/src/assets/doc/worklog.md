@@ -776,3 +776,5 @@
 - Centralize account roles in a permission-backed registry with generic superadmin role management APIs, protected assignments, audit logging, and regression coverage.
 
 - Apply Todo-style project level badges to private recruitment and admin project views.
+
+- Add an admin form builder with constrained JSONB schemas, version-safe CRUD APIs, role guards, localization, and regression coverage.
