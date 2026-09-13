@@ -57,6 +57,21 @@
   --theme-page-bg: var(--eden-page-bg);
 }
 
+.project-level-badge {
+  display: inline-grid;
+  place-items: center;
+  margin-left: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: var(--studio-accent);
+  background: color-mix(in srgb, var(--studio-accent) 14%, transparent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: normal;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 body.cmen-day-theme {
   --studio-bg: var(--eden-bg);
   --studio-panel: var(--eden-panel);

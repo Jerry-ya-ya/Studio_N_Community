@@ -58,7 +58,7 @@
           <header class="project-card__header">
             <div>
               <p class="admin-kicker">{{ project.role_needed || ('adminProjects.card.roleFallback' | translate) }}</p>
-              <h2>{{ project.title }} <small>Lv. {{ getProjectLevel(project) }}</small></h2>
+              <h2>{{ project.title }} <small class="project-level-badge">Lv. {{ getProjectLevel(project) }}</small></h2>
               <p>{{ project.summary }}</p>
             </div>
             <div class="project-count">

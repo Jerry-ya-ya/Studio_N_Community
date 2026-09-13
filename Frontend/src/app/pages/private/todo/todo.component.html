@@ -109,7 +109,7 @@
           <div>
             <h4>
               {{ card.projectTitle === 'Unsorted Project' ? ('privateTodo.projects.unsorted' | translate) : card.projectTitle }}
-              @if (card.project) { <small>Lv. {{ getProjectLevel(card.project) }}</small> }
+              @if (card.project) { <small class="project-level-badge">Lv. {{ getProjectLevel(card.project) }}</small> }
             </h4>
             @if (card.summary) {
               <p>{{ card.summary }}</p>

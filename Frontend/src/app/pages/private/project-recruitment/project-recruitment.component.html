@@ -71,7 +71,7 @@
           <div class="project-card__top">
             <div>
               <p class="project-owner">{{ project.creator.nickname || project.creator.username }}</p>
-              <h3>{{ project.title }} <small>Lv. {{ getProjectLevel(project) }}</small></h3>
+              <h3>{{ project.title }} <small class="project-level-badge">Lv. {{ getProjectLevel(project) }}</small></h3>
             </div>
             <div class="project-card__badges">
               <span class="project-badge project-badge--status">
@@ -164,7 +164,7 @@
           <div class="manage-card__summary">
             <div>
               <p class="project-owner">{{ project.created_at }}</p>
-              <h3>{{ project.title }} <small>Lv. {{ getProjectLevel(project) }}</small></h3>
+              <h3>{{ project.title }} <small class="project-level-badge">Lv. {{ getProjectLevel(project) }}</small></h3>
               <p>{{ project.summary }}</p>
             </div>
             <div class="manage-metrics">

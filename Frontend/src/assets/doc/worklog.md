@@ -774,3 +774,5 @@
 - Add user-editable allowlisted capability cards to private and public member profiles.
 
 - Centralize account roles in a permission-backed registry with generic superadmin role management APIs, protected assignments, audit logging, and regression coverage.
+
+- Apply Todo-style project level badges to private recruitment and admin project views.
