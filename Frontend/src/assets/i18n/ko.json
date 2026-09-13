@@ -68,6 +68,7 @@
       "crawler": "크롤러",
       "logout": "로그아웃",
       "schedule": "시간표",
+      "survey": "설문",
       "achievement": "업적"
     },
     "admin": {
@@ -94,6 +95,18 @@
     "options": { "title": "선택지", "add": "선택지 추가", "placeholder": "선택지 내용", "remove": "선택지 삭제" },
     "types": { "shortText": "짧은 답변", "longText": "긴 답변", "singleChoice": "단일 선택", "multipleChoice": "복수 선택", "dropdown": "드롭다운", "number": "숫자", "date": "날짜", "boolean": "예 / 아니요" },
     "feedback": { "loadFailure": "양식을 불러올 수 없습니다.", "saveSuccess": "양식이 안전하게 저장되었습니다.", "saveFailure": "양식을 저장할 수 없습니다.", "deleteSuccess": "양식이 삭제되었습니다.", "deleteFailure": "양식을 삭제할 수 없습니다.", "versionConflict": "다른 관리자가 이 양식을 변경했습니다. 다시 불러온 후 시도하세요.", "titleRequired": "양식 제목을 입력하세요.", "questionsInvalid": "모든 질문에는 제목이 필요하며 선택형 질문에는 두 개 이상의 완성된 선택지가 필요합니다." }
+  },
+  "survey": {
+    "hero": { "kicker": "사용자 설문", "title": "설문 센터", "subtitle": "설문을 선택하고 질문에 답한 뒤 안전하게 제출하세요.", "total": "설문" },
+    "list": { "title": "참여 가능한 설문", "loading": "설문을 불러오는 중…", "empty": "참여할 설문이 없습니다.", "questions": "문항" },
+    "status": { "available": "참여 가능", "submitted": "제출 완료" },
+    "empty": { "title": "설문 선택", "subtitle": "목록에서 설문을 선택해 답변을 시작하세요." },
+    "form": { "kicker": "설문", "requiredHint": "필수", "requiredError": "필수 질문입니다.", "submitHint": "제출 후에는 답변을 변경할 수 없습니다.", "noQuestions": "이 설문에는 아직 질문이 없습니다." },
+    "placeholders": { "shortText": "답변 입력", "longText": "답변 작성", "select": "옵션 선택", "number": "숫자 입력" },
+    "boolean": { "yes": "예", "no": "아니요" },
+    "submitted": { "title": "답변 제출 완료", "message": "감사합니다. 답변이 기록되었습니다.", "time": "제출 시간: {{ time }}" },
+    "actions": { "refresh": "새로고침", "submit": "답변 제출", "submitting": "제출 중…" },
+    "feedback": { "loadFailure": "설문을 불러오지 못했습니다.", "required": "필수 질문에 모두 답해주세요.", "submitSuccess": "답변이 제출되었습니다.", "submitFailure": "답변을 제출하지 못했습니다.", "versionConflict": "답변 중 설문이 변경되었습니다. 새로고침 후 다시 시도하세요.", "alreadySubmitted": "이 설문 버전에는 이미 답변했습니다." }
   },
   "world": {
     "mode": {

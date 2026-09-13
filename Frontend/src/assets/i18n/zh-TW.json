@@ -68,6 +68,7 @@
       "crawler": "爬蟲",
       "logout": "登出",
       "schedule": "課表",
+      "survey": "問卷",
       "achievement": "成就"
     },
     "admin": {
@@ -94,6 +95,18 @@
     "options": { "title": "選項", "add": "新增選項", "placeholder": "選項文字", "remove": "移除選項" },
     "types": { "shortText": "簡答", "longText": "段落", "singleChoice": "單選", "multipleChoice": "複選", "dropdown": "下拉選單", "number": "數字", "date": "日期", "boolean": "是／否" },
     "feedback": { "loadFailure": "無法載入表單。", "saveSuccess": "表單已安全儲存。", "saveFailure": "無法儲存表單。", "deleteSuccess": "表單已刪除。", "deleteFailure": "無法刪除表單。", "versionConflict": "這份表單已被其他管理員修改，請重新載入後再試。", "titleRequired": "請輸入表單名稱。", "questionsInvalid": "每題都需要標題，選項題至少要有兩個完整選項。" }
+  },
+  "survey": {
+    "hero": { "kicker": "使用者問卷", "title": "問卷中心", "subtitle": "選擇要填寫的問卷、完成題目並安全提交回答。", "total": "份問卷" },
+    "list": { "title": "可填寫問卷", "loading": "正在載入問卷…", "empty": "目前沒有可填寫的問卷。", "questions": "題" },
+    "status": { "available": "可填寫", "submitted": "已提交" },
+    "empty": { "title": "選擇一份問卷", "subtitle": "從左側清單選擇問卷，即可查看題目並開始作答。" },
+    "form": { "kicker": "問卷作答", "requiredHint": "必填", "requiredError": "此題為必填。", "submitHint": "回答提交後無法修改。", "noQuestions": "這份問卷目前尚未建立題目。" },
+    "placeholders": { "shortText": "輸入你的回答", "longText": "填寫完整回答", "select": "請選擇一個選項", "number": "輸入數字" },
+    "boolean": { "yes": "是", "no": "否" },
+    "submitted": { "title": "回答已提交", "message": "謝謝你，你的回答已成功記錄。", "time": "提交時間：{{ time }}" },
+    "actions": { "refresh": "重新整理問卷", "submit": "提交回答", "submitting": "提交中…" },
+    "feedback": { "loadFailure": "無法載入問卷。", "required": "請完成所有必填題目後再提交。", "submitSuccess": "問卷回答已成功提交。", "submitFailure": "無法提交問卷回答。", "versionConflict": "作答期間問卷已更新，請重新整理後再填寫。", "alreadySubmitted": "你已提交過此版本的問卷。" }
   },
   "world": {
     "mode": {

@@ -68,6 +68,7 @@
       "crawler": "Crawler",
       "logout": "Logout",
       "schedule": "Schedule",
+      "survey": "Surveys",
       "achievement": "Achievements"
     },
     "admin": {
@@ -94,6 +95,18 @@
     "options": { "title": "Options", "add": "Add option", "placeholder": "Option label", "remove": "Remove option" },
     "types": { "shortText": "Short text", "longText": "Paragraph", "singleChoice": "Single choice", "multipleChoice": "Multiple choice", "dropdown": "Dropdown", "number": "Number", "date": "Date", "boolean": "Yes / No" },
     "feedback": { "loadFailure": "Forms could not be loaded.", "saveSuccess": "The form was saved securely.", "saveFailure": "The form could not be saved.", "deleteSuccess": "The form was deleted.", "deleteFailure": "The form could not be deleted.", "versionConflict": "Another administrator changed this form. Reload it and try again.", "titleRequired": "Enter a form title.", "questionsInvalid": "Every question needs a title, and choice questions need at least two complete options." }
+  },
+  "survey": {
+    "hero": { "kicker": "Member surveys", "title": "Survey Center", "subtitle": "Choose an available survey, answer its questions, and securely submit your response.", "total": "Surveys" },
+    "list": { "title": "Available surveys", "loading": "Loading surveys…", "empty": "There are no surveys to complete yet.", "questions": "questions" },
+    "status": { "available": "Available", "submitted": "Submitted" },
+    "empty": { "title": "Choose a survey", "subtitle": "Select a survey from the list to view and answer its questions." },
+    "form": { "kicker": "Survey", "requiredHint": "Required", "requiredError": "This question is required.", "submitHint": "Responses cannot be changed after submission.", "noQuestions": "This survey does not contain any questions yet." },
+    "placeholders": { "shortText": "Enter your answer", "longText": "Write your answer", "select": "Choose an option", "number": "Enter a number" },
+    "boolean": { "yes": "Yes", "no": "No" },
+    "submitted": { "title": "Response submitted", "message": "Thank you. Your answers have been recorded.", "time": "Submitted {{ time }}" },
+    "actions": { "refresh": "Refresh surveys", "submit": "Submit response", "submitting": "Submitting…" },
+    "feedback": { "loadFailure": "Surveys could not be loaded.", "required": "Complete every required question before submitting.", "submitSuccess": "Your response was submitted successfully.", "submitFailure": "Your response could not be submitted.", "versionConflict": "This survey changed while you were answering it. Refresh and try again.", "alreadySubmitted": "You have already submitted this survey version." }
   },
   "world": {
     "mode": {

@@ -68,6 +68,7 @@
       "crawler": "クローラー",
       "logout": "ログアウト",
       "schedule": "スケジュール",
+      "survey": "アンケート",
       "achievement": "実績"
     },
     "admin": {
@@ -94,6 +95,18 @@
     "options": { "title": "選択肢", "add": "選択肢を追加", "placeholder": "選択肢の文字", "remove": "選択肢を削除" },
     "types": { "shortText": "短文", "longText": "段落", "singleChoice": "単一選択", "multipleChoice": "複数選択", "dropdown": "ドロップダウン", "number": "数値", "date": "日付", "boolean": "はい／いいえ" },
     "feedback": { "loadFailure": "フォームを読み込めませんでした。", "saveSuccess": "フォームを保存しました。", "saveFailure": "フォームを保存できませんでした。", "deleteSuccess": "フォームを削除しました。", "deleteFailure": "フォームを削除できませんでした。", "versionConflict": "他の管理者が変更しました。再読み込みしてからお試しください。", "titleRequired": "フォーム名を入力してください。", "questionsInvalid": "各質問にはタイトルが必要で、選択式には2つ以上の完全な選択肢が必要です。" }
+  },
+  "survey": {
+    "hero": { "kicker": "ユーザーアンケート", "title": "アンケートセンター", "subtitle": "アンケートを選択し、質問に回答して安全に送信できます。", "total": "アンケート" },
+    "list": { "title": "回答可能なアンケート", "loading": "読み込み中…", "empty": "回答できるアンケートはありません。", "questions": "問" },
+    "status": { "available": "回答可能", "submitted": "送信済み" },
+    "empty": { "title": "アンケートを選択", "subtitle": "一覧からアンケートを選択して回答を始めてください。" },
+    "form": { "kicker": "アンケート", "requiredHint": "必須", "requiredError": "この質問は必須です。", "submitHint": "送信後に回答を変更することはできません。", "noQuestions": "このアンケートにはまだ質問がありません。" },
+    "placeholders": { "shortText": "回答を入力", "longText": "回答を記入", "select": "選択してください", "number": "数値を入力" },
+    "boolean": { "yes": "はい", "no": "いいえ" },
+    "submitted": { "title": "回答を送信しました", "message": "ありがとうございます。回答を記録しました。", "time": "送信日時：{{ time }}" },
+    "actions": { "refresh": "再読み込み", "submit": "回答を送信", "submitting": "送信中…" },
+    "feedback": { "loadFailure": "アンケートを読み込めませんでした。", "required": "必須の質問にすべて回答してください。", "submitSuccess": "回答を送信しました。", "submitFailure": "回答を送信できませんでした。", "versionConflict": "回答中にアンケートが更新されました。再読み込みしてください。", "alreadySubmitted": "このバージョンには回答済みです。" }
   },
   "world": {
     "mode": {

@@ -349,6 +349,48 @@ class FormTemplate(db.Model):
     created_by = db.relationship('User', backref='form_templates')
 
 
+class FormSubmission(db.Model):
+    """An immutable user's answers to one published form version."""
+    __tablename__ = 'form_submission'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'form_id', 'user_id', 'form_version',
+            name='uq_form_submission_form_user_version',
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    form_version = db.Column(db.Integer, nullable=False)
+    form_snapshot = db.Column(
+        JSONB().with_variant(db.JSON(), 'sqlite'), nullable=False
+    )
+    answers = db.Column(
+        JSONB().with_variant(db.JSON(), 'sqlite'), nullable=False
+    )
+    submitted_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+
+    form_id = db.Column(
+        db.Integer,
+        db.ForeignKey('form_template.id', ondelete='CASCADE'),
+        nullable=False,
+        index=True,
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='CASCADE'),
+        nullable=False,
+        index=True,
+    )
+    form = db.relationship(
+        'FormTemplate',
+        backref=db.backref('submissions', cascade='all, delete-orphan'),
+    )
+    user = db.relationship(
+        'User',
+        backref=db.backref('form_submissions', cascade='all, delete-orphan'),
+    )
+
+
 def load_models():
     """Keep all table models registered from one place before schema creation."""
     return (
@@ -369,4 +411,5 @@ def load_models():
         UserAchievement,
         ActivityPromotion,
         FormTemplate,
+        FormSubmission,
     )

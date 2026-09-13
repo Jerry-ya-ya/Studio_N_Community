@@ -21,6 +21,8 @@ export const appPath = {
     checkIn: 'check-in',
     //schedule
     schedule: 'schedule',
+    //survey
+    survey: 'survey',
     //promote
     promote: 'promote',
     //superadmin logs

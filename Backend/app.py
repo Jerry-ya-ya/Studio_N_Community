@@ -34,6 +34,7 @@ from routes.admin.promote import promote_bp
 from routes.admin.activity import activity_bp
 from routes.admin.logs import logs_bp
 from routes.admin.forms import forms_bp
+from routes.forms import user_forms_bp
 from routes.test.test import test_utils
 from routes.auth.friend import friend_bp
 from routes.crawler.crawler import crawler_bp
@@ -212,6 +213,7 @@ def create_app(config_name="none"):
     app.register_blueprint(activity_bp, url_prefix='/api')
     app.register_blueprint(logs_bp, url_prefix='/api')
     app.register_blueprint(forms_bp, url_prefix='/api')
+    app.register_blueprint(user_forms_bp, url_prefix='/api')
     app.register_blueprint(friend_bp, url_prefix='/api')
     app.register_blueprint(post_bp, url_prefix='/api')
     app.register_blueprint(project_recruitment_bp, url_prefix='/api')

@@ -1,0 +1,176 @@
+<main class="survey-page" [attr.aria-label]="'survey.hero.title' | translate">
+  <header class="survey-hero">
+    <div>
+      <p class="eyebrow">{{ 'survey.hero.kicker' | translate }}</p>
+      <h1>{{ 'survey.hero.title' | translate }}</h1>
+      <p>{{ 'survey.hero.subtitle' | translate }}</p>
+    </div>
+    <div class="survey-count" [attr.aria-label]="'survey.hero.total' | translate">
+      <strong>{{ forms.length }}</strong>
+      <span>{{ 'survey.hero.total' | translate }}</span>
+    </div>
+  </header>
+
+  <section class="survey-workspace">
+    <aside class="survey-library" [attr.aria-label]="'survey.list.title' | translate">
+      <div class="section-title">
+        <h2>{{ 'survey.list.title' | translate }}</h2>
+        <button type="button" class="icon-button" (click)="loadForms()" [disabled]="loading || submitting" [attr.aria-label]="'survey.actions.refresh' | translate">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+
+      @if (loading) {
+        <p class="state-message">{{ 'survey.list.loading' | translate }}</p>
+      } @else if (!forms.length) {
+        <div class="state-message state-message--empty">
+          <mat-icon>inbox</mat-icon>
+          <p>{{ 'survey.list.empty' | translate }}</p>
+        </div>
+      } @else {
+        <div class="form-list">
+          @for (form of forms; track form.id) {
+            <button
+              type="button"
+              class="form-option"
+              [class.active]="selectedForm?.id === form.id"
+              [class.complete]="form.submitted"
+              (click)="selectForm(form)"
+            >
+              <span class="form-option__icon"><mat-icon>{{ form.submitted ? 'check' : 'description' }}</mat-icon></span>
+              <span class="form-option__copy">
+                <strong>{{ form.title }}</strong>
+                <small>{{ form.schema.questions.length }} {{ 'survey.list.questions' | translate }}</small>
+              </span>
+              <span class="status-chip">{{ (form.submitted ? 'survey.status.submitted' : 'survey.status.available') | translate }}</span>
+            </button>
+          }
+        </div>
+      }
+    </aside>
+
+    <section class="survey-panel">
+      @if (!selectedForm) {
+        <div class="welcome-state">
+          <span class="welcome-icon"><mat-icon>assignment</mat-icon></span>
+          <h2>{{ 'survey.empty.title' | translate }}</h2>
+          <p>{{ 'survey.empty.subtitle' | translate }}</p>
+        </div>
+      } @else {
+        <header class="form-header">
+          <p class="eyebrow">{{ 'survey.form.kicker' | translate }}</p>
+          <h2>{{ selectedForm.title }}</h2>
+          @if (selectedForm.description) {
+            <p>{{ selectedForm.description }}</p>
+          }
+          <div class="form-meta">
+            <span><mat-icon>help_outline</mat-icon>{{ selectedForm.schema.questions.length }} {{ 'survey.list.questions' | translate }}</span>
+            @if (!selectedForm.submitted) {
+              <span><span class="required-mark">*</span>{{ 'survey.form.requiredHint' | translate }}</span>
+            }
+          </div>
+        </header>
+
+        @if (successKey) {
+          <p class="feedback feedback--success" role="status"><mat-icon>check_circle</mat-icon>{{ successKey | translate }}</p>
+        }
+        @if (errorKey || errorText) {
+          <p class="feedback feedback--error" role="alert"><mat-icon>error_outline</mat-icon>{{ errorText || (errorKey | translate) }}</p>
+        }
+
+        @if (selectedForm.submitted) {
+          <div class="submitted-state">
+            <span><mat-icon>task_alt</mat-icon></span>
+            <h3>{{ 'survey.submitted.title' | translate }}</h3>
+            <p>{{ 'survey.submitted.message' | translate }}</p>
+            @if (selectedForm.submittedAt) {
+              <small>{{ 'survey.submitted.time' | translate: { time: (selectedForm.submittedAt | date:'medium') } }}</small>
+            }
+          </div>
+        } @else if (!selectedForm.schema.questions.length) {
+          <div class="welcome-state compact">
+            <mat-icon>rule</mat-icon>
+            <h3>{{ 'survey.form.noQuestions' | translate }}</h3>
+          </div>
+        } @else {
+          <form (ngSubmit)="submit()" novalidate>
+            <ol class="question-list">
+              @for (question of selectedForm.schema.questions; track trackQuestion($index, question); let index = $index) {
+                <li class="question-card" [class.invalid]="invalidQuestionIds.has(question.id)">
+                  <div class="question-heading">
+                    <span class="question-number">{{ index + 1 }}</span>
+                    <div>
+                      <label [attr.for]="'survey-' + question.id">
+                        {{ question.title }}
+                        @if (question.required) { <span class="required-mark" aria-hidden="true">*</span> }
+                      </label>
+                      @if (question.description) { <p>{{ question.description }}</p> }
+                    </div>
+                  </div>
+
+                  @switch (question.type) {
+                    @case ('long_text') {
+                      <textarea [id]="'survey-' + question.id" [name]="question.id" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)" rows="5" maxlength="10000" [placeholder]="'survey.placeholders.longText' | translate"></textarea>
+                    }
+                    @case ('single_choice') {
+                      <div class="choice-list" [id]="'survey-' + question.id">
+                        @for (option of question.options; track option.id) {
+                          <label class="choice-option">
+                            <input type="radio" [name]="question.id" [value]="option.id" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)">
+                            <span>{{ option.label }}</span>
+                          </label>
+                        }
+                      </div>
+                    }
+                    @case ('multiple_choice') {
+                      <div class="choice-list" [id]="'survey-' + question.id">
+                        @for (option of question.options; track option.id) {
+                          <label class="choice-option">
+                            <input type="checkbox" [name]="question.id + '-' + option.id" [checked]="isChecked(question.id, option.id)" (change)="toggleOption(question.id, option.id, $any($event.target).checked)">
+                            <span>{{ option.label }}</span>
+                          </label>
+                        }
+                      </div>
+                    }
+                    @case ('dropdown') {
+                      <select [id]="'survey-' + question.id" [name]="question.id" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)">
+                        <option [ngValue]="null">{{ 'survey.placeholders.select' | translate }}</option>
+                        @for (option of question.options; track option.id) { <option [value]="option.id">{{ option.label }}</option> }
+                      </select>
+                    }
+                    @case ('number') {
+                      <input type="number" [id]="'survey-' + question.id" [name]="question.id" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)" [placeholder]="'survey.placeholders.number' | translate">
+                    }
+                    @case ('date') {
+                      <input type="date" [id]="'survey-' + question.id" [name]="question.id" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)">
+                    }
+                    @case ('boolean') {
+                      <div class="choice-list choice-list--inline" [id]="'survey-' + question.id">
+                        <label class="choice-option"><input type="radio" [name]="question.id" [value]="true" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)"><span>{{ 'survey.boolean.yes' | translate }}</span></label>
+                        <label class="choice-option"><input type="radio" [name]="question.id" [value]="false" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)"><span>{{ 'survey.boolean.no' | translate }}</span></label>
+                      </div>
+                    }
+                    @default {
+                      <input type="text" [id]="'survey-' + question.id" [name]="question.id" [(ngModel)]="answers[question.id]" (ngModelChange)="answerChanged(question.id)" maxlength="1000" [placeholder]="'survey.placeholders.shortText' | translate">
+                    }
+                  }
+                  @if (invalidQuestionIds.has(question.id)) {
+                    <small class="field-error">{{ 'survey.form.requiredError' | translate }}</small>
+                  }
+                </li>
+              }
+            </ol>
+
+            <footer class="submit-bar">
+              <p><mat-icon>lock</mat-icon>{{ 'survey.form.submitHint' | translate }}</p>
+              <button class="submit-button" type="submit" [disabled]="submitting">
+                <mat-icon>{{ submitting ? 'hourglass_top' : 'send' }}</mat-icon>
+                {{ (submitting ? 'survey.actions.submitting' : 'survey.actions.submit') | translate }}
+              </button>
+            </footer>
+          </form>
+        }
+      }
+    </section>
+  </section>
+</main>
