@@ -13,6 +13,29 @@ import { AuthSessionService } from '../../../core/services/auth-session.service'
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
+  readonly capabilityFields = [
+    {
+      key: 'capabilityDirection',
+      labelKey: 'privateProfile.capabilities.fields.direction',
+      options: ['cmenstudio', 'eden', 'both', 'independent']
+    },
+    {
+      key: 'capabilityStack',
+      labelKey: 'privateProfile.capabilities.fields.stack',
+      options: ['frontend', 'backend', 'fullstack', 'creative']
+    },
+    {
+      key: 'capabilityFocus',
+      labelKey: 'privateProfile.capabilities.fields.focus',
+      options: ['game-systems', 'learning-networks', 'community', 'developer-tools']
+    },
+    {
+      key: 'capabilityStyle',
+      labelKey: 'privateProfile.capabilities.fields.style',
+      options: ['professional', 'game-driven', 'experimental', 'collaborative']
+    }
+  ] as const;
+
   // email, nickname
   user: any = null;
   editing = false;
@@ -43,7 +66,8 @@ export class ProfileComponent implements OnInit {
         next: (data) => {
           this.user = {
             ...data,
-            avatarSource: data.avatarSource || data.avatar_source || 'github'
+            avatarSource: data.avatarSource || data.avatar_source || 'github',
+            ...this.normalizeCapabilities(data)
           };
           console.log('Loaded user successfully', this.user);
         },
@@ -56,7 +80,8 @@ export class ProfileComponent implements OnInit {
       next: data => {
         this.user = {
           ...data,
-          avatarSource: data.avatarSource || data.avatar_source || 'github'
+          avatarSource: data.avatarSource || data.avatar_source || 'github',
+          ...this.normalizeCapabilities(data)
         };
       },
       error: () => alert(this.translate.instant('privateProfile.feedback.loadFailure'))
@@ -68,7 +93,8 @@ export class ProfileComponent implements OnInit {
       email: this.user.email,
       nickname: this.user.nickname,
       githubUrl: this.user.githubUrl || this.user.github_url || '',
-      avatarSource: this.user.avatarSource || this.user.avatar_source || 'github'
+      avatarSource: this.user.avatarSource || this.user.avatar_source || 'github',
+      ...this.capabilityPayload()
     }).subscribe({
       next: () => {
         this.success = this.translate.instant('privateProfile.feedback.updateSuccess');
@@ -129,5 +155,26 @@ export class ProfileComponent implements OnInit {
 
   private updateProfile(payload: Record<string, unknown>) {
     return this.http.put(`${environment.apiUrl}/me`, payload);
+  }
+
+  private capabilityPayload() {
+    return Object.fromEntries(
+      this.capabilityFields.map(field => [field.key, this.user[field.key]])
+    );
+  }
+
+  private normalizeCapabilities(data: any) {
+    const defaults: Record<string, string> = {
+      capabilityDirection: 'both',
+      capabilityStack: 'fullstack',
+      capabilityFocus: 'game-systems',
+      capabilityStyle: 'professional'
+    };
+
+    return Object.fromEntries(this.capabilityFields.map(field => {
+      const snakeKey = field.key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      const value = data[field.key] || data[snakeKey];
+      return [field.key, (field.options as readonly unknown[]).includes(value) ? value : defaults[field.key]];
+    }));
   }
 }

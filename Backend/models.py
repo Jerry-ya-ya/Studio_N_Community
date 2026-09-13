@@ -28,6 +28,10 @@ class User(db.Model):
     avatar_source = db.Column(db.String(20), default='github', nullable=False)
     nickname = db.Column(db.String(80))
     github_url = db.Column(db.String(255))
+    capability_direction = db.Column(db.String(32), default='both', nullable=False)
+    capability_stack = db.Column(db.String(32), default='fullstack', nullable=False)
+    capability_focus = db.Column(db.String(32), default='game-systems', nullable=False)
+    capability_style = db.Column(db.String(32), default='professional', nullable=False)
     role = db.Column(db.String(20), default='user')  # 'user', 'admin', 'superadmin'
     experience = db.Column(db.Integer, default=0, nullable=False)
     review_experience = db.Column(db.Integer, default=0, nullable=False)
@@ -67,6 +71,14 @@ class User(db.Model):
             'nickname': self.display_nickname,
             'github_url': self.github_url,
             'githubUrl': self.github_url,
+            'capability_direction': self.capability_direction,
+            'capabilityDirection': self.capability_direction,
+            'capability_stack': self.capability_stack,
+            'capabilityStack': self.capability_stack,
+            'capability_focus': self.capability_focus,
+            'capabilityFocus': self.capability_focus,
+            'capability_style': self.capability_style,
+            'capabilityStyle': self.capability_style,
             'role': self.role,
             'experience': self.experience,
             'review_experience': self.review_experience,

@@ -110,6 +110,10 @@ def test_get_me_serializes_profile_aliases_and_empty_statistics(
     assert payload["avatar_url"] == "https://example.com/avatar.png"
     assert payload["avatar_source"] == "local"
     assert payload["avatarSource"] == payload["avatar_source"]
+    assert payload["capability_direction"] == payload["capabilityDirection"] == "both"
+    assert payload["capability_stack"] == payload["capabilityStack"] == "fullstack"
+    assert payload["capability_focus"] == payload["capabilityFocus"] == "game-systems"
+    assert payload["capability_style"] == payload["capabilityStyle"] == "professional"
     assert payload["role"] == "user"
     assert payload["pm_experience"] == 9
     assert payload["review_experience"] == 5
@@ -172,6 +176,57 @@ def test_update_profile_can_clear_github_url_and_use_camel_case_avatar_source(
         assert user.avatar_source == "local"
 
 
+def test_update_profile_saves_allowlisted_public_capabilities(
+    app, client, profile_accounts
+):
+    response = client.put(
+        "/api/me",
+        headers=bearer(profile_accounts["token"]),
+        json={
+            "capabilityDirection": " independent ",
+            "capability_stack": "backend",
+            "capabilityFocus": "developer-tools",
+            "capability_style": "collaborative",
+        },
+    )
+
+    assert response.status_code == 200
+    with app.app_context():
+        user = db.session.get(User, profile_accounts["user_id"])
+        assert user.capability_direction == "independent"
+        assert user.capability_stack == "backend"
+        assert user.capability_focus == "developer-tools"
+        assert user.capability_style == "collaborative"
+
+    profile = client.get("/api/me", headers=bearer(profile_accounts["token"])).get_json()
+    assert profile["capabilityDirection"] == "independent"
+    assert profile["capabilityStack"] == "backend"
+    assert profile["capabilityFocus"] == "developer-tools"
+    assert profile["capabilityStyle"] == "collaborative"
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "error"),
+    [
+        ("capabilityDirection", "<script>alert(1)</script>", "capabilityDirection is not an allowed option"),
+        ("capabilityStack", "a" * 1000, "capabilityStack is not an allowed option"),
+        ("capabilityFocus", 42, "capabilityFocus must be a string"),
+        ("capabilityStyle", None, "capabilityStyle must be a string"),
+    ],
+)
+def test_update_profile_rejects_unsafe_public_capabilities(
+    client, profile_accounts, field, value, error
+):
+    response = client.put(
+        "/api/me",
+        headers=bearer(profile_accounts["token"]),
+        json={field: value},
+    )
+
+    assert response.status_code == 400
+    assert response.get_json() == {"error": error}
+
+
 def test_update_profile_rejects_empty_duplicate_and_invalid_values(
     client, profile_accounts
 ):
@@ -195,6 +250,17 @@ def test_update_profile_rejects_empty_duplicate_and_invalid_values(
     assert invalid_avatar.get_json() == {
         "error": "Avatar source must be local or github"
     }
+
+
+def test_update_profile_rejects_non_object_payload(client, profile_accounts):
+    response = client.put(
+        "/api/me",
+        headers=bearer(profile_accounts["token"]),
+        json=[{"capabilityStyle": "professional"}],
+    )
+
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Profile payload must be an object"}
 
 
 def test_update_profile_email_change_invalidates_email_and_sends_verification(
@@ -242,6 +308,10 @@ def test_public_profile_returns_active_and_deleted_display_values(
     assert active["id"] == profile_accounts["duplicate_id"]
     assert "email" not in active
     assert active["avatar_source"] == active["avatarSource"] == "github"
+    assert active["capabilityDirection"] == "both"
+    assert active["capabilityStack"] == "fullstack"
+    assert active["capabilityFocus"] == "game-systems"
+    assert active["capabilityStyle"] == "professional"
     assert active["github_url"] == active["githubUrl"] is None
     assert active["created_at"]
     assert active["pm_experience"] == 0

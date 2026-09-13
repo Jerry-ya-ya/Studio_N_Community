@@ -182,6 +182,32 @@
         "value": "專業、遊戲感，並帶一點奇怪"
       }
     },
+    "capabilityOptions": {
+      "capabilityDirection": {
+        "cmenstudio": "CMENStudio",
+        "eden": "EDEN",
+        "both": "CMENStudio / EDEN",
+        "independent": "獨立專案"
+      },
+      "capabilityStack": {
+        "frontend": "前端",
+        "backend": "後端",
+        "fullstack": "全端",
+        "creative": "創意科技"
+      },
+      "capabilityFocus": {
+        "game-systems": "遊戲網頁系統",
+        "learning-networks": "學習網路",
+        "community": "社群體驗",
+        "developer-tools": "開發者工具"
+      },
+      "capabilityStyle": {
+        "professional": "專業導向",
+        "game-driven": "遊戲驅動",
+        "experimental": "實驗風格",
+        "collaborative": "協作導向"
+      }
+    },
     "repos": {
       "kicker": "近期建造",
       "title": "GitHub 專案",
@@ -821,6 +847,17 @@
       "email": "Email",
       "nickname": "暱稱",
       "githubUrl": "GitHub URL"
+    },
+    "capabilities": {
+      "kicker": "公開個人卡片",
+      "title": "成員亮點",
+      "description": "選擇公開成員頁四張卡片要顯示的內容；只有清單中的安全選項可以發布。",
+      "fields": {
+        "direction": "工作室方向",
+        "stack": "主要技術棧",
+        "focus": "專注領域",
+        "style": "建造風格"
+      }
     },
     "avatar": {
       "kicker": "Avatar Upload",

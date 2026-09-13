@@ -770,3 +770,5 @@
 - Resolve Alembic migration heads with a no-op merge revision.
 
 - Display PM and review levels alongside coin balances across private square, friend, profile, and public member pages with API serialization and regression coverage.
+
+- Add user-editable allowlisted capability cards to private and public member profiles.

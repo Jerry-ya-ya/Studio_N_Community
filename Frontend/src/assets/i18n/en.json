@@ -182,6 +182,32 @@
         "value": "Professional, game-driven, a little strange"
       }
     },
+    "capabilityOptions": {
+      "capabilityDirection": {
+        "cmenstudio": "CMENStudio",
+        "eden": "EDEN",
+        "both": "CMENStudio / EDEN",
+        "independent": "Independent projects"
+      },
+      "capabilityStack": {
+        "frontend": "Frontend",
+        "backend": "Backend",
+        "fullstack": "Full stack",
+        "creative": "Creative technology"
+      },
+      "capabilityFocus": {
+        "game-systems": "Game web systems",
+        "learning-networks": "Learning networks",
+        "community": "Community experiences",
+        "developer-tools": "Developer tools"
+      },
+      "capabilityStyle": {
+        "professional": "Professional",
+        "game-driven": "Game-driven",
+        "experimental": "Experimental",
+        "collaborative": "Collaborative"
+      }
+    },
     "repos": {
       "kicker": "Recent Builds",
       "title": "GitHub Projects",
@@ -821,6 +847,17 @@
       "email": "Email",
       "nickname": "Nickname",
       "githubUrl": "GitHub URL"
+    },
+    "capabilities": {
+      "kicker": "Public Profile Cards",
+      "title": "Member Highlights",
+      "description": "Choose the four values shown on your public member profile. Only the listed safe options can be published.",
+      "fields": {
+        "direction": "Studio direction",
+        "stack": "Main stack",
+        "focus": "Focus",
+        "style": "Build style"
+      }
     },
     "avatar": {
       "kicker": "Avatar Upload",

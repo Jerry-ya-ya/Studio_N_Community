@@ -110,7 +110,7 @@
       @for (item of capabilities; track item) {
         <article class="capability-card">
           <span>{{ item.labelKey | translate }}</span>
-          <p>{{ item.valueKey | translate }}</p>
+          <p>{{ getCapabilityValueKey(item) | translate }}</p>
         </article>
       }
     </section>

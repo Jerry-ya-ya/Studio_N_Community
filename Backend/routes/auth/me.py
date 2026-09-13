@@ -19,6 +19,53 @@ from profile_stats import get_coin_balances, serialize_profile_stats
 
 me_bp = Blueprint('me', __name__)
 
+CAPABILITY_FIELDS = {
+    'capability_direction': {
+        'alias': 'capabilityDirection',
+        'allowed': {'cmenstudio', 'eden', 'both', 'independent'},
+    },
+    'capability_stack': {
+        'alias': 'capabilityStack',
+        'allowed': {'frontend', 'backend', 'fullstack', 'creative'},
+    },
+    'capability_focus': {
+        'alias': 'capabilityFocus',
+        'allowed': {'game-systems', 'learning-networks', 'community', 'developer-tools'},
+    },
+    'capability_style': {
+        'alias': 'capabilityStyle',
+        'allowed': {'professional', 'game-driven', 'experimental', 'collaborative'},
+    },
+}
+
+
+def serialize_capabilities(user):
+    values = {}
+    for field, config in CAPABILITY_FIELDS.items():
+        value = getattr(user, field)
+        values[field] = value
+        values[config['alias']] = value
+    return values
+
+
+def read_capability_updates(data):
+    updates = {}
+    for field, config in CAPABILITY_FIELDS.items():
+        alias = config['alias']
+        if field not in data and alias not in data:
+            continue
+
+        raw_value = data[alias] if alias in data else data[field]
+        if not isinstance(raw_value, str):
+            return None, f'{alias} must be a string'
+
+        value = raw_value.strip()
+        if value not in config['allowed']:
+            return None, f'{alias} is not an allowed option'
+        updates[field] = value
+
+    return updates, None
+
 
 # GET：取得目前登入使用者資訊
 @me_bp.route('/me', methods=['GET'])
@@ -43,6 +90,7 @@ def get_current_user():
         'avatar_url': user.avatar_url,
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
+        **serialize_capabilities(user),
         'role': user.role,
         **serialize_profile_stats(user, total_coins),
         'total_coins': total_coins,
@@ -62,7 +110,15 @@ def update_current_user():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
+    if data is None:
+        data = {}
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Profile payload must be an object'}), 400
+    capability_updates, capability_error = read_capability_updates(data)
+    if capability_error:
+        return jsonify({'error': capability_error}), 400
+
     new_email = data.get('email')
     email_changed = False
     previous_values = {
@@ -70,6 +126,7 @@ def update_current_user():
         'nickname': user.nickname,
         'github_url': user.github_url,
         'avatar_source': user.avatar_source or 'github',
+        **{field: getattr(user, field) for field in CAPABILITY_FIELDS},
     }
 
     if new_email is not None:
@@ -94,6 +151,8 @@ def update_current_user():
         if avatar_source not in ['local', 'github']:
             return jsonify({'error': 'Avatar source must be local or github'}), 400
         user.avatar_source = avatar_source
+    for field, value in capability_updates.items():
+        setattr(user, field, value)
     db.session.commit()
 
     current_values = {
@@ -101,6 +160,7 @@ def update_current_user():
         'nickname': user.nickname,
         'github_url': user.github_url,
         'avatar_source': user.avatar_source or 'github',
+        **{field: getattr(user, field) for field in CAPABILITY_FIELDS},
     }
     changes = {
         field: {'from': previous_values[field], 'to': value}
@@ -150,6 +210,7 @@ def public_user(user_id):
         'avatar_url': user.avatar_url,
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
+        **serialize_capabilities(user),
         'role': user.role,
         'created_at': to_taipei_iso(user.created_at),
         **serialize_profile_stats(user, coin_balance),
@@ -194,6 +255,10 @@ def delete_current_user():
     user.avatar_url = None
     user.avatar_source = 'github'
     revoke_all_user_tokens(user.id)
+    user.capability_direction = 'both'
+    user.capability_stack = 'fullstack'
+    user.capability_focus = 'game-systems'
+    user.capability_style = 'professional'
     db.session.commit()
     log_account_event(
         'soft_delete_account',

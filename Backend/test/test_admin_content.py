@@ -184,6 +184,10 @@ def test_public_and_admin_member_lists(client, content_accounts):
     assert member["githubUrl"] == "https://github.com/content-member"
     assert member["avatarUrl"] == "/member.png"
     assert member["avatarSource"] == "upload"
+    assert member["capabilityDirection"] == "both"
+    assert member["capabilityStack"] == "fullstack"
+    assert member["capabilityFocus"] == "game-systems"
+    assert member["capabilityStyle"] == "professional"
     assert member["pm_experience"] == 9
     assert member["review_experience"] == 5
     assert member["coins"] == 11

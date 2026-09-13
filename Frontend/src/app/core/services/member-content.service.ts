@@ -14,6 +14,10 @@ export interface MemberContentItem {
   githubUrl: string;
   avatarUrl?: string | null;
   avatarSource?: 'local' | 'github';
+  capabilityDirection?: string;
+  capabilityStack?: string;
+  capabilityFocus?: string;
+  capabilityStyle?: string;
   pm_experience?: number;
   review_experience?: number;
   coins?: number;
@@ -25,6 +29,10 @@ export const defaultMemberContent: MemberContentItem[] = Array.from({ length: 12
   name: 'Jerry-ya-ya',
   role: 'member',
   githubUrl: 'https://github.com/Jerry-ya-ya',
+  capabilityDirection: 'both',
+  capabilityStack: 'fullstack',
+  capabilityFocus: 'game-systems',
+  capabilityStyle: 'professional',
   sort_order: index
 }));
 
@@ -82,6 +90,10 @@ export class MemberContentService {
         githubUrl: String(member.githubUrl ?? '').trim(),
         avatarUrl: member.avatarUrl ? String(member.avatarUrl).trim() : null,
         avatarSource,
+        capabilityDirection: String(member.capabilityDirection ?? '').trim(),
+        capabilityStack: String(member.capabilityStack ?? '').trim(),
+        capabilityFocus: String(member.capabilityFocus ?? '').trim(),
+        capabilityStyle: String(member.capabilityStyle ?? '').trim(),
         pm_experience: this.normalizeMetric(member.pm_experience),
         review_experience: this.normalizeMetric(member.review_experience),
         coins: this.normalizeMetric(member.coins),

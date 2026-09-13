@@ -31,7 +31,8 @@ interface GithubRepository {
 
 interface MemberCapability {
   labelKey: string;
-  valueKey: string;
+  field: 'capabilityDirection' | 'capabilityStack' | 'capabilityFocus' | 'capabilityStyle';
+  fallbackKey: string;
 }
 
 @Component({
@@ -45,11 +46,17 @@ export class MemberComponent implements OnInit {
   demoMembers: MemberContentItem[] = JSON.parse(JSON.stringify(defaultMemberContent));
 
   readonly capabilities: MemberCapability[] = [
-    { labelKey: 'member.capabilities.direction.label', valueKey: 'member.capabilities.direction.value' },
-    { labelKey: 'member.capabilities.stack.label', valueKey: 'member.capabilities.stack.value' },
-    { labelKey: 'member.capabilities.focus.label', valueKey: 'member.capabilities.focus.value' },
-    { labelKey: 'member.capabilities.style.label', valueKey: 'member.capabilities.style.value' }
+    { labelKey: 'member.capabilities.direction.label', field: 'capabilityDirection', fallbackKey: 'member.capabilities.direction.value' },
+    { labelKey: 'member.capabilities.stack.label', field: 'capabilityStack', fallbackKey: 'member.capabilities.stack.value' },
+    { labelKey: 'member.capabilities.focus.label', field: 'capabilityFocus', fallbackKey: 'member.capabilities.focus.value' },
+    { labelKey: 'member.capabilities.style.label', field: 'capabilityStyle', fallbackKey: 'member.capabilities.style.value' }
   ];
+  private readonly capabilityOptions: Record<MemberCapability['field'], readonly string[]> = {
+    capabilityDirection: ['cmenstudio', 'eden', 'both', 'independent'],
+    capabilityStack: ['frontend', 'backend', 'fullstack', 'creative'],
+    capabilityFocus: ['game-systems', 'learning-networks', 'community', 'developer-tools'],
+    capabilityStyle: ['professional', 'game-driven', 'experimental', 'collaborative']
+  };
 
   selectedMember: MemberContentItem = this.demoMembers[0];
   profile: GithubProfile | null = null;
@@ -174,6 +181,13 @@ export class MemberComponent implements OnInit {
 
     const githubUsername = this.getGithubUsername(member);
     return (githubUsername ? this.avatarByUsername[githubUsername] : '') || localAvatar || 'icons/cmenstudio.png';
+  }
+
+  getCapabilityValueKey(capability: MemberCapability) {
+    const value = this.selectedMember[capability.field];
+    return value && this.capabilityOptions[capability.field].includes(value)
+      ? `member.capabilityOptions.${capability.field}.${value}`
+      : capability.fallbackKey;
   }
 
   private loadMemberAvatars(members: MemberContentItem[]) {

@@ -182,6 +182,32 @@
         "value": "プロらしく、ゲーム感があり、少し不思議"
       }
     },
+    "capabilityOptions": {
+      "capabilityDirection": {
+        "cmenstudio": "CMENStudio",
+        "eden": "EDEN",
+        "both": "CMENStudio / EDEN",
+        "independent": "個人プロジェクト"
+      },
+      "capabilityStack": {
+        "frontend": "フロントエンド",
+        "backend": "バックエンド",
+        "fullstack": "フルスタック",
+        "creative": "クリエイティブ技術"
+      },
+      "capabilityFocus": {
+        "game-systems": "ゲーム向け Web システム",
+        "learning-networks": "学習ネットワーク",
+        "community": "コミュニティ体験",
+        "developer-tools": "開発者ツール"
+      },
+      "capabilityStyle": {
+        "professional": "プロフェッショナル",
+        "game-driven": "ゲーム駆動",
+        "experimental": "実験的",
+        "collaborative": "コラボレーション重視"
+      }
+    },
     "repos": {
       "kicker": "最近のビルド",
       "title": "GitHub プロジェクト",
@@ -821,6 +847,17 @@
       "email": "Email",
       "nickname": "ニックネーム",
       "githubUrl": "GitHub URL"
+    },
+    "capabilities": {
+      "kicker": "公開プロフィールカード",
+      "title": "メンバーの特徴",
+      "description": "公開メンバープロフィールに表示する4つの値を選択します。リスト内の安全な選択肢のみ公開できます。",
+      "fields": {
+        "direction": "スタジオ方針",
+        "stack": "主要スタック",
+        "focus": "フォーカス",
+        "style": "ビルドスタイル"
+      }
     },
     "avatar": {
       "kicker": "Avatar Upload",

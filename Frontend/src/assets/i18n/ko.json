@@ -182,6 +182,32 @@
         "value": "전문적이고 게임 지향적이며 약간 낯선 감각"
       }
     },
+    "capabilityOptions": {
+      "capabilityDirection": {
+        "cmenstudio": "CMENStudio",
+        "eden": "EDEN",
+        "both": "CMENStudio / EDEN",
+        "independent": "독립 프로젝트"
+      },
+      "capabilityStack": {
+        "frontend": "프론트엔드",
+        "backend": "백엔드",
+        "fullstack": "풀스택",
+        "creative": "크리에이티브 기술"
+      },
+      "capabilityFocus": {
+        "game-systems": "게임 웹 시스템",
+        "learning-networks": "학습 네트워크",
+        "community": "커뮤니티 경험",
+        "developer-tools": "개발자 도구"
+      },
+      "capabilityStyle": {
+        "professional": "전문적",
+        "game-driven": "게임 중심",
+        "experimental": "실험적",
+        "collaborative": "협업 중심"
+      }
+    },
     "repos": {
       "kicker": "최근 빌드",
       "title": "GitHub 프로젝트",
@@ -821,6 +847,17 @@
       "email": "Email",
       "nickname": "닉네임",
       "githubUrl": "GitHub URL"
+    },
+    "capabilities": {
+      "kicker": "공개 프로필 카드",
+      "title": "멤버 하이라이트",
+      "description": "공개 멤버 프로필의 카드 4개에 표시할 값을 선택하세요. 목록에 있는 안전한 옵션만 게시할 수 있습니다.",
+      "fields": {
+        "direction": "스튜디오 방향",
+        "stack": "주요 스택",
+        "focus": "초점",
+        "style": "빌드 스타일"
+      }
     },
     "avatar": {
       "kicker": "Avatar Upload",

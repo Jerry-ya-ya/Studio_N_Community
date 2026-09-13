@@ -68,6 +68,27 @@
               autocomplete="url"
               >
           </label>
+          <section class="capability-editor" [attr.aria-label]="'privateProfile.capabilities.title' | translate">
+            <div class="card-header capability-editor__header">
+              <p class="profile-kicker">{{ 'privateProfile.capabilities.kicker' | translate }}</p>
+              <h2>{{ 'privateProfile.capabilities.title' | translate }}</h2>
+              <p>{{ 'privateProfile.capabilities.description' | translate }}</p>
+            </div>
+            <div class="capability-fields">
+              @for (field of capabilityFields; track field.key) {
+                <label class="form-field">
+                  <span>{{ field.labelKey | translate }}</span>
+                  <select [(ngModel)]="user[field.key]" [disabled]="!editing">
+                    @for (option of field.options; track option) {
+                      <option [value]="option">
+                        {{ ('member.capabilityOptions.' + field.key + '.' + option) | translate }}
+                      </option>
+                    }
+                  </select>
+                </label>
+              }
+            </div>
+          </section>
           @if (!editing) {
             <div class="action-row">
               <button class="profile-button" type="button" (click)="editing = true">{{ 'privateProfile.actions.edit' | translate }}</button>
