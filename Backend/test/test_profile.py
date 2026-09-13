@@ -24,6 +24,8 @@ def profile_accounts(app):
             avatar_url="https://example.com/avatar.png",
             avatar_source="local",
             role="user",
+            review_experience=5,
+            pm_experience=9,
             email_verified=True,
         )
         duplicate = User(
@@ -109,6 +111,8 @@ def test_get_me_serializes_profile_aliases_and_empty_statistics(
     assert payload["avatar_source"] == "local"
     assert payload["avatarSource"] == payload["avatar_source"]
     assert payload["role"] == "user"
+    assert payload["pm_experience"] == 9
+    assert payload["review_experience"] == 5
     assert payload["created_at"]
     assert payload["coins"] == payload["total_coins"] == payload["totalCoins"] == 0
     assert payload["achievementStats"] == {
@@ -240,6 +244,9 @@ def test_public_profile_returns_active_and_deleted_display_values(
     assert active["avatar_source"] == active["avatarSource"] == "github"
     assert active["github_url"] == active["githubUrl"] is None
     assert active["created_at"]
+    assert active["pm_experience"] == 0
+    assert active["review_experience"] == 0
+    assert active["coins"] == 0
 
     with app.app_context():
         target = db.session.get(User, profile_accounts["duplicate_id"])
@@ -274,6 +281,21 @@ def test_public_profile_returns_not_found(client, profile_accounts):
 
     assert response.status_code == 404
     assert response.get_json() == {"error": "用戶不存在"}
+
+
+def test_square_serializes_profile_levels_and_coins(client, profile_accounts):
+    response = client.get(
+        "/api/square", headers=bearer(profile_accounts["token"])
+    )
+
+    assert response.status_code == 200
+    profile = next(
+        item for item in response.get_json()
+        if item["id"] == profile_accounts["user_id"]
+    )
+    assert profile["pm_experience"] == 9
+    assert profile["review_experience"] == 5
+    assert profile["coins"] == 0
 
 
 def test_delete_profile_requires_exact_confirmation(client, profile_accounts):

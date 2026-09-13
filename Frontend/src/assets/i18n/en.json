@@ -446,6 +446,12 @@
       "delete": "Are you sure you want to delete this post?"
     }
   },
+  "profileStats": {
+    "ariaLabel": "Member levels and coins",
+    "pmLevel": "PM Level",
+    "reviewLevel": "Review Level",
+    "coins": "Coins"
+  },
   "privateSquare": {
     "header": {
       "title": "User Square"

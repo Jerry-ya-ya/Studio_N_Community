@@ -9,6 +9,7 @@ from routes.auth.utils import get_current_user_from_token
 from log_writer import get_backend_logger
 from time_utils import taipei_now, to_taipei_iso
 from image_upload import InvalidImageError, save_validated_image
+from profile_stats import get_coin_balances, serialize_profile_stats
 
 content_bp = Blueprint('content', __name__)
 content_logger = get_backend_logger('content', 'content.log', message_only=True)
@@ -135,7 +136,7 @@ def serialize_home_news(item):
         'updated_at': to_taipei_iso(item.updated_at),
     }
 
-def serialize_registered_member(user):
+def serialize_registered_member(user, coins=0):
     role = user.role if user.role in VALID_MEMBER_ROLES else 'user'
 
     return {
@@ -149,6 +150,7 @@ def serialize_registered_member(user):
         'sort_order': user.id,
         'created_at': to_taipei_iso(user.created_at),
         'updated_at': None,
+        **serialize_profile_stats(user, coins),
     }
 
 
@@ -179,6 +181,9 @@ def serialize_member_defaults():
             'sort_order': index,
             'created_at': None,
             'updated_at': None,
+            'pm_experience': 0,
+            'review_experience': 0,
+            'coins': 0,
         }
         for index, item in enumerate(DEFAULT_MEMBER_CONTENT)
     ]
@@ -199,7 +204,11 @@ def grouped_home_news():
 
 def list_registered_members():
     users = User.query.order_by(User.created_at.asc(), User.id.asc()).all()
-    return [serialize_registered_member(user) for user in users]
+    coin_balances = get_coin_balances(users)
+    return [
+        serialize_registered_member(user, coin_balances.get(user.id, 0))
+        for user in users
+    ]
 
 
 def read_item_payload(data, default_theme=None, default_order=0):

@@ -24,6 +24,8 @@ def friend_accounts(app):
             avatar_source="upload",
             github_url="https://github.com/alice",
             role="admin",
+            review_experience=5,
+            pm_experience=9,
             email_verified=True,
         )
         bob = User(
@@ -378,6 +380,9 @@ def test_get_friends_serializes_profile_fields_and_fallbacks(
             "avatarUrl": "https://example.com/alice.png",
             "avatarSource": "upload",
             "role": "admin",
+            "pm_experience": 9,
+            "review_experience": 5,
+            "coins": 0,
         }
     ]
 

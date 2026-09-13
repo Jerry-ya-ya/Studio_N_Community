@@ -446,6 +446,12 @@
       "delete": "この投稿を削除してもよろしいですか？"
     }
   },
+  "profileStats": {
+    "ariaLabel": "メンバーレベルとコイン",
+    "pmLevel": "PM レベル",
+    "reviewLevel": "レビューレベル",
+    "coins": "コイン"
+  },
   "privateSquare": {
     "header": {
       "title": "ユーザー広場"

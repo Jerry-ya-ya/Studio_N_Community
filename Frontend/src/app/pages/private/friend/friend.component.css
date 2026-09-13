@@ -163,6 +163,22 @@
   white-space: nowrap;
 }
 
+.friend-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.friend-metrics small {
+  padding: 3px 7px;
+  border: 1px solid var(--studio-line);
+  border-radius: 999px;
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-accent) 10%, transparent);
+  font-weight: 800;
+}
+
 .friend-identity small {
   color: var(--studio-muted);
   font-size: 0.86rem;

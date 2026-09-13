@@ -19,6 +19,11 @@
         <p><strong>{{ 'privateSquare.user.username' | translate }}:</strong>{{ user.username }}</p>
         <p><strong>{{ 'privateSquare.user.nickname' | translate }}:</strong>{{ user.nickname || ('privateSquare.user.unset' | translate) }}</p>
         <p><strong>{{ 'privateSquare.user.role' | translate }}:</strong>{{ user.role }}</p>
+        <div class="profile-metrics" [attr.aria-label]="'profileStats.ariaLabel' | translate">
+          <span><strong>{{ 'profileStats.pmLevel' | translate }}</strong>{{ user.pm_experience ?? 0 }}</span>
+          <span><strong>{{ 'profileStats.reviewLevel' | translate }}</strong>{{ user.review_experience ?? 0 }}</span>
+          <span><strong>{{ 'profileStats.coins' | translate }}</strong>{{ user.coins ?? 0 }}</span>
+        </div>
         <p><strong>{{ 'privateSquare.user.createdAt' | translate }}:</strong>{{ user.created_at }}</p>
         <div class="friend-actions">
           @if (isCurrentUser(user.id)) {

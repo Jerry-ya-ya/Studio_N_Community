@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from models import User
 from flask_jwt_extended import jwt_required
 from time_utils import to_taipei_iso
+from profile_stats import get_coin_balances, serialize_profile_stats
 
 square_bp = Blueprint('square', __name__)
 
@@ -26,13 +27,15 @@ def get_square():
     else:
         users = User.query.order_by(sort_column.asc()).all()
 
+    coin_balances = get_coin_balances(users)
     user_list = [{
         'id': user.id,
         'username': user.display_username,
         'nickname': user.display_nickname,
         'avatar_url': user.avatar_url,
         'role': user.role,
-        'created_at': to_taipei_iso(user.created_at)
+        'created_at': to_taipei_iso(user.created_at),
+        **serialize_profile_stats(user, coin_balances.get(user.id, 0)),
     } for user in users]
 
     return jsonify(user_list)

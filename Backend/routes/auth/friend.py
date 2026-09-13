@@ -4,6 +4,7 @@ from flask import request, jsonify, Blueprint
 from routes.auth.utils import get_current_user_from_token
 from achievements import queue_achievement_check
 from rate_limit import member_write_rate_limited
+from profile_stats import get_coin_balances, serialize_profile_stats
 
 friend_bp = Blueprint('friend_bp', __name__)
 
@@ -53,6 +54,7 @@ def get_friends():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
+    coin_balances = get_coin_balances(user.friends)
     friends = []
     for friend in user.friends:
         friend_data = {
@@ -64,6 +66,7 @@ def get_friends():
             'avatarUrl': friend.avatar_url,
             'avatarSource': friend.avatar_source or 'github',
             'role': friend.role,
+            **serialize_profile_stats(friend, coin_balances.get(friend.id, 0)),
         }
         if user.role == 'superadmin':
             friend_data['email'] = friend.display_email

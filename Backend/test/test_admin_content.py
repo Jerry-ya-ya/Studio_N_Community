@@ -1,3 +1,4 @@
+from datetime import date
 from io import BytesIO
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -7,7 +8,7 @@ import pytest
 from flask_jwt_extended import create_access_token
 
 from image_upload import InvalidImageError
-from models import HomeNewsItem, User, db
+from models import DailyCheckIn, HomeNewsItem, User, db
 from routes.admin import content
 
 
@@ -32,9 +33,17 @@ def content_accounts(app):
             github_url="https://github.com/content-member",
             avatar_url="/member.png",
             avatar_source="upload",
+            review_experience=5,
+            pm_experience=9,
             email_verified=True,
         )
         db.session.add_all([admin, member])
+        db.session.flush()
+        db.session.add(DailyCheckIn(
+            user_id=member.id,
+            checkin_date=date(2026, 9, 12),
+            points=11,
+        ))
         db.session.commit()
         result = {
             "admin_id": admin.id,
@@ -46,6 +55,9 @@ def content_accounts(app):
     yield result
 
     with app.app_context():
+        DailyCheckIn.query.filter(
+            DailyCheckIn.user_id.in_([result["admin_id"], result["member_id"]])
+        ).delete(synchronize_session=False)
         HomeNewsItem.query.filter(
             HomeNewsItem.title.like("content-%")
         ).delete(synchronize_session=False)
@@ -172,6 +184,9 @@ def test_public_and_admin_member_lists(client, content_accounts):
     assert member["githubUrl"] == "https://github.com/content-member"
     assert member["avatarUrl"] == "/member.png"
     assert member["avatarSource"] == "upload"
+    assert member["pm_experience"] == 9
+    assert member["review_experience"] == 5
+    assert member["coins"] == 11
 
     admin = client.get(
         "/api/admin/content/members",

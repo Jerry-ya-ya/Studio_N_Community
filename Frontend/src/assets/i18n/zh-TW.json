@@ -446,6 +446,12 @@
       "delete": "確定要刪除這篇貼文？"
     }
   },
+  "profileStats": {
+    "ariaLabel": "成員等級與金幣",
+    "pmLevel": "PM 等級",
+    "reviewLevel": "審核等級",
+    "coins": "金幣"
+  },
   "privateSquare": {
     "header": {
       "title": "用戶廣場"

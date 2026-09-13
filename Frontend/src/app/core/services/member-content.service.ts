@@ -14,6 +14,9 @@ export interface MemberContentItem {
   githubUrl: string;
   avatarUrl?: string | null;
   avatarSource?: 'local' | 'github';
+  pm_experience?: number;
+  review_experience?: number;
+  coins?: number;
   sort_order?: number;
 }
 
@@ -79,6 +82,9 @@ export class MemberContentService {
         githubUrl: String(member.githubUrl ?? '').trim(),
         avatarUrl: member.avatarUrl ? String(member.avatarUrl).trim() : null,
         avatarSource,
+        pm_experience: this.normalizeMetric(member.pm_experience),
+        review_experience: this.normalizeMetric(member.review_experience),
+        coins: this.normalizeMetric(member.coins),
         sort_order: Number(member.sort_order ?? index)
       };
     }).filter(member => member.name || member.role || member.githubUrl);
@@ -92,5 +98,10 @@ export class MemberContentService {
 
   private normalizeRole(role: unknown): MemberRole {
     return memberRoleOptions.includes(role as MemberRole) ? role as MemberRole : 'member';
+  }
+
+  private normalizeMetric(value: unknown): number {
+    const metric = Number(value ?? 0);
+    return Number.isFinite(metric) ? Math.max(0, metric) : 0;
   }
 }

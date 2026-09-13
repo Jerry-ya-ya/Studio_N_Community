@@ -177,6 +177,24 @@ h2 {
   color: #bfffd0;
 }
 
+.profile-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.profile-metrics span {
+  display: inline-flex;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid var(--studio-line);
+  border-radius: 999px;
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-accent) 10%, transparent);
+  font-weight: 800;
+}
+
 :host-context(.eden-night-theme) .friend-message,
 :host-context(.eden-night-theme) .friend-status {
   color: #bfffd0;

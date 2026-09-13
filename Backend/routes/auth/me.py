@@ -15,6 +15,7 @@ from routes.auth.email import generate_confirmation_token, mail
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
 from routes.auth.refresh_tokens import revoke_all_user_tokens
+from profile_stats import get_coin_balances, serialize_profile_stats
 
 me_bp = Blueprint('me', __name__)
 
@@ -43,7 +44,7 @@ def get_current_user():
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
         'role': user.role,
-        'coins': total_coins,
+        **serialize_profile_stats(user, total_coins),
         'total_coins': total_coins,
         'totalCoins': total_coins,
         'achievementStats': {
@@ -139,6 +140,7 @@ def public_user(user_id):
     if not user:
         return jsonify({'error': '用戶不存在'}), 404
 
+    coin_balance = get_coin_balances([user]).get(user.id, 0)
     profile = {
         'id': user.id,
         'username': user.display_username,
@@ -149,7 +151,8 @@ def public_user(user_id):
         'avatar_source': user.avatar_source or 'github',
         'avatarSource': user.avatar_source or 'github',
         'role': user.role,
-        'created_at': to_taipei_iso(user.created_at)
+        'created_at': to_taipei_iso(user.created_at),
+        **serialize_profile_stats(user, coin_balance),
     }
     if viewer.role == 'superadmin':
         profile['email'] = user.display_email

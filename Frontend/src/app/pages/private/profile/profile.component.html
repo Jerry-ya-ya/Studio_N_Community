@@ -26,6 +26,18 @@
           </div>
           <dl class="profile-stats">
             <div>
+              <dt>{{ 'profileStats.pmLevel' | translate }}</dt>
+              <dd>{{ user.pm_experience ?? 0 }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'profileStats.reviewLevel' | translate }}</dt>
+              <dd>{{ user.review_experience ?? 0 }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'profileStats.coins' | translate }}</dt>
+              <dd>{{ user.coins ?? 0 }}</dd>
+            </div>
+            <div>
               <dt>{{ 'privateProfile.account.username' | translate }}</dt>
               <dd>{{ user.username }}</dd>
             </div>

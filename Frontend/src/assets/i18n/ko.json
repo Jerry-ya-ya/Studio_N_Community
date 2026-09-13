@@ -446,6 +446,12 @@
       "delete": "이 게시글을 삭제하시겠습니까?"
     }
   },
+  "profileStats": {
+    "ariaLabel": "멤버 레벨 및 코인",
+    "pmLevel": "PM 레벨",
+    "reviewLevel": "리뷰 레벨",
+    "coins": "코인"
+  },
   "privateSquare": {
     "header": {
       "title": "사용자 광장"

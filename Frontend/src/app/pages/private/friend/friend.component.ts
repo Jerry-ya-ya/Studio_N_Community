@@ -17,6 +17,9 @@ interface FriendItem {
   githubUrl?: string | null;
   avatarUrl?: string | null;
   avatarSource?: 'local' | 'github';
+  pm_experience?: number;
+  review_experience?: number;
+  coins?: number;
 }
 
 @Component({

@@ -117,6 +117,13 @@
   margin-top: 18px;
 }
 
+.profile-levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
 .member-hero {
   position: relative;
   min-height: 500px;
@@ -447,6 +454,9 @@
 }
 
 @media (max-width: 640px) {
+  .profile-levels {
+    grid-template-columns: 1fr;
+  }
   .member-page {
     padding: 92px 12px 28px;
   }
