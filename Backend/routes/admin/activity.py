@@ -11,6 +11,7 @@ from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
 from image_upload import InvalidImageError, save_validated_image
 from log_writer import get_backend_logger
+from role_groups import Permission, has_permission
 
 activity_bp = Blueprint('activity', __name__)
 activity_logger = get_backend_logger('activity', 'activity.log', message_only=True)
@@ -77,7 +78,7 @@ def matches_activity_target(activity, user):
     target_filter = (activity.target_filter or 'all').strip().lower()
     role = (user.role or '').lower()
 
-    if role in {'admin', 'superadmin'}:
+    if has_permission(role, Permission.ADMIN_ACCESS):
         return True
 
     if target_filter in {'', 'all', '*'}:

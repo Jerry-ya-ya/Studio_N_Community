@@ -6,6 +6,7 @@ import pytest
 from flask_jwt_extended import create_access_token
 
 from models import DailyCheckIn, User, db
+from role_groups import Permission, Role, assignable_role_names, has_permission
 
 
 @pytest.fixture()
@@ -91,6 +92,69 @@ def test_management_endpoints_require_superadmin(client, management_accounts):
     )
     assert response.status_code == 403
     assert response.get_json() == {"error": "需要最高管理員權限"}
+
+
+def test_account_role_groups_share_one_permission_registry():
+    assert assignable_role_names() == [Role.USER.value, Role.ADMIN.value]
+    assert not has_permission(Role.USER, Permission.ADMIN_ACCESS)
+    assert has_permission(Role.ADMIN, Permission.ADMIN_ACCESS)
+    assert has_permission(Role.SUPERADMIN, Permission.ADMIN_ACCESS)
+    assert has_permission(Role.SUPERADMIN, Permission.MANAGE_ROLES)
+    assert not has_permission('unknown-role', Permission.ADMIN_ACCESS)
+
+
+def test_role_group_endpoint_exposes_authorization_metadata(
+    client, management_accounts
+):
+    endpoint = "/api/superadmin/role-groups"
+    assert client.get(endpoint).status_code == 401
+    assert client.get(
+        endpoint,
+        headers=bearer(management_accounts["admin_token"]),
+    ).status_code == 403
+
+    response = client.get(
+        endpoint,
+        headers=bearer(management_accounts["super_token"]),
+    )
+    assert response.status_code == 200
+    groups = {group["name"]: group for group in response.get_json()}
+    assert set(groups) == {"user", "admin", "superadmin"}
+    assert groups["user"]["permissions"] == []
+    assert groups["admin"]["permissions"] == ["admin.access"]
+    assert groups["superadmin"]["assignable"] is False
+
+
+def test_generic_role_assignment_validates_and_updates_groups(
+    client, app, management_accounts
+):
+    endpoint = f"/api/superadmin/users/{management_accounts['member_id']}/role"
+    headers = bearer(management_accounts["super_token"])
+
+    missing_role = client.put(endpoint, headers=headers, json={})
+    assert missing_role.status_code == 400
+    assert missing_role.get_json()["allowed_roles"] == ["user", "admin"]
+
+    invalid_role = client.put(endpoint, headers=headers, json={"role": "editor"})
+    assert invalid_role.status_code == 400
+    assert invalid_role.get_json()["error"] == "無效的身分群組"
+
+    protected_role = client.put(
+        endpoint,
+        headers=headers,
+        json={"role": "superadmin"},
+    )
+    assert protected_role.status_code == 400
+
+    updated = client.put(endpoint, headers=headers, json={"role": " ADMIN "})
+    assert updated.status_code == 200
+    assert updated.get_json()["user"]["role"] == "admin"
+    with app.app_context():
+        assert db.session.get(User, management_accounts["member_id"]).role == "admin"
+
+    unchanged = client.put(endpoint, headers=headers, json={"role": "admin"})
+    assert unchanged.status_code == 200
+    assert unchanged.get_json()["message"] == "身分群組未變更"
 
 
 @pytest.mark.parametrize(

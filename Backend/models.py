@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from time_utils import taipei_now, to_taipei_iso
+from role_groups import DEFAULT_ROLE
 
 date_format = taipei_now()
 
@@ -32,7 +33,7 @@ class User(db.Model):
     capability_stack = db.Column(db.String(32), default='fullstack', nullable=False)
     capability_focus = db.Column(db.String(32), default='game-systems', nullable=False)
     capability_style = db.Column(db.String(32), default='professional', nullable=False)
-    role = db.Column(db.String(20), default='user')  # 'user', 'admin', 'superadmin'
+    role = db.Column(db.String(20), default=DEFAULT_ROLE)
     experience = db.Column(db.Integer, default=0, nullable=False)
     review_experience = db.Column(db.Integer, default=0, nullable=False)
     pm_experience = db.Column(db.Integer, default=0, nullable=False)

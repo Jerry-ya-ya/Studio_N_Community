@@ -757,6 +757,7 @@ def parse_admin_role_log_line(line):
     action_labels = {
         'promote_user': 'promoted user to admin',
         'demote_user': 'demoted admin to user',
+        'set_user_role': 'changed user role group',
     }
     target_user_id = payload.get('target_user_id')
     target_name = payload.get('target_nickname') or payload.get('target_username') or 'Unknown user'

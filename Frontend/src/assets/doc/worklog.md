@@ -772,3 +772,5 @@
 - Display PM and review levels alongside coin balances across private square, friend, profile, and public member pages with API serialization and regression coverage.
 
 - Add user-editable allowlisted capability cards to private and public member profiles.
+
+- Centralize account roles in a permission-backed registry with generic superadmin role management APIs, protected assignments, audit logging, and regression coverage.

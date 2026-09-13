@@ -23,6 +23,7 @@ from rate_limit import limiter, username_rate_limit_key, email_rate_limit_key, f
 from password_policy import password_error_response
 from routes.auth.security_log import log_security_event
 from routes.auth.refresh_tokens import issue_refresh_token, revoke_family, revoke_token
+from role_groups import DEFAULT_ROLE, Role
 
 auth_bp = Blueprint('auth', __name__)
 register_logger = get_backend_logger('register', 'register.log', message_only=True)
@@ -107,9 +108,9 @@ def register():
 
     # 判斷是否是唯一超管 email
     if email == current_app.config['SUPERADMIN_EMAIL']:
-        role = 'superadmin'
+        role = Role.SUPERADMIN.value
     else:
-        role = 'user'
+        role = DEFAULT_ROLE
     
     new_user = User(
         username=username,

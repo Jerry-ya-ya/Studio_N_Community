@@ -16,6 +16,7 @@ from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
 from routes.auth.refresh_tokens import revoke_all_user_tokens
 from profile_stats import get_coin_balances, serialize_profile_stats
+from role_groups import Role
 
 me_bp = Blueprint('me', __name__)
 
@@ -229,7 +230,7 @@ def delete_current_user():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    if user.role == 'superadmin':
+    if user.role == Role.SUPERADMIN.value:
         return jsonify({'error': 'Superadmin accounts cannot be deleted from settings'}), 403
 
     data = request.get_json(silent=True) or {}
