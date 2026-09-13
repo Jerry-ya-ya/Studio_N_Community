@@ -764,3 +764,7 @@
 - Redirect email verification to an idempotent frontend completion flow without issuing access tokens.
 
 - Enforce post and recruitment text limits, share a per-member rate limit across post, friend-request, project, join, and Todo creation endpoints, align frontend constraints, and add regression coverage.
+
+## 2026/09/13
+
+- Resolve Alembic migration heads with a no-op merge revision.
