@@ -105,8 +105,8 @@
     "placeholders": { "shortText": "輸入你的回答", "longText": "填寫完整回答", "select": "請選擇一個選項", "number": "輸入數字" },
     "boolean": { "yes": "是", "no": "否" },
     "submitted": { "title": "回答已提交", "message": "謝謝你，你的回答已成功記錄。", "time": "提交時間：{{ time }}" },
-    "actions": { "refresh": "重新整理問卷", "submit": "提交回答", "submitting": "提交中…" },
-    "feedback": { "loadFailure": "無法載入問卷。", "required": "請完成所有必填題目後再提交。", "submitSuccess": "問卷回答已成功提交。", "submitFailure": "無法提交問卷回答。", "versionConflict": "作答期間問卷已更新，請重新整理後再填寫。", "alreadySubmitted": "你已提交過此版本的問卷。" }
+    "actions": { "refresh": "重新整理問卷", "submit": "提交回答", "submitting": "提交中…", "dismiss": "關閉" },
+    "feedback": { "loadFailure": "無法載入問卷。", "required": "請完成所有必填題目後再提交。", "submitSuccess": "問卷回答已成功提交。", "submitFailure": "無法提交問卷回答。", "versionConflict": "作答期間問卷已更新，請重新整理後再填寫。", "alreadySubmitted": "你已提交過此版本的問卷。", "draftSaved": "已於 {{ time }} 自動儲存回答。", "draftRestored": "已還原上次於 {{ time }} 自動儲存的回答。", "draftSaveFailure": "無法在此裝置上自動儲存回答。" }
   },
   "world": {
     "mode": {

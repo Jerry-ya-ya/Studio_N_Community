@@ -105,8 +105,8 @@
     "placeholders": { "shortText": "Enter your answer", "longText": "Write your answer", "select": "Choose an option", "number": "Enter a number" },
     "boolean": { "yes": "Yes", "no": "No" },
     "submitted": { "title": "Response submitted", "message": "Thank you. Your answers have been recorded.", "time": "Submitted {{ time }}" },
-    "actions": { "refresh": "Refresh surveys", "submit": "Submit response", "submitting": "Submitting…" },
-    "feedback": { "loadFailure": "Surveys could not be loaded.", "required": "Complete every required question before submitting.", "submitSuccess": "Your response was submitted successfully.", "submitFailure": "Your response could not be submitted.", "versionConflict": "This survey changed while you were answering it. Refresh and try again.", "alreadySubmitted": "You have already submitted this survey version." }
+    "actions": { "refresh": "Refresh surveys", "submit": "Submit response", "submitting": "Submitting…", "dismiss": "Dismiss" },
+    "feedback": { "loadFailure": "Surveys could not be loaded.", "required": "Complete every required question before submitting.", "submitSuccess": "Your response was submitted successfully.", "submitFailure": "Your response could not be submitted.", "versionConflict": "This survey changed while you were answering it. Refresh and try again.", "alreadySubmitted": "You have already submitted this survey version.", "draftSaved": "Answers auto-saved at {{ time }}.", "draftRestored": "Restored answers last auto-saved at {{ time }}.", "draftSaveFailure": "Answers could not be auto-saved on this device." }
   },
   "world": {
     "mode": {

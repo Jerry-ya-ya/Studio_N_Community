@@ -784,3 +784,5 @@
 ## 2026/09/14
 
 - Refactor private survey cards with the shared studio theme and a responsive side-by-side selection and response layout.
+
+- Add user-scoped survey draft autosaving, restoration, and localized snackbar feedback.

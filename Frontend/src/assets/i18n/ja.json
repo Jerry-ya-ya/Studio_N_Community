@@ -105,8 +105,8 @@
     "placeholders": { "shortText": "回答を入力", "longText": "回答を記入", "select": "選択してください", "number": "数値を入力" },
     "boolean": { "yes": "はい", "no": "いいえ" },
     "submitted": { "title": "回答を送信しました", "message": "ありがとうございます。回答を記録しました。", "time": "送信日時：{{ time }}" },
-    "actions": { "refresh": "再読み込み", "submit": "回答を送信", "submitting": "送信中…" },
-    "feedback": { "loadFailure": "アンケートを読み込めませんでした。", "required": "必須の質問にすべて回答してください。", "submitSuccess": "回答を送信しました。", "submitFailure": "回答を送信できませんでした。", "versionConflict": "回答中にアンケートが更新されました。再読み込みしてください。", "alreadySubmitted": "このバージョンには回答済みです。" }
+    "actions": { "refresh": "再読み込み", "submit": "回答を送信", "submitting": "送信中…", "dismiss": "閉じる" },
+    "feedback": { "loadFailure": "アンケートを読み込めませんでした。", "required": "必須の質問にすべて回答してください。", "submitSuccess": "回答を送信しました。", "submitFailure": "回答を送信できませんでした。", "versionConflict": "回答中にアンケートが更新されました。再読み込みしてください。", "alreadySubmitted": "このバージョンには回答済みです。", "draftSaved": "{{ time }} に回答を自動保存しました。", "draftRestored": "{{ time }} に自動保存した回答を復元しました。", "draftSaveFailure": "この端末に回答を自動保存できませんでした。" }
   },
   "world": {
     "mode": {

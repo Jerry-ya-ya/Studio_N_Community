@@ -105,8 +105,8 @@
     "placeholders": { "shortText": "답변 입력", "longText": "답변 작성", "select": "옵션 선택", "number": "숫자 입력" },
     "boolean": { "yes": "예", "no": "아니요" },
     "submitted": { "title": "답변 제출 완료", "message": "감사합니다. 답변이 기록되었습니다.", "time": "제출 시간: {{ time }}" },
-    "actions": { "refresh": "새로고침", "submit": "답변 제출", "submitting": "제출 중…" },
-    "feedback": { "loadFailure": "설문을 불러오지 못했습니다.", "required": "필수 질문에 모두 답해주세요.", "submitSuccess": "답변이 제출되었습니다.", "submitFailure": "답변을 제출하지 못했습니다.", "versionConflict": "답변 중 설문이 변경되었습니다. 새로고침 후 다시 시도하세요.", "alreadySubmitted": "이 설문 버전에는 이미 답변했습니다." }
+    "actions": { "refresh": "새로고침", "submit": "답변 제출", "submitting": "제출 중…", "dismiss": "닫기" },
+    "feedback": { "loadFailure": "설문을 불러오지 못했습니다.", "required": "필수 질문에 모두 답해주세요.", "submitSuccess": "답변이 제출되었습니다.", "submitFailure": "답변을 제출하지 못했습니다.", "versionConflict": "답변 중 설문이 변경되었습니다. 새로고침 후 다시 시도하세요.", "alreadySubmitted": "이 설문 버전에는 이미 답변했습니다.", "draftSaved": "{{ time }}에 답변이 자동 저장되었습니다.", "draftRestored": "{{ time }}에 마지막으로 자동 저장된 답변을 복원했습니다.", "draftSaveFailure": "이 기기에 답변을 자동 저장하지 못했습니다." }
   },
   "world": {
     "mode": {
