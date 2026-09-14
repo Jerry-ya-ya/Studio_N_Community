@@ -1,7 +1,7 @@
 """user public profile capabilities
 
-Revision ID: 024_user_profile_capabilities
-Revises: 023_user_pm_experience
+Revision ID: 025_user_profile_capabilities
+Revises: 024_user_pm_experience
 Create Date: 2026-09-13
 """
 
@@ -9,8 +9,8 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = '024_user_profile_capabilities'
-down_revision = '023_user_pm_experience'
+revision = '025_user_profile_capabilities'
+down_revision = '024_user_pm_experience'
 branch_labels = None
 depends_on = None
 

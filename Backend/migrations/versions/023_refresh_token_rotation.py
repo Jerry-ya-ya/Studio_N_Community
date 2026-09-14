@@ -1,7 +1,7 @@
 """refresh token rotation and revocation
 
-Revision ID: 022_refresh_token_rotation
-Revises: 021_project_levels
+Revision ID: 023_refresh_token_rotation
+Revises: 022_user_review_experience
 Create Date: 2026-09-12
 """
 
@@ -9,8 +9,8 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = '022_refresh_token_rotation'
-down_revision = '021_project_levels'
+revision = '023_refresh_token_rotation'
+down_revision = '022_user_review_experience'
 branch_labels = None
 depends_on = None
 

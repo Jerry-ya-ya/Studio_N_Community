@@ -1,7 +1,7 @@
 """user PM experience
 
-Revision ID: 023_user_pm_experience
-Revises: 022_user_review_experience
+Revision ID: 024_user_pm_experience
+Revises: 023_refresh_token_rotation
 Create Date: 2026-09-12
 """
 
@@ -9,8 +9,8 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = '023_user_pm_experience'
-down_revision = '022_user_review_experience'
+revision = '024_user_pm_experience'
+down_revision = '023_refresh_token_rotation'
 branch_labels = None
 depends_on = None
 
