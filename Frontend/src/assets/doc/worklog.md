@@ -780,3 +780,7 @@
 - Add an admin form builder with constrained JSONB schemas, version-safe CRUD APIs, role guards, localization, and regression coverage.
 
 - Add a localized user survey center with versioned submissions, validated answers, response snapshots, navigation, and regression coverage.
+
+## 2026/09/14
+
+- Refactor private survey cards with the shared studio theme and a responsive side-by-side selection and response layout.
