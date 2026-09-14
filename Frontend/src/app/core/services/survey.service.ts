@@ -13,6 +13,9 @@ export interface SurveyForm {
   description: string;
   schema: FormSchema;
   version: number;
+  settlementAt: string | null;
+  settledAt: string | null;
+  settled: boolean;
   submitted: boolean;
   submittedAt: string | null;
   updated_at?: string | null;

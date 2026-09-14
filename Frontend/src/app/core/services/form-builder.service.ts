@@ -39,6 +39,9 @@ export interface AdminForm {
   description: string;
   schema: FormSchema;
   version: number;
+  settlementAt: string | null;
+  settledAt: string | null;
+  settled: boolean;
   createdBy?: string | null;
   created_by_id?: number | null;
   created_at?: string | null;
@@ -49,6 +52,7 @@ export interface CreateFormPayload {
   title: string;
   description: string;
   schema: FormSchema;
+  settlementAt: string | null;
 }
 
 export interface UpdateFormPayload extends CreateFormPayload {
@@ -78,6 +82,14 @@ export class FormBuilderService {
     return this.apiService.put<AdminForm>(
       `/admin/forms/${formId}`,
       payload,
+      this.apiService.createAuthHeaders()
+    );
+  }
+
+  settleForm(formId: number): Observable<AdminForm> {
+    return this.apiService.post<AdminForm>(
+      `/admin/forms/${formId}/settle`,
+      {},
       this.apiService.createAuthHeaders()
     );
   }

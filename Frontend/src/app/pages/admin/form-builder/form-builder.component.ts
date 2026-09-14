@@ -15,6 +15,8 @@ interface FormDraft {
   id: number | null;
   title: string;
   description: string;
+  settlementAt: string;
+  settled: boolean;
   schema: FormSchema;
   version: number;
   updatedAt: string | null;
@@ -57,6 +59,7 @@ export class FormBuilderComponent implements OnInit {
   loading = false;
   saving = false;
   deleting = false;
+  settling = false;
   feedbackKey = '';
   errorKey = '';
   errorText = '';
@@ -99,6 +102,8 @@ export class FormBuilderComponent implements OnInit {
       id: null,
       title: '',
       description: '',
+      settlementAt: '',
+      settled: false,
       schema: { schemaVersion: 1, questions: [] },
       version: 1,
       updatedAt: null
@@ -107,7 +112,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   selectForm(form: AdminForm): void {
-    if (this.saving || this.deleting) {
+    if (this.saving || this.deleting || this.settling) {
       return;
     }
     this.clearFeedback();
@@ -176,13 +181,14 @@ export class FormBuilderComponent implements OnInit {
   }
 
   saveForm(): void {
-    if (!this.draft || this.saving || !this.isDraftValid()) {
+    if (!this.draft || this.saving || this.settling || !this.isDraftValid()) {
       return;
     }
 
     const payload = {
       title: this.draft.title.trim(),
       description: this.draft.description.trim(),
+      settlementAt: this.draft.settlementAt || null,
       schema: this.cloneSchema(this.draft.schema)
     };
     this.saving = true;
@@ -218,7 +224,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   deleteForm(): void {
-    if (!this.draft?.id || this.deleting) {
+    if (!this.draft?.id || this.deleting || this.settling) {
       return;
     }
     if (!window.confirm(this.translate.instant('formBuilder.editor.deleteConfirm'))) {
@@ -239,6 +245,31 @@ export class FormBuilderComponent implements OnInit {
       error: error => {
         this.deleting = false;
         this.setRequestError(error, 'formBuilder.feedback.deleteFailure');
+      }
+    });
+  }
+
+  settleForm(): void {
+    if (!this.draft?.id || this.draft.settled || this.settling) {
+      return;
+    }
+    if (!window.confirm(this.translate.instant('formBuilder.editor.settleConfirm'))) {
+      return;
+    }
+
+    this.settling = true;
+    this.clearFeedback();
+    this.formBuilderService.settleForm(this.draft.id).subscribe({
+      next: settled => {
+        this.forms = this.forms.map(form => form.id === settled.id ? settled : form);
+        this.draft = this.toDraft(settled);
+        this.settling = false;
+        this.feedbackKey = 'formBuilder.feedback.settleSuccess';
+        this.cdr.markForCheck();
+      },
+      error: error => {
+        this.settling = false;
+        this.setRequestError(error, 'formBuilder.feedback.settleFailure');
       }
     });
   }
@@ -278,6 +309,8 @@ export class FormBuilderComponent implements OnInit {
       id: form.id,
       title: form.title,
       description: form.description,
+      settlementAt: form.settlementAt?.slice(0, 16) || '',
+      settled: form.settled,
       schema: this.cloneSchema(form.schema),
       version: form.version,
       updatedAt: form.updated_at || null

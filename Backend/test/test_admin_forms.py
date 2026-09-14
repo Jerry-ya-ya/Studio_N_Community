@@ -1,3 +1,4 @@
+from datetime import timedelta
 from uuid import uuid4
 
 import pytest
@@ -5,6 +6,7 @@ from flask_jwt_extended import create_access_token
 
 from models import FormTemplate, User, db
 from routes.admin.forms import MAX_OPTIONS, MAX_QUESTIONS, normalize_form_payload
+from time_utils import taipei_now
 
 
 @pytest.fixture()
@@ -92,6 +94,9 @@ def test_form_crud_persists_normalized_json_schema(client, app, form_accounts):
     headers = bearer(form_accounts['admin_token'])
     payload = valid_payload()
     payload['title'] = '  Registration form  '
+    payload['settlementAt'] = (
+        taipei_now() + timedelta(days=1)
+    ).isoformat(timespec='minutes')
     created_response = client.post('/api/admin/forms', headers=headers, json=payload)
 
     assert created_response.status_code == 201
@@ -99,6 +104,9 @@ def test_form_crud_persists_normalized_json_schema(client, app, form_accounts):
     form_id = created['id']
     assert created['title'] == 'Registration form'
     assert created['version'] == 1
+    assert created['settlementAt'].endswith('+08:00')
+    assert created['settled'] is False
+    assert created['settledAt'] is None
     assert created['created_by_id'] == form_accounts['admin_id']
     assert created['schema']['schemaVersion'] == 1
     assert created['schema']['questions'][1]['options'][0]['label'] == 'Frontend'
@@ -150,6 +158,30 @@ def test_update_rejects_stale_version(client, form_accounts):
     assert response.get_json()['currentVersion'] == 1
 
 
+def test_admin_can_settle_form_immediately_and_endpoint_is_idempotent(
+    client, form_accounts
+):
+    headers = bearer(form_accounts['admin_token'])
+    created = client.post(
+        '/api/admin/forms', headers=headers, json=valid_payload()
+    ).get_json()
+    endpoint = f"/api/admin/forms/{created['id']}/settle"
+
+    forbidden = client.post(
+        endpoint, headers=bearer(form_accounts['member_token'])
+    )
+    assert forbidden.status_code == 403
+
+    first = client.post(endpoint, headers=headers)
+    second = client.post(endpoint, headers=headers)
+
+    assert first.status_code == 200
+    assert first.get_json()['settled'] is True
+    assert first.get_json()['settledAt']
+    assert second.status_code == 200
+    assert second.get_json()['settledAt'] == first.get_json()['settledAt']
+
+
 @pytest.mark.parametrize(
     ('change', 'expected_field'),
     [
@@ -157,6 +189,9 @@ def test_update_rejects_stale_version(client, form_accounts):
         ({'version': 1}, None),
         ({'title': ''}, 'title'),
         ({'title': 'x' * 121}, 'title'),
+        ({'settlementAt': 'tomorrow'}, 'settlementAt'),
+        ({'settlementAt': '2026-09-15'}, 'settlementAt'),
+        ({'settlementAt': 123}, 'settlementAt'),
         ({'schema': []}, 'schema'),
         ({'schema': {'schemaVersion': 2, 'questions': []}}, 'schema.schemaVersion'),
         ({'schema': {'schemaVersion': True, 'questions': []}}, 'schema.schemaVersion'),
@@ -251,4 +286,7 @@ def test_form_missing_resources_return_json_404(client, form_accounts):
     ).get_json()['code'] == 'not_found'
     assert client.delete(
         '/api/admin/forms/999999', headers=headers
+    ).get_json()['code'] == 'not_found'
+    assert client.post(
+        '/api/admin/forms/999999/settle', headers=headers
     ).get_json()['code'] == 'not_found'

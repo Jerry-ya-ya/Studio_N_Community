@@ -37,12 +37,12 @@
               [class.complete]="form.submitted"
               (click)="selectForm(form)"
             >
-              <span class="form-option__icon"><mat-icon>{{ form.submitted ? 'check' : 'description' }}</mat-icon></span>
+              <span class="form-option__icon"><mat-icon>{{ form.submitted ? 'check' : (form.settled ? 'event_busy' : 'description') }}</mat-icon></span>
               <span class="form-option__copy">
                 <strong>{{ form.title }}</strong>
                 <small>{{ form.schema.questions.length }} {{ 'survey.list.questions' | translate }}</small>
               </span>
-              <span class="status-chip">{{ (form.submitted ? 'survey.status.submitted' : 'survey.status.available') | translate }}</span>
+              <span class="status-chip">{{ (form.submitted ? 'survey.status.submitted' : (form.settled ? 'survey.status.settled' : 'survey.status.available')) | translate }}</span>
             </button>
           }
         </div>
@@ -65,7 +65,10 @@
           }
           <div class="form-meta">
             <span><mat-icon>help_outline</mat-icon>{{ selectedForm.schema.questions.length }} {{ 'survey.list.questions' | translate }}</span>
-            @if (!selectedForm.submitted) {
+            @if (selectedForm.settlementAt && !selectedForm.settled) {
+              <span><mat-icon>schedule</mat-icon>{{ 'survey.form.settlementAt' | translate: { time: (selectedForm.settlementAt | date:'medium') } }}</span>
+            }
+            @if (!selectedForm.submitted && !selectedForm.settled) {
               <span><span class="required-mark">*</span>{{ 'survey.form.requiredHint' | translate }}</span>
             }
           </div>
@@ -86,6 +89,12 @@
             @if (selectedForm.submittedAt) {
               <small>{{ 'survey.submitted.time' | translate: { time: (selectedForm.submittedAt | date:'medium') } }}</small>
             }
+          </div>
+        } @else if (selectedForm.settled) {
+          <div class="submitted-state">
+            <span><mat-icon>event_busy</mat-icon></span>
+            <h3>{{ 'survey.settled.title' | translate }}</h3>
+            <p>{{ 'survey.settled.message' | translate }}</p>
           </div>
         } @else if (!selectedForm.schema.questions.length) {
           <div class="welcome-state compact">

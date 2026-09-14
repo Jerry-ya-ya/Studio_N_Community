@@ -1,9 +1,11 @@
+from datetime import timedelta
 from uuid import uuid4
 
 import pytest
 from flask_jwt_extended import create_access_token
 
 from models import FormSubmission, FormTemplate, User, db
+from time_utils import taipei_now
 
 
 @pytest.fixture()
@@ -246,3 +248,25 @@ def test_submission_requires_json_and_limits_payload(client, survey_records):
         data='{' + (' ' * (128 * 1024)) + '}',
     )
     assert response.status_code == 413
+
+
+@pytest.mark.parametrize('manual_settlement', [False, True])
+def test_settled_form_rejects_submissions(
+    client, app, survey_records, manual_settlement
+):
+    with app.app_context():
+        form = db.session.get(FormTemplate, survey_records['form_id'])
+        if manual_settlement:
+            form.settled_at = taipei_now()
+        else:
+            form.settlement_at = taipei_now() - timedelta(minutes=1)
+        db.session.commit()
+
+    response = client.post(
+        f"/api/forms/{survey_records['form_id']}/submissions",
+        headers=bearer(survey_records['token']),
+        json=valid_submission(),
+    )
+
+    assert response.status_code == 409
+    assert response.get_json()['code'] == 'form_settled'

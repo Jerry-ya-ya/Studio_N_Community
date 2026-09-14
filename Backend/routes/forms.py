@@ -12,7 +12,12 @@ from rate_limit import (
     limiter,
     member_write_rate_limited,
 )
-from routes.admin.forms import CHOICE_TYPES, MAX_PAYLOAD_BYTES, serialize_form
+from routes.admin.forms import (
+    CHOICE_TYPES,
+    MAX_PAYLOAD_BYTES,
+    is_form_settled,
+    serialize_form,
+)
 from routes.auth.utils import get_current_user_from_token
 from time_utils import to_taipei_iso
 
@@ -194,6 +199,10 @@ def submit_form(form_id):
     form = db.session.get(FormTemplate, form_id)
     if form is None:
         return answer_error('form not found', status=404, code='not_found')
+    if is_form_settled(form):
+        return answer_error(
+            'this form has been settled', status=409, code='form_settled'
+        )
     if request.content_length is not None and request.content_length > MAX_PAYLOAD_BYTES:
         return answer_error('submission payload is too large', status=413, code='payload_too_large')
     if not request.is_json:

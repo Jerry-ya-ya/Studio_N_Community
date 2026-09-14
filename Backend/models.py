@@ -333,6 +333,8 @@ class FormTemplate(db.Model):
         default=lambda: {'schemaVersion': 1, 'questions': []},
     )
     version = db.Column(db.Integer, nullable=False, default=1)
+    settlement_at = db.Column(db.DateTime, index=True)
+    settled_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
     updated_at = db.Column(
         db.DateTime,

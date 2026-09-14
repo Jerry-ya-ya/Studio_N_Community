@@ -114,7 +114,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
 
   submit(): void {
     const form = this.selectedForm;
-    if (!form || form.submitted || this.submitting || !this.validateAnswers(form)) {
+    if (!form || form.submitted || form.settled || this.submitting || !this.validateAnswers(form)) {
       return;
     }
     this.submitting = true;
@@ -175,7 +175,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
     this.cancelAutosave();
     this.hasDraftChanges = false;
     this.answers = {};
-    if (!form || form.submitted) {
+    if (!form || form.submitted || form.settled) {
       return;
     }
     for (const question of form.schema.questions) {
@@ -204,7 +204,7 @@ export class SurveyComponent implements OnInit, OnDestroy {
 
   private persistDraft(showConfirmation: boolean): void {
     const form = this.selectedForm;
-    if (!form || form.submitted || !this.hasDraftChanges) {
+    if (!form || form.submitted || form.settled || !this.hasDraftChanges) {
       return;
     }
 

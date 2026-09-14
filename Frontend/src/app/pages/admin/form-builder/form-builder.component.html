@@ -59,12 +59,16 @@
           </div>
           <div class="toolbar-actions">
             @if (draft.id) {
-              <button class="danger-action" type="button" [disabled]="deleting || saving" (click)="deleteForm()">
+              <button class="secondary-action" type="button" [disabled]="draft.settled || settling || deleting || saving" (click)="settleForm()">
+                <mat-icon>event_busy</mat-icon>
+                {{ (draft.settled ? 'formBuilder.editor.settled' : (settling ? 'formBuilder.editor.settling' : 'formBuilder.editor.settleNow')) | translate }}
+              </button>
+              <button class="danger-action" type="button" [disabled]="deleting || saving || settling" (click)="deleteForm()">
                 <mat-icon>delete</mat-icon>
                 {{ 'formBuilder.editor.delete' | translate }}
               </button>
             }
-            <button class="primary-action" type="button" [disabled]="saving || deleting" (click)="saveForm()">
+            <button class="primary-action" type="button" [disabled]="saving || deleting || settling" (click)="saveForm()">
               <mat-icon>save</mat-icon>
               {{ (saving ? 'formBuilder.editor.saving' : 'formBuilder.editor.save') | translate }}
             </button>
@@ -86,6 +90,11 @@
           <label>
             <span>{{ 'formBuilder.editor.description' | translate }}</span>
             <textarea [(ngModel)]="draft.description" maxlength="1000" rows="3" [placeholder]="'formBuilder.editor.descriptionPlaceholder' | translate"></textarea>
+          </label>
+          <label>
+            <span>{{ 'formBuilder.editor.settlementAt' | translate }}</span>
+            <input type="datetime-local" [(ngModel)]="draft.settlementAt">
+            <small>{{ 'formBuilder.editor.settlementHint' | translate }}</small>
           </label>
         </div>
 

@@ -13,6 +13,9 @@ describe('SurveyComponent draft autosave', () => {
     title: 'Member survey',
     description: '',
     version: 3,
+    settlementAt: null,
+    settledAt: null,
+    settled: false,
     submitted: false,
     submittedAt: null,
     schema: {

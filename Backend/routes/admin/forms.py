@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 from uuid import uuid4
 
@@ -6,7 +7,7 @@ from flask import Blueprint, g, jsonify, request
 from models import FormTemplate, db
 from rate_limit import authenticated_user_rate_limit_key, limiter
 from routes.admin.decorators import admin_required
-from time_utils import taipei_now, to_taipei_iso
+from time_utils import TAIPEI_TZ, taipei_now, to_taipei_iso
 
 
 forms_bp = Blueprint('admin_forms', __name__)
@@ -14,7 +15,7 @@ forms_bp = Blueprint('admin_forms', __name__)
 MAX_PAYLOAD_BYTES = 128 * 1024
 MAX_QUESTIONS = 100
 MAX_OPTIONS = 50
-FORM_FIELDS = {'title', 'description', 'schema'}
+FORM_FIELDS = {'title', 'description', 'schema', 'settlementAt'}
 SCHEMA_FIELDS = {'schemaVersion', 'questions'}
 QUESTION_FIELDS = {'id', 'type', 'title', 'description', 'required', 'options'}
 OPTION_FIELDS = {'id', 'label'}
@@ -87,6 +88,29 @@ def read_identifier(value, field, prefix):
             f'{field} must contain only letters, numbers, underscores, or hyphens', field
         )
     return value, None
+
+
+def read_settlement_at(value):
+    """Parse an ISO-8601 cutoff, treating offset-less values as Taipei wall time."""
+    if value in (None, ''):
+        return None, None
+    if not isinstance(value, str):
+        return None, validation_error(
+            'settlementAt must be an ISO-8601 datetime or null', 'settlementAt'
+        )
+    if 'T' not in value and ' ' not in value:
+        return None, validation_error(
+            'settlementAt must be an ISO-8601 datetime or null', 'settlementAt'
+        )
+    try:
+        parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+    except ValueError:
+        return None, validation_error(
+            'settlementAt must be an ISO-8601 datetime or null', 'settlementAt'
+        )
+    if parsed.tzinfo is not None:
+        parsed = parsed.astimezone(TAIPEI_TZ).replace(tzinfo=None)
+    return parsed, None
 
 
 def normalize_option(option, question_index, option_index):
@@ -243,7 +267,16 @@ def normalize_form_payload(data, *, require_version=False):
     if error:
         return None, error
 
-    payload = {'title': title, 'description': description, 'definition': schema}
+    settlement_at, error = read_settlement_at(data.get('settlementAt'))
+    if error:
+        return None, error
+
+    payload = {
+        'title': title,
+        'description': description,
+        'definition': schema,
+        'settlement_at': settlement_at,
+    }
     if require_version:
         version = data.get('version')
         if isinstance(version, bool) or not isinstance(version, int) or version < 1:
@@ -254,6 +287,13 @@ def normalize_form_payload(data, *, require_version=False):
     return payload, None
 
 
+def is_form_settled(form, now=None):
+    now = now or taipei_now()
+    return form.settled_at is not None or (
+        form.settlement_at is not None and form.settlement_at <= now
+    )
+
+
 def serialize_form(form):
     return {
         'id': form.id,
@@ -261,6 +301,9 @@ def serialize_form(form):
         'description': form.description,
         'schema': form.definition,
         'version': form.version,
+        'settlementAt': to_taipei_iso(form.settlement_at),
+        'settledAt': to_taipei_iso(form.settled_at),
+        'settled': is_form_settled(form),
         'createdBy': form.created_by.display_username if form.created_by else None,
         'created_by_id': form.created_by_id,
         'created_at': to_taipei_iso(form.created_at),
@@ -312,6 +355,7 @@ def create_form():
         title=payload['title'],
         description=payload['description'],
         definition=payload['definition'],
+        settlement_at=payload['settlement_at'],
         created_by_id=g.current_user.id,
     )
     db.session.add(form)
@@ -347,6 +391,7 @@ def update_form(form_id):
             'title': payload['title'],
             'description': payload['description'],
             'definition': payload['definition'],
+            'settlement_at': payload['settlement_at'],
             'version': next_version,
             'updated_at': taipei_now(),
         },
@@ -363,6 +408,20 @@ def update_form(form_id):
     db.session.commit()
     db.session.expire_all()
     form = db.session.get(FormTemplate, form_id)
+    return jsonify(serialize_form(form))
+
+
+@forms_bp.route('/admin/forms/<int:form_id>/settle', methods=['POST'])
+@admin_required
+@limiter.limit('30 per minute', key_func=authenticated_user_rate_limit_key)
+def settle_form(form_id):
+    """Close a form immediately; repeated calls return the same settled state."""
+    form, error = get_form_or_error(form_id)
+    if error:
+        return error
+    if form.settled_at is None:
+        form.settled_at = taipei_now()
+        db.session.commit()
     return jsonify(serialize_form(form))
 
 

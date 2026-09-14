@@ -786,3 +786,5 @@
 - Refactor private survey cards with the shared studio theme and a responsive side-by-side selection and response layout.
 
 - Add user-scoped survey draft autosaving, restoration, and localized snackbar feedback.
+
+- Add scheduled and manual form settlement with admin controls, submission cutoff enforcement, user status displays, migration, and regression coverage.
