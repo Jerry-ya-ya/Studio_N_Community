@@ -794,3 +794,5 @@
 ## 2026/09/15
 
 - Add a superadmin form statistics dashboard with version-aware aggregates, configurable auto-refresh, settlement-time final refreshes, localization, and authorization coverage.
+
+- Require validated GitHub repository links for recruitment creation and replace free-form contact entry with localized contact method options.

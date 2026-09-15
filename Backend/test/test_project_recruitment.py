@@ -11,12 +11,14 @@ from routes.project_recruitment.project_recruitment import (
     TODO_PM_EXPERIENCE,
     TODO_REVIEW_EXPERIENCE,
     PROJECT_CONTACT_MAX_LENGTH,
+    PROJECT_GITHUB_URL_MAX_LENGTH,
     PROJECT_JOIN_MESSAGE_MAX_LENGTH,
     PROJECT_ROLE_MAX_LENGTH,
     PROJECT_SUMMARY_MAX_LENGTH,
     PROJECT_TITLE_MAX_LENGTH,
     TODO_REWARD_COIN_DATE,
     get_todo_reward_breakdown,
+    is_valid_github_repository_url,
 )
 from routes.project_recruitment import project_recruitment as recruitment_routes
 
@@ -149,6 +151,7 @@ def test_create_and_list_project_recruitments(client, recruitment_accounts):
             'summary': '  Recruit people and ship tests.  ',
             'role_needed': '  Backend engineer  ',
             'contact': '  team@example.com  ',
+            'github_url': '  https://github.com/example/coverage-project  ',
             'max_members': '2',
         },
         headers={**headers, 'X-Forwarded-For': '203.0.113.8, 10.0.0.1'},
@@ -160,6 +163,7 @@ def test_create_and_list_project_recruitments(client, recruitment_accounts):
     assert project['summary'] == 'Recruit people and ship tests.'
     assert project['role_needed'] == 'Backend engineer'
     assert project['contact'] == 'team@example.com'
+    assert project['github_url'] == 'https://github.com/example/coverage-project'
     assert project['max_members'] == 2
     assert project['review_status'] == 'open'
     assert project['token_budget'] == project['tokenBudget'] == 100
@@ -187,8 +191,9 @@ def test_create_and_list_project_recruitments(client, recruitment_accounts):
     [
         ({'summary': 'Summary'}, '請填寫專案名稱'),
         ({'title': 'Title'}, '請填寫招募內容'),
-        ({'title': 'Title', 'summary': 'Summary', 'max_members': 'many'}, '人數上限必須是數字'),
-        ({'title': 'Title', 'summary': 'Summary', 'max_members': 0}, '人數上限至少為 1'),
+        ({'title': 'Title', 'summary': 'Summary'}, '請提供 GitHub 專案連結'),
+        ({'title': 'Title', 'summary': 'Summary', 'github_url': 'https://github.com/example/project', 'max_members': 'many'}, '人數上限必須是數字'),
+        ({'title': 'Title', 'summary': 'Summary', 'github_url': 'https://github.com/example/project', 'max_members': 0}, '人數上限至少為 1'),
     ],
 )
 def test_create_project_recruitment_validates_required_fields(
@@ -213,6 +218,7 @@ def test_create_project_recruitment_validates_required_fields(
         ('summary', PROJECT_SUMMARY_MAX_LENGTH, '招募內容'),
         ('role_needed', PROJECT_ROLE_MAX_LENGTH, '需求角色'),
         ('contact', PROJECT_CONTACT_MAX_LENGTH, '聯絡方式'),
+        ('github_url', PROJECT_GITHUB_URL_MAX_LENGTH, 'GitHub 專案連結'),
     ],
 )
 def test_create_project_recruitment_rejects_oversized_text_fields(
@@ -222,7 +228,11 @@ def test_create_project_recruitment_rejects_oversized_text_fields(
     maximum,
     label,
 ):
-    payload = {'title': 'Title', 'summary': 'Summary'}
+    payload = {
+        'title': 'Title',
+        'summary': 'Summary',
+        'github_url': 'https://github.com/example/project',
+    }
     payload[field] = '字' * (maximum + 1)
 
     response = client.post(
@@ -238,11 +248,54 @@ def test_create_project_recruitment_rejects_oversized_text_fields(
 def test_create_project_accepts_an_unlimited_member_count(client, recruitment_accounts):
     response = client.post(
         '/api/project-recruitments',
-        json={'title': 'Unlimited', 'summary': 'No member cap', 'max_members': ''},
+        json={
+            'title': 'Unlimited',
+            'summary': 'No member cap',
+            'github_url': 'https://github.com/example/unlimited',
+            'max_members': '',
+        },
         headers=auth_headers(recruitment_accounts['leader_token']),
     )
     assert response.status_code == 201
     assert response.get_json()['max_members'] is None
+
+
+@pytest.mark.parametrize(
+    'github_url',
+    [
+        'http://github.com/example/project',
+        'https://gitlab.com/example/project',
+        'https://github.com/example',
+        'https://github.com/example/project/issues',
+        'not-a-url',
+    ],
+)
+def test_create_project_recruitment_rejects_invalid_github_urls(
+    client,
+    recruitment_accounts,
+    github_url,
+):
+    response = client.post(
+        '/api/project-recruitments',
+        json={'title': 'Title', 'summary': 'Summary', 'github_url': github_url},
+        headers=auth_headers(recruitment_accounts['leader_token']),
+    )
+
+    assert response.status_code == 400
+    assert response.get_json() == {'error': '請提供有效的 GitHub 專案連結'}
+
+
+@pytest.mark.parametrize(
+    ('github_url', 'expected'),
+    [
+        ('https://github.com/example/project', True),
+        ('https://www.github.com/example/project.git', True),
+        ('https://github.com/example/project/', True),
+        ('https://github.com/example', False),
+    ],
+)
+def test_github_repository_url_validation(github_url, expected):
+    assert is_valid_github_repository_url(github_url) is expected
 
 
 def test_join_duplicate_capacity_and_leave_flows(client, app, recruitment_accounts):

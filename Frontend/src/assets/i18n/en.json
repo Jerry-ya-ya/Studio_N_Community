@@ -553,7 +553,14 @@
       "maxMembers": "Member Limit",
       "maxMembersPlaceholder": "No limit",
       "contact": "Contact",
-      "contactPlaceholder": "Discord / Email / Site message"
+      "contactPlaceholder": "Select a contact method",
+      "githubUrl": "GitHub repository URL",
+      "githubUrlPlaceholder": "https://github.com/owner/repository"
+    },
+    "contactMethods": {
+      "discord": "Discord",
+      "email": "Email",
+      "site_message": "Site message"
     },
     "list": {
       "kicker": "Join",
@@ -580,7 +587,8 @@
     },
     "meta": {
       "need": "Need",
-      "contact": "Contact"
+      "contact": "Contact",
+      "repository": "GitHub repository"
     },
     "badges": {
       "owned": "Created by you",
@@ -606,7 +614,8 @@
       "publishing": "Publishing...",
       "publishTodo": "Publish Todo",
       "deleting": "Deleting...",
-      "deleteRecruitment": "Delete Recruitment"
+      "deleteRecruitment": "Delete Recruitment",
+      "dismiss": "Dismiss"
     },
     "state": {
       "loading": "Loading...",
@@ -621,6 +630,8 @@
       "loadFailure": "Unable to load project recruitments.",
       "createSuccess": "Recruitment created.",
       "createFailure": "Failed to create recruitment.",
+      "githubUrlRequired": "Add a GitHub repository URL before publishing.",
+      "githubUrlInvalid": "Enter a valid GitHub repository URL.",
       "joinFailure": "Failed to register.",
       "leaveFailure": "Failed to cancel registration.",
       "deleteSuccess": "Recruitment deleted.",

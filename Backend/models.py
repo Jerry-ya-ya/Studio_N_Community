@@ -239,6 +239,7 @@ class ProjectRecruitment(db.Model):
     summary = db.Column(db.Text, nullable=False)
     role_needed = db.Column(db.String(120))
     contact = db.Column(db.String(160))
+    github_url = db.Column(db.String(2048))
     max_members = db.Column(db.Integer)
     token_budget = db.Column(db.Integer, default=100, nullable=False)
     token_used = db.Column(db.Integer, default=0, nullable=False)

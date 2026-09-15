@@ -134,6 +134,7 @@
 }
 
 .form-field input,
+.form-field select,
 .form-field textarea,
 .join-panel input {
   min-height: 46px;
@@ -144,6 +145,24 @@
   color: var(--studio-text);
   background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
   outline: none;
+}
+
+.form-field select {
+  appearance: none;
+  padding: 0 40px 0 14px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--studio-muted) 50%),
+    linear-gradient(135deg, var(--studio-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 20px,
+    calc(100% - 12px) 20px;
+  background-repeat: no-repeat;
+  background-size: 6px 6px;
+}
+
+.form-field select option {
+  color: var(--studio-text);
+  background: var(--studio-panel-strong);
 }
 
 .form-field textarea {

@@ -41,6 +41,7 @@ interface AdminProject {
   summary: string;
   role_needed?: string | null;
   contact?: string | null;
+  github_url?: string | null;
   max_members?: number | null;
   token_budget?: number;
   tokenBudget?: number;

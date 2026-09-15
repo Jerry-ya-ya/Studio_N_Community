@@ -553,7 +553,14 @@
       "maxMembers": "人數上限",
       "maxMembersPlaceholder": "不限",
       "contact": "聯絡方式",
-      "contactPlaceholder": "Discord / Email / 站內訊息"
+      "contactPlaceholder": "請選擇聯絡方式",
+      "githubUrl": "GitHub 專案連結",
+      "githubUrlPlaceholder": "https://github.com/owner/repository"
+    },
+    "contactMethods": {
+      "discord": "Discord",
+      "email": "電子郵件",
+      "site_message": "站內訊息"
     },
     "list": {
       "kicker": "Join",
@@ -580,7 +587,8 @@
     },
     "meta": {
       "need": "需求",
-      "contact": "聯絡"
+      "contact": "聯絡",
+      "repository": "GitHub 專案"
     },
     "badges": {
       "owned": "你建立的招募",
@@ -606,7 +614,8 @@
       "publishing": "發布中...",
       "publishTodo": "發布 Todo",
       "deleting": "刪除中...",
-      "deleteRecruitment": "刪除招募"
+      "deleteRecruitment": "刪除招募",
+      "dismiss": "關閉"
     },
     "state": {
       "loading": "載入中...",
@@ -621,6 +630,8 @@
       "loadFailure": "無法載入專案招募",
       "createSuccess": "招募已建立",
       "createFailure": "建立招募失敗",
+      "githubUrlRequired": "請先提供 GitHub 專案連結再發布招募",
+      "githubUrlInvalid": "請輸入有效的 GitHub 專案連結",
       "joinFailure": "登記加入失敗",
       "leaveFailure": "取消登記失敗",
       "deleteSuccess": "招募已刪除",

@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
 import { toRomanNumeral } from '../../../shared/project-level';
@@ -22,6 +23,7 @@ interface ProjectRecruitment {
   summary: string;
   role_needed?: string;
   contact?: string;
+  github_url?: string;
   max_members?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
   created_at?: string;
@@ -47,6 +49,7 @@ interface ProjectRecruitment {
   styleUrl: './project-recruitment.component.css'
 })
 export class ProjectRecruitmentComponent implements OnInit {
+  readonly contactMethods = ['discord', 'email', 'site_message'];
   projects: ProjectRecruitment[] = [];
   loading = false;
   submitting = false;
@@ -61,12 +64,14 @@ export class ProjectRecruitmentComponent implements OnInit {
     summary: '',
     role_needed: '',
     contact: '',
+    github_url: '',
     max_members: null as number | null,
   };
 
   constructor(
     private apiService: ApiService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -89,7 +94,21 @@ export class ProjectRecruitmentComponent implements OnInit {
   }
 
   createProject() {
-    if (!this.form.title.trim() || !this.form.summary.trim() || this.submitting) {
+    if (this.submitting) {
+      return;
+    }
+
+    if (!this.form.github_url.trim()) {
+      this.openGithubUrlSnack('privateRecruit.feedback.githubUrlRequired');
+      return;
+    }
+
+    if (!this.isValidGithubRepositoryUrl(this.form.github_url)) {
+      this.openGithubUrlSnack('privateRecruit.feedback.githubUrlInvalid');
+      return;
+    }
+
+    if (!this.form.title.trim() || !this.form.summary.trim()) {
       return;
     }
 
@@ -106,6 +125,7 @@ export class ProjectRecruitmentComponent implements OnInit {
           summary: '',
           role_needed: '',
           contact: '',
+          github_url: '',
           max_members: null,
         };
         this.statusMessage = this.translate.instant('privateRecruit.feedback.createSuccess');
@@ -192,11 +212,42 @@ export class ProjectRecruitmentComponent implements OnInit {
     return toRomanNumeral(project.level);
   }
 
+  getContactLabel(contact?: string) {
+    return contact && this.contactMethods.includes(contact)
+      ? this.translate.instant(`privateRecruit.contactMethods.${contact}`)
+      : contact;
+  }
+
   get ownedProjects() {
     return this.projects.filter(project => project.owned_by_me);
   }
 
   private replaceProject(updated: ProjectRecruitment) {
     this.projects = this.projects.map(project => project.id === updated.id ? updated : project);
+  }
+
+  private isValidGithubRepositoryUrl(value: string) {
+    try {
+      const url = new URL(value.trim());
+      const pathParts = url.pathname.split('/').filter(Boolean);
+      return url.protocol === 'https:'
+        && ['github.com', 'www.github.com'].includes(url.hostname)
+        && pathParts.length === 2;
+    } catch {
+      return false;
+    }
+  }
+
+  private openGithubUrlSnack(messageKey: string) {
+    this.snackBar.open(
+      this.translate.instant(messageKey),
+      this.translate.instant('privateRecruit.actions.dismiss'),
+      {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['studio-snackbar', 'studio-snackbar-error']
+      }
+    );
   }
 }

@@ -14,7 +14,7 @@
   </section>
 
   <section class="recruit-grid">
-    <form class="recruit-card recruit-form" (ngSubmit)="createProject()">
+    <form class="recruit-card recruit-form" (ngSubmit)="createProject()" novalidate>
       <div class="card-header">
         <p class="recruit-kicker">{{ 'privateRecruit.create.kicker' | translate }}</p>
         <h2>{{ 'privateRecruit.create.title' | translate }}</h2>
@@ -44,7 +44,17 @@
 
       <label class="form-field">
         <span>{{ 'privateRecruit.create.contact' | translate }}</span>
-        <input name="contact" [(ngModel)]="form.contact" [placeholder]="'privateRecruit.create.contactPlaceholder' | translate" maxlength="160">
+        <select name="contact" [(ngModel)]="form.contact">
+          <option value="">{{ 'privateRecruit.create.contactPlaceholder' | translate }}</option>
+          @for (method of contactMethods; track method) {
+            <option [value]="method">{{ ('privateRecruit.contactMethods.' + method) | translate }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="form-field">
+        <span>{{ 'privateRecruit.create.githubUrl' | translate }}</span>
+        <input type="url" name="github_url" [(ngModel)]="form.github_url" [placeholder]="'privateRecruit.create.githubUrlPlaceholder' | translate" maxlength="2048" required aria-required="true" autocomplete="url">
       </label>
 
       <button class="recruit-button" type="submit" [disabled]="submitting">
@@ -86,7 +96,10 @@
               <span>{{ 'privateRecruit.meta.need' | translate }}: {{ project.role_needed }}</span>
             }
             @if (project.contact) {
-              <span>{{ 'privateRecruit.meta.contact' | translate }}: {{ project.contact }}</span>
+              <span>{{ 'privateRecruit.meta.contact' | translate }}: {{ getContactLabel(project.contact) }}</span>
+            }
+            @if (project.github_url) {
+              <a [href]="project.github_url" target="_blank" rel="noopener noreferrer">{{ 'privateRecruit.meta.repository' | translate }}</a>
             }
             <span>{{ project.created_at }}</span>
           </div>
@@ -177,7 +190,10 @@
               <span>{{ 'privateRecruit.meta.need' | translate }}: {{ project.role_needed }}</span>
             }
             @if (project.contact) {
-              <span>{{ 'privateRecruit.meta.contact' | translate }}: {{ project.contact }}</span>
+              <span>{{ 'privateRecruit.meta.contact' | translate }}: {{ getContactLabel(project.contact) }}</span>
+            }
+            @if (project.github_url) {
+              <a [href]="project.github_url" target="_blank" rel="noopener noreferrer">{{ 'privateRecruit.meta.repository' | translate }}</a>
             }
           </div>
           @if (project.members.length > 0) {

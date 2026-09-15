@@ -1,5 +1,6 @@
 import json
 from datetime import date
+from urllib.parse import urlparse
 
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
@@ -27,6 +28,7 @@ PROJECT_TITLE_MAX_LENGTH = 120
 PROJECT_SUMMARY_MAX_LENGTH = 2000
 PROJECT_ROLE_MAX_LENGTH = 120
 PROJECT_CONTACT_MAX_LENGTH = 160
+PROJECT_GITHUB_URL_MAX_LENGTH = 2048
 PROJECT_JOIN_MESSAGE_MAX_LENGTH = 500
 
 
@@ -39,6 +41,20 @@ def write_project_log(level, **payload):
 
 def get_client_ip():
     return request.headers.get('X-Forwarded-For', request.remote_addr or '').split(',')[0].strip()
+
+
+def is_valid_github_repository_url(value):
+    try:
+        parsed = urlparse(value)
+    except (TypeError, ValueError):
+        return False
+
+    path_parts = [part for part in parsed.path.split('/') if part]
+    return (
+        parsed.scheme == 'https'
+        and parsed.hostname in {'github.com', 'www.github.com'}
+        and len(path_parts) == 2
+    )
 
 
 def get_project_log_actor(user):
@@ -201,6 +217,7 @@ def serialize_project(project, current_user):
         'summary': project.summary,
         'role_needed': project.role_needed,
         'contact': project.contact,
+        'github_url': project.github_url,
         'max_members': project.max_members,
         'token_budget': project.token_budget,
         'tokenBudget': project.token_budget,
@@ -285,6 +302,7 @@ def create_project_recruitment():
     summary = data.get('summary', '').strip()
     role_needed = data.get('role_needed', '').strip() or None
     contact = data.get('contact', '').strip() or None
+    github_url = data.get('github_url', '').strip()
     max_members = data.get('max_members')
     client_ip = get_client_ip()
 
@@ -293,6 +311,7 @@ def create_project_recruitment():
         ('招募內容', summary, PROJECT_SUMMARY_MAX_LENGTH),
         ('需求角色', role_needed, PROJECT_ROLE_MAX_LENGTH),
         ('聯絡方式', contact, PROJECT_CONTACT_MAX_LENGTH),
+        ('GitHub 專案連結', github_url, PROJECT_GITHUB_URL_MAX_LENGTH),
     )
     for label, value, maximum in length_limits:
         if value and len(value) > maximum:
@@ -373,11 +392,34 @@ def create_project_recruitment():
             )
             return jsonify({'error': '人數上限至少為 1'}), 400
 
+    if not github_url:
+        write_project_log(
+            'warning',
+            action='create_project_recruitment',
+            status='failed',
+            reason='missing_github_url',
+            creator_id=current_user.id,
+            username=current_user.display_username,
+            nickname=current_user.display_nickname or '-',
+            title=title,
+            summary=summary,
+            role_needed=role_needed or '-',
+            contact=contact or '-',
+            github_url='-',
+            max_members=max_members or '-',
+            ip=client_ip
+        )
+        return jsonify({'error': '請提供 GitHub 專案連結'}), 400
+
+    if not is_valid_github_repository_url(github_url):
+        return jsonify({'error': '請提供有效的 GitHub 專案連結'}), 400
+
     project = ProjectRecruitment(
         title=title,
         summary=summary,
         role_needed=role_needed,
         contact=contact,
+        github_url=github_url,
         max_members=max_members,
         creator_id=current_user.id,
     )
@@ -396,6 +438,7 @@ def create_project_recruitment():
         summary=project.summary,
         role_needed=project.role_needed or '-',
         contact=project.contact or '-',
+        github_url=project.github_url,
         max_members=project.max_members or '-',
         review_status=project.review_status,
         ip=client_ip,

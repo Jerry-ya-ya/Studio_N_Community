@@ -552,7 +552,14 @@
       "maxMembers": "人数上限",
       "maxMembersPlaceholder": "制限なし",
       "contact": "連絡方法",
-      "contactPlaceholder": "Discord / Email / サイト内メッセージ"
+      "contactPlaceholder": "連絡方法を選択",
+      "githubUrl": "GitHub リポジトリ URL",
+      "githubUrlPlaceholder": "https://github.com/owner/repository"
+    },
+    "contactMethods": {
+      "discord": "Discord",
+      "email": "メール",
+      "site_message": "サイト内メッセージ"
     },
     "list": {
       "kicker": "Join",
@@ -579,7 +586,8 @@
     },
     "meta": {
       "need": "必要",
-      "contact": "連絡"
+      "contact": "連絡",
+      "repository": "GitHub リポジトリ"
     },
     "badges": {
       "owned": "あなたが作成した募集",
@@ -605,7 +613,8 @@
       "publishing": "公開中...",
       "publishTodo": "Todo を公開",
       "deleting": "削除中...",
-      "deleteRecruitment": "募集を削除"
+      "deleteRecruitment": "募集を削除",
+      "dismiss": "閉じる"
     },
     "state": {
       "loading": "読み込み中...",
@@ -620,6 +629,8 @@
       "loadFailure": "プロジェクト募集を読み込めません。",
       "createSuccess": "募集を作成しました。",
       "createFailure": "募集の作成に失敗しました。",
+      "githubUrlRequired": "公開する前に GitHub リポジトリ URL を追加してください。",
+      "githubUrlInvalid": "有効な GitHub リポジトリ URL を入力してください。",
       "joinFailure": "参加登録に失敗しました。",
       "leaveFailure": "登録取消に失敗しました。",
       "deleteSuccess": "募集を削除しました。",

@@ -82,6 +82,14 @@
               <strong>{{ project.contact || '-' }}</strong>
             </article>
             <article>
+              <span>{{ 'privateRecruit.meta.repository' | translate }}</span>
+              @if (project.github_url) {
+                <a [href]="project.github_url" target="_blank" rel="noopener noreferrer">GitHub</a>
+              } @else {
+                <strong>-</strong>
+              }
+            </article>
+            <article>
               <span>{{ 'adminProjects.card.reviewStatus' | translate }}</span>
               <strong>{{ ('adminProjects.review.status.' + project.review_status) | translate }}</strong>
             </article>
