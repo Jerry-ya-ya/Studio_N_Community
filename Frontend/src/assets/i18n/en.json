@@ -84,6 +84,7 @@
     "superadmin": {
       "promote": "Promote",
       "logs": "Logs",
+      "formStatistics": "Form Statistics",
       "feature": "Feature"
     }
   },
@@ -1403,6 +1404,18 @@
       "promoteFailed": "Promotion failed.",
       "demoteFailed": "Demotion failed."
     }
+  },
+  "formStatistics": {
+    "hero": { "kicker": "Superadmin / Live Aggregates", "title": "Form Statistics", "subtitle": "Track response trends by version. The dashboard refreshes on schedule and once more when a form settles." },
+    "refresh": { "label": "Auto-refresh interval", "minutes": "Every {{ count }} min", "now": "Refresh now", "refreshing": "Refreshing…", "retry": "Retry", "updatedAt": "Data updated: {{ time }}" },
+    "summary": { "label": "Form statistics summary", "forms": "Total forms", "open": "Live", "settled": "Settled", "submissions": "All submissions", "respondents": "Unique respondents" },
+    "state": { "loading": "Calculating form statistics…", "error": "Unable to load form statistics.", "staleError": "This refresh failed. Showing the most recent successful data.", "empty": "There are no forms to report yet." },
+    "forms": { "title": "Forms", "responseCount": "{{ count }} current-version responses", "version": "Version {{ version }}", "questions": "{{ count }} questions", "history": "{{ count }} older-version responses", "settlementAt": "Settles: {{ time }}", "finalizedAt": "Finalized: {{ time }}" },
+    "status": { "live": "Live", "final": "Final", "liveReport": "Live report", "finalReport": "Final report" },
+    "questions": { "number": "Question {{ number }}", "responses": "responses", "missing": "{{ count }} skipped", "textSummary": "{{ count }} text/date responses received. Only the count is shown to protect response contents.", "empty": "This form has no questions." },
+    "numbers": { "average": "Average", "minimum": "Minimum", "maximum": "Maximum" },
+    "boolean": { "yes": "Yes", "no": "No" },
+    "types": { "short_text": "Short text", "long_text": "Long text", "single_choice": "Single choice", "multiple_choice": "Multiple choice", "dropdown": "Dropdown", "number": "Number", "date": "Date", "boolean": "Yes / No" }
   },
   "superadminLogs": {
     "hero": {

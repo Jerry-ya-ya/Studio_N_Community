@@ -790,3 +790,7 @@
 - Add scheduled and manual form settlement with admin controls, submission cutoff enforcement, user status displays, migration, and regression coverage.
 
 - Linearize the Alembic revision chain and make form migrations tolerate schemas precreated by the development app.
+
+## 2026/09/15
+
+- Add a superadmin form statistics dashboard with version-aware aggregates, configurable auto-refresh, settlement-time final refreshes, localization, and authorization coverage.

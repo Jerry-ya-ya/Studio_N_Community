@@ -1,0 +1,146 @@
+<main class="statistics-page" [attr.aria-label]="'formStatistics.hero.title' | translate">
+  <header class="statistics-hero">
+    <div>
+      <p class="statistics-kicker">{{ 'formStatistics.hero.kicker' | translate }}</p>
+      <h1>{{ 'formStatistics.hero.title' | translate }}</h1>
+      <p>{{ 'formStatistics.hero.subtitle' | translate }}</p>
+    </div>
+    <div class="refresh-panel">
+      <label>
+        <span>{{ 'formStatistics.refresh.label' | translate }}</span>
+        <select [(ngModel)]="refreshMinutes" (ngModelChange)="onRefreshIntervalChange()">
+          @for (minutes of intervalOptions; track minutes) {
+            <option [ngValue]="minutes">{{ 'formStatistics.refresh.minutes' | translate: { count: minutes } }}</option>
+          }
+        </select>
+      </label>
+      <button type="button" (click)="loadStatistics()" [disabled]="refreshing">
+        <mat-icon [class.spinning]="refreshing">refresh</mat-icon>
+        {{ (refreshing ? 'formStatistics.refresh.refreshing' : 'formStatistics.refresh.now') | translate }}
+      </button>
+      @if (data) {
+        <small>{{ 'formStatistics.refresh.updatedAt' | translate: { time: (data.generatedAt | date: 'medium') } }}</small>
+      }
+    </div>
+  </header>
+
+  @if (loading) {
+    <section class="state-card">{{ 'formStatistics.state.loading' | translate }}</section>
+  } @else if (error && !data) {
+    <section class="state-card state-card--error">
+      <p>{{ 'formStatistics.state.error' | translate }}</p>
+      <button type="button" (click)="loadStatistics(true)">{{ 'formStatistics.refresh.retry' | translate }}</button>
+    </section>
+  } @else if (data) {
+    @if (error) {
+      <p class="inline-error" role="alert">{{ 'formStatistics.state.staleError' | translate }}</p>
+    }
+
+    <section class="summary-grid" [attr.aria-label]="'formStatistics.summary.label' | translate">
+      <article><mat-icon>dynamic_form</mat-icon><strong>{{ data.summary.totalForms }}</strong><span>{{ 'formStatistics.summary.forms' | translate }}</span></article>
+      <article><mat-icon>pending_actions</mat-icon><strong>{{ data.summary.openForms }}</strong><span>{{ 'formStatistics.summary.open' | translate }}</span></article>
+      <article><mat-icon>task_alt</mat-icon><strong>{{ data.summary.settledForms }}</strong><span>{{ 'formStatistics.summary.settled' | translate }}</span></article>
+      <article><mat-icon>how_to_reg</mat-icon><strong>{{ data.summary.totalSubmissions }}</strong><span>{{ 'formStatistics.summary.submissions' | translate }}</span></article>
+      <article><mat-icon>groups</mat-icon><strong>{{ data.summary.uniqueRespondents }}</strong><span>{{ 'formStatistics.summary.respondents' | translate }}</span></article>
+    </section>
+
+    @if (!data.forms.length) {
+      <section class="state-card">{{ 'formStatistics.state.empty' | translate }}</section>
+    } @else {
+      <section class="statistics-workspace">
+        <aside class="form-selector">
+          <h2>{{ 'formStatistics.forms.title' | translate }}</h2>
+          @for (form of data.forms; track form.id) {
+            <button type="button" [class.active]="selectedFormId === form.id" (click)="selectForm(form.id)">
+              <span><strong>{{ form.title }}</strong><small>v{{ form.version }}</small></span>
+              <span class="status" [class.status--settled]="form.settled">
+                {{ (form.settled ? 'formStatistics.status.final' : 'formStatistics.status.live') | translate }}
+              </span>
+              <small>{{ 'formStatistics.forms.responseCount' | translate: { count: form.submissionCount } }}</small>
+            </button>
+          }
+        </aside>
+
+        @if (selectedForm; as form) {
+          <section class="form-report">
+            <header class="report-header">
+              <div>
+                <p class="statistics-kicker">{{ (form.settled ? 'formStatistics.status.finalReport' : 'formStatistics.status.liveReport') | translate }}</p>
+                <h2>{{ form.title }}</h2>
+              </div>
+              <span class="report-status" [class.report-status--settled]="form.settled">
+                <mat-icon>{{ form.settled ? 'verified' : 'sensors' }}</mat-icon>
+                {{ (form.settled ? 'formStatistics.status.final' : 'formStatistics.status.live') | translate }}
+              </span>
+            </header>
+
+            <div class="report-meta">
+              <span>{{ 'formStatistics.forms.version' | translate: { version: form.version } }}</span>
+              <span>{{ 'formStatistics.forms.questions' | translate: { count: form.questionCount } }}</span>
+              <span>{{ 'formStatistics.forms.responseCount' | translate: { count: form.submissionCount } }}</span>
+              @if (form.historicalSubmissionCount) {
+                <span>{{ 'formStatistics.forms.history' | translate: { count: form.historicalSubmissionCount } }}</span>
+              }
+              @if (form.finalizedAt) {
+                <span>{{ 'formStatistics.forms.finalizedAt' | translate: { time: (form.finalizedAt | date: 'medium') } }}</span>
+              } @else if (form.settlementAt) {
+                <span>{{ 'formStatistics.forms.settlementAt' | translate: { time: (form.settlementAt | date: 'medium') } }}</span>
+              }
+            </div>
+
+            <div class="question-reports">
+              @for (question of form.questions; track question.id; let index = $index) {
+                <article class="question-report">
+                  <header>
+                    <div>
+                      <span>{{ 'formStatistics.questions.number' | translate: { number: index + 1 } }}</span>
+                      <h3>{{ question.title }}</h3>
+                    </div>
+                    <div class="question-count">
+                      <strong>{{ question.responseCount }}</strong>
+                      <small>{{ 'formStatistics.questions.responses' | translate }}</small>
+                    </div>
+                  </header>
+                  <p class="question-meta">
+                    {{ questionTypeKey(question) | translate }} ·
+                    {{ 'formStatistics.questions.missing' | translate: { count: question.missingCount } }}
+                  </p>
+
+                  @if (question.options.length) {
+                    <div class="option-results">
+                      @for (option of question.options; track option.id) {
+                        <div class="option-result">
+                          <div>
+                            <span>
+                              @if (question.type === 'boolean') {
+                                {{ (option.id === 'true' ? 'formStatistics.boolean.yes' : 'formStatistics.boolean.no') | translate }}
+                              } @else {
+                                {{ option.label }}
+                              }
+                            </span>
+                            <strong>{{ option.count }} · {{ option.percentage }}%</strong>
+                          </div>
+                          <div class="bar" aria-hidden="true"><span [style.width]="optionWidth(option.percentage)"></span></div>
+                        </div>
+                      }
+                    </div>
+                  } @else if (question.numberSummary; as summary) {
+                    <div class="number-results">
+                      <span><small>{{ 'formStatistics.numbers.average' | translate }}</small><strong>{{ summary.average | number: '1.0-2' }}</strong></span>
+                      <span><small>{{ 'formStatistics.numbers.minimum' | translate }}</small><strong>{{ summary.minimum | number: '1.0-2' }}</strong></span>
+                      <span><small>{{ 'formStatistics.numbers.maximum' | translate }}</small><strong>{{ summary.maximum | number: '1.0-2' }}</strong></span>
+                    </div>
+                  } @else {
+                    <p class="text-summary">{{ 'formStatistics.questions.textSummary' | translate: { count: question.responseCount } }}</p>
+                  }
+                </article>
+              } @empty {
+                <p class="state-card">{{ 'formStatistics.questions.empty' | translate }}</p>
+              }
+            </div>
+          </section>
+        }
+      </section>
+    }
+  }
+</main>

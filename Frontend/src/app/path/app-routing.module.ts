@@ -83,6 +83,12 @@ const routes: Routes = [
       import('../pages/superadmin/logs/logs.module').then(m => m.LogsModule)
   },
   {
+    path: appPath.formStatistics,
+    canMatch: [superadminGuard],
+    loadChildren: () =>
+      import('../pages/superadmin/form-statistics/form-statistics.module').then(m => m.FormStatisticsModule)
+  },
+  {
     path: appPath.content,
     loadChildren: () =>
       import('../pages/admin/content/content.module').then(m => m.ContentModule)

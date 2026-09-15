@@ -84,6 +84,7 @@
     "superadmin": {
       "promote": "權限",
       "logs": "紀錄",
+      "formStatistics": "表單統計",
       "feature": "功能"
     }
   },
@@ -1403,6 +1404,18 @@
       "promoteFailed": "晉升失敗",
       "demoteFailed": "降級失敗"
     }
+  },
+  "formStatistics": {
+    "hero": { "kicker": "Superadmin / 即時聚合", "title": "表單統計", "subtitle": "追蹤各版本的回答趨勢；面板會依設定週期更新，表單結算時再取得一次最終結果。" },
+    "refresh": { "label": "自動更新頻率", "minutes": "每 {{ count }} 分鐘", "now": "立即更新", "refreshing": "更新中…", "retry": "重試", "updatedAt": "資料時間：{{ time }}" },
+    "summary": { "label": "表單統計摘要", "forms": "表單總數", "open": "進行中", "settled": "已結算", "submissions": "累計提交", "respondents": "不重複填答者" },
+    "state": { "loading": "正在計算表單統計…", "error": "無法載入表單統計。", "staleError": "本次更新失敗，目前顯示上一次成功取得的資料。", "empty": "目前沒有可統計的表單。" },
+    "forms": { "title": "表單", "responseCount": "本版本 {{ count }} 份回答", "version": "版本 {{ version }}", "questions": "{{ count }} 題", "history": "另有 {{ count }} 份舊版本回答", "settlementAt": "預計結算：{{ time }}", "finalizedAt": "最終結算：{{ time }}" },
+    "status": { "live": "即時", "final": "最終", "liveReport": "即時統計", "finalReport": "最終統計" },
+    "questions": { "number": "第 {{ number }} 題", "responses": "有效回答", "missing": "{{ count }} 人未答", "textSummary": "已收到 {{ count }} 份文字／日期回答；為保護填答內容，此處僅顯示數量。", "empty": "此表單尚未設定題目。" },
+    "numbers": { "average": "平均", "minimum": "最低", "maximum": "最高" },
+    "boolean": { "yes": "是", "no": "否" },
+    "types": { "short_text": "簡答", "long_text": "段落", "single_choice": "單選", "multiple_choice": "複選", "dropdown": "下拉選單", "number": "數字", "date": "日期", "boolean": "是／否" }
   },
   "superadminLogs": {
     "hero": {

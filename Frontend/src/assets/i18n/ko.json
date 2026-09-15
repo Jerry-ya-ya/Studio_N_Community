@@ -84,6 +84,7 @@
     "superadmin": {
       "promote": "권한",
       "logs": "로그",
+      "formStatistics": "양식 통계",
       "feature": "기능"
     }
   },
@@ -1402,6 +1403,18 @@
       "promoteFailed": "승격에 실패했습니다",
       "demoteFailed": "강등에 실패했습니다"
     }
+  },
+  "formStatistics": {
+    "hero": { "kicker": "Superadmin / 실시간 집계", "title": "양식 통계", "subtitle": "버전별 응답 추세를 확인합니다. 설정된 주기와 양식 마감 시 최종 갱신합니다." },
+    "refresh": { "label": "자동 갱신 주기", "minutes": "{{ count }}분마다", "now": "지금 갱신", "refreshing": "갱신 중…", "retry": "다시 시도", "updatedAt": "데이터 시각: {{ time }}" },
+    "summary": { "label": "양식 통계 요약", "forms": "전체 양식", "open": "진행 중", "settled": "마감됨", "submissions": "누적 제출", "respondents": "고유 응답자" },
+    "state": { "loading": "양식 통계를 계산 중…", "error": "양식 통계를 불러올 수 없습니다.", "staleError": "갱신에 실패하여 이전 데이터를 표시합니다.", "empty": "집계할 양식이 없습니다." },
+    "forms": { "title": "양식", "responseCount": "현재 버전 {{ count }}개 응답", "version": "버전 {{ version }}", "questions": "{{ count }}개 문항", "history": "이전 버전 {{ count }}개 응답", "settlementAt": "마감 예정: {{ time }}", "finalizedAt": "최종 집계: {{ time }}" },
+    "status": { "live": "실시간", "final": "최종", "liveReport": "실시간 통계", "finalReport": "최종 통계" },
+    "questions": { "number": "문항 {{ number }}", "responses": "응답", "missing": "미응답 {{ count }}명", "textSummary": "텍스트/날짜 응답 {{ count }}개가 접수되었습니다. 내용 보호를 위해 개수만 표시합니다.", "empty": "문항이 없습니다." },
+    "numbers": { "average": "평균", "minimum": "최소", "maximum": "최대" },
+    "boolean": { "yes": "예", "no": "아니요" },
+    "types": { "short_text": "단답형", "long_text": "장문형", "single_choice": "단일 선택", "multiple_choice": "복수 선택", "dropdown": "드롭다운", "number": "숫자", "date": "날짜", "boolean": "예/아니요" }
   },
   "superadminLogs": {
     "hero": {

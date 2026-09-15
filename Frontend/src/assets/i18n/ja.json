@@ -84,6 +84,7 @@
     "superadmin": {
       "promote": "権限",
       "logs": "ログ",
+      "formStatistics": "フォーム統計",
       "feature": "機能"
     }
   },
@@ -1402,6 +1403,18 @@
       "promoteFailed": "昇格に失敗しました",
       "demoteFailed": "降格に失敗しました"
     }
+  },
+  "formStatistics": {
+    "hero": { "kicker": "Superadmin / ライブ集計", "title": "フォーム統計", "subtitle": "バージョン別の回答傾向を確認します。設定した間隔とフォーム締切時に最終更新します。" },
+    "refresh": { "label": "自動更新間隔", "minutes": "{{ count }} 分ごと", "now": "今すぐ更新", "refreshing": "更新中…", "retry": "再試行", "updatedAt": "データ更新：{{ time }}" },
+    "summary": { "label": "フォーム統計概要", "forms": "フォーム数", "open": "受付中", "settled": "締切済み", "submissions": "累計回答", "respondents": "回答者数" },
+    "state": { "loading": "フォーム統計を計算中…", "error": "フォーム統計を読み込めません。", "staleError": "更新に失敗しました。前回のデータを表示しています。", "empty": "集計できるフォームがありません。" },
+    "forms": { "title": "フォーム", "responseCount": "現バージョン {{ count }} 件", "version": "バージョン {{ version }}", "questions": "{{ count }} 問", "history": "旧バージョン {{ count }} 件", "settlementAt": "締切予定：{{ time }}", "finalizedAt": "最終集計：{{ time }}" },
+    "status": { "live": "ライブ", "final": "最終", "liveReport": "ライブ統計", "finalReport": "最終統計" },
+    "questions": { "number": "質問 {{ number }}", "responses": "回答", "missing": "未回答 {{ count }}", "textSummary": "テキスト／日付の回答は {{ count }} 件です。内容保護のため件数のみ表示します。", "empty": "質問がありません。" },
+    "numbers": { "average": "平均", "minimum": "最小", "maximum": "最大" },
+    "boolean": { "yes": "はい", "no": "いいえ" },
+    "types": { "short_text": "短文", "long_text": "長文", "single_choice": "単一選択", "multiple_choice": "複数選択", "dropdown": "ドロップダウン", "number": "数値", "date": "日付", "boolean": "はい／いいえ" }
   },
   "superadminLogs": {
     "hero": {

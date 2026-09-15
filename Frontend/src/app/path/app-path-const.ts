@@ -27,6 +27,8 @@ export const appPath = {
     promote: 'promote',
     //superadmin logs
     superadminLogs: 'superadmin-logs',
+    //superadmin form statistics
+    formStatistics: 'form-statistics',
     //admin content
     content: 'content',
     //admin projects
