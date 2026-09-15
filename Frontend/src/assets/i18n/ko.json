@@ -565,6 +565,21 @@
       "kicker": "Join",
       "title": "모집 목록"
     },
+    "details": {
+      "kicker": "Project Details",
+      "openProject": "프로젝트 상세 열기",
+      "viewDetails": "상세 보기",
+      "rolesOpen": "역할 제한 없음",
+      "createdBy": "생성자",
+      "about": "프로젝트 내용",
+      "notSpecified": "입력되지 않음",
+      "currentMembers": "현재 인원",
+      "unlimited": "제한 없음",
+      "contributors": "기여자 멤버",
+      "leaderHint": "특별 테두리는 프로젝트 리더를 나타냅니다",
+      "leader": "리더",
+      "contributor": "기여자"
+    },
     "manage": {
       "kicker": "Manage",
       "title": "게시한 모집 관리",
@@ -582,6 +597,7 @@
       "placeholder": "예: 캐릭터 컨트롤러 첫 버전 완성"
     },
     "join": {
+      "messageLabel": "가입 메시지",
       "messagePlaceholder": "개설자에게 남길 한마디"
     },
     "meta": {
@@ -614,6 +630,7 @@
       "publishTodo": "Todo 게시",
       "deleting": "삭제 중...",
       "deleteRecruitment": "모집 삭제",
+      "closeDetails": "프로젝트 상세 닫기",
       "dismiss": "닫기"
     },
     "state": {

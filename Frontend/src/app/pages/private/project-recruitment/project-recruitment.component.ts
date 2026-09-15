@@ -1,20 +1,22 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, HostListener } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from '../../../core/services/api.service';
 import { toRomanNumeral } from '../../../shared/project-level';
 
+interface ProjectRecruitmentUser {
+  id: number;
+  username: string;
+  nickname?: string;
+  avatar_url?: string;
+  role?: string;
+}
+
 interface ProjectRecruitmentMember {
   id: number;
   message?: string;
   created_at?: string;
-  user: {
-    id: number;
-    username: string;
-    nickname?: string;
-    avatar_url?: string;
-    role?: string;
-  };
+  user: ProjectRecruitmentUser;
 }
 
 interface ProjectRecruitment {
@@ -27,13 +29,7 @@ interface ProjectRecruitment {
   max_members?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
   created_at?: string;
-  creator: {
-    id: number;
-    username: string;
-    nickname?: string;
-    avatar_url?: string;
-    role?: string;
-  };
+  creator: ProjectRecruitmentUser;
   members: ProjectRecruitmentMember[];
   member_count: number;
   level?: number;
@@ -58,6 +54,7 @@ export class ProjectRecruitmentComponent implements OnInit {
   joinMessages: Record<number, string> = {};
   statusMessage = '';
   joinMessage = '';
+  selectedProject: ProjectRecruitment | null = null;
 
   form = {
     title: '',
@@ -208,6 +205,27 @@ export class ProjectRecruitmentComponent implements OnInit {
     return !!project.max_members && project.member_count >= project.max_members;
   }
 
+  openProject(project: ProjectRecruitment) {
+    this.selectedProject = project;
+  }
+
+  closeProject() {
+    this.selectedProject = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  closeProjectOnEscape() {
+    this.closeProject();
+  }
+
+  getDisplayName(user: ProjectRecruitmentUser) {
+    return user.nickname || user.username;
+  }
+
+  getAvatarInitial(user: ProjectRecruitmentUser) {
+    return this.getDisplayName(user).trim().charAt(0).toUpperCase() || '?';
+  }
+
   getProjectLevel(project: ProjectRecruitment) {
     return toRomanNumeral(project.level);
   }
@@ -224,6 +242,9 @@ export class ProjectRecruitmentComponent implements OnInit {
 
   private replaceProject(updated: ProjectRecruitment) {
     this.projects = this.projects.map(project => project.id === updated.id ? updated : project);
+    if (this.selectedProject?.id === updated.id) {
+      this.selectedProject = updated;
+    }
   }
 
   private isValidGithubRepositoryUrl(value: string) {

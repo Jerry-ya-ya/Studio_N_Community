@@ -796,3 +796,5 @@
 - Add a superadmin form statistics dashboard with version-aware aggregates, configurable auto-refresh, settlement-time final refreshes, localization, and authorization coverage.
 
 - Require validated GitHub repository links for recruitment creation and replace free-form contact entry with localized contact method options.
+
+- Turn recruitment list items into accessible project detail dialogs with complete creation data, member capacity, avatar-based contributor rosters, highlighted leaders, and join controls.

@@ -566,6 +566,21 @@
       "kicker": "Join",
       "title": "招募列表"
     },
+    "details": {
+      "kicker": "Project Details",
+      "openProject": "開啟專案詳情",
+      "viewDetails": "查看詳情",
+      "rolesOpen": "角色不限",
+      "createdBy": "建立者",
+      "about": "專案內容",
+      "notSpecified": "未填寫",
+      "currentMembers": "當前人數",
+      "unlimited": "不限",
+      "contributors": "貢獻者成員",
+      "leaderHint": "特殊外框代表專案組長",
+      "leader": "組長",
+      "contributor": "貢獻者"
+    },
     "manage": {
       "kicker": "Manage",
       "title": "管理已發布招募",
@@ -583,6 +598,7 @@
       "placeholder": "例如：完成角色控制器第一版"
     },
     "join": {
+      "messageLabel": "加入訊息",
       "messagePlaceholder": "給發起人的一句話"
     },
     "meta": {
@@ -615,6 +631,7 @@
       "publishTodo": "發布 Todo",
       "deleting": "刪除中...",
       "deleteRecruitment": "刪除招募",
+      "closeDetails": "關閉專案詳情",
       "dismiss": "關閉"
     },
     "state": {

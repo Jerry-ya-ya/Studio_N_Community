@@ -77,7 +77,15 @@
       }
 
       @for (project of projects; track project) {
-        <article class="project-card">
+        <article
+          class="project-card project-card--clickable"
+          role="button"
+          tabindex="0"
+          aria-haspopup="dialog"
+          [attr.aria-label]="('privateRecruit.details.openProject' | translate) + ': ' + project.title"
+          (click)="openProject(project)"
+          (keydown.enter)="openProject(project)"
+          (keydown.space)="$event.preventDefault(); openProject(project)">
           <div class="project-card__top">
             <div>
               <p class="project-owner">{{ project.creator.nickname || project.creator.username }}</p>
@@ -91,59 +99,10 @@
             </div>
           </div>
           <p class="project-summary">{{ project.summary }}</p>
-          <div class="project-meta">
-            @if (project.role_needed) {
-              <span>{{ 'privateRecruit.meta.need' | translate }}: {{ project.role_needed }}</span>
-            }
-            @if (project.contact) {
-              <span>{{ 'privateRecruit.meta.contact' | translate }}: {{ getContactLabel(project.contact) }}</span>
-            }
-            @if (project.github_url) {
-              <a [href]="project.github_url" target="_blank" rel="noopener noreferrer">{{ 'privateRecruit.meta.repository' | translate }}</a>
-            }
-            <span>{{ project.created_at }}</span>
+          <div class="project-card__footer">
+            <span>{{ project.role_needed || ('privateRecruit.details.rolesOpen' | translate) }}</span>
+            <strong>{{ 'privateRecruit.details.viewDetails' | translate }} →</strong>
           </div>
-          @if (project.members.length > 0) {
-            <div class="member-list">
-              @for (member of project.members; track member) {
-                <span>{{ member.user.nickname || member.user.username }}</span>
-              }
-            </div>
-          }
-          @if (!project.owned_by_me && !project.joined_by_me && !isFull(project)) {
-            <div class="join-panel">
-              <input
-                [(ngModel)]="joinMessages[project.id]"
-                [name]="'joinMessage' + project.id"
-                maxlength="500"
-                [placeholder]="'privateRecruit.join.messagePlaceholder' | translate">
-                <button class="recruit-button" type="button" (click)="joinProject(project)" [disabled]="actionLoading[project.id]">
-                  {{ (actionLoading[project.id] ? 'privateRecruit.actions.joining' : 'privateRecruit.actions.join') | translate }}
-                </button>
-              </div>
-            }
-            @if (project.owned_by_me || project.joined_by_me || isFull(project)) {
-              <div class="project-actions">
-                @if (project.owned_by_me) {
-                  <span class="project-badge">{{ 'privateRecruit.badges.owned' | translate }}</span>
-                }
-                @if (project.joined_by_me) {
-                  <span class="project-badge">{{ 'privateRecruit.badges.joined' | translate }}</span>
-                }
-                @if (isFull(project) && !project.joined_by_me) {
-                  <span class="project-badge">{{ 'privateRecruit.badges.full' | translate }}</span>
-                }
-                @if (project.joined_by_me) {
-                  <button
-                    class="recruit-button recruit-button--ghost"
-                    type="button"
-                    (click)="leaveProject(project)"
-                    [disabled]="actionLoading[project.id]">
-                    {{ (actionLoading[project.id] ? 'privateRecruit.actions.processing' : 'privateRecruit.actions.cancelJoin') | translate }}
-                  </button>
-                }
-              </div>
-            }
           </article>
         }
 
@@ -152,6 +111,139 @@
         }
       </section>
     </section>
+
+    @if (selectedProject; as project) {
+      <div class="project-dialog-backdrop" (click)="closeProject()">
+        <section
+          class="project-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-dialog-title"
+          (click)="$event.stopPropagation()">
+          <button
+            class="project-dialog__close"
+            type="button"
+            [attr.aria-label]="'privateRecruit.actions.closeDetails' | translate"
+            (click)="closeProject()">×</button>
+
+          <header class="project-dialog__header">
+            <div>
+              <p class="recruit-kicker">{{ 'privateRecruit.details.kicker' | translate }}</p>
+              <h2 id="project-dialog-title">{{ project.title }}</h2>
+              <p class="project-owner">
+                {{ 'privateRecruit.details.createdBy' | translate }} · {{ getDisplayName(project.creator) }} · {{ project.created_at }}
+              </p>
+            </div>
+            <div class="project-card__badges">
+              <span class="project-badge project-badge--status">
+                {{ ('privateRecruit.review.status.' + project.review_status) | translate }}
+              </span>
+              <span class="project-level-badge">Lv. {{ getProjectLevel(project) }}</span>
+            </div>
+          </header>
+
+          <div class="project-dialog__body">
+            <section class="project-detail-section">
+              <h3>{{ 'privateRecruit.details.about' | translate }}</h3>
+              <p class="project-dialog__summary">{{ project.summary }}</p>
+              <dl class="project-detail-grid">
+                <div>
+                  <dt>{{ 'privateRecruit.create.roleNeeded' | translate }}</dt>
+                  <dd>{{ project.role_needed || ('privateRecruit.details.notSpecified' | translate) }}</dd>
+                </div>
+                <div>
+                  <dt>{{ 'privateRecruit.create.contact' | translate }}</dt>
+                  <dd>{{ getContactLabel(project.contact) || ('privateRecruit.details.notSpecified' | translate) }}</dd>
+                </div>
+                <div>
+                  <dt>{{ 'privateRecruit.details.currentMembers' | translate }}</dt>
+                  <dd>{{ project.member_count }}</dd>
+                </div>
+                <div>
+                  <dt>{{ 'privateRecruit.create.maxMembers' | translate }}</dt>
+                  <dd>{{ project.max_members || ('privateRecruit.details.unlimited' | translate) }}</dd>
+                </div>
+              </dl>
+              @if (project.github_url) {
+                <a class="project-repository" [href]="project.github_url" target="_blank" rel="noopener noreferrer">
+                  {{ 'privateRecruit.meta.repository' | translate }} ↗
+                </a>
+              }
+            </section>
+
+            <section class="project-detail-section contributor-section">
+              <div class="contributor-section__heading">
+                <div>
+                  <h3>{{ 'privateRecruit.details.contributors' | translate }}</h3>
+                  <p>{{ 'privateRecruit.details.leaderHint' | translate }}</p>
+                </div>
+                <span class="project-count">{{ project.member_count }}{{ project.max_members ? '/' + project.max_members : '' }}</span>
+              </div>
+
+              <div class="contributor-list">
+                <div class="contributor contributor--leader">
+                  <div class="contributor-avatar">
+                    @if (project.creator.avatar_url) {
+                      <img [src]="project.creator.avatar_url" [alt]="getDisplayName(project.creator)">
+                    } @else {
+                      <span aria-hidden="true">{{ getAvatarInitial(project.creator) }}</span>
+                    }
+                  </div>
+                  <strong>{{ getDisplayName(project.creator) }}</strong>
+                  <small>{{ 'privateRecruit.details.leader' | translate }}</small>
+                </div>
+
+                @for (member of project.members; track member.id) {
+                  <div class="contributor">
+                    <div class="contributor-avatar">
+                      @if (member.user.avatar_url) {
+                        <img [src]="member.user.avatar_url" [alt]="getDisplayName(member.user)">
+                      } @else {
+                        <span aria-hidden="true">{{ getAvatarInitial(member.user) }}</span>
+                      }
+                    </div>
+                    <strong>{{ getDisplayName(member.user) }}</strong>
+                    <small>{{ 'privateRecruit.details.contributor' | translate }}</small>
+                  </div>
+                }
+              </div>
+            </section>
+          </div>
+
+          <footer class="project-dialog__footer">
+            @if (!project.owned_by_me && !project.joined_by_me && !isFull(project)) {
+              <label class="join-panel__field">
+                <span>{{ 'privateRecruit.join.messageLabel' | translate }}</span>
+                <input
+                  [(ngModel)]="joinMessages[project.id]"
+                  [name]="'joinMessage' + project.id"
+                  maxlength="500"
+                  [placeholder]="'privateRecruit.join.messagePlaceholder' | translate">
+              </label>
+              <button class="recruit-button" type="button" (click)="joinProject(project)" [disabled]="actionLoading[project.id]">
+                {{ (actionLoading[project.id] ? 'privateRecruit.actions.joining' : 'privateRecruit.actions.join') | translate }}
+              </button>
+            }
+            @if (project.owned_by_me) {
+              <span class="project-badge">{{ 'privateRecruit.badges.owned' | translate }}</span>
+            }
+            @if (project.joined_by_me) {
+              <span class="project-badge">{{ 'privateRecruit.badges.joined' | translate }}</span>
+              <button
+                class="recruit-button recruit-button--ghost"
+                type="button"
+                (click)="leaveProject(project)"
+                [disabled]="actionLoading[project.id]">
+                {{ (actionLoading[project.id] ? 'privateRecruit.actions.processing' : 'privateRecruit.actions.cancelJoin') | translate }}
+              </button>
+            }
+            @if (isFull(project) && !project.joined_by_me) {
+              <span class="project-badge">{{ 'privateRecruit.badges.full' | translate }}</span>
+            }
+          </footer>
+        </section>
+      </div>
+    }
 
     <section class="manage-section">
       <div class="card-header manage-header">

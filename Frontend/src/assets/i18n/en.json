@@ -566,6 +566,21 @@
       "kicker": "Join",
       "title": "Recruitment List"
     },
+    "details": {
+      "kicker": "Project Details",
+      "openProject": "Open project details",
+      "viewDetails": "View details",
+      "rolesOpen": "Any role welcome",
+      "createdBy": "Created by",
+      "about": "Project overview",
+      "notSpecified": "Not specified",
+      "currentMembers": "Current members",
+      "unlimited": "Unlimited",
+      "contributors": "Contributors",
+      "leaderHint": "The highlighted frame marks the project leader",
+      "leader": "Leader",
+      "contributor": "Contributor"
+    },
     "manage": {
       "kicker": "Manage",
       "title": "Manage Published Recruitment",
@@ -583,6 +598,7 @@
       "placeholder": "Example: Finish the first character controller"
     },
     "join": {
+      "messageLabel": "Join message",
       "messagePlaceholder": "A short message for the creator"
     },
     "meta": {
@@ -615,6 +631,7 @@
       "publishTodo": "Publish Todo",
       "deleting": "Deleting...",
       "deleteRecruitment": "Delete Recruitment",
+      "closeDetails": "Close project details",
       "dismiss": "Dismiss"
     },
     "state": {

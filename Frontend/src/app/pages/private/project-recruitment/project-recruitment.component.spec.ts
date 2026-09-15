@@ -82,4 +82,29 @@ describe('ProjectRecruitmentComponent creation', () => {
     );
     expect(component.form.github_url).toBe('');
   });
+
+  it('opens and closes a selected project detail card', () => {
+    const project = {
+      id: 7,
+      title: 'Clickable project',
+      summary: 'Project details',
+      review_status: 'open',
+      creator: { id: 1, username: 'leader' },
+      members: [],
+      member_count: 0,
+      joined_by_me: false,
+      owned_by_me: false
+    } as any;
+
+    component.openProject(project);
+    expect(component.selectedProject).toBe(project);
+
+    component.closeProjectOnEscape();
+    expect(component.selectedProject).toBeNull();
+  });
+
+  it('uses a contributor nickname for avatar initials when available', () => {
+    expect(component.getDisplayName({ id: 2, username: 'member', nickname: '豆豆' })).toBe('豆豆');
+    expect(component.getAvatarInitial({ id: 2, username: 'member', nickname: 'Bean' })).toBe('B');
+  });
 });
