@@ -585,6 +585,8 @@
       "title": "게시한 모집 관리",
       "active": "Active",
       "members": "Members",
+      "expandMembers": "멤버 목록 보기",
+      "collapseMembers": "멤버 목록 숨기기",
       "noMessage": "등록 메시지가 없습니다."
     },
     "todo": {

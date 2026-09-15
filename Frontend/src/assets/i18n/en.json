@@ -586,6 +586,8 @@
       "title": "Manage Published Recruitment",
       "active": "Active",
       "members": "Members",
+      "expandMembers": "Show member list",
+      "collapseMembers": "Hide member list",
       "noMessage": "No registration message was left."
     },
     "todo": {

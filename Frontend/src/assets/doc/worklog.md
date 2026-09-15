@@ -798,3 +798,5 @@
 - Require validated GitHub repository links for recruitment creation and replace free-form contact entry with localized contact method options.
 
 - Turn recruitment list items into accessible project detail dialogs with complete creation data, member capacity, avatar-based contributor rosters, highlighted leaders, and join controls.
+
+- Make published recruitment member lists independently expandable and collapsible with accessible localized controls and regression coverage.

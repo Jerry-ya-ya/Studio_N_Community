@@ -107,4 +107,18 @@ describe('ProjectRecruitmentComponent creation', () => {
     expect(component.getDisplayName({ id: 2, username: 'member', nickname: '豆豆' })).toBe('豆豆');
     expect(component.getAvatarInitial({ id: 2, username: 'member', nickname: 'Bean' })).toBe('B');
   });
+
+  it('toggles each managed project member list independently', () => {
+    expect(component.isMemberListExpanded(7)).toBe(false);
+    expect(component.isMemberListExpanded(8)).toBe(false);
+
+    component.toggleMemberList(7);
+
+    expect(component.isMemberListExpanded(7)).toBe(true);
+    expect(component.isMemberListExpanded(8)).toBe(false);
+
+    component.toggleMemberList(7);
+
+    expect(component.isMemberListExpanded(7)).toBe(false);
+  });
 });

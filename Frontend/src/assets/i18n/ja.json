@@ -585,6 +585,8 @@
       "title": "公開済み募集を管理",
       "active": "Active",
       "members": "Members",
+      "expandMembers": "メンバー一覧を表示",
+      "collapseMembers": "メンバー一覧を隠す",
       "noMessage": "登録メッセージはありません。"
     },
     "todo": {

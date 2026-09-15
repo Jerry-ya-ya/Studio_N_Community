@@ -51,6 +51,7 @@ export class ProjectRecruitmentComponent implements OnInit {
   submitting = false;
   deletingProject: Record<number, boolean> = {};
   actionLoading: Record<number, boolean> = {};
+  expandedMemberLists: Record<number, boolean> = {};
   joinMessages: Record<number, string> = {};
   statusMessage = '';
   joinMessage = '';
@@ -238,6 +239,14 @@ export class ProjectRecruitmentComponent implements OnInit {
 
   get ownedProjects() {
     return this.projects.filter(project => project.owned_by_me);
+  }
+
+  isMemberListExpanded(projectId: number) {
+    return !!this.expandedMemberLists[projectId];
+  }
+
+  toggleMemberList(projectId: number) {
+    this.expandedMemberLists[projectId] = !this.isMemberListExpanded(projectId);
   }
 
   private replaceProject(updated: ProjectRecruitment) {

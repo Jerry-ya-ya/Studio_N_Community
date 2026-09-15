@@ -586,6 +586,8 @@
       "title": "管理已發布招募",
       "active": "Active",
       "members": "Members",
+      "expandMembers": "展開成員名單",
+      "collapseMembers": "收合成員名單",
       "noMessage": "沒有留下登記留言。"
     },
     "todo": {

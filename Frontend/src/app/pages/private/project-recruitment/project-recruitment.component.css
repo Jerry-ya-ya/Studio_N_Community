@@ -624,6 +624,50 @@
   margin-top: 16px;
 }
 
+.member-list-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--studio-line);
+  border-radius: 999px;
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.member-list-toggle:hover,
+.member-list-toggle:focus-visible {
+  border-color: var(--studio-accent);
+  color: var(--studio-accent);
+  outline: none;
+}
+
+.member-list-toggle__icon {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.member-list-toggle[aria-expanded='true'] .member-list-toggle__icon {
+  transform: rotate(180deg);
+}
+
+.member-list-panel {
+  padding-top: 16px;
+}
+
+.member-list-panel .applicant-list {
+  margin-top: 0;
+}
+
 .join-panel {
   margin-top: 16px;
 }

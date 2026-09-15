@@ -288,29 +288,41 @@
               <a [href]="project.github_url" target="_blank" rel="noopener noreferrer">{{ 'privateRecruit.meta.repository' | translate }}</a>
             }
           </div>
-          @if (project.members.length > 0) {
-            <div class="applicant-list">
-              @for (member of project.members; track member) {
-                <div class="applicant-card">
-                  <div>
-                    <strong>{{ member.user.nickname || member.user.username }}</strong>
-                    <span>{{ member.created_at }}</span>
-                  </div>
-                  <p>{{ member.message || ('privateRecruit.manage.noMessage' | translate) }}</p>
+          <div class="manage-actions">
+            <span class="project-badge project-badge--status">
+              {{ ('privateRecruit.review.status.' + project.review_status) | translate }}
+            </span>
+            <button
+              class="member-list-toggle"
+              type="button"
+              [attr.aria-expanded]="isMemberListExpanded(project.id)"
+              [attr.aria-controls]="'project-member-list-' + project.id"
+              (click)="toggleMemberList(project.id)">
+              {{ (isMemberListExpanded(project.id) ? 'privateRecruit.manage.collapseMembers' : 'privateRecruit.manage.expandMembers') | translate }}
+              <span class="member-list-toggle__icon" aria-hidden="true">⌄</span>
+            </button>
+          </div>
+          @if (isMemberListExpanded(project.id)) {
+            <div [id]="'project-member-list-' + project.id" class="member-list-panel">
+              @if (project.members.length > 0) {
+                <div class="applicant-list">
+                  @for (member of project.members; track member.id) {
+                    <div class="applicant-card">
+                      <div>
+                        <strong>{{ member.user.nickname || member.user.username }}</strong>
+                        <span>{{ member.created_at }}</span>
+                      </div>
+                      <p>{{ member.message || ('privateRecruit.manage.noMessage' | translate) }}</p>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="empty-state empty-state--compact">
+                  {{ 'privateRecruit.empty.noApplicants' | translate }}
                 </div>
               }
             </div>
           }
-          @if (project.members.length === 0) {
-            <div class="empty-state empty-state--compact">
-              {{ 'privateRecruit.empty.noApplicants' | translate }}
-            </div>
-          }
-        <div class="manage-actions">
-          <span class="project-badge project-badge--status">
-            {{ ('privateRecruit.review.status.' + project.review_status) | translate }}
-          </span>
-        </div>
       </article>
     }
   </section>
