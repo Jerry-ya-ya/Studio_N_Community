@@ -8,6 +8,17 @@ from models import db, ScheduleState
 from time_utils import taipei_now
 from datetime import timedelta
 
+
+@celery.task
+def deactivate_inactive_accounts_task():
+    from account_activity import deactivate_inactive_users
+    from app import create_app
+
+    app = create_app()
+    with app.app_context():
+        return deactivate_inactive_users()
+
+
 @celery.task
 def hello():
     print("✅ Celery Beat Task: Hello World 每分鐘執行一次！")

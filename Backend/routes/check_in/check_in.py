@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
+from account_activity import deactivate_inactive_users
 from models import DailyCheckIn, db
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
@@ -119,6 +120,7 @@ def create_check_in():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
+    deactivate_inactive_users(reference_time=taipei_now())
     today, is_weekend, points = today_info()
     existing = DailyCheckIn.query.filter_by(user_id=user.id, checkin_date=today).first()
     if existing:
@@ -128,6 +130,7 @@ def create_check_in():
         }), 200
 
     check_in = DailyCheckIn(user_id=user.id, checkin_date=today, points=points)
+    user.is_active = True
     db.session.add(check_in)
     db.session.commit()
 

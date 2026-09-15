@@ -41,6 +41,7 @@ class User(db.Model):
 
     email = db.Column(db.String(120), unique=True)
     email_verified = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
     is_deleted = db.Column(db.Boolean, default=False, nullable=False)
     deleted_at = db.Column(db.DateTime)
     
@@ -85,6 +86,8 @@ class User(db.Model):
             'experience': self.experience,
             'review_experience': self.review_experience,
             'pm_experience': self.pm_experience,
+            'is_active': self.is_active,
+            'isActive': self.is_active,
             'is_deleted': self.is_deleted,
             'avatar_url': self.avatar_url,
             'avatar_source': self.avatar_source,

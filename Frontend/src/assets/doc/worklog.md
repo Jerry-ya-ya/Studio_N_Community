@@ -800,3 +800,5 @@
 - Turn recruitment list items into accessible project detail dialogs with complete creation data, member capacity, avatar-based contributor rosters, highlighted leaders, and join controls.
 
 - Make published recruitment member lists independently expandable and collapsible with accessible localized controls and regression coverage.
+
+- Deactivate accounts after seven check-in-free days, automatically remove project memberships, release all claimed tasks, and reactivate returning users on check-in.

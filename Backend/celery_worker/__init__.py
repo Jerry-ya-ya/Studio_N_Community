@@ -38,6 +38,10 @@ celery.conf.update(
             'task': 'celery_worker.task.scheduled_crawl_task',
             'schedule': crontab(minute='*/15'),  # 每 15 分鐘執行一次
         },
+        'deactivate-inactive-users-daily': {
+            'task': 'celery_worker.task.deactivate_inactive_accounts_task',
+            'schedule': crontab(hour=0, minute=5),
+        },
     }
 )
 
