@@ -826,3 +826,5 @@
 - Add a private user marketplace with published product purchasing, atomic inventory tracking, minute auto-refresh, and configurable persisted manual refresh limits.
 
 - Advance the store product and purchase migrations to revisions 035 and 036 after the current main Alembic head to eliminate migration conflicts.
+
+- Sync the store branch with the current main user activity and migration chain to resolve database migration conflicts.
