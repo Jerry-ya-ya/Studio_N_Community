@@ -188,6 +188,8 @@ def test_public_and_admin_member_lists(client, content_accounts):
     assert member["capabilityStack"] == "fullstack"
     assert member["capabilityFocus"] == "game-systems"
     assert member["capabilityStyle"] == "professional"
+    assert member["pm_level"] == 1
+    assert member["review_level"] == 1
     assert member["pm_experience"] == 9
     assert member["review_experience"] == 5
     assert member["coins"] == 11

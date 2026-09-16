@@ -13,6 +13,7 @@ import { AuthSessionService } from '../../../core/services/auth-session.service'
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
+  readonly experiencePerLevel = 100;
   readonly capabilityFields = [
     {
       key: 'capabilityDirection',
@@ -57,6 +58,14 @@ export class ProfileComponent implements OnInit {
     this.http.delete(`${environment.apiUrl}/refresh`).subscribe({ error: () => undefined });
     this.authSession.clear();
     location.reload();  // 或導向登入頁
+  }
+
+  experienceProgress(experience: unknown): number {
+    return this.normalizeExperience(experience) % this.experiencePerLevel;
+  }
+
+  experienceRemaining(experience: unknown): number {
+    return this.experiencePerLevel - this.experienceProgress(experience);
   }
 
   ngOnInit() {
@@ -176,5 +185,10 @@ export class ProfileComponent implements OnInit {
       const value = data[field.key] || data[snakeKey];
       return [field.key, (field.options as readonly unknown[]).includes(value) ? value : defaults[field.key]];
     }));
+  }
+
+  private normalizeExperience(experience: unknown): number {
+    const value = Number(experience ?? 0);
+    return Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
   }
 }

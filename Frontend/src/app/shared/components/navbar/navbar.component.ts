@@ -64,6 +64,7 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.private.survey', icon: 'assignment', route: appPath.survey },
         { labelKey: 'nav.private.activities', icon: 'celebration', route: appPath.privateActivities },
         { labelKey: 'nav.private.achievement', icon: 'emoji_events', route: appPath.achievement },
+        { labelKey: 'nav.private.store', icon: 'shopping_bag', route: appPath.userStore },
         { labelKey: 'nav.private.setting', icon: 'settings', route: appPath.setting },
         { labelKey: 'nav.private.profile', icon: 'account_circle', route: appPath.profile },
         { labelKey: 'nav.private.crawler', icon: 'travel_explore', route: appPath.crawler },
@@ -91,7 +92,8 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.superadmin.promote', icon: 'admin_panel_settings', route: appPath.promote },
         { labelKey: 'nav.superadmin.logs', icon: 'receipt_long', route: appPath.superadminLogs },
         { labelKey: 'nav.superadmin.formStatistics', icon: 'query_stats', route: appPath.formStatistics },
-        { labelKey: 'nav.superadmin.feature', icon: 'extension', route: appPath.home }
+        { labelKey: 'nav.superadmin.store', icon: 'storefront', route: appPath.store },
+        { labelKey: 'nav.superadmin.feature', icon: 'extension', route: appPath.specialAbilities }
       ]
     }
   ];

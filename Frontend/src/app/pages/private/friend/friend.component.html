@@ -53,8 +53,8 @@
                 <strong>{{ f.name || f.nickname || f.username }}</strong>
                 <small>{{ f.username }}</small>
                 <span class="friend-metrics" [attr.aria-label]="'profileStats.ariaLabel' | translate">
-                  <small>{{ 'profileStats.pmLevel' | translate }} {{ f.pm_experience ?? 0 }}</small>
-                  <small>{{ 'profileStats.reviewLevel' | translate }} {{ f.review_experience ?? 0 }}</small>
+                  <small>{{ 'profileStats.pmLevel' | translate }} {{ f.pm_level ?? 1 }}</small>
+                  <small>{{ 'profileStats.reviewLevel' | translate }} {{ f.review_level ?? 1 }}</small>
                   <small>{{ 'profileStats.coins' | translate }} {{ f.coins ?? 0 }}</small>
                 </span>
               </span>

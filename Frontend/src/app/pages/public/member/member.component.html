@@ -62,11 +62,11 @@
 
     <section class="profile-levels" [attr.aria-label]="'profileStats.ariaLabel' | translate">
       <article class="stat-card">
-        <span>{{ selectedMember.pm_experience ?? 0 }}</span>
+        <span>{{ selectedMember.pm_level ?? 1 }}</span>
         <p>{{ 'profileStats.pmLevel' | translate }}</p>
       </article>
       <article class="stat-card">
-        <span>{{ selectedMember.review_experience ?? 0 }}</span>
+        <span>{{ selectedMember.review_level ?? 1 }}</span>
         <p>{{ 'profileStats.reviewLevel' | translate }}</p>
       </article>
       <article class="stat-card">

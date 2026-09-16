@@ -142,6 +142,22 @@
           }
 
           @if (card.project && card.canPublish) {
+            <section class="todo-settings-panel">
+              <div>
+                <p>{{ 'privateTodo.settings.kicker' | translate }}</p>
+                <h5>{{ 'privateTodo.settings.title' | translate }}</h5>
+                <small>{{ 'privateTodo.settings.description' | translate }}</small>
+              </div>
+              <label class="todo-setting-toggle">
+                <input
+                  type="checkbox"
+                  [checked]="card.project.leader_self_completion_blocked"
+                  [disabled]="todoSettingsLoading[card.project.id]"
+                  (change)="updateLeaderSelfCompletionSetting(card.project, $event)">
+                <span>{{ (card.project.leader_self_completion_blocked ? 'privateTodo.settings.enabled' : 'privateTodo.settings.disabled') | translate }}</span>
+              </label>
+            </section>
+
             <form class="todo-publisher" (ngSubmit)="publishProjectTodo(card.project)">
               <div class="todo-publisher__header">
                 <div>
@@ -152,7 +168,9 @@
                   [(ngModel)]="todoTargets[card.project.id]"
                   [name]="'todoTarget' + card.project.id">
                   <option value="team">{{ 'privateTodo.dispatch.team' | translate }}</option>
-                  <option value="captain">{{ 'privateTodo.dispatch.captain' | translate }}</option>
+                  <option value="captain" [disabled]="card.project.leader_self_completion_blocked">
+                    {{ 'privateTodo.dispatch.captain' | translate }}
+                  </option>
                   @for (member of card.project.members; track member.id) {
                     <option [value]="member.user.id">
                       {{ member.user.nickname || member.user.username }}
@@ -271,6 +289,84 @@
                 </ul>
               </details>
             </div>
+          }
+
+          @if (card.project && (card.canPublish || card.canRequest)) {
+            <section class="todo-request-panel">
+              <div class="todo-request-panel__header">
+                <div>
+                  <p>{{ 'privateTodo.requests.kicker' | translate }}</p>
+                  <h5>{{ 'privateTodo.requests.title' | translate }}</h5>
+                  <small>{{ (card.canPublish ? 'privateTodo.requests.leaderHint' : 'privateTodo.requests.memberHint') | translate }}</small>
+                </div>
+                <strong>{{ getPendingProjectTodoRequests(card.project.id).length }}</strong>
+              </div>
+
+              @if (card.canRequest) {
+                <form class="todo-request-form" (ngSubmit)="submitTodoRequest(card.project)">
+                  <input
+                    [(ngModel)]="todoRequestTexts[card.project.id]"
+                    [name]="'todoRequestText' + card.project.id"
+                    maxlength="200"
+                    [placeholder]="'privateTodo.requests.placeholder' | translate">
+                  <button type="submit" [disabled]="todoRequestLoading[card.project.id]">
+                    {{ (todoRequestLoading[card.project.id] ? 'privateTodo.requests.submitting' : 'privateTodo.requests.submit') | translate }}
+                  </button>
+                </form>
+              }
+
+              <ul class="todo-request-list">
+                @for (todoRequest of getProjectTodoRequests(card.project.id); track todoRequest.id) {
+                  <li [class]="'todo-request-item todo-request-item--' + todoRequest.status">
+                    <div class="todo-request-item__content">
+                      <span>{{ todoRequest.text }}</span>
+                      <small>
+                        {{ 'privateTodo.requests.requestedBy' | translate: { name: todoRequest.requested_by_name } }}
+                        · {{ ('privateTodo.requests.status.' + todoRequest.status) | translate }}
+                      </small>
+                    </div>
+                    @if (card.canPublish && todoRequest.status === 'pending') {
+                      <div class="todo-request-review">
+                        <label>
+                          <span>{{ 'privateTodo.dispatch.priority' | translate }}</span>
+                          <select
+                            [(ngModel)]="todoRequestPriorities[todoRequest.id]"
+                            [ngModelOptions]="{ standalone: true }">
+                            @for (multiplier of priorityMultipliers; track multiplier; let index = $index) {
+                              <option [ngValue]="index">
+                                {{ 'privateTodo.dispatch.priorityOption' | translate: { level: index + 1, multiplier: multiplier.toFixed(2) } }}
+                              </option>
+                            }
+                          </select>
+                        </label>
+                        <button
+                          type="button"
+                          class="request-accept"
+                          [disabled]="todoRequestLoading[todoRequest.id]"
+                          (click)="decideTodoRequest(todoRequest, 'accepted')">
+                          {{ 'privateTodo.requests.accept' | translate }}
+                        </button>
+                        <button
+                          type="button"
+                          class="request-reject"
+                          [disabled]="todoRequestLoading[todoRequest.id]"
+                          (click)="decideTodoRequest(todoRequest, 'rejected')">
+                          {{ 'privateTodo.requests.reject' | translate }}
+                        </button>
+                      </div>
+                    } @else if (todoRequest.priority !== null) {
+                      <strong
+                        class="priority-badge"
+                        [style.background]="getPriorityColor(todoRequest.priority)">
+                        P{{ getPriorityLevel(todoRequest.priority) }}
+                      </strong>
+                    }
+                  </li>
+                } @empty {
+                  <li class="project-task-empty">{{ 'privateTodo.requests.empty' | translate }}</li>
+                }
+              </ul>
+            </section>
           }
         }
       </article>

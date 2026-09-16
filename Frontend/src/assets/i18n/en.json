@@ -69,7 +69,8 @@
       "logout": "Logout",
       "schedule": "Schedule",
       "survey": "Surveys",
-      "achievement": "Achievements"
+      "achievement": "Achievements",
+      "store": "Store"
     },
     "admin": {
       "user": "User",
@@ -85,6 +86,7 @@
       "promote": "Promote",
       "logs": "Logs",
       "formStatistics": "Form Statistics",
+      "store": "Store Products",
       "feature": "Feature"
     }
   },
@@ -501,6 +503,9 @@
     "ariaLabel": "Member levels and coins",
     "pmLevel": "PM Level",
     "reviewLevel": "Review Level",
+    "experienceProgress": "Level experience progress",
+    "experienceValue": "{{ current }} / {{ total }} XP",
+    "experienceRemaining": "{{ amount }} XP until the next level",
     "coins": "Coins"
   },
   "privateSquare": {
@@ -750,6 +755,15 @@
       "settled": "Settled",
       "empty": "No items here."
     },
+    "settings": {
+      "kicker": "Todo Settings",
+      "title": "Block leader self-completion",
+      "description": "When enabled, the leader cannot assign, claim, or complete project tasks they created themselves.",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "saved": "Todo settings saved.",
+      "saveFailure": "Failed to save Todo settings."
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "Project Todo Publishing",
@@ -769,6 +783,25 @@
       "placeholder": "Example: finish the first character controller build",
       "noTodos": "This project has no published todos yet."
     },
+    "requests": {
+      "kicker": "Task Requests",
+      "title": "Member Task Requests",
+      "leaderHint": "Review member requests and choose a priority when accepting one.",
+      "memberHint": "Propose a task you want to complete and wait for leader review.",
+      "placeholder": "Describe the task you want to propose",
+      "submit": "Submit Request",
+      "submitting": "Submitting...",
+      "accept": "Accept",
+      "reject": "Reject",
+      "empty": "No task requests yet.",
+      "requestedBy": "Requested by {{ name }}",
+      "submitted": "Task request submitted.",
+      "submitFailure": "Failed to submit task request.",
+      "accepted": "Task request accepted and moved to To Complete.",
+      "rejected": "Task request rejected.",
+      "decisionFailure": "Failed to review task request.",
+      "status": { "pending": "Pending", "accepted": "Accepted", "rejected": "Rejected" }
+    },
     "settlement": {
       "kicker": "Settlement Cycle",
       "title": "Send Current Settlement",
@@ -785,7 +818,8 @@
     "feedback": {
       "publishSuccess": "Todo published.",
       "publishFailure": "Failed to publish todo.",
-      "timeRequired": "Select a Time score first."
+      "timeRequired": "Select a Time score first.",
+      "updateFailure": "Failed to update todo."
     }
   },
   "privateSetting": {
@@ -1446,6 +1480,15 @@
     "numbers": { "average": "Average", "minimum": "Minimum", "maximum": "Maximum" },
     "boolean": { "yes": "Yes", "no": "No" },
     "types": { "short_text": "Short text", "long_text": "Long text", "single_choice": "Single choice", "multiple_choice": "Multiple choice", "dropdown": "Dropdown", "number": "Number", "date": "Date", "boolean": "Yes / No" }
+  },
+  "specialAbilities": {
+    "hero": { "kicker": "Superadmin / Special ability", "title": "Special ability", "subtitle": "Pause API traffic limits for a controlled period during emergency maintenance or bulk administration." },
+    "rateLimit": { "kicker": "Ability 01 / API", "title": "Temporarily lift API limits", "description": "Once activated, API rate limits are paused for the selected duration and restore automatically when time expires." },
+    "state": { "loading": "Reading protection status…", "status": "Current status", "active": "API rate limits are paused", "protected": "API rate limits are active", "remaining": "Time remaining" },
+    "duration": { "label": "Override duration", "minutes": "{{ count }} minutes", "hint": "Duration is restricted to 10–30 minutes. Activating again restarts the timer from now." },
+    "scope": { "title": "Ability scope is locked", "description": "This action only bypasses API rate limits. Authentication, role permissions, data validation, upload sizes, and other security restrictions remain unchanged." },
+    "actions": { "activate": "Lift for {{ count }} minutes", "activating": "Activating…" },
+    "feedback": { "activated": "API rate limits have been temporarily lifted.", "loadFailed": "Could not load the API limit status.", "activateFailed": "Could not temporarily lift API limits." }
   },
   "superadminLogs": {
     "hero": {

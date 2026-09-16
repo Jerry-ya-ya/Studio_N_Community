@@ -17,6 +17,8 @@ interface FriendItem {
   githubUrl?: string | null;
   avatarUrl?: string | null;
   avatarSource?: 'local' | 'github';
+  pm_level?: number;
+  review_level?: number;
   pm_experience?: number;
   review_experience?: number;
   coins?: number;

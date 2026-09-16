@@ -7,6 +7,7 @@ import pytest
 from flask_jwt_extended import create_access_token
 
 from models import DailyCheckIn, ProjectRecruitment, ProjectRecruitmentMember, Todo, User, db
+from profile_stats import calculate_level
 from routes.project_recruitment.project_recruitment import (
     TODO_PM_EXPERIENCE,
     TODO_REVIEW_EXPERIENCE,
@@ -574,6 +575,10 @@ def test_admin_approval_settles_todos_and_accumulates_rewards(
     )
     add_todo(app, project_id, text='Still open', done=False, settled=False)
     with app.app_context():
+        project_owner = db.session.get(User, recruitment_accounts['leader_id'])
+        reviewer = db.session.get(User, recruitment_accounts['admin_id'])
+        project_owner.pm_experience = 95
+        reviewer.review_experience = 95
         db.session.add(DailyCheckIn(
             user_id=recruitment_accounts['outsider_id'],
             checkin_date=TODO_REWARD_COIN_DATE,
@@ -619,8 +624,10 @@ def test_admin_approval_settles_todos_and_accumulates_rewards(
         ).one()
         assert member_coins.points == 29
         assert outsider_coins.points == 14
-        assert project_owner.pm_experience == TODO_PM_EXPERIENCE * 3
-        assert reviewer.review_experience == TODO_REVIEW_EXPERIENCE * 3
+        assert project_owner.pm_experience == 95 + TODO_PM_EXPERIENCE * 3
+        assert reviewer.review_experience == 95 + TODO_REVIEW_EXPERIENCE * 3
+        assert project_owner.pm_level == 2
+        assert reviewer.review_level == 2
         assert db.session.get(Todo, unclaimed_todo).settled is True
 
 
@@ -667,6 +674,17 @@ def test_reward_breakdown_normalizes_invalid_legacy_values(todo, expected):
     assert breakdown['duration'] == duration
     assert breakdown['reward_coins'] == reward
     assert breakdown['reward_formula'].endswith(f'= {reward}')
+
+
+@pytest.mark.parametrize(
+    ('experience', 'expected_level'),
+    [(0, 1), (99, 1), (100, 2), (199, 2), (200, 3), (-1, 1)],
+)
+def test_calculate_level_uses_one_hundred_experience_steps(
+    experience,
+    expected_level,
+):
+    assert calculate_level(experience) == expected_level
 
 
 def test_structured_log_helpers_add_default_metadata():

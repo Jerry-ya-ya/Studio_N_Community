@@ -69,7 +69,8 @@
       "logout": "로그아웃",
       "schedule": "시간표",
       "survey": "설문",
-      "achievement": "업적"
+      "achievement": "업적",
+      "store": "상점"
     },
     "admin": {
       "user": "사용자",
@@ -85,6 +86,7 @@
       "promote": "권한",
       "logs": "로그",
       "formStatistics": "양식 통계",
+      "store": "상품 관리",
       "feature": "기능"
     }
   },
@@ -500,6 +502,9 @@
     "ariaLabel": "멤버 레벨 및 코인",
     "pmLevel": "PM 레벨",
     "reviewLevel": "리뷰 레벨",
+    "experienceProgress": "레벨 경험치 진행률",
+    "experienceValue": "{{ current }} / {{ total }} XP",
+    "experienceRemaining": "다음 레벨까지 {{ amount }} XP 남음",
     "coins": "코인"
   },
   "privateSquare": {
@@ -749,6 +754,15 @@
       "settled": "정산 완료",
       "empty": "항목이 없습니다."
     },
+    "settings": {
+      "kicker": "Todo Settings",
+      "title": "팀장 자체 완료 차단",
+      "description": "활성화하면 팀장은 자신이 만든 프로젝트 작업을 자신에게 배정하거나 점유 또는 완료할 수 없습니다.",
+      "enabled": "활성화",
+      "disabled": "비활성화",
+      "saved": "Todo 설정이 저장되었습니다.",
+      "saveFailure": "Todo 설정을 저장하지 못했습니다."
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "프로젝트 Todo 게시",
@@ -768,6 +782,25 @@
       "placeholder": "예: 캐릭터 컨트롤러 첫 버전 완성",
       "noTodos": "이 프로젝트에는 아직 게시된 Todo가 없습니다."
     },
+    "requests": {
+      "kicker": "Task Requests",
+      "title": "팀원 작업 요청",
+      "leaderHint": "팀원의 요청을 검토하고 수락할 때 우선순위를 선택하세요.",
+      "memberHint": "완료하고 싶은 작업을 요청하고 팀장의 검토를 기다리세요.",
+      "placeholder": "요청할 작업을 설명하세요",
+      "submit": "요청 제출",
+      "submitting": "제출 중...",
+      "accept": "수락",
+      "reject": "거절",
+      "empty": "작업 요청이 없습니다.",
+      "requestedBy": "요청자: {{ name }}",
+      "submitted": "작업 요청을 제출했습니다.",
+      "submitFailure": "작업 요청을 제출하지 못했습니다.",
+      "accepted": "작업 요청을 수락하여 완료 대기 단계로 이동했습니다.",
+      "rejected": "작업 요청을 거절했습니다.",
+      "decisionFailure": "작업 요청을 검토하지 못했습니다.",
+      "status": { "pending": "검토 대기", "accepted": "수락됨", "rejected": "거절됨" }
+    },
     "settlement": {
       "kicker": "Settlement Cycle",
       "title": "이번 정산 보내기",
@@ -784,7 +817,8 @@
     "feedback": {
       "publishSuccess": "Todo가 게시되었습니다.",
       "publishFailure": "Todo 게시에 실패했습니다.",
-      "timeRequired": "먼저 Time 점수를 선택하세요."
+      "timeRequired": "먼저 Time 점수를 선택하세요.",
+      "updateFailure": "Todo를 업데이트하지 못했습니다."
     }
   },
   "privateSetting": {
@@ -1445,6 +1479,15 @@
     "numbers": { "average": "평균", "minimum": "최소", "maximum": "최대" },
     "boolean": { "yes": "예", "no": "아니요" },
     "types": { "short_text": "단답형", "long_text": "장문형", "single_choice": "단일 선택", "multiple_choice": "복수 선택", "dropdown": "드롭다운", "number": "숫자", "date": "날짜", "boolean": "예/아니요" }
+  },
+  "specialAbilities": {
+    "hero": { "kicker": "Superadmin / 특수 능력", "title": "특수 능력", "subtitle": "긴급 유지보수 또는 대량 관리 작업을 위해 제한된 시간 동안 API 제한을 일시 중지합니다." },
+    "rateLimit": { "kicker": "능력 01 / API", "title": "API 제한 임시 해제", "description": "활성화하면 선택한 시간 동안 API 요청 제한이 중지되고 만료 후 자동으로 복원됩니다." },
+    "state": { "loading": "보호 상태 확인 중…", "status": "현재 상태", "active": "API 요청 제한이 중지됨", "protected": "API 요청 제한이 작동 중", "remaining": "남은 시간" },
+    "duration": { "label": "해제 시간", "minutes": "{{ count }}분", "hint": "시간은 10~30분으로 제한됩니다. 다시 활성화하면 현재 시점부터 타이머가 재시작됩니다." },
+    "scope": { "title": "능력 범위가 잠겨 있습니다", "description": "이 작업은 API 요청 제한만 우회합니다. 인증, 역할 권한, 데이터 검증, 업로드 크기 및 기타 보안 제한은 변경되지 않습니다." },
+    "actions": { "activate": "{{ count }}분 동안 해제", "activating": "활성화 중…" },
+    "feedback": { "activated": "API 요청 제한을 일시적으로 해제했습니다.", "loadFailed": "API 제한 상태를 불러올 수 없습니다.", "activateFailed": "API 제한을 일시 해제할 수 없습니다." }
   },
   "superadminLogs": {
     "hero": {

@@ -69,7 +69,8 @@
       "logout": "登出",
       "schedule": "課表",
       "survey": "問卷",
-      "achievement": "成就"
+      "achievement": "成就",
+      "store": "商城"
     },
     "admin": {
       "user": "使用者",
@@ -85,6 +86,7 @@
       "promote": "權限",
       "logs": "紀錄",
       "formStatistics": "表單統計",
+      "store": "商品上架",
       "feature": "功能"
     }
   },
@@ -501,6 +503,9 @@
     "ariaLabel": "成員等級與金幣",
     "pmLevel": "PM 等級",
     "reviewLevel": "審核等級",
+    "experienceProgress": "等級經驗進度",
+    "experienceValue": "{{ current }} / {{ total }} 經驗值",
+    "experienceRemaining": "距離下一級還差 {{ amount }} 經驗值",
     "coins": "金幣"
   },
   "privateSquare": {
@@ -750,6 +755,15 @@
       "settled": "已結算",
       "empty": "目前沒有項目。"
     },
+    "settings": {
+      "kicker": "Todo Settings",
+      "title": "組長自建自結限制",
+      "description": "啟用後，組長不能把自己建立的專案任務指派給自己、佔領或完成。",
+      "enabled": "已啟用",
+      "disabled": "未啟用",
+      "saved": "Todo 設定已儲存",
+      "saveFailure": "Todo 設定儲存失敗"
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "專案 Todo 發布",
@@ -769,6 +783,25 @@
       "placeholder": "例如：完成角色控制器第一版",
       "noTodos": "這個專案目前還沒有發布 Todo。"
     },
+    "requests": {
+      "kicker": "Task Requests",
+      "title": "組員任務請求",
+      "leaderHint": "審核組員提出的任務；接受時請選擇優先度。",
+      "memberHint": "提出想完成的任務，等待組長審核。",
+      "placeholder": "描述你想提出的任務",
+      "submit": "提出請求",
+      "submitting": "送出中...",
+      "accept": "接受",
+      "reject": "拒絕",
+      "empty": "目前沒有任務請求。",
+      "requestedBy": "提出者：{{ name }}",
+      "submitted": "任務請求已送出",
+      "submitFailure": "任務請求送出失敗",
+      "accepted": "任務請求已接受並移至待完成階段",
+      "rejected": "任務請求已拒絕",
+      "decisionFailure": "任務請求審核失敗",
+      "status": { "pending": "待審核", "accepted": "已接受", "rejected": "已拒絕" }
+    },
     "settlement": {
       "kicker": "Settlement Cycle",
       "title": "發送本期結算",
@@ -785,7 +818,8 @@
     "feedback": {
       "publishSuccess": "Todo 已發布",
       "publishFailure": "發布 Todo 失敗",
-      "timeRequired": "請先選擇 Time 分數"
+      "timeRequired": "請先選擇 Time 分數",
+      "updateFailure": "Todo 更新失敗"
     }
   },
   "privateSetting": {
@@ -1446,6 +1480,15 @@
     "numbers": { "average": "平均", "minimum": "最低", "maximum": "最高" },
     "boolean": { "yes": "是", "no": "否" },
     "types": { "short_text": "簡答", "long_text": "段落", "single_choice": "單選", "multiple_choice": "複選", "dropdown": "下拉選單", "number": "數字", "date": "日期", "boolean": "是／否" }
+  },
+  "specialAbilities": {
+    "hero": { "kicker": "Superadmin / 特殊能力", "title": "特殊能力", "subtitle": "在受控時限內暫停 API 流量限制，供緊急維運或大量管理作業使用。" },
+    "rateLimit": { "kicker": "能力 01 / API", "title": "暫時解除 API 限制", "description": "啟用後，所有 API 的速率限制會在指定時間內暫停，逾時後自動恢復。" },
+    "state": { "loading": "正在讀取保護狀態…", "status": "目前狀態", "active": "API 速率限制已暫停", "protected": "API 速率限制正常運作", "remaining": "剩餘時間" },
+    "duration": { "label": "解除時間", "minutes": "{{ count }} 分鐘", "hint": "時間只能設定為 10 到 30 分鐘；再次啟用會從現在重新計時。" },
+    "scope": { "title": "能力範圍已鎖定", "description": "此操作只略過 API 速率限制。登入驗證、角色權限、資料驗證、上傳大小與其他安全限制不會變更。" },
+    "actions": { "activate": "解除 {{ count }} 分鐘", "activating": "正在啟用…" },
+    "feedback": { "activated": "API 速率限制已暫時解除。", "loadFailed": "無法讀取 API 限制狀態。", "activateFailed": "無法暫時解除 API 限制。" }
   },
   "superadminLogs": {
     "hero": {

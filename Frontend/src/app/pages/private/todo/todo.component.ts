@@ -40,6 +40,7 @@ interface ProjectRecruitment {
   members: ProjectRecruitmentMember[];
   member_count: number;
   owned_by_me: boolean;
+  joined_by_me: boolean;
   token_budget?: number;
   tokenBudget?: number;
   token_used?: number;
@@ -48,6 +49,7 @@ interface ProjectRecruitment {
   tokenRemaining?: number;
   level?: number;
   review_status: 'open' | 'pending' | 'approved' | 'rejected';
+  leader_self_completion_blocked: boolean;
 }
 
 interface ProjectTodoCard {
@@ -61,6 +63,28 @@ interface ProjectTodoCard {
   total: number;
   done: number;
   canPublish: boolean;
+  canRequest: boolean;
+}
+
+interface TodoRequest {
+  id: number;
+  text: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  priority: number | null;
+  project_id: number;
+  requested_by_id: number;
+  requested_by_name: string;
+  reviewed_by_name?: string;
+  accepted_todo_id?: number;
+  created_at: string;
+  reviewed_at?: string;
+}
+
+interface TodoRequestDecisionResponse {
+  request: TodoRequest;
+  todo: Todo | null;
+  project: Partial<ProjectRecruitment>;
+  token_cost: number;
 }
 
 interface ProjectTodoPublishResponse {
@@ -91,6 +115,7 @@ export class TodoComponent implements OnInit {
   todos: Todo[] = [];
   projectTodoGroups: ProjectTodoGroup[] = [];
   projects: ProjectRecruitment[] = [];
+  todoRequests: TodoRequest[] = [];
   newTodoText: string = '';
   currentUserId: number | null = null;
   todoLoading: Record<number, boolean> = {};
@@ -100,7 +125,11 @@ export class TodoComponent implements OnInit {
   todoDifficulties: Record<number, number> = {};
   todoDurations: Record<number, number> = {};
   todoCompletionTimes: Record<number, number | null> = {};
+  todoRequestTexts: Record<number, string> = {};
+  todoRequestPriorities: Record<number, number> = {};
+  todoRequestLoading: Record<number, boolean> = {};
   settlementLoading: Record<number, boolean> = {};
+  todoSettingsLoading: Record<number, boolean> = {};
   projectFoldState: Record<string, boolean> = {};
   projectGroupFoldState: Record<string, boolean> = {};
   isAllTodosOpen = false;
@@ -137,13 +166,74 @@ export class TodoComponent implements OnInit {
       assignedTodos: this.apiService.get<Todo[]>('/todos', headers),
       createdTodos: this.apiService.get<Todo[]>('/todos?created_by_me=true', headers),
       projects: this.apiService.get<ProjectRecruitment[]>('/project-recruitments', headers),
+      todoRequests: this.apiService.get<TodoRequest[]>('/todo-requests', headers),
       currentUser: this.apiService.get<{ id: number }>('/me', headers),
-    }).subscribe(({ assignedTodos, createdTodos, projects, currentUser }) => {
+    }).subscribe(({ assignedTodos, createdTodos, projects, todoRequests, currentUser }) => {
         this.currentUserId = currentUser.id;
         this.projects = projects;
+        this.todoRequests = todoRequests;
         this.initializeProjectTodoDefaults(projects);
         this.setTodos(this.mergeTodos(assignedTodos, createdTodos));
       });
+  }
+
+  submitTodoRequest(project: ProjectRecruitment) {
+    const text = (this.todoRequestTexts[project.id] || '').trim();
+    if (!project.joined_by_me || !text || this.todoRequestLoading[project.id]) {
+      return;
+    }
+
+    this.todoRequestLoading[project.id] = true;
+    this.apiService.post<TodoRequest>(
+      `/project-recruitments/${project.id}/todo-requests`,
+      { text },
+      this.apiService.createAuthHeaders()
+    ).subscribe({
+      next: created => {
+        this.todoRequests = [created, ...this.todoRequests];
+        this.todoRequestTexts[project.id] = '';
+        delete this.todoRequestLoading[project.id];
+        this.statusMessage = this.translate.instant('privateTodo.requests.submitted');
+      },
+      error: err => {
+        delete this.todoRequestLoading[project.id];
+        this.statusMessage = err.error?.error || this.translate.instant('privateTodo.requests.submitFailure');
+      }
+    });
+  }
+
+  decideTodoRequest(todoRequest: TodoRequest, decision: 'accepted' | 'rejected') {
+    if (this.todoRequestLoading[todoRequest.id]) {
+      return;
+    }
+
+    const payload: { decision: 'accepted' | 'rejected'; priority?: number } = { decision };
+    if (decision === 'accepted') {
+      payload.priority = this.getTodoRequestPriority(todoRequest.id);
+    }
+
+    this.todoRequestLoading[todoRequest.id] = true;
+    this.apiService.post<TodoRequestDecisionResponse>(
+      `/todo-requests/${todoRequest.id}/decision`,
+      payload,
+      this.apiService.createAuthHeaders()
+    ).subscribe({
+      next: result => {
+        this.todoRequests = this.todoRequests.map(item => item.id === result.request.id ? result.request : item);
+        if (result.todo) {
+          this.setTodos(this.mergeTodos(this.todos, [result.todo]));
+        }
+        this.updateProjectTokenState(todoRequest.project_id, result.project);
+        delete this.todoRequestLoading[todoRequest.id];
+        this.statusMessage = this.translate.instant(
+          decision === 'accepted' ? 'privateTodo.requests.accepted' : 'privateTodo.requests.rejected'
+        );
+      },
+      error: err => {
+        delete this.todoRequestLoading[todoRequest.id];
+        this.statusMessage = err.error?.error || this.translate.instant('privateTodo.requests.decisionFailure');
+      }
+    });
   }
 
   publishProjectTodo(project: ProjectRecruitment) {
@@ -201,6 +291,35 @@ export class TodoComponent implements OnInit {
       }
     });
   }
+
+  updateLeaderSelfCompletionSetting(project: ProjectRecruitment, event: Event) {
+    if (!project.owned_by_me || this.todoSettingsLoading[project.id]) {
+      return;
+    }
+
+    const checkbox = event.target as HTMLInputElement;
+    const blocked = checkbox.checked;
+    this.todoSettingsLoading[project.id] = true;
+    this.apiService.put<ProjectRecruitment>(
+      `/project-recruitments/${project.id}/todo-settings`,
+      { leader_self_completion_blocked: blocked },
+      this.apiService.createAuthHeaders()
+    ).subscribe({
+      next: updated => {
+        this.projects = this.projects.map(item => item.id === updated.id ? updated : item);
+        if (updated.leader_self_completion_blocked && this.todoTargets[updated.id] === 'captain') {
+          this.todoTargets[updated.id] = 'team';
+        }
+        delete this.todoSettingsLoading[project.id];
+        this.statusMessage = this.translate.instant('privateTodo.settings.saved');
+      },
+      error: err => {
+        checkbox.checked = project.leader_self_completion_blocked;
+        delete this.todoSettingsLoading[project.id];
+        this.statusMessage = err.error?.error || this.translate.instant('privateTodo.settings.saveFailure');
+      }
+    });
+  }
   
   // U
   // 更新待辦事項
@@ -211,8 +330,9 @@ export class TodoComponent implements OnInit {
       priority: todo.priority,
       difficulty: todo.difficulty,
       duration: todo.duration
-    }, this.apiService.createAuthHeaders()).subscribe(updated => {
-      this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item));
+    }, this.apiService.createAuthHeaders()).subscribe({
+      next: updated => this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item)),
+      error: err => this.statusMessage = err.error?.error || this.translate.instant('privateTodo.feedback.updateFailure')
     });
   }
 
@@ -230,9 +350,12 @@ export class TodoComponent implements OnInit {
       priority: todo.priority,
       difficulty: todo.difficulty,
       duration: !todo.done ? selectedDuration : todo.duration
-    }, this.apiService.createAuthHeaders()).subscribe(updated => {
-      delete this.todoCompletionTimes[todo.id];
-      this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item));
+    }, this.apiService.createAuthHeaders()).subscribe({
+      next: updated => {
+        delete this.todoCompletionTimes[todo.id];
+        this.setTodos(this.todos.map(item => item.id === updated.id ? updated : item));
+      },
+      error: err => this.statusMessage = err.error?.error || this.translate.instant('privateTodo.feedback.updateFailure')
     });
   }
 
@@ -391,6 +514,19 @@ export class TodoComponent implements OnInit {
     return Math.min(4, Math.max(0, priority));
   }
 
+  getTodoRequestPriority(requestId: number) {
+    const priority = Number(this.todoRequestPriorities[requestId] ?? 0);
+    return Math.min(4, Math.max(0, priority));
+  }
+
+  getProjectTodoRequests(projectId: number) {
+    return this.todoRequests.filter(item => item.project_id === projectId);
+  }
+
+  getPendingProjectTodoRequests(projectId: number) {
+    return this.getProjectTodoRequests(projectId).filter(item => item.status === 'pending');
+  }
+
   getProjectTodoDifficulty(projectId: number) {
     const difficulty = Number(this.todoDifficulties[projectId] ?? 5);
     return Math.min(9, Math.max(0, difficulty));
@@ -402,11 +538,21 @@ export class TodoComponent implements OnInit {
   }
 
   canToggleClaim(todo: Todo) {
-    return !todo.done && (!todo.claimed_by_id || todo.claimed_by_id === this.currentUserId);
+    return !todo.done && !this.isLeaderSelfCompletionBlocked(todo) && (!todo.claimed_by_id || todo.claimed_by_id === this.currentUserId);
   }
 
   canToggleDone(todo: Todo) {
-    return todo.claimed_by_id === this.currentUserId && (todo.done || this.hasSelectedTodoDuration(todo));
+    return todo.claimed_by_id === this.currentUserId &&
+      (todo.done || (!this.isLeaderSelfCompletionBlocked(todo) && this.hasSelectedTodoDuration(todo)));
+  }
+
+  isLeaderSelfCompletionBlocked(todo: Todo) {
+    if (!todo.project_id || todo.created_by_id !== this.currentUserId) {
+      return false;
+    }
+
+    const project = this.projects.find(item => item.id === todo.project_id);
+    return !!project?.owned_by_me && !!project.leader_self_completion_blocked;
   }
 
   canSubmitSettlementReview(project: ProjectRecruitment, todos: Todo[] = []) {
@@ -525,14 +671,14 @@ export class TodoComponent implements OnInit {
     return this.todos.filter(todo => todo.done).length;
   }
 
-  get ownedProjects() {
-    return this.projects.filter(project => project.owned_by_me);
+  get workspaceProjects() {
+    return this.projects.filter(project => project.owned_by_me || project.joined_by_me);
   }
 
   get projectTodoCards(): ProjectTodoCard[] {
     const cards = new Map<string, ProjectTodoCard>();
 
-    for (const project of this.ownedProjects) {
+    for (const project of this.workspaceProjects) {
       const key = String(project.id);
       cards.set(key, {
         key,
@@ -544,7 +690,8 @@ export class TodoComponent implements OnInit {
         todos: [],
         total: 0,
         done: 0,
-        canPublish: true
+        canPublish: project.owned_by_me,
+        canRequest: project.joined_by_me
       });
     }
 
@@ -563,7 +710,8 @@ export class TodoComponent implements OnInit {
         todos: group.todos,
         total: group.total,
         done: group.done,
-        canPublish: !!(project || existing?.project)?.owned_by_me
+        canPublish: !!(project || existing?.project)?.owned_by_me,
+        canRequest: !!(project || existing?.project)?.joined_by_me
       });
     }
 

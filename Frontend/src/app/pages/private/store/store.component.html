@@ -1,0 +1,115 @@
+<main class="store-page">
+  <header class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">PRIVATE · MARKETPLACE</span>
+      <h1>魔豆商城</h1>
+      <p>探索管理團隊最新上架的限定商品與常態收藏。</p>
+    </div>
+    <div class="sync-card" aria-live="polite">
+      <span class="sync-dot" [class.sync-dot--active]="refreshing"></span>
+      <div>
+        <strong>{{ refreshing ? '正在同步商品' : '商城資料已連線' }}</strong>
+        <small>約 {{ secondsUntilAutoRefresh }} 秒後自動更新</small>
+      </div>
+    </div>
+  </header>
+
+  <section class="refresh-panel" aria-labelledby="refresh-title">
+    <div class="refresh-heading">
+      <div>
+        <span class="eyebrow">REFRESH CONTROL</span>
+        <h2 id="refresh-title">手動刷新額度</h2>
+      </div>
+      <button class="refresh-button" type="button" (click)="refreshManually()" [disabled]="!canRefreshManually">
+        <mat-icon [class.spin]="refreshing">refresh</mat-icon>
+        {{ refreshing ? '更新中' : '立即刷新' }}
+      </button>
+    </div>
+
+    <div class="refresh-settings">
+      <label>
+        <span>統計期間</span>
+        <div class="number-field">
+          <input type="number" min="1" max="1440" step="1" [(ngModel)]="preferences.periodMinutes" (change)="updatePreferences()">
+          <b>分鐘</b>
+        </div>
+      </label>
+      <label>
+        <span>期間內上限</span>
+        <div class="number-field">
+          <input type="number" min="1" max="100" step="1" [(ngModel)]="preferences.maxRefreshes" (change)="updatePreferences()">
+          <b>次</b>
+        </div>
+      </label>
+      <div class="quota">
+        <span>剩餘額度</span>
+        <strong>{{ manualRefreshesRemaining }}<small> / {{ preferences.maxRefreshes }}</small></strong>
+      </div>
+    </div>
+    <p class="refresh-note">
+      自動更新與購買後更新不計入額度。
+      @if (nextManualRefreshAt) { 最早可於 {{ nextManualRefreshAt | date:'HH:mm:ss' }} 再次刷新。 }
+      @else if (lastUpdatedAt) { 上次更新：{{ lastUpdatedAt | date:'HH:mm:ss' }} }
+    </p>
+  </section>
+
+  @if (feedback || error) {
+    <div class="notice" [class.notice--error]="error" role="status">
+      <mat-icon>{{ error ? 'error_outline' : 'check_circle' }}</mat-icon>
+      <span>{{ error || feedback }}</span>
+    </div>
+  }
+
+  <section class="catalog" aria-labelledby="catalog-title">
+    <div class="catalog-heading">
+      <div>
+        <span class="eyebrow">AVAILABLE NOW</span>
+        <h2 id="catalog-title">本期商品</h2>
+      </div>
+      <span class="product-count">{{ products.length }} ITEMS</span>
+    </div>
+
+    @if (loading) {
+      <div class="state">
+        <mat-icon class="spin">progress_activity</mat-icon>
+        <h3>正在準備商城</h3>
+        <p>正在取得最新上架商品。</p>
+      </div>
+    } @else if (products.length === 0) {
+      <div class="state">
+        <mat-icon>storefront</mat-icon>
+        <h3>商品準備中</h3>
+        <p>目前沒有上架商品，請稍後回來看看。</p>
+      </div>
+    } @else {
+      <div class="product-grid">
+        @for (product of products; track product.id) {
+          <article class="product-card" [class.product-card--sold-out]="product.isLimited && product.stock === 0">
+            <div class="product-visual">
+              @if (imageUrl(product)) {
+                <img [src]="imageUrl(product)" [alt]="product.name">
+              } @else {
+                <mat-icon>{{ presetIcon(product.imageValue) }}</mat-icon>
+              }
+              <span class="stock-badge" [class.stock-badge--out]="product.isLimited && product.stock === 0">
+                {{ product.isLimited ? (product.stock > 0 ? '剩餘 ' + product.stock + ' 件' : '已售完') : '不限量' }}
+              </span>
+            </div>
+            <div class="product-content">
+              <span class="product-code">ITEM / {{ product.id.toString().padStart(3, '0') }}</span>
+              <h3>{{ product.name }}</h3>
+              <p>{{ product.description || '這項商品目前沒有額外說明。' }}</p>
+              <div class="purchase-row">
+                <strong><small>NT$</small> {{ product.price | number:'1.0-2' }}</strong>
+                <button type="button" (click)="purchase(product)" [disabled]="purchasingId !== null || (product.isLimited && product.stock === 0)">
+                  <mat-icon>{{ purchasingId === product.id ? 'progress_activity' : 'shopping_bag' }}</mat-icon>
+                  {{ purchasingId === product.id ? '處理中' : (product.isLimited && product.stock === 0 ? '已售完' : '購買') }}
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>

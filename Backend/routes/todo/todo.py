@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from log_writer import get_backend_logger
-from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo
+from models import db, ProjectRecruitment, ProjectRecruitmentMember, Todo, TodoRequest
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 from rate_limit import member_write_rate_limited
@@ -106,6 +106,23 @@ def serialize_project_tokens(project):
     }
 
 
+def serialize_todo_request(todo_request):
+    return {
+        'id': todo_request.id,
+        'text': todo_request.text,
+        'status': todo_request.status,
+        'priority': todo_request.priority,
+        'project_id': todo_request.project_id,
+        'requested_by_id': todo_request.requested_by_id,
+        'requested_by_name': display_user_name(todo_request.requested_by),
+        'reviewed_by_id': todo_request.reviewed_by_id,
+        'reviewed_by_name': display_user_name(todo_request.reviewed_by),
+        'accepted_todo_id': todo_request.accepted_todo_id,
+        'created_at': to_taipei_text(todo_request.created_at),
+        'reviewed_at': to_taipei_text(todo_request.reviewed_at),
+    }
+
+
 def check_project_level_after_token_consumption(project):
     """Synchronize a project's stored level after its consumed-token total changes."""
     previous_level = max(int(project.level or 1), 1)
@@ -123,6 +140,15 @@ def user_can_access_todo(todo, user):
         return user.id == todo.project.creator_id or user.id in member_ids
 
     return False
+
+
+def leader_self_completion_is_blocked(todo, user):
+    return bool(
+        todo.project
+        and todo.project.leader_self_completion_blocked
+        and todo.project.creator_id == user.id
+        and todo.created_by_id == user.id
+    )
 
 
 def get_project_assignee_ids(project, data):
@@ -161,6 +187,168 @@ def parse_level(value, maximum=9, default=5):
 
     return level
 
+
+def user_is_project_member(project, user):
+    return any(member.user_id == user.id for member in project.members)
+
+
+@todo_bp.route('/todo-requests', methods=['GET'])
+@jwt_required()
+def get_todo_requests():
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    owned_project_ids = db.session.query(ProjectRecruitment.id).filter(
+        ProjectRecruitment.creator_id == user.id
+    )
+    member_project_ids = db.session.query(ProjectRecruitmentMember.project_id).filter(
+        ProjectRecruitmentMember.user_id == user.id
+    )
+    accessible_ids = owned_project_ids.union(member_project_ids)
+    query = TodoRequest.query.filter(TodoRequest.project_id.in_(accessible_ids))
+
+    project_id = request.args.get('project_id')
+    if project_id:
+        try:
+            project_id = int(project_id)
+        except (TypeError, ValueError):
+            return jsonify({'error': 'Invalid project id'}), 400
+        query = query.filter(TodoRequest.project_id == project_id)
+
+    requests = query.order_by(TodoRequest.created_at.desc(), TodoRequest.id.desc()).all()
+    return jsonify([serialize_todo_request(item) for item in requests])
+
+
+@todo_bp.route('/project-recruitments/<int:project_id>/todo-requests', methods=['POST'])
+@jwt_required()
+@member_write_rate_limited
+def create_todo_request(project_id):
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    project = ProjectRecruitment.query.get_or_404(project_id)
+    if project.creator_id == user.id or not user_is_project_member(project, user):
+        return jsonify({'error': '只有專案組員可以提出任務請求'}), 403
+
+    data = request.get_json(silent=True) or {}
+    text_value = data.get('text', '')
+    text = text_value.strip() if isinstance(text_value, str) else ''
+    if not text:
+        return jsonify({'error': '任務請求內容不可空白'}), 400
+    if len(text) > 200:
+        return jsonify({'error': '任務請求內容不可超過 200 個字元'}), 400
+
+    todo_request = TodoRequest(
+        text=text,
+        project_id=project.id,
+        requested_by_id=user.id,
+    )
+    db.session.add(todo_request)
+    db.session.commit()
+    write_todo_action_log('request', user, {
+        'id': todo_request.id,
+        'text': todo_request.text,
+        'project_id': project.id,
+        'project_title': project.title,
+        'created_by_id': user.id,
+        'user_id': user.id,
+        'claimed_by_id': None,
+        'priority': None,
+        'difficulty': None,
+        'duration': None,
+        'done': False,
+    })
+    return jsonify(serialize_todo_request(todo_request)), 201
+
+
+@todo_bp.route('/todo-requests/<int:request_id>/decision', methods=['POST'])
+@jwt_required()
+@member_write_rate_limited
+def decide_todo_request(request_id):
+    user = get_current_user_from_token()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    todo_request = TodoRequest.query.get_or_404(request_id)
+    project = todo_request.project
+    if project.creator_id != user.id:
+        return jsonify({'error': '只有專案組長可以審核任務請求'}), 403
+    if todo_request.status != 'pending':
+        return jsonify({'error': '這筆任務請求已經審核'}), 409
+
+    data = request.get_json(silent=True) or {}
+    decision = data.get('decision')
+    if decision not in ['accepted', 'rejected']:
+        return jsonify({'error': 'Decision must be accepted or rejected'}), 400
+
+    created_todo = None
+    token_cost = 0
+    if decision == 'accepted':
+        priority = parse_level(data.get('priority'), maximum=4, default=None)
+        if priority is None:
+            return jsonify({'error': '接受任務請求時必須選擇 0 到 4 的優先度'}), 400
+
+        token_cost = priority + 1
+        token_budget = project.token_budget or 0
+        token_used = project.token_used or 0
+        if token_used + token_cost > token_budget:
+            return jsonify({'error': '專案剩餘 Token 不足，無法接受這個任務請求'}), 409
+
+        created_todo = Todo(
+            text=todo_request.text,
+            priority=priority,
+            difficulty=5,
+            duration=5,
+            user_id=todo_request.requested_by_id,
+            created_by_id=user.id,
+            claimed_by_id=todo_request.requested_by_id,
+            project_id=project.id,
+        )
+        db.session.add(created_todo)
+        db.session.flush()
+        todo_request.priority = priority
+        todo_request.accepted_todo_id = created_todo.id
+        project.token_used = token_used + token_cost
+        check_project_level_after_token_consumption(project)
+
+    todo_request.status = decision
+    todo_request.reviewed_by_id = user.id
+    todo_request.reviewed_at = taipei_now()
+    db.session.commit()
+
+    if created_todo:
+        write_todo_action_log(
+            'accept_request',
+            user,
+            created_todo,
+            todo_request_id=todo_request.id,
+            requested_by_id=todo_request.requested_by_id,
+            token_cost=token_cost,
+        )
+    else:
+        write_todo_action_log('reject_request', user, {
+            'id': todo_request.id,
+            'text': todo_request.text,
+            'project_id': project.id,
+            'project_title': project.title,
+            'created_by_id': todo_request.requested_by_id,
+            'user_id': todo_request.requested_by_id,
+            'claimed_by_id': None,
+            'priority': None,
+            'difficulty': None,
+            'duration': None,
+            'done': False,
+        })
+
+    return jsonify({
+        'request': serialize_todo_request(todo_request),
+        'todo': serialize_todo(created_todo) if created_todo else None,
+        'project': serialize_project_tokens(project),
+        'token_cost': token_cost,
+    })
+
 # C 新增待辦事項
 @todo_bp.route('/todos', methods=['POST'])
 @jwt_required()# 登入保護
@@ -194,6 +382,8 @@ def add_todo():
         assignee_ids = get_project_assignee_ids(project, data)
         if not assignee_ids:
             return jsonify({'error': '指定的成員不在這個招募團隊中'}), 400
+        if project.leader_self_completion_blocked and project.creator_id in assignee_ids:
+            return jsonify({'error': '已禁止組長建立由自己完成的任務'}), 409
 
         token_cost = priority + 1
         token_budget = project.token_budget or 0
@@ -343,6 +533,8 @@ def update_todo(todo_id):
     if 'claimed' in data:
         claimed = bool(data.get('claimed'))
         if claimed:
+            if leader_self_completion_is_blocked(todo, user):
+                return jsonify({'error': '組長不能佔領自己建立的任務'}), 403
             if todo.claimed_by_id and todo.claimed_by_id != user.id:
                 return jsonify({'error': '此任務已被其他成員佔領'}), 409
             if todo.claimed_by_id != user.id:
@@ -358,6 +550,8 @@ def update_todo(todo_id):
     if 'done' in data:
         if data.get('done') and todo.claimed_by_id != user.id:
             return jsonify({'error': '只能完成自己佔領的任務'}), 403
+        if data.get('done') and leader_self_completion_is_blocked(todo, user):
+            return jsonify({'error': '組長不能完成自己建立的任務'}), 403
         done = bool(data.get('done'))
         if done and not todo.done:
             actions.append(('complete', {}))

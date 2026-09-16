@@ -1,0 +1,114 @@
+.abilities-page {
+  min-height: 100vh;
+  padding: 116px clamp(16px, 5vw, 64px) 56px;
+  color: var(--studio-text);
+}
+
+.abilities-hero,
+.ability-card {
+  width: min(1000px, 100%);
+  box-sizing: border-box;
+  margin-inline: auto;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  background: var(--studio-surface-bg);
+  box-shadow: var(--studio-surface-shadow);
+}
+
+.abilities-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: clamp(24px, 5vw, 44px);
+  margin-bottom: 20px;
+}
+
+.abilities-hero > mat-icon {
+  width: auto;
+  height: auto;
+  color: var(--studio-warm);
+  font-size: clamp(4rem, 10vw, 7rem);
+  filter: drop-shadow(3px 3px 0 color-mix(in srgb, var(--studio-danger) 65%, transparent));
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: var(--studio-accent);
+  font-size: .75rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 { margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); text-shadow: 2px 2px 0 var(--studio-danger); }
+.abilities-hero p:last-child,
+.ability-copy p:last-child,
+.duration-control p { color: var(--studio-muted); line-height: 1.7; }
+
+.ability-card { padding: clamp(22px, 5vw, 42px); }
+.ability-copy { display: flex; gap: 18px; align-items: flex-start; }
+.ability-icon { display: grid; flex: 0 0 48px; width: 48px; height: 48px; place-items: center; border-radius: 8px; color: var(--studio-bg); background: var(--studio-accent); }
+
+.status-panel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  margin: 24px 0;
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  background: var(--studio-panel-strong);
+}
+.status-panel--active { border-color: var(--studio-warm); }
+.status-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--studio-success); box-shadow: 0 0 12px var(--studio-success); }
+.status-panel--active .status-dot { background: var(--studio-warm); box-shadow: 0 0 12px var(--studio-warm); }
+.status-panel small,
+.countdown { color: var(--studio-muted); }
+.status-panel strong { display: block; margin-top: 3px; }
+.countdown { text-align: right; }
+.countdown strong { color: var(--studio-warm); font: 900 1.5rem/1 monospace; }
+
+.duration-control { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center; }
+.duration-control label { font-weight: 900; }
+.duration-control select { min-width: 150px; min-height: 44px; padding: 0 12px; border: 1px solid var(--studio-line); border-radius: 7px; color: var(--studio-text); background: var(--studio-panel-strong); font: inherit; font-weight: 800; }
+.duration-control p { grid-column: 1 / -1; margin: 0; font-size: .84rem; }
+
+.scope-note { display: flex; gap: 12px; padding: 14px; margin: 22px 0; border-left: 3px solid var(--studio-accent); background: color-mix(in srgb, var(--studio-accent) 8%, transparent); }
+.scope-note mat-icon { color: var(--studio-accent); }
+.scope-note p { display: grid; gap: 4px; margin: 0; }
+.scope-note span { color: var(--studio-muted); font-size: .84rem; line-height: 1.5; }
+
+.activate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--studio-warm);
+  border-radius: 7px;
+  color: var(--studio-bg);
+  background: var(--studio-warm);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+.activate-button:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.activate-button:disabled { opacity: .6; cursor: wait; }
+.state-panel { padding: 36px; color: var(--studio-muted); text-align: center; }
+.feedback { margin: 16px 0 0; color: var(--studio-success); font-weight: 800; }
+.feedback--error { color: var(--studio-danger); }
+
+@media (max-width: 600px) {
+  .abilities-hero > mat-icon { display: none; }
+  .ability-copy { flex-direction: column; }
+  .duration-control { grid-template-columns: 1fr; }
+  .duration-control p { grid-column: auto; }
+  .status-panel { grid-template-columns: auto 1fr; }
+  .countdown { grid-column: 2; text-align: left; }
+  .activate-button { width: 100%; }
+}

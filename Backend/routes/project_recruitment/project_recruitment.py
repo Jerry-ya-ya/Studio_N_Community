@@ -12,6 +12,7 @@ from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso, to_taipei_text
 from achievements import queue_achievement_check
+from profile_stats import calculate_level
 from rate_limit import member_write_rate_limited
 
 project_recruitment_bp = Blueprint('project_recruitment', __name__)
@@ -227,6 +228,7 @@ def serialize_project(project, current_user):
         'tokenRemaining': max((project.token_budget or 0) - (project.token_used or 0), 0),
         'level': project.level or 1,
         'review_status': project.review_status,
+        'leader_self_completion_blocked': project.leader_self_completion_blocked,
         'created_at': to_taipei_text(project.created_at),
         'creator': serialize_user(project.creator),
         'members': [serialize_member(member) for member in project.members],
@@ -249,6 +251,41 @@ def list_project_recruitments():
 
     projects = ProjectRecruitment.query.order_by(ProjectRecruitment.created_at.desc()).all()
     return jsonify([serialize_project(project, current_user) for project in projects])
+
+
+@project_recruitment_bp.route(
+    '/project-recruitments/<int:project_id>/todo-settings',
+    methods=['PUT'],
+)
+@jwt_required()
+@member_write_rate_limited
+def update_project_todo_settings(project_id):
+    current_user = get_current_user_from_token()
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    project = ProjectRecruitment.query.get_or_404(project_id)
+    if project.creator_id != current_user.id:
+        return jsonify({'error': '只有組長可以修改專案 Todo 設定'}), 403
+
+    data = request.get_json(silent=True) or {}
+    blocked = data.get('leader_self_completion_blocked')
+    if not isinstance(blocked, bool):
+        return jsonify({'error': '組長自建自結限制必須是布林值'}), 400
+
+    project.leader_self_completion_blocked = blocked
+    db.session.commit()
+    write_project_log(
+        'info',
+        action='update_project_todo_settings',
+        status='success',
+        project_id=project.id,
+        leader_self_completion_blocked=blocked,
+        ip=get_client_ip(),
+        **get_project_log_actor(current_user),
+    )
+
+    return jsonify(serialize_project(project, current_user))
 
 
 @project_recruitment_bp.route('/admin/project-recruitments', methods=['GET'])
@@ -571,6 +608,11 @@ def review_project_recruitment(project_id):
             db.func.coalesce(User.pm_experience, 0)
             + TODO_PM_EXPERIENCE * len(pending_todos)
         )
+        db.session.flush()
+        db.session.refresh(current_user, attribute_names=['review_experience'])
+        db.session.refresh(project.creator, attribute_names=['pm_experience'])
+        current_user.review_level = calculate_level(current_user.review_experience)
+        project.creator.pm_level = calculate_level(project.creator.pm_experience)
     elif action == 'reject':
         project.review_status = 'rejected'
     else:

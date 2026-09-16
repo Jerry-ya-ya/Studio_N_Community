@@ -263,6 +263,7 @@ li.is-done span {
 
 .project-dispatch-card h4,
 .todo-publisher h5,
+.todo-settings-panel h5,
 .settlement-panel h5 {
   margin: 0;
   color: var(--studio-text);
@@ -275,6 +276,7 @@ li.is-done span {
 
 .project-dispatch-card p,
 .todo-publisher__header p,
+.todo-settings-panel p,
 .settlement-panel p,
 .todo-priority span,
 .todo-priority small {
@@ -308,6 +310,7 @@ li.is-done span {
 .project-token-strip article { display: grid; border: 1px solid var(--studio-line); border-radius: 8px; padding: 10px 12px; }
 
 .todo-publisher,
+.todo-settings-panel,
 .settlement-panel {
   display: grid;
   gap: 12px;
@@ -315,6 +318,41 @@ li.is-done span {
   border: 1px solid var(--studio-line);
   border-radius: 8px;
   background: color-mix(in srgb, var(--studio-panel-strong) 72%, transparent);
+}
+
+.todo-settings-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.todo-settings-panel small {
+  display: block;
+  margin: 6px 0 0;
+  padding: 0;
+  color: var(--studio-muted);
+  background: transparent;
+  white-space: normal;
+}
+
+.todo-setting-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.todo-setting-toggle input[type="checkbox"] {
+  margin: 0;
+}
+
+.todo-setting-toggle span {
+  flex: 0 0 auto;
+  font-size: 0.86rem;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .settlement-panel {
@@ -404,6 +442,152 @@ li.is-done span {
   background: linear-gradient(90deg, var(--studio-accent), var(--studio-warm));
 }
 
+.todo-request-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--studio-warm) 55%, var(--studio-line));
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--studio-warm) 10%, transparent), transparent 62%),
+    color-mix(in srgb, var(--studio-panel-strong) 74%, transparent);
+}
+
+.todo-request-panel__header,
+.todo-request-form,
+.todo-request-review {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo-request-panel__header {
+  justify-content: space-between;
+}
+
+.todo-request-panel__header p,
+.todo-request-panel__header h5 {
+  margin: 0;
+}
+
+.todo-request-panel__header p {
+  color: var(--studio-warm);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.todo-request-panel__header small {
+  display: block;
+  margin: 6px 0 0;
+  padding: 0;
+  color: var(--studio-muted);
+  background: transparent;
+  white-space: normal;
+}
+
+.todo-request-panel__header > strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--studio-bg);
+  background: var(--studio-warm);
+}
+
+.todo-request-form input,
+.todo-request-review select {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--studio-line);
+  border-radius: 7px;
+  color: var(--studio-text);
+  background: color-mix(in srgb, var(--studio-panel-strong) 82%, transparent);
+}
+
+.todo-request-form input {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo-request-form button {
+  border-color: var(--studio-warm);
+  color: var(--studio-bg);
+  background: var(--studio-warm);
+}
+
+.todo-request-form button:hover {
+  border-color: var(--studio-warm);
+  color: var(--studio-warm);
+  background: transparent;
+}
+
+.todo-request-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.todo-request-list li {
+  margin: 0;
+}
+
+.todo-request-item {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.todo-request-item--accepted {
+  border-color: color-mix(in srgb, var(--studio-success) 58%, var(--studio-line));
+}
+
+.todo-request-item--rejected {
+  opacity: 0.68;
+}
+
+.todo-request-item__content {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.todo-request-item__content small {
+  width: fit-content;
+  margin: 0;
+}
+
+.todo-request-review {
+  flex: 0 0 auto;
+}
+
+.todo-request-review label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.todo-request-review label span {
+  flex: 0 0 auto;
+  color: var(--studio-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+button.request-accept {
+  border-color: var(--studio-success);
+  color: #062015;
+  background: var(--studio-success);
+}
+
+button.request-reject {
+  border-color: var(--studio-danger);
+  color: #fff;
+  background: var(--studio-danger);
+}
+
 .project-task-list li {
   margin-bottom: 8px;
   padding: 10px 12px;
@@ -428,9 +612,17 @@ li.is-done span {
   .project-dispatch-card__summary,
   .todo-publisher__header,
   .todo-publisher__controls,
+  .todo-settings-panel,
   .settlement-panel,
   .todo-priority,
   .project-task-list li {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .todo-request-panel__header,
+  .todo-request-form,
+  .todo-request-item,
+  .todo-request-review {
     align-items: stretch;
     flex-direction: column;
   }

@@ -3,7 +3,7 @@ from uuid import uuid4
 import pytest
 from flask_jwt_extended import create_access_token
 
-from models import ProjectRecruitment, ProjectRecruitmentMember, Todo, User, db
+from models import ProjectRecruitment, ProjectRecruitmentMember, Todo, TodoRequest, User, db
 
 
 def auth_headers(token):
@@ -70,6 +70,9 @@ def todo_accounts(app):
         ('post', '/api/todos'),
         ('put', '/api/todos/1'),
         ('delete', '/api/todos/1'),
+        ('get', '/api/todo-requests'),
+        ('post', '/api/project-recruitments/1/todo-requests'),
+        ('post', '/api/todo-requests/1/decision'),
     ],
 )
 def test_todo_endpoints_require_authentication(client, method, path):
@@ -343,6 +346,115 @@ def test_project_todo_can_be_assigned_to_a_team_member(client, todo_accounts):
     assert todo['assignee_name'] == 'Todo Member'
 
 
+def test_leader_self_completion_setting_is_owner_controlled_and_enforced(
+    client,
+    todo_accounts,
+):
+    project_id = todo_accounts['project_id']
+    leader_headers = auth_headers(todo_accounts['leader_token'])
+    member_headers = auth_headers(todo_accounts['member_token'])
+
+    captain_todo_response = client.post(
+        '/api/todos',
+        json={
+            'text': 'Existing captain task',
+            'project_id': project_id,
+            'assignee_user_id': todo_accounts['leader_id'],
+        },
+        headers=leader_headers,
+    )
+    assert captain_todo_response.status_code == 201
+    captain_todo = captain_todo_response.get_json()['todos'][0]
+    claim_response = client.put(
+        f"/api/todos/{captain_todo['id']}",
+        json={'claimed': True},
+        headers=leader_headers,
+    )
+    assert claim_response.status_code == 200
+
+    member_update = client.put(
+        f'/api/project-recruitments/{project_id}/todo-settings',
+        json={'leader_self_completion_blocked': True},
+        headers=member_headers,
+    )
+    assert member_update.status_code == 403
+
+    invalid_update = client.put(
+        f'/api/project-recruitments/{project_id}/todo-settings',
+        json={'leader_self_completion_blocked': 'yes'},
+        headers=leader_headers,
+    )
+    assert invalid_update.status_code == 400
+
+    enable_response = client.put(
+        f'/api/project-recruitments/{project_id}/todo-settings',
+        json={'leader_self_completion_blocked': True},
+        headers=leader_headers,
+    )
+    assert enable_response.status_code == 200
+    assert enable_response.get_json()['leader_self_completion_blocked'] is True
+
+    forbidden_completion = client.put(
+        f"/api/todos/{captain_todo['id']}",
+        json={'done': True},
+        headers=leader_headers,
+    )
+    assert forbidden_completion.status_code == 403
+    assert forbidden_completion.get_json() == {
+        'error': '組長不能完成自己建立的任務'
+    }
+
+    forbidden_assignment = client.post(
+        '/api/todos',
+        json={
+            'text': 'New captain task',
+            'project_id': project_id,
+            'assignee_user_id': todo_accounts['leader_id'],
+        },
+        headers=leader_headers,
+    )
+    assert forbidden_assignment.status_code == 409
+    assert forbidden_assignment.get_json() == {
+        'error': '已禁止組長建立由自己完成的任務'
+    }
+
+    team_todo_response = client.post(
+        '/api/todos',
+        json={
+            'text': 'Team-owned task',
+            'project_id': project_id,
+            'assign_to_team': True,
+        },
+        headers=leader_headers,
+    )
+    assert team_todo_response.status_code == 201
+    team_todo = team_todo_response.get_json()['todos'][0]
+
+    forbidden_claim = client.put(
+        f"/api/todos/{team_todo['id']}",
+        json={'claimed': True},
+        headers=leader_headers,
+    )
+    assert forbidden_claim.status_code == 403
+    assert forbidden_claim.get_json() == {
+        'error': '組長不能佔領自己建立的任務'
+    }
+
+    member_claim = client.put(
+        f"/api/todos/{team_todo['id']}",
+        json={'claimed': True},
+        headers=member_headers,
+    )
+    assert member_claim.status_code == 200
+    member_completion = client.put(
+        f"/api/todos/{team_todo['id']}",
+        json={'done': True},
+        headers=member_headers,
+    )
+    assert member_completion.status_code == 200
+    assert member_completion.get_json()['done'] is True
+
+
 def test_project_token_consumption_triggers_level_upgrade(client, app, todo_accounts):
     with app.app_context():
         project = db.session.get(ProjectRecruitment, todo_accounts['project_id'])
@@ -372,3 +484,101 @@ def test_project_token_consumption_triggers_level_upgrade(client, app, todo_acco
     with app.app_context():
         project = db.session.get(ProjectRecruitment, todo_accounts['project_id'])
         assert project.level == 2
+
+
+def test_member_todo_request_acceptance_creates_claimed_task(client, app, todo_accounts):
+    project_id = todo_accounts['project_id']
+    member_headers = auth_headers(todo_accounts['member_token'])
+    leader_headers = auth_headers(todo_accounts['leader_token'])
+
+    create_response = client.post(
+        f'/api/project-recruitments/{project_id}/todo-requests',
+        json={'text': '  Add keyboard navigation  '},
+        headers=member_headers,
+    )
+    assert create_response.status_code == 201
+    request_payload = create_response.get_json()
+    assert request_payload['text'] == 'Add keyboard navigation'
+    assert request_payload['status'] == 'pending'
+    assert request_payload['requested_by_id'] == todo_accounts['member_id']
+
+    leader_list = client.get('/api/todo-requests', headers=leader_headers)
+    member_list = client.get('/api/todo-requests', headers=member_headers)
+    outsider_list = client.get('/api/todo-requests', headers=auth_headers(todo_accounts['outsider_token']))
+    assert request_payload['id'] in [item['id'] for item in leader_list.get_json()]
+    assert request_payload['id'] in [item['id'] for item in member_list.get_json()]
+    assert request_payload['id'] not in [item['id'] for item in outsider_list.get_json()]
+
+    accept_response = client.post(
+        f"/api/todo-requests/{request_payload['id']}/decision",
+        json={'decision': 'accepted', 'priority': 2},
+        headers=leader_headers,
+    )
+    assert accept_response.status_code == 200
+    accepted = accept_response.get_json()
+    assert accepted['request']['status'] == 'accepted'
+    assert accepted['request']['priority'] == 2
+    assert accepted['token_cost'] == 3
+    assert accepted['project']['token_used'] == 3
+    assert accepted['todo']['user_id'] == todo_accounts['member_id']
+    assert accepted['todo']['claimed_by_id'] == todo_accounts['member_id']
+
+    member_todos = client.get('/api/todos', headers=member_headers).get_json()
+    assert accepted['todo']['id'] in [todo['id'] for todo in member_todos]
+
+    with app.app_context():
+        stored_request = db.session.get(TodoRequest, request_payload['id'])
+        assert stored_request.accepted_todo_id == accepted['todo']['id']
+
+
+def test_todo_request_permissions_rejection_and_validation(client, todo_accounts):
+    project_id = todo_accounts['project_id']
+    leader_headers = auth_headers(todo_accounts['leader_token'])
+    member_headers = auth_headers(todo_accounts['member_token'])
+    outsider_headers = auth_headers(todo_accounts['outsider_token'])
+
+    assert client.post(
+        f'/api/project-recruitments/{project_id}/todo-requests',
+        json={'text': 'Leader request'},
+        headers=leader_headers,
+    ).status_code == 403
+    assert client.post(
+        f'/api/project-recruitments/{project_id}/todo-requests',
+        json={'text': 'Outsider request'},
+        headers=outsider_headers,
+    ).status_code == 403
+    assert client.post(
+        f'/api/project-recruitments/{project_id}/todo-requests',
+        json={'text': '   '},
+        headers=member_headers,
+    ).status_code == 400
+
+    created = client.post(
+        f'/api/project-recruitments/{project_id}/todo-requests',
+        json={'text': 'Document the API'},
+        headers=member_headers,
+    ).get_json()
+    assert client.post(
+        f"/api/todo-requests/{created['id']}/decision",
+        json={'decision': 'accepted'},
+        headers=leader_headers,
+    ).status_code == 400
+    assert client.post(
+        f"/api/todo-requests/{created['id']}/decision",
+        json={'decision': 'rejected'},
+        headers=member_headers,
+    ).status_code == 403
+
+    rejected = client.post(
+        f"/api/todo-requests/{created['id']}/decision",
+        json={'decision': 'rejected'},
+        headers=leader_headers,
+    )
+    assert rejected.status_code == 200
+    assert rejected.get_json()['request']['status'] == 'rejected'
+    assert rejected.get_json()['todo'] is None
+    assert client.post(
+        f"/api/todo-requests/{created['id']}/decision",
+        json={'decision': 'accepted', 'priority': 0},
+        headers=leader_headers,
+    ).status_code == 409

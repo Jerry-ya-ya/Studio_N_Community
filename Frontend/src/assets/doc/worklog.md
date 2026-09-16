@@ -828,3 +828,5 @@
 - Advance the store product and purchase migrations to revisions 035 and 036 after the current main Alembic head to eliminate migration conflicts.
 
 - Sync the store branch with the current main user activity and migration chain to resolve database migration conflicts.
+
+- Restore missing frontend and backend implementations for rate-limit overrides, project Todo workflows, user levels, and store features, and reconcile store migrations with existing tables.

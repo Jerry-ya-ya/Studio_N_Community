@@ -27,11 +27,11 @@
           <dl class="profile-stats">
             <div>
               <dt>{{ 'profileStats.pmLevel' | translate }}</dt>
-              <dd>{{ user.pm_experience ?? 0 }}</dd>
+              <dd>{{ user.pm_level ?? 1 }}</dd>
             </div>
             <div>
               <dt>{{ 'profileStats.reviewLevel' | translate }}</dt>
-              <dd>{{ user.review_experience ?? 0 }}</dd>
+              <dd>{{ user.review_level ?? 1 }}</dd>
             </div>
             <div>
               <dt>{{ 'profileStats.coins' | translate }}</dt>
@@ -50,6 +50,40 @@
               <dd>{{ user.email }}</dd>
             </div>
           </dl>
+          <section class="experience-progress" [attr.aria-label]="'profileStats.experienceProgress' | translate">
+            <article>
+              <div class="experience-progress__heading">
+                <strong>{{ 'profileStats.pmLevel' | translate }} {{ user.pm_level ?? 1 }}</strong>
+                <span>{{ 'profileStats.experienceValue' | translate: { current: experienceProgress(user.pm_experience), total: experiencePerLevel } }}</span>
+              </div>
+              <div
+                class="experience-progress__track"
+                role="progressbar"
+                [attr.aria-valuenow]="experienceProgress(user.pm_experience)"
+                aria-valuemin="0"
+                [attr.aria-valuemax]="experiencePerLevel"
+                >
+                <span [style.width.%]="experienceProgress(user.pm_experience)"></span>
+              </div>
+              <p>{{ 'profileStats.experienceRemaining' | translate: { amount: experienceRemaining(user.pm_experience) } }}</p>
+            </article>
+            <article>
+              <div class="experience-progress__heading">
+                <strong>{{ 'profileStats.reviewLevel' | translate }} {{ user.review_level ?? 1 }}</strong>
+                <span>{{ 'profileStats.experienceValue' | translate: { current: experienceProgress(user.review_experience), total: experiencePerLevel } }}</span>
+              </div>
+              <div
+                class="experience-progress__track"
+                role="progressbar"
+                [attr.aria-valuenow]="experienceProgress(user.review_experience)"
+                aria-valuemin="0"
+                [attr.aria-valuemax]="experiencePerLevel"
+                >
+                <span [style.width.%]="experienceProgress(user.review_experience)"></span>
+              </div>
+              <p>{{ 'profileStats.experienceRemaining' | translate: { amount: experienceRemaining(user.review_experience) } }}</p>
+            </article>
+          </section>
           <label class="form-field">
             <span>{{ 'privateProfile.form.email' | translate }}</span>
             <input type="email" [(ngModel)]="user.email" [disabled]="!editing">

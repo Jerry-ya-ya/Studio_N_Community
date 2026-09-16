@@ -89,6 +89,18 @@ const routes: Routes = [
       import('../pages/superadmin/form-statistics/form-statistics.module').then(m => m.FormStatisticsModule)
   },
   {
+    path: appPath.specialAbilities,
+    canMatch: [superadminGuard],
+    loadChildren: () =>
+      import('../pages/superadmin/special-abilities/special-abilities.module').then(m => m.SpecialAbilitiesModule)
+  },
+  {
+    path: appPath.store,
+    canMatch: [superadminGuard],
+    loadChildren: () =>
+      import('../pages/superadmin/store/store.module').then(m => m.StoreModule)
+  },
+  {
     path: appPath.content,
     loadChildren: () =>
       import('../pages/admin/content/content.module').then(m => m.ContentModule)
@@ -163,6 +175,11 @@ const routes: Routes = [
     path: appPath.achievement,
     loadChildren: () =>
       import('../pages/private/achievement/achievement.module').then(m => m.AchievementModule)
+  },
+  {
+    path: appPath.userStore,
+    loadChildren: () =>
+      import('../pages/private/store/store.module').then(m => m.StoreModule)
   },
   {
     path: '**',

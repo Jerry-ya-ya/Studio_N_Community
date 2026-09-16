@@ -14,6 +14,20 @@ limiter = Limiter(
 )
 
 
+@limiter.request_filter
+def active_superadmin_rate_limit_override():
+    """Skip only Flask-Limiter checks while the approved override is active."""
+    if not request.path.startswith('/api/'):
+        return False
+
+    # Import lazily to keep the limiter usable while models are being registered.
+    from models import ApiRateLimitOverride, db
+    from time_utils import taipei_now
+
+    override = db.session.get(ApiRateLimitOverride, 1)
+    return bool(override and override.expires_at > taipei_now())
+
+
 # Resource-creating member endpoints share one quota so switching endpoints
 # cannot bypass the protection. Apply this inside @jwt_required() so its key is
 # based on a verified identity rather than attacker-controlled token contents.

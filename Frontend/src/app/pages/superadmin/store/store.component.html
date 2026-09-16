@@ -1,0 +1,143 @@
+<main class="store-page">
+  <header class="hero">
+    <div>
+      <span class="eyebrow">SUPERADMIN · STORE CONTROL</span>
+      <h1>商品上架中心</h1>
+      <p>建立商品、調整價格與庫存，並控制商店上架狀態。</p>
+    </div>
+    <div class="metrics" aria-label="商品統計">
+      <div><strong>{{ products.length }}</strong><span>全部商品</span></div>
+      <div><strong>{{ publishedCount }}</strong><span>上架中</span></div>
+      <div><strong>{{ lowStockCount }}</strong><span>低庫存</span></div>
+    </div>
+  </header>
+
+  @if (feedback || error) {
+    <div class="notice" [class.notice--error]="error" role="status">
+      <mat-icon>{{ error ? 'error_outline' : 'check_circle' }}</mat-icon>
+      {{ error || feedback }}
+    </div>
+  }
+
+  <section class="editor-panel">
+    <div class="section-heading">
+      <div>
+        <span class="step">01 / PRODUCT SETUP</span>
+        <h2>{{ editingId === null ? '建立新商品' : '修改商品' }}</h2>
+      </div>
+      @if (editingId !== null) {
+        <button class="text-button" type="button" (click)="resetForm()">取消修改</button>
+      }
+    </div>
+
+    <form class="product-form" (ngSubmit)="save()" #productForm="ngForm">
+      <div class="form-fields">
+        <label class="field field--wide">
+          <span>商品名稱 *</span>
+          <input name="name" [(ngModel)]="draft.name" maxlength="120" required placeholder="例如：開發者限定徽章">
+        </label>
+        <label class="field">
+          <span>價格 *</span>
+          <div class="input-prefix"><b>NT$</b><input name="price" [(ngModel)]="draft.price" type="number" min="0" step="1" required></div>
+        </label>
+        <label class="field">
+          <span>目前庫存 *</span>
+          <input name="stock" [(ngModel)]="draft.stock" type="number" min="0" step="1" required>
+        </label>
+        <label class="field field--wide">
+          <span>商品說明</span>
+          <textarea name="description" [(ngModel)]="draft.description" maxlength="2000" rows="4" placeholder="說明商品內容與兌換方式"></textarea>
+        </label>
+        <div class="switch-group field--wide">
+          <label class="switch-row">
+            <input name="isLimited" [(ngModel)]="draft.isLimited" type="checkbox">
+            <span class="toggle" aria-hidden="true"></span>
+            <span><b>限量商品</b><small>售完後顯示無庫存</small></span>
+          </label>
+          <label class="switch-row">
+            <input name="isPublished" [(ngModel)]="draft.isPublished" type="checkbox">
+            <span class="toggle" aria-hidden="true"></span>
+            <span><b>立即上架</b><small>儲存後在商店中公開</small></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="image-picker">
+        <span class="field-label">商品圖片</span>
+        <div class="preview">
+          @if (previewUrl) {
+            <img [src]="previewUrl" alt="即將上傳的商品圖片預覽">
+          } @else {
+            <mat-icon>{{ presetIcon(draft.imageValue) }}</mat-icon>
+          }
+        </div>
+        <div class="preset-list" aria-label="預設商品圖片">
+          @for (preset of presets; track preset.id) {
+            <button type="button" [class.selected]="!selectedFile && draft.imageValue === preset.id" (click)="choosePreset(preset.id)">
+              <mat-icon>{{ preset.icon }}</mat-icon><span>{{ preset.label }}</span>
+            </button>
+          }
+        </div>
+        <label class="upload-button">
+          <mat-icon>upload</mat-icon>
+          <span>{{ selectedFile?.name || '上傳自訂圖片' }}</span>
+          <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" (change)="onFileSelected($event)">
+        </label>
+        <small>PNG、JPG、GIF 或 WebP，最大 5MB</small>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-button" type="submit" [disabled]="saving || productForm.invalid">
+          <mat-icon>{{ editingId === null ? 'add_box' : 'save' }}</mat-icon>
+          {{ saving ? '儲存中…' : (editingId === null ? '建立商品' : '儲存修改') }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="catalog-panel">
+    <div class="section-heading">
+      <div><span class="step">02 / INVENTORY</span><h2>商品與庫存</h2></div>
+      <button class="icon-button" type="button" (click)="loadProducts()" [disabled]="loading" aria-label="重新整理"><mat-icon>refresh</mat-icon></button>
+    </div>
+
+    @if (loading) {
+      <div class="state"><mat-icon class="spin">progress_activity</mat-icon><p>讀取商品中</p></div>
+    } @else if (products.length === 0) {
+      <div class="state"><mat-icon>inventory_2</mat-icon><h3>尚未建立商品</h3><p>使用上方表單建立第一項商品。</p></div>
+    } @else {
+      <div class="product-grid">
+        @for (product of products; track product.id) {
+          <article class="product-card" [class.product-card--draft]="!product.isPublished">
+            <div class="product-image">
+              @if (imageUrl(product)) {
+                <img [src]="imageUrl(product)" [alt]="product.name">
+              } @else {
+                <mat-icon>{{ presetIcon(product.imageValue) }}</mat-icon>
+              }
+              <span class="status" [class.status--live]="product.isPublished">{{ product.isPublished ? '上架中' : '草稿' }}</span>
+            </div>
+            <div class="product-body">
+              <div class="product-title"><h3>{{ product.name }}</h3><strong>NT$ {{ product.price | number:'1.0-2' }}</strong></div>
+              <p>{{ product.description || '尚未填寫商品說明' }}</p>
+              <div class="stock-line">
+                <span><mat-icon>inventory</mat-icon>{{ product.isLimited ? '庫存 ' + product.stock : '不限量' }}</span>
+                @if (product.isLimited && product.stock <= 5) { <em>庫存偏低</em> }
+              </div>
+              <div class="restock-row">
+                <input type="number" min="1" step="1" [(ngModel)]="restockAmounts[product.id]" [name]="'restock-' + product.id" placeholder="補貨數量" aria-label="補貨數量">
+                <button type="button" (click)="restock(product)" [disabled]="busyProductId === product.id">補充庫存</button>
+              </div>
+              <div class="card-actions">
+                <button type="button" class="secondary-button" (click)="edit(product)"><mat-icon>edit</mat-icon>修改</button>
+                <button type="button" class="publish-button" [class.publish-button--off]="product.isPublished" (click)="togglePublished(product)" [disabled]="busyProductId === product.id">
+                  <mat-icon>{{ product.isPublished ? 'visibility_off' : 'publish' }}</mat-icon>{{ product.isPublished ? '下架' : '上架' }}
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>

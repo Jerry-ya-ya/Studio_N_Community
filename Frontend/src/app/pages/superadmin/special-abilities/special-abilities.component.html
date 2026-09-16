@@ -1,0 +1,63 @@
+<main class="abilities-page" [attr.aria-label]="'specialAbilities.hero.title' | translate">
+  <header class="abilities-hero">
+    <div>
+      <p class="kicker">{{ 'specialAbilities.hero.kicker' | translate }}</p>
+      <h1>{{ 'specialAbilities.hero.title' | translate }}</h1>
+      <p>{{ 'specialAbilities.hero.subtitle' | translate }}</p>
+    </div>
+    <mat-icon aria-hidden="true">bolt</mat-icon>
+  </header>
+
+  <section class="ability-card">
+    <div class="ability-copy">
+      <span class="ability-icon"><mat-icon aria-hidden="true">speed</mat-icon></span>
+      <div>
+        <p class="kicker">{{ 'specialAbilities.rateLimit.kicker' | translate }}</p>
+        <h2>{{ 'specialAbilities.rateLimit.title' | translate }}</h2>
+        <p>{{ 'specialAbilities.rateLimit.description' | translate }}</p>
+      </div>
+    </div>
+
+    @if (loading) {
+      <div class="state-panel">{{ 'specialAbilities.state.loading' | translate }}</div>
+    } @else {
+      <div class="status-panel" [class.status-panel--active]="status?.active">
+        <span class="status-dot" aria-hidden="true"></span>
+        <div>
+          <small>{{ 'specialAbilities.state.status' | translate }}</small>
+          <strong>{{ (status?.active ? 'specialAbilities.state.active' : 'specialAbilities.state.protected') | translate }}</strong>
+        </div>
+        @if (status?.active) {
+          <div class="countdown">
+            <small>{{ 'specialAbilities.state.remaining' | translate }}</small>
+            <strong>{{ remainingTime }}</strong>
+          </div>
+        }
+      </div>
+
+      <div class="duration-control">
+        <label for="override-duration">{{ 'specialAbilities.duration.label' | translate }}</label>
+        <select id="override-duration" [(ngModel)]="durationMinutes" [disabled]="activating">
+          @for (minutes of durationOptions; track minutes) {
+            <option [ngValue]="minutes">{{ 'specialAbilities.duration.minutes' | translate: { count: minutes } }}</option>
+          }
+        </select>
+        <p>{{ 'specialAbilities.duration.hint' | translate }}</p>
+      </div>
+
+      <div class="scope-note">
+        <mat-icon aria-hidden="true">verified_user</mat-icon>
+        <p><strong>{{ 'specialAbilities.scope.title' | translate }}</strong><span>{{ 'specialAbilities.scope.description' | translate }}</span></p>
+      </div>
+
+      <button class="activate-button" type="button" (click)="activate()" [disabled]="activating">
+        <mat-icon aria-hidden="true">timer</mat-icon>
+        {{ (activating ? 'specialAbilities.actions.activating' : 'specialAbilities.actions.activate') | translate: { count: durationMinutes } }}
+      </button>
+    }
+
+    @if (feedbackKey) {
+      <p class="feedback" [class.feedback--error]="feedbackError" role="status">{{ feedbackKey | translate }}</p>
+    }
+  </section>
+</main>

@@ -69,7 +69,8 @@
       "logout": "ログアウト",
       "schedule": "スケジュール",
       "survey": "アンケート",
-      "achievement": "実績"
+      "achievement": "実績",
+      "store": "ストア"
     },
     "admin": {
       "user": "ユーザー",
@@ -85,6 +86,7 @@
       "promote": "権限",
       "logs": "ログ",
       "formStatistics": "フォーム統計",
+      "store": "商品管理",
       "feature": "機能"
     }
   },
@@ -500,6 +502,9 @@
     "ariaLabel": "メンバーレベルとコイン",
     "pmLevel": "PM レベル",
     "reviewLevel": "レビューレベル",
+    "experienceProgress": "レベル経験値の進捗",
+    "experienceValue": "{{ current }} / {{ total }} XP",
+    "experienceRemaining": "次のレベルまであと {{ amount }} XP",
     "coins": "コイン"
   },
   "privateSquare": {
@@ -749,6 +754,15 @@
       "settled": "精算済み",
       "empty": "項目はありません。"
     },
+    "settings": {
+      "kicker": "Todo Settings",
+      "title": "リーダーの自己完了を禁止",
+      "description": "有効にすると、リーダーは自分が作成したプロジェクトタスクを自分に割り当て、確保、完了できません。",
+      "enabled": "有効",
+      "disabled": "無効",
+      "saved": "Todo 設定を保存しました。",
+      "saveFailure": "Todo 設定を保存できませんでした。"
+    },
     "dispatch": {
       "kicker": "Project Todo Dispatch",
       "title": "プロジェクト Todo 公開",
@@ -768,6 +782,25 @@
       "placeholder": "例：キャラクターコントローラー初版を完成",
       "noTodos": "このプロジェクトにはまだ公開済み Todo がありません。"
     },
+    "requests": {
+      "kicker": "Task Requests",
+      "title": "メンバーのタスク申請",
+      "leaderHint": "メンバーの申請を確認し、承認時に優先度を選択してください。",
+      "memberHint": "担当したいタスクを申請し、リーダーの確認を待ちます。",
+      "placeholder": "申請するタスクを入力",
+      "submit": "申請する",
+      "submitting": "送信中...",
+      "accept": "承認",
+      "reject": "却下",
+      "empty": "タスク申請はありません。",
+      "requestedBy": "申請者：{{ name }}",
+      "submitted": "タスク申請を送信しました。",
+      "submitFailure": "タスク申請を送信できませんでした。",
+      "accepted": "タスク申請を承認し、未完了ステージへ移動しました。",
+      "rejected": "タスク申請を却下しました。",
+      "decisionFailure": "タスク申請を審査できませんでした。",
+      "status": { "pending": "確認待ち", "accepted": "承認済み", "rejected": "却下済み" }
+    },
     "settlement": {
       "kicker": "Settlement Cycle",
       "title": "今回の精算を送信",
@@ -784,7 +817,8 @@
     "feedback": {
       "publishSuccess": "Todo を公開しました。",
       "publishFailure": "Todo の公開に失敗しました。",
-      "timeRequired": "先に Time 点数を選択してください。"
+      "timeRequired": "先に Time 点数を選択してください。",
+      "updateFailure": "Todo の更新に失敗しました。"
     }
   },
   "privateSetting": {
@@ -1445,6 +1479,15 @@
     "numbers": { "average": "平均", "minimum": "最小", "maximum": "最大" },
     "boolean": { "yes": "はい", "no": "いいえ" },
     "types": { "short_text": "短文", "long_text": "長文", "single_choice": "単一選択", "multiple_choice": "複数選択", "dropdown": "ドロップダウン", "number": "数値", "date": "日付", "boolean": "はい／いいえ" }
+  },
+  "specialAbilities": {
+    "hero": { "kicker": "Superadmin / 特殊能力", "title": "特殊能力", "subtitle": "緊急メンテナンスや一括管理のため、制御された時間だけ API 制限を一時停止します。" },
+    "rateLimit": { "kicker": "能力 01 / API", "title": "API 制限を一時解除", "description": "有効化すると、指定時間だけ API レート制限が停止し、期限後に自動で復元されます。" },
+    "state": { "loading": "保護状態を確認中…", "status": "現在の状態", "active": "API レート制限は停止中", "protected": "API レート制限は有効", "remaining": "残り時間" },
+    "duration": { "label": "解除時間", "minutes": "{{ count }} 分", "hint": "時間は 10～30 分に制限されています。再度有効化すると現在時刻から再計測します。" },
+    "scope": { "title": "能力の範囲は固定されています", "description": "この操作は API レート制限のみを回避します。認証、ロール権限、データ検証、アップロード容量、その他の安全制限は変更されません。" },
+    "actions": { "activate": "{{ count }} 分間解除", "activating": "有効化中…" },
+    "feedback": { "activated": "API レート制限を一時解除しました。", "loadFailed": "API 制限の状態を取得できません。", "activateFailed": "API 制限を一時解除できません。" }
   },
   "superadminLogs": {
     "hero": {

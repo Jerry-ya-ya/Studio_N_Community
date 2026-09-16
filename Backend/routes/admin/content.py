@@ -189,6 +189,8 @@ def serialize_member_defaults():
             'capabilityStack': 'fullstack',
             'capabilityFocus': 'game-systems',
             'capabilityStyle': 'professional',
+            'pm_level': 1,
+            'review_level': 1,
             'pm_experience': 0,
             'review_experience': 0,
             'coins': 0,

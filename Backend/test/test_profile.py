@@ -117,6 +117,8 @@ def test_get_me_serializes_profile_aliases_and_empty_statistics(
     assert payload["role"] == "user"
     assert payload["pm_experience"] == 9
     assert payload["review_experience"] == 5
+    assert payload["pm_level"] == 1
+    assert payload["review_level"] == 1
     assert payload["created_at"]
     assert payload["coins"] == payload["total_coins"] == payload["totalCoins"] == 0
     assert payload["achievementStats"] == {
@@ -365,6 +367,8 @@ def test_square_serializes_profile_levels_and_coins(client, profile_accounts):
     )
     assert profile["pm_experience"] == 9
     assert profile["review_experience"] == 5
+    assert profile["pm_level"] == 1
+    assert profile["review_level"] == 1
     assert profile["coins"] == 0
 
 

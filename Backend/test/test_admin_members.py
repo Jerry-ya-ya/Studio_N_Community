@@ -182,6 +182,8 @@ def test_get_users_supports_sorting_and_coin_aliases(
     assert admin["totalPoints"] == 10
     assert admin["coins"] == admin["total_coins"] == admin["totalCoins"] == 10
     assert admin["experience"] == 17
+    assert admin["pm_level"] == 1
+    assert admin["review_level"] == 1
     assert admin["review_experience"] == 5
     assert admin["pm_experience"] == 9
     member = next(

@@ -29,6 +29,10 @@ export const appPath = {
     superadminLogs: 'superadmin-logs',
     //superadmin form statistics
     formStatistics: 'form-statistics',
+    //superadmin special abilities
+    specialAbilities: 'special-abilities',
+    //superadmin store
+    store: 'superadmin-store',
     //admin content
     content: 'content',
     //admin projects
@@ -59,4 +63,6 @@ export const appPath = {
     privateActivities: 'private-activities',
     //achievement
     achievement: 'achievement',
+    //user store
+    userStore: 'store',
 };

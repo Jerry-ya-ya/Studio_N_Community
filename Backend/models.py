@@ -38,6 +38,8 @@ class User(db.Model):
     experience = db.Column(db.Integer, default=0, nullable=False)
     review_experience = db.Column(db.Integer, default=0, nullable=False)
     pm_experience = db.Column(db.Integer, default=0, nullable=False)
+    review_level = db.Column(db.Integer, default=1, nullable=False)
+    pm_level = db.Column(db.Integer, default=1, nullable=False)
 
     email = db.Column(db.String(120), unique=True)
     email_verified = db.Column(db.Boolean, default=False)
@@ -86,6 +88,8 @@ class User(db.Model):
             'experience': self.experience,
             'review_experience': self.review_experience,
             'pm_experience': self.pm_experience,
+            'review_level': self.review_level,
+            'pm_level': self.pm_level,
             'is_active': self.is_active,
             'isActive': self.is_active,
             'is_deleted': self.is_deleted,
@@ -124,6 +128,21 @@ class RefreshToken(db.Model):
         'User',
         backref=db.backref('refresh_tokens', cascade='all, delete-orphan'),
     )
+
+
+class ApiRateLimitOverride(db.Model):
+    """Singleton state for a time-bounded, global API rate-limit bypass."""
+    __tablename__ = 'api_rate_limit_override'
+
+    id = db.Column(db.Integer, primary_key=True)
+    activated_at = db.Column(db.DateTime, nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False, index=True)
+    activated_by_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='SET NULL'),
+        nullable=True,
+    )
+    activated_by = db.relationship('User')
 
 class FriendRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -248,12 +267,18 @@ class ProjectRecruitment(db.Model):
     token_used = db.Column(db.Integer, default=0, nullable=False)
     level = db.Column(db.Integer, default=1, nullable=False)
     review_status = db.Column(db.String(20), default='open', nullable=False)
+    leader_self_completion_blocked = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=taipei_now)
 
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     creator = db.relationship('User', backref='project_recruitments')
     members = db.relationship(
         'ProjectRecruitmentMember',
+        back_populates='project',
+        cascade='all, delete-orphan'
+    )
+    todo_requests = db.relationship(
+        'TodoRequest',
         back_populates='project',
         cascade='all, delete-orphan'
     )
@@ -272,6 +297,41 @@ class ProjectRecruitmentMember(db.Model):
 
     project = db.relationship('ProjectRecruitment', back_populates='members')
     user = db.relationship('User', backref='project_recruitment_memberships')
+
+
+class TodoRequest(db.Model):
+    __table_args__ = (
+        db.CheckConstraint(
+            "status IN ('pending', 'accepted', 'rejected')",
+            name='ck_todo_request_status',
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(20), default='pending', nullable=False, index=True)
+    priority = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+    reviewed_at = db.Column(db.DateTime)
+
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey('project_recruitment.id'),
+        nullable=False,
+        index=True,
+    )
+    requested_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    reviewed_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    accepted_todo_id = db.Column(
+        db.Integer,
+        db.ForeignKey('todo.id', ondelete='SET NULL'),
+        unique=True,
+    )
+
+    project = db.relationship('ProjectRecruitment', back_populates='todo_requests')
+    requested_by = db.relationship('User', foreign_keys=[requested_by_id])
+    reviewed_by = db.relationship('User', foreign_keys=[reviewed_by_id])
+    accepted_todo = db.relationship('Todo', foreign_keys=[accepted_todo_id])
 
 class DailyCheckIn(db.Model):
     __table_args__ = (
@@ -397,11 +457,82 @@ class FormSubmission(db.Model):
     )
 
 
+class StoreProduct(db.Model):
+    """A product managed by superadmins and displayed in the store."""
+    __tablename__ = 'store_product'
+    __table_args__ = (
+        db.CheckConstraint('price >= 0', name='ck_store_product_price'),
+        db.CheckConstraint('stock >= 0', name='ck_store_product_stock'),
+        db.CheckConstraint(
+            "image_type IN ('default', 'upload')",
+            name='ck_store_product_image_type',
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.Text, nullable=False, default='')
+    price = db.Column(db.Numeric(12, 2), nullable=False, default=0)
+    stock = db.Column(db.Integer, nullable=False, default=0)
+    is_limited = db.Column(db.Boolean, nullable=False, default=True)
+    is_published = db.Column(db.Boolean, nullable=False, default=False, index=True)
+    image_type = db.Column(db.String(20), nullable=False, default='default')
+    image_value = db.Column(db.String(255), nullable=False, default='bean')
+    created_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+    updated_at = db.Column(
+        db.DateTime,
+        default=taipei_now,
+        onupdate=taipei_now,
+        nullable=False,
+    )
+
+    created_by_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='SET NULL'),
+        index=True,
+    )
+    created_by = db.relationship('User', backref='store_products')
+
+
+class StorePurchase(db.Model):
+    """An immutable snapshot of a product purchase made by a user."""
+    __tablename__ = 'store_purchase'
+    __table_args__ = (
+        db.CheckConstraint('unit_price >= 0', name='ck_store_purchase_unit_price'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_name = db.Column(db.String(120), nullable=False)
+    unit_price = db.Column(db.Numeric(12, 2), nullable=False)
+    purchased_at = db.Column(db.DateTime, default=taipei_now, nullable=False)
+
+    product_id = db.Column(
+        db.Integer,
+        db.ForeignKey('store_product.id', ondelete='SET NULL'),
+        index=True,
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='CASCADE'),
+        nullable=False,
+        index=True,
+    )
+    product = db.relationship(
+        'StoreProduct',
+        backref=db.backref('purchases', passive_deletes=True),
+    )
+    user = db.relationship(
+        'User',
+        backref=db.backref('store_purchases', cascade='all, delete-orphan'),
+    )
+
+
 def load_models():
     """Keep all table models registered from one place before schema creation."""
     return (
         User,
         RefreshToken,
+        ApiRateLimitOverride,
         FriendRequest,
         Todo,
         News,
@@ -413,9 +544,12 @@ def load_models():
         PostLike,
         ProjectRecruitment,
         ProjectRecruitmentMember,
+        TodoRequest,
         DailyCheckIn,
         UserAchievement,
         ActivityPromotion,
         FormTemplate,
         FormSubmission,
+        StoreProduct,
+        StorePurchase,
     )

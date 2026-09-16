@@ -18,6 +18,8 @@ export interface MemberContentItem {
   capabilityStack?: string;
   capabilityFocus?: string;
   capabilityStyle?: string;
+  pm_level?: number;
+  review_level?: number;
   pm_experience?: number;
   review_experience?: number;
   coins?: number;
@@ -94,6 +96,8 @@ export class MemberContentService {
         capabilityStack: String(member.capabilityStack ?? '').trim(),
         capabilityFocus: String(member.capabilityFocus ?? '').trim(),
         capabilityStyle: String(member.capabilityStyle ?? '').trim(),
+        pm_level: this.normalizeLevel(member.pm_level),
+        review_level: this.normalizeLevel(member.review_level),
         pm_experience: this.normalizeMetric(member.pm_experience),
         review_experience: this.normalizeMetric(member.review_experience),
         coins: this.normalizeMetric(member.coins),
@@ -115,5 +119,10 @@ export class MemberContentService {
   private normalizeMetric(value: unknown): number {
     const metric = Number(value ?? 0);
     return Number.isFinite(metric) ? Math.max(0, metric) : 0;
+  }
+
+  private normalizeLevel(value: unknown): number {
+    const level = Number(value ?? 1);
+    return Number.isFinite(level) ? Math.max(1, Math.floor(level)) : 1;
   }
 }
