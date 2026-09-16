@@ -802,3 +802,9 @@
 - Make published recruitment member lists independently expandable and collapsible with accessible localized controls and regression coverage.
 
 - Deactivate accounts after seven check-in-free days, automatically remove project memberships, release all claimed tasks, and reactivate returning users on check-in.
+
+## 2026/09/16
+
+- Add a superadmin special abilities page for audited 10–30 minute API rate-limit overrides with automatic expiry, locked scope, localization, migration, and regression coverage.
+
+- Advance the API rate-limit override migration to revision 031 after the current main migration head.
