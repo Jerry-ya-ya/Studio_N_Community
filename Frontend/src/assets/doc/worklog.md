@@ -816,3 +816,7 @@
 - Renumber the project Todo settings and request migrations after the current main migration head to resolve Alembic revision conflicts.
 
 - Complete the task branch's Alembic chain with the main user activity and rate-limit migrations to resolve missing revision dependencies.
+
+- Add persisted PM and review levels with 100-point experience progression, corrected level displays, profile progress bars, migrations, and regression coverage.
+
+- Advance the PM and review level migration to revision 034 after the current main Alembic head to eliminate migration conflicts.
