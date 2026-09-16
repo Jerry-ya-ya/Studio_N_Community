@@ -814,3 +814,5 @@
 - Add member-submitted project task requests with leader acceptance or rejection, priority and token handling, automatic assignment into the completion workflow, localization, migration, and regression coverage.
 
 - Renumber the project Todo settings and request migrations after the current main migration head to resolve Alembic revision conflicts.
+
+- Complete the task branch's Alembic chain with the main user activity and rate-limit migrations to resolve missing revision dependencies.
