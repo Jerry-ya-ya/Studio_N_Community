@@ -805,6 +805,8 @@
 
 ## 2026/09/16
 
+- Add a superadmin product management page with pricing, limited inventory, restocking, publishing, preset images, secure uploads, persistence, and API coverage.
+
 - Add per-project Todo settings that prevent leaders from assigning, claiming, or completing their own tasks, with server-side enforcement, localization, migration, and regression coverage.
 
 - Add a superadmin special abilities page for audited 10–30 minute API rate-limit overrides with automatic expiry, locked scope, localization, migration, and regression coverage.
@@ -820,3 +822,7 @@
 - Add persisted PM and review levels with 100-point experience progression, corrected level displays, profile progress bars, migrations, and regression coverage.
 
 - Advance the PM and review level migration to revision 034 after the current main Alembic head to eliminate migration conflicts.
+
+- Add a private user marketplace with published product purchasing, atomic inventory tracking, minute auto-refresh, and configurable persisted manual refresh limits.
+
+- Advance the store product and purchase migrations to revisions 035 and 036 after the current main Alembic head to eliminate migration conflicts.
