@@ -805,6 +805,12 @@
 
 ## 2026/09/16
 
+- Add per-project Todo settings that prevent leaders from assigning, claiming, or completing their own tasks, with server-side enforcement, localization, migration, and regression coverage.
+
 - Add a superadmin special abilities page for audited 10–30 minute API rate-limit overrides with automatic expiry, locked scope, localization, migration, and regression coverage.
 
 - Advance the API rate-limit override migration to revision 031 after the current main migration head.
+
+- Add member-submitted project task requests with leader acceptance or rejection, priority and token handling, automatic assignment into the completion workflow, localization, migration, and regression coverage.
+
+- Renumber the project Todo settings and request migrations after the current main migration head to resolve Alembic revision conflicts.
