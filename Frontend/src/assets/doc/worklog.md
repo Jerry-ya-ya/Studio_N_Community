@@ -834,3 +834,5 @@
 ## 2026/09/17
 
 - Expose complete user monitoring fields in the superadmin promotion dashboard with account status, capabilities, progression, and deletion metadata.
+
+- Add private Azure Container Apps topology and HTTPS forwarding smoke tests for authentication flows.

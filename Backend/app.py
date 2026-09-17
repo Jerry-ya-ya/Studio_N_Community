@@ -48,6 +48,7 @@ from routes.schedule.schedule import schedule_bp
 from rate_limit import limiter
 from achievements import init_achievement_listener
 from routes.auth.refresh_tokens import is_refresh_token_revoked
+from routes.test.health import health_bp
 
 def setup_database(app, retries=5, wait=2, create_schema=True):
     db.init_app(app)
@@ -225,6 +226,7 @@ def create_app(config_name="none"):
     app.register_blueprint(project_recruitment_bp, url_prefix='/api')
     app.register_blueprint(check_in_bp, url_prefix='/api')
     app.register_blueprint(schedule_bp, url_prefix='/api')
+    app.register_blueprint(health_bp, url_prefix='/api')
 
     # Centralized listener for APIs that can unlock server-verified achievements.
     init_achievement_listener(app)

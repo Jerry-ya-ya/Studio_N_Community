@@ -8,6 +8,8 @@ services:
     container_name: angular-frontend
     depends_on:
       - backend
+    environment:
+      BACKEND_UPSTREAM: http://backend:5000
 
   backend:
     image: jerryzheng0907/backend:latest
@@ -65,7 +67,7 @@ services:
     environment:
       - PYTHONPATH=/app/Backend
     env_file:
-      - .env.3prod
+      - .env
     depends_on:
       - redis
       - celery_worker

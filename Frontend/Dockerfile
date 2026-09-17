@@ -14,11 +14,17 @@ RUN npx ng build --configuration=production
 # 第二階段：Nginx 提供靜態頁面
 FROM nginx:stable-alpine
 
+# The entrypoint substitutes only this variable so Nginx runtime variables
+# such as $host and $scheme remain intact. Azure overrides BACKEND_UPSTREAM
+# with the Backend Container App's internal FQDN.
+ENV BACKEND_UPSTREAM=http://backend:5000 \
+    NGINX_ENVSUBST_FILTER=^BACKEND_UPSTREAM$
+
 # 複製編譯後的檔案（Angular 20 的輸出結構在 browser 子目錄中）
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
 # 複製 Nginx 配置
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/default.conf /etc/nginx/templates/default.conf.template
 COPY nginx/error.conf /etc/nginx/conf.d/error.conf
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 

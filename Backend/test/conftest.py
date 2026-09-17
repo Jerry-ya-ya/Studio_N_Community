@@ -2,8 +2,6 @@ import os
 import sys
 import pytest
 
-from routes.test.health import health_bp
-
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -20,8 +18,6 @@ def app():
     os.environ["APP_ENV"] = "testing"
     
     app = create_app(config_name="testing")
-    app.register_blueprint(health_bp, url_prefix='/api')
-
     return app
 
 
