@@ -10,13 +10,24 @@ interface User {
   nickname?: string;
   role: string;
   email_verified: boolean;
+  is_active: boolean;
   is_deleted?: boolean;
+  deleted_at?: string | null;
   avatar_url?: string;
   avatarUrl?: string;
   avatar_source?: string;
   avatarSource?: string;
+  github_url?: string;
+  capability_direction?: string;
+  capability_stack?: string;
+  capability_focus?: string;
+  capability_style?: string;
   created_at: string;
   experience?: number;
+  review_experience?: number;
+  pm_experience?: number;
+  review_level?: number;
+  pm_level?: number;
   coins?: number;
   total_coins?: number;
   totalCoins?: number;
@@ -68,6 +79,7 @@ export class PromoteComponent implements OnInit {
       this.filteredUsers = this.users.filter(user =>
         user.username.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term) ||
+        (user.github_url && user.github_url.toLowerCase().includes(term)) ||
         (user.nickname && user.nickname.toLowerCase().includes(term))
       );
     }
@@ -82,8 +94,13 @@ export class PromoteComponent implements OnInit {
   }
 
   getAccountStatus(user: User): string {
-    const statusKey = user.is_deleted ? 'deleted' : 'active';
+    const statusKey = user.is_deleted ? 'deleted' : user.is_active ? 'active' : 'inactive';
     return this.translate.instant(`superadminPromote.accountStatus.${statusKey}`);
+  }
+
+  getVerificationStatus(user: User): string {
+    const statusKey = user.email_verified ? 'verified' : 'unverified';
+    return this.translate.instant(`superadminPromote.verificationStatus.${statusKey}`);
   }
 
   getUserCoins(user: User): number {

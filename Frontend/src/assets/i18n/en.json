@@ -1435,10 +1435,22 @@
       "nickname": "Nickname",
       "coins": "Coins",
       "experience": "Experience",
+      "reviewExperience": "Review experience",
+      "reviewLevel": "Review level",
+      "pmExperience": "PM experience",
+      "pmLevel": "PM level",
       "accountStatus": "Account status",
       "email": "Email",
+      "emailVerified": "Email verified",
+      "githubUrl": "GitHub",
+      "capabilityDirection": "Direction",
+      "capabilityStack": "Stack",
+      "capabilityFocus": "Focus",
+      "capabilityStyle": "Style",
+      "avatarSource": "Avatar source",
       "role": "Role",
       "createdAt": "Registered at",
+      "deletedAt": "Deleted at",
       "actions": "Actions"
     },
     "search": {
@@ -1452,7 +1464,12 @@
     },
     "accountStatus": {
       "active": "Active",
+      "inactive": "Inactive",
       "deleted": "Deleted"
+    },
+    "verificationStatus": {
+      "verified": "Verified",
+      "unverified": "Unverified"
     },
     "actions": {
       "promote": "Promote to admin",

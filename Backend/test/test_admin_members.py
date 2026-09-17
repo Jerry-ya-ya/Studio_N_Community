@@ -191,6 +191,13 @@ def test_get_users_supports_sorting_and_coin_aliases(
     )
     assert "email" in member
     assert "email_verified" in member
+    assert member["emailVerified"] is True
+    assert member["is_active"] is True
+    assert member["isActive"] is True
+    assert member["is_deleted"] is False
+    assert member["isDeleted"] is False
+    assert member["deleted_at"] is None
+    assert member["deletedAt"] is None
     assert member["total_points"] == 0
 
 

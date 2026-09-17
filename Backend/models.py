@@ -93,6 +93,9 @@ class User(db.Model):
             'is_active': self.is_active,
             'isActive': self.is_active,
             'is_deleted': self.is_deleted,
+            'isDeleted': self.is_deleted,
+            'deleted_at': to_taipei_iso(self.deleted_at),
+            'deletedAt': to_taipei_iso(self.deleted_at),
             'avatar_url': self.avatar_url,
             'avatar_source': self.avatar_source,
             'avatarSource': self.avatar_source,
@@ -101,6 +104,7 @@ class User(db.Model):
         if include_sensitive:
             data['email'] = self.display_email
             data['email_verified'] = self.email_verified
+            data['emailVerified'] = self.email_verified
         return data
 
 

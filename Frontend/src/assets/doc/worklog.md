@@ -830,3 +830,7 @@
 - Sync the store branch with the current main user activity and migration chain to resolve database migration conflicts.
 
 - Restore missing frontend and backend implementations for rate-limit overrides, project Todo workflows, user levels, and store features, and reconcile store migrations with existing tables.
+
+## 2026/09/17
+
+- Expose complete user monitoring fields in the superadmin promotion dashboard with account status, capabilities, progression, and deletion metadata.

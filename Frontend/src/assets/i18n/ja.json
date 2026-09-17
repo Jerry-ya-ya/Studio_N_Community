@@ -1434,10 +1434,22 @@
       "nickname": "ニックネーム",
       "coins": "Coins",
       "experience": "経験値",
+      "reviewExperience": "レビュー経験値",
+      "reviewLevel": "レビューレベル",
+      "pmExperience": "PM 経験値",
+      "pmLevel": "PM レベル",
       "accountStatus": "アカウント状態",
       "email": "Email",
+      "emailVerified": "メール認証",
+      "githubUrl": "GitHub",
+      "capabilityDirection": "能力方向",
+      "capabilityStack": "技術スタック",
+      "capabilityFocus": "注力分野",
+      "capabilityStyle": "協業スタイル",
+      "avatarSource": "アバター元",
       "role": "ロール",
       "createdAt": "登録日時",
+      "deletedAt": "削除日時",
       "actions": "操作"
     },
     "search": {
@@ -1451,7 +1463,12 @@
     },
     "accountStatus": {
       "active": "有効",
+      "inactive": "無効",
       "deleted": "削除済み"
+    },
+    "verificationStatus": {
+      "verified": "認証済み",
+      "unverified": "未認証"
     },
     "actions": {
       "promote": "管理者に昇格",

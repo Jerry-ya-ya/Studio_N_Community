@@ -1434,10 +1434,22 @@
       "nickname": "닉네임",
       "coins": "Coins",
       "experience": "경험치",
+      "reviewExperience": "리뷰 경험치",
+      "reviewLevel": "리뷰 레벨",
+      "pmExperience": "PM 경험치",
+      "pmLevel": "PM 레벨",
       "accountStatus": "계정 상태",
       "email": "Email",
+      "emailVerified": "이메일 인증",
+      "githubUrl": "GitHub",
+      "capabilityDirection": "역량 방향",
+      "capabilityStack": "기술 스택",
+      "capabilityFocus": "집중 분야",
+      "capabilityStyle": "협업 스타일",
+      "avatarSource": "아바타 출처",
       "role": "역할",
       "createdAt": "가입 시간",
+      "deletedAt": "삭제 시간",
       "actions": "작업"
     },
     "search": {
@@ -1451,7 +1463,12 @@
     },
     "accountStatus": {
       "active": "활성",
+      "inactive": "비활성",
       "deleted": "삭제됨"
+    },
+    "verificationStatus": {
+      "verified": "인증됨",
+      "unverified": "미인증"
     },
     "actions": {
       "promote": "관리자로 승격",

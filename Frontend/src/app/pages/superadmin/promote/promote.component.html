@@ -47,10 +47,22 @@
             <div class="user-cell">{{ 'superadminPromote.table.nickname' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.coins' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.experience' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.reviewExperience' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.reviewLevel' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.pmExperience' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.pmLevel' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.accountStatus' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.email' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.emailVerified' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.githubUrl' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.capabilityDirection' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.capabilityStack' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.capabilityFocus' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.capabilityStyle' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.avatarSource' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.role' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.createdAt' | translate }}</div>
+            <div class="user-cell">{{ 'superadminPromote.table.deletedAt' | translate }}</div>
             <div class="user-cell">{{ 'superadminPromote.table.actions' | translate }}</div>
           </div>
           @for (user of filteredUsers; track user) {
@@ -76,18 +88,40 @@
               <div class="user-cell nickname" [attr.data-label]="'superadminPromote.table.nickname' | translate">{{ user.nickname || '-' }}</div>
               <div class="user-cell points" [attr.data-label]="'superadminPromote.table.coins' | translate">{{ getUserCoins(user) }}</div>
               <div class="user-cell experience" [attr.data-label]="'superadminPromote.table.experience' | translate">{{ user.experience ?? 0 }}</div>
+              <div class="user-cell experience" [attr.data-label]="'superadminPromote.table.reviewExperience' | translate">{{ user.review_experience ?? 0 }}</div>
+              <div class="user-cell level" [attr.data-label]="'superadminPromote.table.reviewLevel' | translate">{{ user.review_level ?? 1 }}</div>
+              <div class="user-cell experience" [attr.data-label]="'superadminPromote.table.pmExperience' | translate">{{ user.pm_experience ?? 0 }}</div>
+              <div class="user-cell level" [attr.data-label]="'superadminPromote.table.pmLevel' | translate">{{ user.pm_level ?? 1 }}</div>
               <div class="user-cell" [attr.data-label]="'superadminPromote.table.accountStatus' | translate">
-                <span class="account-status" [class.account-status--deleted]="user.is_deleted">
+                <span class="account-status" [class.account-status--inactive]="!user.is_active && !user.is_deleted" [class.account-status--deleted]="user.is_deleted">
                   {{ getAccountStatus(user) }}
                 </span>
               </div>
               <div class="user-cell email" [attr.data-label]="'superadminPromote.table.email' | translate">{{ user.email }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.emailVerified' | translate">
+                <span class="verification-status" [class.verification-status--unverified]="!user.email_verified">
+                  {{ getVerificationStatus(user) }}
+                </span>
+              </div>
+              <div class="user-cell link" [attr.data-label]="'superadminPromote.table.githubUrl' | translate">
+                @if (user.github_url) {
+                  <a [href]="user.github_url" target="_blank" rel="noopener noreferrer">{{ user.github_url }}</a>
+                } @else {
+                  <span>-</span>
+                }
+              </div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.capabilityDirection' | translate">{{ user.capability_direction || '-' }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.capabilityStack' | translate">{{ user.capability_stack || '-' }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.capabilityFocus' | translate">{{ user.capability_focus || '-' }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.capabilityStyle' | translate">{{ user.capability_style || '-' }}</div>
+              <div class="user-cell" [attr.data-label]="'superadminPromote.table.avatarSource' | translate">{{ user.avatarSource || user.avatar_source || '-' }}</div>
               <div class="user-cell" [attr.data-label]="'superadminPromote.table.role' | translate">
                 <span class="role-badge" [class]="'role-' + user.role">
                   {{ getRoleDisplayName(user.role) }}
                 </span>
               </div>
               <div class="user-cell created-at" [attr.data-label]="'superadminPromote.table.createdAt' | translate">{{ formatDate(user.created_at) }}</div>
+              <div class="user-cell created-at" [attr.data-label]="'superadminPromote.table.deletedAt' | translate">{{ user.deleted_at ? formatDate(user.deleted_at) : '-' }}</div>
               <div class="user-cell actions" [attr.data-label]="'superadminPromote.table.actions' | translate">
                 @if (user.role === 'user') {
                   <button

@@ -1435,10 +1435,22 @@
       "nickname": "暱稱",
       "coins": "Coins",
       "experience": "經驗值",
+      "reviewExperience": "審核經驗值",
+      "reviewLevel": "審核等級",
+      "pmExperience": "PM 經驗值",
+      "pmLevel": "PM 等級",
       "accountStatus": "帳號狀態",
       "email": "Email",
+      "emailVerified": "信箱驗證",
+      "githubUrl": "GitHub",
+      "capabilityDirection": "能力方向",
+      "capabilityStack": "技術棧",
+      "capabilityFocus": "專注領域",
+      "capabilityStyle": "協作風格",
+      "avatarSource": "頭像來源",
       "role": "角色",
       "createdAt": "註冊時間",
+      "deletedAt": "刪除時間",
       "actions": "操作"
     },
     "search": {
@@ -1452,7 +1464,12 @@
     },
     "accountStatus": {
       "active": "啟用中",
+      "inactive": "已停用",
       "deleted": "已刪除"
+    },
+    "verificationStatus": {
+      "verified": "已驗證",
+      "unverified": "未驗證"
     },
     "actions": {
       "promote": "晉升為管理員",
