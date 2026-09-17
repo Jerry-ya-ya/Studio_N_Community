@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
+import { resolveImageUrl } from '../../../shared/image-url';
 
 @Component({
   selector: 'app-square',
@@ -45,6 +46,10 @@ export class SquareComponent implements OnInit {
 
     this.loadFriends();
     this.loadCurrentUser();
+  }
+
+  getImageUrl(imageUrl?: string | null) {
+    return resolveImageUrl(imageUrl, this.apiRoot);
   }
 
   loadCurrentUser() {

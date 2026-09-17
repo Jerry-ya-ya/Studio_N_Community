@@ -4,6 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from flask_jwt_extended import create_access_token
+from image_upload import StoredImage
 
 from models import ActivityPromotion, User, db
 from routes.admin import activity as activity_routes
@@ -16,8 +17,11 @@ def test_admin_activity_mutations_are_logged(app, client, monkeypatch):
     monkeypatch.setattr(activity_routes.activity_logger, 'info', captured_logs.append)
     monkeypatch.setattr(
         activity_routes,
-        'save_validated_image',
-        lambda uploaded_file, upload_folder, prefix: f'{prefix}_test.png',
+        'upload_validated_image',
+        lambda uploaded_file, prefix: StoredImage(
+            blob_name=f'{prefix}/test.png',
+            url=f'https://example.blob.core.windows.net/media/{prefix}/test.png',
+        ),
     )
 
     unique_id = uuid4().hex
@@ -99,7 +103,7 @@ def test_admin_activity_mutations_are_logged(app, client, monkeypatch):
         'from': 'Launch event',
         'to': 'Updated launch event',
     }
-    assert payloads[2]['image_url'].endswith(f'activity-{activity_id}_test.png')
+    assert payloads[2]['image_url'].endswith(f'activity-{activity_id}/test.png')
 
     monkeypatch.setattr(
         log_routes,

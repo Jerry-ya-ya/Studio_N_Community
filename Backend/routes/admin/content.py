@@ -1,14 +1,18 @@
-import os
 import json
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, jsonify, request
 
 from models import db, HomeNewsItem, User
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from log_writer import get_backend_logger
 from time_utils import taipei_now, to_taipei_iso
-from image_upload import InvalidImageError, save_validated_image
+from image_upload import (
+    ImageStorageError,
+    InvalidImageError,
+    delete_uploaded_image,
+    upload_validated_image,
+)
 from profile_stats import get_coin_balances, serialize_profile_stats
 
 content_bp = Blueprint('content', __name__)
@@ -437,9 +441,8 @@ def upload_home_news_background(item_id):
             title=item.title
         )
         return jsonify({'error': 'No selected file'}), 400
-    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'home-news')
     try:
-        filename = save_validated_image(uploaded_file, upload_folder, f'home-news-{item.id}')
+        stored_image = upload_validated_image(uploaded_file, f'home-news/home-news-{item.id}')
     except InvalidImageError as error:
         log_content_event(
             'warning',
@@ -452,9 +455,13 @@ def upload_home_news_background(item_id):
             filename=uploaded_file.filename
         )
         return jsonify({'error': str(error), 'code': 'invalid_image'}), 400
+    except ImageStorageError:
+        return jsonify({'error': 'Image storage is temporarily unavailable', 'code': 'image_storage_unavailable'}), 503
 
-    item.background_url = f'/static/uploads/home-news/{filename}'
+    previous_background_url = item.background_url
+    item.background_url = stored_image.url
     db.session.commit()
+    delete_uploaded_image(previous_background_url)
     log_content_event(
         'info',
         action='upload_home_news_background',
@@ -463,7 +470,7 @@ def upload_home_news_background(item_id):
         item_id=item.id,
         theme=item.theme,
         title=item.title,
-        filename=filename,
+        filename=stored_image.blob_name,
         background_url=item.background_url
     )
 
@@ -480,9 +487,11 @@ def delete_home_news_item(item_id):
         'title': item.title,
         'tag': item.tag,
         'sort_order': item.sort_order,
+        'background_url': item.background_url,
     }
     db.session.delete(item)
     db.session.commit()
+    delete_uploaded_image(deleted_payload['background_url'])
     log_content_event(
         'info',
         action='delete_home_news_item',

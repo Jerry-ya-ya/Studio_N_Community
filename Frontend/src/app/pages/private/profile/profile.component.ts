@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthSessionService } from '../../../core/services/auth-session.service';
+import { resolveImageUrl } from '../../../shared/image-url';
 
 @Component({
   selector: 'app-profile',
@@ -52,6 +53,10 @@ export class ProfileComponent implements OnInit {
   ) {}
   isLoggedIn() {
     return this.authSession.isAuthenticated;
+  }
+
+  getImageUrl(imageUrl?: string | null) {
+    return resolveImageUrl(imageUrl, this.apiRoot);
   }
 
   logout() {

@@ -18,7 +18,7 @@
           <div class="user-avatar">
             @if (user?.avatar_url) {
               <img
-                [src]="apiRoot + '/' + user.avatar_url"
+                [src]="getImageUrl(user.avatar_url)"
                 [alt]="'postWall.creation.userAvatar' | translate" />
             } @else {
               <span>{{ getAvatarInitial(user) }}</span>
@@ -94,7 +94,7 @@
               <div class="author-avatar">
                 @if (user?.avatar_url) {
                   <img
-                    [src]="apiRoot + '/' + user.avatar_url"
+                    [src]="getImageUrl(user.avatar_url)"
                     [alt]="'postWall.posts.authorAvatar' | translate" />
                 } @else {
                   <span>{{ getAvatarInitial(user) }}</span>

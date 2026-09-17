@@ -5,6 +5,8 @@ from uuid import uuid4
 import pytest
 from flask_jwt_extended import create_access_token
 from PIL import Image
+from image_upload import StoredImage
+from unittest.mock import patch
 
 from models import StoreProduct, StorePurchase, User, db
 
@@ -157,17 +159,27 @@ def test_product_image_upload(client, store_accounts):
     Image.new('RGB', (8, 8), color=(40, 180, 90)).save(image_bytes, format='PNG')
     image_bytes.seek(0)
 
-    response = client.post(
-        f"/api/superadmin/store/products/{created['id']}/image",
-        headers=headers,
-        data={'image': (image_bytes, 'product.png')},
-        content_type='multipart/form-data',
-    )
+    with patch(
+        'routes.admin.store.upload_validated_image',
+        return_value=StoredImage(
+            blob_name=f"store/products/product-{created['id']}/product.png",
+            url=(
+                "https://example.blob.core.windows.net/media/"
+                f"store/products/product-{created['id']}/product.png"
+            ),
+        ),
+    ):
+        response = client.post(
+            f"/api/superadmin/store/products/{created['id']}/image",
+            headers=headers,
+            data={'image': (image_bytes, 'product.png')},
+            content_type='multipart/form-data',
+        )
 
     assert response.status_code == 200
     product = response.get_json()
     assert product['imageType'] == 'upload'
-    assert product['imageValue'].startswith('/static/uploads/store/product-')
+    assert product['imageValue'].startswith('https://example.blob.core.windows.net/media/store/products/product-')
 
 
 def test_user_store_only_lists_published_products(client, store_accounts):

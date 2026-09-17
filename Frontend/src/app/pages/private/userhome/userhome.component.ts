@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { resolveImageUrl } from '../../../shared/image-url';
 
 @Component({
   selector: 'app-userhome',
@@ -23,6 +24,10 @@ export class UserhomeComponent {
   public apiRoot: string = environment.apiUrl.replace('/api', '');
   
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
+
+  getImageUrl(imageUrl?: string | null) {
+    return resolveImageUrl(imageUrl, this.apiRoot);
+  }
   
   loadAllUsers() {
     console.log('Loading all users');

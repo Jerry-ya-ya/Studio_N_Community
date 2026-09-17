@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
+import { resolveImageUrl } from '../../../shared/image-url';
 
 @Component({
   selector: 'app-post',
@@ -52,6 +53,10 @@ export class PostComponent {
 
   getAvatarInitial(user: any) {
     return (user?.nickname || user?.username || '?').charAt(0).toUpperCase();
+  }
+
+  getImageUrl(imageUrl?: string | null) {
+    return resolveImageUrl(imageUrl, this.apiRoot);
   }
 
   submitPost() {

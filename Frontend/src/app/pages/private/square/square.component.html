@@ -6,7 +6,7 @@
       <div class="square-avatar">
         @if (user.avatar_url) {
           <img
-            [src]="apiRoot + '/' + user.avatar_url"
+            [src]="getImageUrl(user.avatar_url)"
             width="120"
             height="120"
             [alt]="'privateSquare.user.avatarAlt' | translate" />

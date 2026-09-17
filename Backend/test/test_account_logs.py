@@ -4,6 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from flask_jwt_extended import create_access_token
+from image_upload import StoredImage
 
 from models import User, db
 from routes.admin import logs as log_routes
@@ -17,8 +18,11 @@ def test_account_mutations_are_logged(app, client, monkeypatch):
     monkeypatch.setattr(me_routes.mail, 'send', lambda message: None)
     monkeypatch.setattr(
         avatar_routes,
-        'save_validated_image',
-        lambda uploaded_file, upload_folder, prefix: f'{prefix}_avatar.png',
+        'upload_validated_image',
+        lambda uploaded_file, prefix: StoredImage(
+            blob_name=f'{prefix}/avatar.png',
+            url=f'https://example.blob.core.windows.net/media/{prefix}/avatar.png',
+        ),
     )
 
     unique_id = uuid4().hex
@@ -98,7 +102,7 @@ def test_account_mutations_are_logged(app, client, monkeypatch):
         'from': 'Old nickname',
         'to': 'New nickname',
     }
-    assert payloads[1]['filename'].endswith('_avatar.png')
+    assert payloads[1]['filename'].endswith('/avatar.png')
     assert payloads[1]['avatar_source'] == 'local'
     assert payloads[2]['username'] == username
     assert payloads[2]['previous_identity']['email'] == f'new-{unique_id}@example.com'

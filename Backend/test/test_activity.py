@@ -453,7 +453,7 @@ def test_activity_image_upload_errors_success_and_clear(
     assert response.get_json() == {"error": "No selected file"}
 
     with patch(
-        "routes.admin.activity.save_validated_image",
+        "routes.admin.activity.upload_validated_image",
         side_effect=InvalidImageError("檔案不是有效的圖片"),
     ):
         response = client.post(
@@ -469,8 +469,11 @@ def test_activity_image_upload_errors_success_and_clear(
     }
 
     with patch(
-        "routes.admin.activity.save_validated_image",
-        return_value="activity-1_safe.png",
+        "routes.admin.activity.upload_validated_image",
+        return_value=SimpleNamespace(
+            blob_name=f"activities/activity-{activity_id}/safe.png",
+            url=f"https://example.blob.core.windows.net/media/activities/activity-{activity_id}/safe.png",
+        ),
     ) as save_image:
         response = client.post(
             endpoint,
@@ -480,14 +483,11 @@ def test_activity_image_upload_errors_success_and_clear(
         )
     assert response.status_code == 200
     assert response.get_json()["imageUrl"] == (
-        "/static/uploads/activity/activity-1_safe.png"
+        f"https://example.blob.core.windows.net/media/activities/activity-{activity_id}/safe.png"
     )
-    uploaded_file, upload_folder, filename_prefix = save_image.call_args.args
+    uploaded_file, filename_prefix = save_image.call_args.args
     assert uploaded_file.filename == "source.png"
-    assert upload_folder.endswith("static\\uploads\\activity") or upload_folder.endswith(
-        "static/uploads/activity"
-    )
-    assert filename_prefix == f"activity-{activity_id}"
+    assert filename_prefix == f"activities/activity-{activity_id}"
 
     response = client.delete(endpoint, headers=headers)
     assert response.status_code == 200

@@ -405,7 +405,7 @@ def test_home_news_background_upload_errors_and_success(
     assert response.get_json() == {"error": "No selected file"}
 
     with patch(
-        "routes.admin.content.save_validated_image",
+        "routes.admin.content.upload_validated_image",
         side_effect=InvalidImageError("invalid image"),
     ):
         response = client.post(
@@ -418,8 +418,11 @@ def test_home_news_background_upload_errors_and_success(
     assert response.get_json() == {"error": "invalid image", "code": "invalid_image"}
 
     with patch(
-        "routes.admin.content.save_validated_image",
-        return_value="safe.png",
+        "routes.admin.content.upload_validated_image",
+        return_value=SimpleNamespace(
+            blob_name=f"home-news/home-news-{item_id}/safe.png",
+            url=f"https://example.blob.core.windows.net/media/home-news/home-news-{item_id}/safe.png",
+        ),
     ) as save_image:
         response = client.post(
             endpoint,
@@ -428,8 +431,9 @@ def test_home_news_background_upload_errors_and_success(
             content_type="multipart/form-data",
         )
     assert response.status_code == 200
-    assert response.get_json()["backgroundUrl"] == "/static/uploads/home-news/safe.png"
-    uploaded, folder, prefix = save_image.call_args.args
+    assert response.get_json()["backgroundUrl"] == (
+        f"https://example.blob.core.windows.net/media/home-news/home-news-{item_id}/safe.png"
+    )
+    uploaded, prefix = save_image.call_args.args
     assert uploaded.filename == "source.png"
-    assert folder.replace("\\", "/").endswith("static/uploads/home-news")
-    assert prefix == f"home-news-{item_id}"
+    assert prefix == f"home-news/home-news-{item_id}"

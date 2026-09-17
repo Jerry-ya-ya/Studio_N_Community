@@ -9,8 +9,10 @@ class BaseConfig:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # 共用設定
-    UPLOAD_FOLDER = "static/uploads/avatar"
+    # Azure Blob Storage. The container must allow public blob reads because the
+    # database stores stable blob URLs, never a credential-bearing SAS URL.
+    AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+    AZURE_STORAGE_CONTAINER = os.environ.get("AZURE_STORAGE_CONTAINER")
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB
 
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY")

@@ -58,7 +58,7 @@
                       <div class="author-avatar">
                         @if (post.user?.avatar_url) {
                           <img
-                            [src]="apiRoot + '/' + post.user.avatar_url"
+                            [src]="getImageUrl(post.user.avatar_url)"
                             [alt]="'privateHome.posts.authorAvatar' | translate" />
                         } @else {
                           <span>{{ getAvatarInitial(post.user) }}</span>

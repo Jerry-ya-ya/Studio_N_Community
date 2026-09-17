@@ -38,38 +38,38 @@ services:
     restart: always
     container_name: redis-prod
 
-  # celery_worker:
-  #   image: jerryzheng0907/celery-worker:latest
-  #   build:
-  #     context: Backend/celery_worker
-  #     dockerfile: Dockerfile
-  #   command: celery -A celery_worker worker --loglevel=info
-  #   volumes:
-  #     - ./Backend:/app/Backend
-  #   environment:
-  #     - PYTHONPATH=/app/Backend
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - redis
-  #   container_name: celery-worker-prod
+  celery_worker:
+    image: jerryzheng0907/celery-worker:latest
+    build:
+      context: Backend/celery_worker
+      dockerfile: Dockerfile
+    command: celery -A celery_worker worker --loglevel=info
+    volumes:
+      - ./Backend:/app/Backend
+    environment:
+      - PYTHONPATH=/app/Backend
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    container_name: celery-worker-prod
 
-  # celery_beat:
-  #   image: jerryzheng0907/celery-beat:latest
-  #   build:
-  #     context: Backend/celery_worker
-  #     dockerfile: Dockerfile
-  #   command: celery -A celery_worker beat --loglevel=info
-  #   volumes:
-  #     - ./Backend:/app/Backend
-  #   environment:
-  #     - PYTHONPATH=/app/Backend
-  #   env_file:
-  #     - .env.3prod
-  #   depends_on:
-  #     - redis
-  #     - celery_worker
-  #   container_name: celery-beat-prod
+  celery_beat:
+    image: jerryzheng0907/celery-beat:latest
+    build:
+      context: Backend/celery_worker
+      dockerfile: Dockerfile
+    command: celery -A celery_worker beat --loglevel=info
+    volumes:
+      - ./Backend:/app/Backend
+    environment:
+      - PYTHONPATH=/app/Backend
+    env_file:
+      - .env.3prod
+    depends_on:
+      - redis
+      - celery_worker
+    container_name: celery-beat-prod
     
 volumes:
   pgdata_prod:

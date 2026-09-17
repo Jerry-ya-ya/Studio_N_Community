@@ -1,10 +1,14 @@
-import os
 from decimal import Decimal, InvalidOperation
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from image_upload import InvalidImageError, save_validated_image
+from image_upload import (
+    ImageStorageError,
+    InvalidImageError,
+    delete_uploaded_image,
+    upload_validated_image,
+)
 from models import StoreProduct, StorePurchase, db
 from routes.admin.decorators import superadmin_required
 from routes.auth.utils import get_current_user_from_token
@@ -172,15 +176,18 @@ def upload_product_image(product_id):
     if not image or not image.filename:
         return jsonify({'error': '請選擇圖片'}), 400
 
-    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'store')
     try:
-        filename = save_validated_image(image, upload_folder, f'product-{product.id}')
+        stored_image = upload_validated_image(image, f'store/products/product-{product.id}')
     except InvalidImageError as error:
         return jsonify({'error': str(error)}), 400
+    except ImageStorageError:
+        return jsonify({'error': 'Image storage is temporarily unavailable', 'code': 'image_storage_unavailable'}), 503
 
+    previous_image_value = product.image_value if product.image_type == 'upload' else None
     product.image_type = 'upload'
-    product.image_value = f'/static/uploads/store/{filename}'
+    product.image_value = stored_image.url
     db.session.commit()
+    delete_uploaded_image(previous_image_value)
     return jsonify(serialize_product(product))
 
 

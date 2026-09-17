@@ -10,7 +10,7 @@
         <div class="avatar-orbit">
           @if (user?.avatar_url) {
             <img
-              [src]="apiRoot + '/' + user.avatar_url"
+              [src]="getImageUrl(user.avatar_url)"
               [alt]="'privateProfile.avatar.userAvatarAlt' | translate"
               >
           } @else {
@@ -147,7 +147,7 @@
             <div class="avatar-frame">
               @if (avatarPreview || user?.avatar_url) {
                 <img
-                  [src]="avatarPreview || (apiRoot + '/' + user.avatar_url)"
+                  [src]="avatarPreview || getImageUrl(user.avatar_url)"
                   [alt]="'privateProfile.avatar.previewAlt' | translate"
                   >
               } @else {

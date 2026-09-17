@@ -1,15 +1,19 @@
-import os
 import json
 from datetime import datetime
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
 from models import ActivityPromotion, db
 from routes.admin.decorators import admin_required
 from routes.auth.utils import get_current_user_from_token
 from time_utils import taipei_now, to_taipei_iso
-from image_upload import InvalidImageError, save_validated_image
+from image_upload import (
+    ImageStorageError,
+    InvalidImageError,
+    delete_uploaded_image,
+    upload_validated_image,
+)
 from log_writer import get_backend_logger
 from role_groups import Permission, has_permission
 
@@ -267,18 +271,21 @@ def upload_activity_image(activity_id):
         return jsonify({'error': 'No file part'}), 400
     if uploaded_file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'activity')
     try:
-        filename = save_validated_image(uploaded_file, upload_folder, f'activity-{activity.id}')
+        stored_image = upload_validated_image(uploaded_file, f'activities/activity-{activity.id}')
     except InvalidImageError as error:
         return jsonify({'error': str(error), 'code': 'invalid_image'}), 400
+    except ImageStorageError:
+        return jsonify({'error': 'Image storage is temporarily unavailable', 'code': 'image_storage_unavailable'}), 503
 
-    activity.image_url = f'/static/uploads/activity/{filename}'
+    previous_image_url = activity.image_url
+    activity.image_url = stored_image.url
     db.session.commit()
+    delete_uploaded_image(previous_image_url)
     log_activity_event(
         'upload_activity_image',
         activity,
-        filename=filename,
+        filename=stored_image.blob_name,
         image_url=activity.image_url,
     )
 
@@ -292,6 +299,7 @@ def clear_activity_image(activity_id):
     previous_image_url = activity.image_url
     activity.image_url = None
     db.session.commit()
+    delete_uploaded_image(previous_image_url)
     log_activity_event('clear_activity_image', activity, previous_image_url=previous_image_url)
 
     return jsonify(serialize_activity(activity))
@@ -305,9 +313,11 @@ def delete_activity(activity_id):
         'id': activity.id,
         'title': activity.title,
         'visibility': activity.visibility,
+        'image_url': activity.image_url,
     }
     db.session.delete(activity)
     db.session.commit()
+    delete_uploaded_image(activity_log_data['image_url'])
     log_activity_event(
         'delete_activity',
         activity_id=activity_log_data['id'],
