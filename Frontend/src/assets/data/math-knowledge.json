@@ -1,7 +1,144 @@
 {
-  "version": 1,
+  "version": 2,
   "defaultCenter": "gradient",
   "nodes": [
+    {
+      "id": "field-axiom",
+      "title": "Field Axiom（體公設）",
+      "category": "axiom",
+      "definition": "體公設規定實數上的加法與乘法如何運作：兩種運算滿足封閉性、交換律、結合律，具有單位元素與反元素，並由分配律彼此連結。",
+      "latex": "(\\mathbb{R},+,\\cdot)\\text{ is a field}",
+      "simpleExplanation": "實數的四則運算之所以能穩定使用，是因為它們共同遵守一套基本規則。",
+      "symbolDefinitions": [
+        { "symbol": "R", "latex": "\\mathbb{R}", "description": "實數所形成的集合。" },
+        { "symbol": "+, ·", "latex": "+,\\cdot", "description": "實數上的加法與乘法運算。" }
+      ]
+    },
+    {
+      "id": "field-closure",
+      "title": "封閉性",
+      "category": "property",
+      "definition": "任意兩個實數相加或相乘，結果仍然是實數。",
+      "latex": "\\forall a,b\\in\\mathbb{R},\\quad a+b\\in\\mathbb{R},\\quad ab\\in\\mathbb{R}",
+      "simpleExplanation": "用實數做加法或乘法，不會跑出實數系統之外。",
+      "symbolDefinitions": [
+        { "symbol": "a, b", "latex": "a,b\\in\\mathbb{R}", "description": "任意兩個實數。" },
+        { "symbol": "∈", "latex": "\\in", "description": "表示某個元素屬於一個集合。" }
+      ]
+    },
+    {
+      "id": "field-commutativity",
+      "title": "交換律",
+      "category": "property",
+      "definition": "加法與乘法交換兩個運算元的順序，結果不變。",
+      "latex": "a+b=b+a,\\qquad ab=ba",
+      "simpleExplanation": "相加或相乘時，前後順序不影響答案。",
+      "symbolDefinitions": [
+        { "symbol": "a, b", "latex": "a,b", "description": "任意實數。" }
+      ]
+    },
+    {
+      "id": "field-associativity",
+      "title": "結合律",
+      "category": "property",
+      "definition": "三個實數進行連續加法或乘法時，先計算哪一組不影響結果。",
+      "latex": "(a+b)+c=a+(b+c),\\qquad (ab)c=a(bc)",
+      "simpleExplanation": "只做加法或只做乘法時，括號換位置不會改變答案。",
+      "symbolDefinitions": [
+        { "symbol": "a, b, c", "latex": "a,b,c", "description": "任意三個實數。" }
+      ]
+    },
+    {
+      "id": "field-identities",
+      "title": "單位元素",
+      "category": "property",
+      "definition": "實數中存在加法單位元素 0 與乘法單位元素 1，而且 0 與 1 不相等。",
+      "latex": "a+0=a,\\qquad a\\cdot1=a,\\qquad 0\\ne1",
+      "simpleExplanation": "加上 0 或乘上 1，都會保留原來的數。",
+      "symbolDefinitions": [
+        { "symbol": "0", "latex": "0", "description": "加法單位元素。" },
+        { "symbol": "1", "latex": "1", "description": "乘法單位元素。" }
+      ]
+    },
+    {
+      "id": "field-inverses",
+      "title": "反元素",
+      "category": "property",
+      "definition": "每個實數都有加法反元素；每個非零實數另有乘法反元素。",
+      "latex": "a+(-a)=0,\\qquad a\\ne0\\Rightarrow a\\cdot a^{-1}=1",
+      "simpleExplanation": "每個數都能用相反數抵消；非零的數也能用倒數抵消乘法。",
+      "symbolDefinitions": [
+        { "symbol": "−a", "latex": "-a", "description": "a 的加法反元素。" },
+        { "symbol": "a⁻¹", "latex": "a^{-1}", "description": "非零實數 a 的乘法反元素。" }
+      ]
+    },
+    {
+      "id": "field-distributivity",
+      "title": "分配律",
+      "category": "property",
+      "definition": "乘法對加法具有分配性，因而把兩種運算一致地連結起來。",
+      "latex": "a(b+c)=ab+ac",
+      "simpleExplanation": "括號外的乘數，可以分別乘進括號內的每一項。",
+      "symbolDefinitions": [
+        { "symbol": "a, b, c", "latex": "a,b,c", "description": "任意三個實數。" }
+      ]
+    },
+    {
+      "id": "order-axiom",
+      "title": "Order Axiom（序公設）",
+      "category": "axiom",
+      "definition": "序公設賦予實數一致的大小關係：任意兩數可以比較，順序具有遞移性，且加法與正數乘法會保持不等式方向。",
+      "latex": "(\\mathbb{R},<)\\text{ is an ordered field}",
+      "simpleExplanation": "實數不只可以運算，也能按大小排成一條與運算相容的數線。",
+      "symbolDefinitions": [
+        { "symbol": "<", "latex": "<", "description": "實數之間的嚴格小於關係。" },
+        { "symbol": "ordered field", "latex": "(\\mathbb{R},+,\\cdot,<)", "description": "運算與大小順序彼此相容的體。" }
+      ]
+    },
+    {
+      "id": "order-trichotomy",
+      "title": "三一律",
+      "category": "property",
+      "definition": "任意兩個實數恰好滿足小於、等於或大於三種關係中的一種。",
+      "latex": "\\text{exactly one of }a<b,\\quad a=b,\\quad a>b",
+      "simpleExplanation": "比較兩個實數時，只有小於、等於、大於其中一種情況成立。",
+      "symbolDefinitions": [
+        { "symbol": "a, b", "latex": "a,b\\in\\mathbb{R}", "description": "被比較的兩個實數。" }
+      ]
+    },
+    {
+      "id": "order-transitivity",
+      "title": "遞移性",
+      "category": "property",
+      "definition": "若第一個實數小於第二個，且第二個小於第三個，則第一個小於第三個。",
+      "latex": "a<b\\land b<c\\Rightarrow a<c",
+      "simpleExplanation": "如果 a 排在 b 前面、b 又排在 c 前面，那麼 a 一定排在 c 前面。",
+      "symbolDefinitions": [
+        { "symbol": "⇒", "latex": "\\Rightarrow", "description": "表示前面的條件可推出後面的結論。" }
+      ]
+    },
+    {
+      "id": "order-addition-compatibility",
+      "title": "加法保序性",
+      "category": "property",
+      "definition": "不等式兩邊同加一個實數，大小關係保持不變。",
+      "latex": "a<b\\Rightarrow a+c<b+c",
+      "simpleExplanation": "比較的兩邊一起平移相同距離，前後次序不會改變。",
+      "symbolDefinitions": [
+        { "symbol": "c", "latex": "c\\in\\mathbb{R}", "description": "不等式兩邊共同加上的實數。" }
+      ]
+    },
+    {
+      "id": "order-multiplication-compatibility",
+      "title": "正乘保序性",
+      "category": "property",
+      "definition": "不等式兩邊同乘一個正實數，大小關係保持不變。",
+      "latex": "a<b\\land 0<c\\Rightarrow ac<bc",
+      "simpleExplanation": "比較的兩邊同時用正數放大或縮小，前後次序不會改變。",
+      "symbolDefinitions": [
+        { "symbol": "c > 0", "latex": "c>0", "description": "兩邊共同乘上的正實數。" }
+      ]
+    },
     {
       "id": "real-function",
       "title": "實函數",
@@ -140,6 +277,26 @@
     }
   ],
   "edges": [
+    { "id": "field-axiom-closure", "source": "field-axiom", "target": "field-closure", "relation": "includes" },
+    { "id": "field-axiom-commutativity", "source": "field-axiom", "target": "field-commutativity", "relation": "includes" },
+    { "id": "field-axiom-associativity", "source": "field-axiom", "target": "field-associativity", "relation": "includes" },
+    { "id": "field-axiom-identities", "source": "field-axiom", "target": "field-identities", "relation": "includes" },
+    { "id": "field-axiom-inverses", "source": "field-axiom", "target": "field-inverses", "relation": "includes" },
+    { "id": "field-axiom-distributivity", "source": "field-axiom", "target": "field-distributivity", "relation": "includes" },
+    { "id": "field-closure-function", "source": "field-closure", "target": "real-function", "relation": "supports" },
+    { "id": "field-commutativity-function", "source": "field-commutativity", "target": "real-function", "relation": "supports" },
+    { "id": "field-associativity-function", "source": "field-associativity", "target": "real-function", "relation": "supports" },
+    { "id": "field-identities-function", "source": "field-identities", "target": "real-function", "relation": "supports" },
+    { "id": "field-inverses-function", "source": "field-inverses", "target": "real-function", "relation": "supports" },
+    { "id": "field-distributivity-function", "source": "field-distributivity", "target": "real-function", "relation": "supports" },
+    { "id": "order-axiom-trichotomy", "source": "order-axiom", "target": "order-trichotomy", "relation": "includes" },
+    { "id": "order-axiom-transitivity", "source": "order-axiom", "target": "order-transitivity", "relation": "includes" },
+    { "id": "order-axiom-addition", "source": "order-axiom", "target": "order-addition-compatibility", "relation": "includes" },
+    { "id": "order-axiom-multiplication", "source": "order-axiom", "target": "order-multiplication-compatibility", "relation": "includes" },
+    { "id": "order-trichotomy-function", "source": "order-trichotomy", "target": "real-function", "relation": "supports" },
+    { "id": "order-transitivity-function", "source": "order-transitivity", "target": "real-function", "relation": "supports" },
+    { "id": "order-addition-function", "source": "order-addition-compatibility", "target": "real-function", "relation": "supports" },
+    { "id": "order-multiplication-function", "source": "order-multiplication-compatibility", "target": "real-function", "relation": "supports" },
     { "id": "function-limit", "source": "real-function", "target": "limit", "relation": "defines behavior near a point" },
     { "id": "limit-continuity", "source": "limit", "target": "continuity", "relation": "defines" },
     { "id": "limit-derivative", "source": "limit", "target": "derivative", "relation": "defines" },

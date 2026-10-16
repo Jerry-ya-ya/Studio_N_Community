@@ -840,3 +840,7 @@
 ## 2026/10/16
 
 - Add a public Cytoscape mathematical knowledge graph with configurable directed traversal, KaTeX details, lazy-loaded visualizations, static data, navigation, localization, and tests.
+
+- Improve KaTeX formula spacing for limits, fractions, and responsive symbol definitions.
+
+- Establish field and order axioms and their properties as the explorable foundations of the real-function knowledge graph.

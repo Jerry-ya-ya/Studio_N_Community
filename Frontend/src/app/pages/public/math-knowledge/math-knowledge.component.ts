@@ -37,7 +37,7 @@ export class MathKnowledgeComponent implements OnInit, AfterViewInit, OnDestroy 
   dataset?: MathKnowledgeDataset;
   localGraph?: LocalMathGraph;
   selectedNode?: MathKnowledgeNode;
-  dependencyDepth = 4;
+  dependencyDepth = 6;
   applicationDepth = 2;
   detailsExpanded = false;
   loading = true;
