@@ -59,6 +59,8 @@ export const appPath = {
     update: 'update',
     //public activities
     publicActivities: 'activities',
+    //public mathematical knowledge graph
+    mathKnowledge: 'math-knowledge',
     //private activities
     privateActivities: 'private-activities',
     //achievement

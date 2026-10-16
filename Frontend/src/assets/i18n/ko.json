@@ -51,6 +51,7 @@
       "tutorial": "튜토리얼",
       "update": "업데이트",
       "activities": "이벤트",
+      "mathKnowledge": "수학 지식 그래프",
       "register": "가입",
       "login": "로그인"
     },
@@ -89,6 +90,16 @@
       "store": "상품 관리",
       "feature": "기능"
     }
+  },
+  "mathKnowledge": {
+    "hero": { "kicker": "수학 도구 / 로컬 지식 창", "title": "수학 지식 그래프", "subtitle": "원하는 개념을 중심으로 선행 지식과 이후 응용을 탐색하세요." },
+    "stats": { "nodes": "노드", "edges": "관계", "version": "데이터 버전", "visible": "개 표시 노드" },
+    "controls": { "label": "그래프 범위 설정", "dependencies": "선행 깊이", "applications": "응용 깊이", "fit": "그래프 중앙 맞춤" },
+    "graph": { "label": "Open Circle 로컬 수학 지식 그래프" },
+    "legend": { "center": "중심", "dependency": "선행 지식", "application": "응용" },
+    "state": { "loading": "수학 지식 그래프를 불러오는 중…", "error": "수학 지식 데이터를 불러올 수 없습니다.", "loadingVisualization": "인터랙티브 시각 자료를 불러오는 중…", "select": "탐색할 노드를 선택하세요." },
+    "actions": { "expand": "상세 내용 펼치기", "collapse": "상세 내용 접기" },
+    "details": { "definition": "전체 정의", "formula": "수학적 정의", "symbols": "기호 안내", "visualization": "인터랙티브 시각 자료" }
   },
   "formBuilder": {
     "hero": { "kicker": "관리 도구 / JSONB", "title": "양식 빌더", "lead": "구조화된 질문으로 안전한 양식을 만들고 수정합니다.", "newForm": "새 양식" },

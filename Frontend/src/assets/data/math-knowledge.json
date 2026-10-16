@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "defaultCenter": "gradient",
+  "nodes": [
+    {
+      "id": "real-function",
+      "title": "實函數",
+      "category": "foundation",
+      "definition": "實函數把定義域中的每個實數輸入，唯一對應到一個實數輸出，是微積分中描述變化關係的基本物件。",
+      "latex": "f: D \\subseteq \\mathbb{R} \\to \\mathbb{R}, \\qquad x \\mapsto f(x)",
+      "simpleExplanation": "把一個數字送進規則，得到唯一的一個數字。",
+      "symbolDefinitions": [
+        { "symbol": "D", "latex": "D", "description": "函數的定義域。" },
+        { "symbol": "f(x)", "latex": "f(x)", "description": "輸入 x 對應的函數值。" }
+      ]
+    },
+    {
+      "id": "limit",
+      "title": "極限",
+      "category": "analysis",
+      "definition": "當 x 任意接近 a 時，若 f(x) 能任意接近同一個數 L，則稱 f 在 a 的極限為 L。極限描述的是靠近某點時的趨勢，不要求函數在該點有定義。",
+      "latex": "\\lim_{x \\to a} f(x)=L",
+      "simpleExplanation": "不一定要碰到目標點，只看越靠近時，函數值正在靠近哪裡。",
+      "symbolDefinitions": [
+        { "symbol": "a", "latex": "a", "description": "輸入所接近的目標點。" },
+        { "symbol": "L", "latex": "L", "description": "函數值所接近的極限值。" }
+      ]
+    },
+    {
+      "id": "continuity",
+      "title": "連續性",
+      "category": "analysis",
+      "definition": "函數 f 在 a 連續，表示 f(a) 有定義、a 點的極限存在，而且極限值等於函數值。",
+      "latex": "\\lim_{x \\to a} f(x)=f(a)",
+      "simpleExplanation": "在這個點附近畫函數圖形時，不需要把筆抬起來。",
+      "symbolDefinitions": [
+        { "symbol": "f(a)", "latex": "f(a)", "description": "函數在 a 點的實際值。" },
+        { "symbol": "lim", "latex": "\\lim_{x \\to a}", "description": "從 a 附近觀察函數的趨勢。" }
+      ]
+    },
+    {
+      "id": "derivative",
+      "title": "導數",
+      "category": "calculus",
+      "definition": "導數是函數在某點的瞬時變化率，由差商在增量趨近零時的極限定義；幾何上等於該點切線的斜率。",
+      "latex": "f'(x)=\\lim_{h \\to 0}\\frac{f(x+h)-f(x)}{h}",
+      "simpleExplanation": "把觀察時間縮到非常短，量出函數此刻變化得有多快。",
+      "symbolDefinitions": [
+        { "symbol": "f'(x)", "latex": "f'(x)", "description": "f 在 x 點的瞬時變化率。" },
+        { "symbol": "h", "latex": "h", "description": "趨近於零的輸入增量。" }
+      ],
+      "visualization": {
+        "type": "derivative-tangent",
+        "caption": "拖曳滑桿觀察 y=x²/2 上不同位置的切線；切線斜率就是該點的導數。"
+      }
+    },
+    {
+      "id": "mean-value-theorem",
+      "title": "均值定理",
+      "category": "theorem",
+      "definition": "若 f 在閉區間 [a,b] 連續、在開區間 (a,b) 可微，則至少存在一點 c，使瞬時變化率等於整段區間的平均變化率。",
+      "latex": "\\exists c \\in (a,b):\\quad f'(c)=\\frac{f(b)-f(a)}{b-a}",
+      "simpleExplanation": "一段旅程中的某個瞬間速度，一定等於整段旅程的平均速度。",
+      "symbolDefinitions": [
+        { "symbol": "c", "latex": "c \\in (a,b)", "description": "滿足結論的區間內點。" },
+        { "symbol": "average", "latex": "\\frac{f(b)-f(a)}{b-a}", "description": "區間上的平均變化率。" }
+      ]
+    },
+    {
+      "id": "chain-rule",
+      "title": "鏈鎖律",
+      "category": "calculus",
+      "definition": "複合函數的導數等於外層函數在內層輸出處的導數，乘上內層函數的導數。",
+      "latex": "\\frac{d}{dx}f(g(x))=f'(g(x))g'(x)",
+      "simpleExplanation": "變化一層一層傳遞，總影響是每一層影響相乘。",
+      "symbolDefinitions": [
+        { "symbol": "g(x)", "latex": "g(x)", "description": "先被計算的內層函數。" },
+        { "symbol": "f", "latex": "f", "description": "接收 g(x) 的外層函數。" }
+      ]
+    },
+    {
+      "id": "partial-derivative",
+      "title": "偏導數",
+      "category": "multivariable",
+      "definition": "多變數函數對某一變數的偏導數，是固定其他變數，只讓指定變數改變時的瞬時變化率。",
+      "latex": "\\frac{\\partial f}{\\partial x_i}(\\mathbf{x})=\\lim_{h\\to0}\\frac{f(\\mathbf{x}+h\\mathbf{e}_i)-f(\\mathbf{x})}{h}",
+      "simpleExplanation": "面對很多旋鈕時，先固定其他旋鈕，只轉動其中一個來看影響。",
+      "symbolDefinitions": [
+        { "symbol": "partial", "latex": "\\partial", "description": "表示多變數函數的偏微分。" },
+        { "symbol": "e_i", "latex": "\\mathbf{e}_i", "description": "第 i 個座標方向的單位向量。" }
+      ]
+    },
+    {
+      "id": "gradient",
+      "title": "梯度",
+      "category": "multivariable",
+      "definition": "梯度把所有一階偏導數排列成向量。它指向函數值上升最快的方向，長度代表該方向的最大上升率。",
+      "latex": "\\nabla f(\\mathbf{x})=\\left(\\frac{\\partial f}{\\partial x_1},\\ldots,\\frac{\\partial f}{\\partial x_n}\\right)",
+      "simpleExplanation": "站在山坡上，梯度就是最陡的上坡方向與坡度。",
+      "symbolDefinitions": [
+        { "symbol": "nabla", "latex": "\\nabla f", "description": "函數 f 的梯度向量。" },
+        { "symbol": "x", "latex": "\\mathbf{x}", "description": "由多個座標組成的輸入向量。" }
+      ]
+    },
+    {
+      "id": "constrained-optimization",
+      "title": "限制式最佳化",
+      "category": "optimization",
+      "definition": "限制式最佳化是在滿足等式或不等式限制的可行集合內，尋找目標函數最大值或最小值的問題。",
+      "latex": "\\min_{\\mathbf{x}} f(\\mathbf{x})\\quad \\text{s.t.}\\quad g(\\mathbf{x})=0",
+      "simpleExplanation": "不是任意找最低點，而是在規則允許的範圍內找最低點。",
+      "symbolDefinitions": [
+        { "symbol": "f", "latex": "f(\\mathbf{x})", "description": "希望最小化或最大化的目標函數。" },
+        { "symbol": "g", "latex": "g(\\mathbf{x})=0", "description": "解必須滿足的限制條件。" }
+      ]
+    },
+    {
+      "id": "taylor-series",
+      "title": "泰勒展開",
+      "category": "analysis",
+      "definition": "泰勒展開使用函數在單一點的各階導數，建立多項式來近似函數在該點附近的行為。",
+      "latex": "f(x)=\\sum_{n=0}^{\\infty}\\frac{f^{(n)}(a)}{n!}(x-a)^n",
+      "simpleExplanation": "只知道函數在一點附近的變化資訊，也能拼出一個局部近似模型。",
+      "symbolDefinitions": [
+        { "symbol": "f(n)", "latex": "f^{(n)}(a)", "description": "f 在 a 點的第 n 階導數。" },
+        { "symbol": "n!", "latex": "n!", "description": "n 的階乘，用來調整各階項的尺度。" }
+      ]
+    },
+    {
+      "id": "newton-method",
+      "title": "牛頓法",
+      "category": "numerical",
+      "definition": "牛頓法用目前位置的切線與 x 軸交點作為下一次近似，反覆迭代來求解非線性方程的根。",
+      "latex": "x_{k+1}=x_k-\\frac{f(x_k)}{f'(x_k)}",
+      "simpleExplanation": "從一個猜測開始，沿著切線快速修正，逐步靠近方程的解。",
+      "symbolDefinitions": [
+        { "symbol": "x_k", "latex": "x_k", "description": "第 k 次迭代的近似值。" },
+        { "symbol": "f'(x_k)", "latex": "f'(x_k)", "description": "目前位置的切線斜率。" }
+      ]
+    }
+  ],
+  "edges": [
+    { "id": "function-limit", "source": "real-function", "target": "limit", "relation": "defines behavior near a point" },
+    { "id": "limit-continuity", "source": "limit", "target": "continuity", "relation": "defines" },
+    { "id": "limit-derivative", "source": "limit", "target": "derivative", "relation": "defines" },
+    { "id": "continuity-derivative", "source": "continuity", "target": "derivative", "relation": "supports differentiability" },
+    { "id": "derivative-mvt", "source": "derivative", "target": "mean-value-theorem", "relation": "enables" },
+    { "id": "continuity-mvt", "source": "continuity", "target": "mean-value-theorem", "relation": "is required by" },
+    { "id": "derivative-chain", "source": "derivative", "target": "chain-rule", "relation": "generalizes" },
+    { "id": "derivative-partial", "source": "derivative", "target": "partial-derivative", "relation": "extends to multiple variables" },
+    { "id": "chain-gradient", "source": "chain-rule", "target": "gradient", "relation": "supports composition" },
+    { "id": "partial-gradient", "source": "partial-derivative", "target": "gradient", "relation": "forms components" },
+    { "id": "gradient-optimization", "source": "gradient", "target": "constrained-optimization", "relation": "guides" },
+    { "id": "derivative-taylor", "source": "derivative", "target": "taylor-series", "relation": "provides coefficients" },
+    { "id": "derivative-newton", "source": "derivative", "target": "newton-method", "relation": "drives iteration" },
+    { "id": "taylor-newton", "source": "taylor-series", "target": "newton-method", "relation": "provides local approximation" }
+  ]
+}

@@ -1,0 +1,13 @@
+<div class="derivative-visualizer">
+  <canvas #canvas></canvas>
+  <div class="visualizer-controls">
+    <button type="button" (click)="toggleAnimation()" [attr.aria-label]="running ? 'Pause animation' : 'Play animation'">
+      <mat-icon>{{ running ? 'pause' : 'play_arrow' }}</mat-icon>
+    </button>
+    <label>
+      <span>x = {{ tangentX.toFixed(2) }}</span>
+      <input type="range" min="-1.8" max="1.8" step="0.02" [value]="tangentX" (input)="updateTangent($any($event.target).value)">
+    </label>
+  </div>
+  <p>{{ caption }}</p>
+</div>

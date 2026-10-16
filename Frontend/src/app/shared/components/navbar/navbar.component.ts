@@ -45,6 +45,7 @@ export class NavbarComponent implements OnInit {
         { labelKey: 'nav.public.tutorial', icon: 'school', route: appPath.tutorial },
         { labelKey: 'nav.public.update', icon: 'new_releases', route: appPath.update },
         { labelKey: 'nav.public.activities', icon: 'local_activity', route: appPath.publicActivities },
+        { labelKey: 'nav.public.mathKnowledge', icon: 'hub', route: appPath.mathKnowledge },
         { labelKey: 'nav.public.register', icon: 'person_add', route: appPath.register },
         { labelKey: 'nav.public.login', icon: 'login', route: appPath.login }
       ]

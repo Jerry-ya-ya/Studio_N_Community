@@ -836,3 +836,7 @@
 - Expose complete user monitoring fields in the superadmin promotion dashboard with account status, capabilities, progression, and deletion metadata.
 
 - Add private Azure Container Apps topology and HTTPS forwarding smoke tests for authentication flows.
+
+## 2026/10/16
+
+- Add a public Cytoscape mathematical knowledge graph with configurable directed traversal, KaTeX details, lazy-loaded visualizations, static data, navigation, localization, and tests.

@@ -167,6 +167,11 @@ const routes: Routes = [
       import('../pages/public/activities/activities.module').then(m => m.ActivitiesModule)
   },
   {
+    path: appPath.mathKnowledge,
+    loadChildren: () =>
+      import('../pages/public/math-knowledge/math-knowledge.module').then(m => m.MathKnowledgeModule)
+  },
+  {
     path: appPath.privateActivities,
     loadChildren: () =>
       import('../pages/private/activities/activities.module').then(m => m.ActivitiesModule)

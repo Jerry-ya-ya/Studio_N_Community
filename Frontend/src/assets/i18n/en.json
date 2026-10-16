@@ -51,6 +51,7 @@
       "tutorial": "Tutorial",
       "update": "Update",
       "activities": "Activities",
+      "mathKnowledge": "Math Graph",
       "register": "Register",
       "login": "Login"
     },
@@ -89,6 +90,16 @@
       "store": "Store Products",
       "feature": "Feature"
     }
+  },
+  "mathKnowledge": {
+    "hero": { "kicker": "Mathematical tools / Local knowledge window", "title": "Mathematical Knowledge Graph", "subtitle": "Center the graph on any concept to explore its prerequisites and downstream applications." },
+    "stats": { "nodes": "Nodes", "edges": "Relations", "version": "Dataset", "visible": "visible nodes" },
+    "controls": { "label": "Graph range controls", "dependencies": "Dependency depth", "applications": "Application depth", "fit": "Fit graph" },
+    "graph": { "label": "Open Circle local mathematical knowledge graph" },
+    "legend": { "center": "Center", "dependency": "Prerequisites", "application": "Applications" },
+    "state": { "loading": "Loading the mathematical knowledge graph…", "error": "The mathematical knowledge data could not be loaded.", "loadingVisualization": "Loading the interactive visual…", "select": "Select a node to begin exploring." },
+    "actions": { "expand": "Expand details", "collapse": "Collapse details" },
+    "details": { "definition": "Full definition", "formula": "Mathematical definition", "symbols": "Symbol guide", "visualization": "Interactive visual" }
   },
   "formBuilder": {
     "hero": { "kicker": "Admin tool / JSONB", "title": "Form builder", "lead": "Create secure, reusable forms with structured questions.", "newForm": "New form" },

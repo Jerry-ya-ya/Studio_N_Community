@@ -1,0 +1,123 @@
+<main class="math-knowledge-page">
+  <header class="math-knowledge-header">
+    <div>
+      <p class="math-kicker">{{ 'mathKnowledge.hero.kicker' | translate }}</p>
+      <h1>{{ 'mathKnowledge.hero.title' | translate }}</h1>
+      <p>{{ 'mathKnowledge.hero.subtitle' | translate }}</p>
+    </div>
+    @if (dataset) {
+      <dl class="dataset-summary" aria-label="Dataset summary">
+        <div><dt>{{ 'mathKnowledge.stats.nodes' | translate }}</dt><dd>{{ dataset.nodes.length }}</dd></div>
+        <div><dt>{{ 'mathKnowledge.stats.edges' | translate }}</dt><dd>{{ dataset.edges.length }}</dd></div>
+        <div><dt>{{ 'mathKnowledge.stats.version' | translate }}</dt><dd>v{{ dataset.version }}</dd></div>
+      </dl>
+    }
+  </header>
+
+  <section class="graph-controls" [attr.aria-label]="'mathKnowledge.controls.label' | translate">
+    <div class="depth-control">
+      <span>{{ 'mathKnowledge.controls.dependencies' | translate }}</span>
+      <button type="button" (click)="adjustDepth('dependency', -1)" [disabled]="dependencyDepth === 0" aria-label="Decrease dependency depth">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <input type="number" min="0" max="6" [ngModel]="dependencyDepth" (ngModelChange)="setDepth('dependency', $event)">
+      <button type="button" (click)="adjustDepth('dependency', 1)" [disabled]="dependencyDepth === 6" aria-label="Increase dependency depth">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <div class="depth-control">
+      <span>{{ 'mathKnowledge.controls.applications' | translate }}</span>
+      <button type="button" (click)="adjustDepth('application', -1)" [disabled]="applicationDepth === 0" aria-label="Decrease application depth">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <input type="number" min="0" max="6" [ngModel]="applicationDepth" (ngModelChange)="setDepth('application', $event)">
+      <button type="button" (click)="adjustDepth('application', 1)" [disabled]="applicationDepth === 6" aria-label="Increase application depth">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <button class="fit-button" type="button" (click)="fitGraph()">
+      <mat-icon>center_focus_strong</mat-icon>
+      <span>{{ 'mathKnowledge.controls.fit' | translate }}</span>
+    </button>
+  </section>
+
+  <div class="knowledge-workspace">
+    <section class="graph-panel" [attr.aria-label]="'mathKnowledge.graph.label' | translate">
+      <div class="graph-panel__bar">
+        <div class="graph-legend">
+          <span class="legend-center">{{ 'mathKnowledge.legend.center' | translate }}</span>
+          <span class="legend-dependency">{{ 'mathKnowledge.legend.dependency' | translate }}</span>
+          <span class="legend-application">{{ 'mathKnowledge.legend.application' | translate }}</span>
+        </div>
+        @if (localGraph) {
+          <span>{{ localGraph.nodes.length }} {{ 'mathKnowledge.stats.visible' | translate }}</span>
+        }
+      </div>
+      <div #graphHost class="graph-canvas"></div>
+      @if (loading) {
+        <div class="graph-state">{{ 'mathKnowledge.state.loading' | translate }}</div>
+      }
+      @if (errorMessage) {
+        <div class="graph-state graph-state--error">{{ errorMessage | translate }}</div>
+      }
+    </section>
+
+    <aside class="node-inspector" aria-live="polite">
+      @if (selectedNode) {
+        <div class="node-inspector__heading">
+          <span>{{ selectedNode.category }}</span>
+          <h2>{{ selectedNode.title }}</h2>
+        </div>
+        <p class="simple-explanation">{{ selectedNode.simpleExplanation }}</p>
+
+        <button class="details-toggle" type="button" (click)="toggleDetails()" [attr.aria-expanded]="detailsExpanded">
+          <mat-icon>{{ detailsExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+          <span>{{ (detailsExpanded ? 'mathKnowledge.actions.collapse' : 'mathKnowledge.actions.expand') | translate }}</span>
+        </button>
+
+        @if (detailsExpanded) {
+          <div class="node-details">
+            <section>
+              <h3>{{ 'mathKnowledge.details.definition' | translate }}</h3>
+              <p>{{ selectedNode.definition }}</p>
+            </section>
+
+            <section class="formula-section">
+              <h3>{{ 'mathKnowledge.details.formula' | translate }}</h3>
+              <div class="formula" [innerHTML]="renderFormula(selectedNode.latex)"></div>
+            </section>
+
+            <section>
+              <h3>{{ 'mathKnowledge.details.symbols' | translate }}</h3>
+              <dl class="symbol-list">
+                @for (symbol of selectedNode.symbolDefinitions; track symbol.symbol) {
+                  <div>
+                    <dt [innerHTML]="renderFormula(symbol.latex, false)"></dt>
+                    <dd>{{ symbol.description }}</dd>
+                  </div>
+                }
+              </dl>
+            </section>
+
+            @if (selectedNode.visualization) {
+              <section class="visualization-section">
+                <h3>{{ 'mathKnowledge.details.visualization' | translate }}</h3>
+                @if (visualizationLoading) {
+                  <p class="visualization-loading">{{ 'mathKnowledge.state.loadingVisualization' | translate }}</p>
+                }
+                <ng-container #visualizationHost></ng-container>
+              </section>
+            }
+          </div>
+        }
+      } @else {
+        <div class="node-empty">
+          <mat-icon>hub</mat-icon>
+          <p>{{ 'mathKnowledge.state.select' | translate }}</p>
+        </div>
+      }
+    </aside>
+  </div>
+</main>

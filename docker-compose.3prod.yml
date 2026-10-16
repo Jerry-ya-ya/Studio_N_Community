@@ -1,4 +1,4 @@
-name: cmenstudio-prod
+name: studioNcommunity-prod
 services:
   frontend:
     image: jerryzheng0907/angular-frontend:latest

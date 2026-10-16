@@ -51,6 +51,7 @@
       "tutorial": "チュートリアル",
       "update": "更新",
       "activities": "イベント",
+      "mathKnowledge": "数学知識グラフ",
       "register": "登録",
       "login": "ログイン"
     },
@@ -89,6 +90,16 @@
       "store": "商品管理",
       "feature": "機能"
     }
+  },
+  "mathKnowledge": {
+    "hero": { "kicker": "数学ツール / 局所知識ウィンドウ", "title": "数学知識グラフ", "subtitle": "任意の概念を中心に、前提知識とその先の応用を探索できます。" },
+    "stats": { "nodes": "ノード", "edges": "関係", "version": "データ版", "visible": "個の表示ノード" },
+    "controls": { "label": "グラフ範囲設定", "dependencies": "前提の深さ", "applications": "応用の深さ", "fit": "グラフを中央へ" },
+    "graph": { "label": "Open Circle 局所数学知識グラフ" },
+    "legend": { "center": "中心", "dependency": "前提知識", "application": "応用" },
+    "state": { "loading": "数学知識グラフを読み込み中…", "error": "数学知識データを読み込めませんでした。", "loadingVisualization": "インタラクティブ図解を読み込み中…", "select": "探索するノードを選択してください。" },
+    "actions": { "expand": "詳細を展開", "collapse": "詳細を折りたたむ" },
+    "details": { "definition": "完全な定義", "formula": "数学的定義", "symbols": "記号ガイド", "visualization": "インタラクティブ図解" }
   },
   "formBuilder": {
     "hero": { "kicker": "管理ツール / JSONB", "title": "フォームビルダー", "lead": "構造化された質問で安全なフォームを作成・編集します。", "newForm": "新規フォーム" },

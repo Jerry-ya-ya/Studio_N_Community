@@ -1,4 +1,4 @@
-name: cmenstudio-dev
+name: studioNcommunity-dev
 services: 
   frontend:
     container_name: angular-dev

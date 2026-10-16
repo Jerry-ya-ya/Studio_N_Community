@@ -51,6 +51,7 @@
       "tutorial": "教學",
       "update": "更新",
       "activities": "活動",
+      "mathKnowledge": "數學知識網路",
       "register": "註冊",
       "login": "登入"
     },
@@ -89,6 +90,16 @@
       "store": "商品上架",
       "feature": "功能"
     }
+  },
+  "mathKnowledge": {
+    "hero": { "kicker": "數學工具 / 局部知識視窗", "title": "數學知識網路", "subtitle": "以任一概念為中心，探索它的前置依賴與後續應用。" },
+    "stats": { "nodes": "節點", "edges": "關係", "version": "資料版本", "visible": "個可見節點" },
+    "controls": { "label": "圖譜範圍控制", "dependencies": "向前依賴層數", "applications": "向後應用層數", "fit": "置中圖譜" },
+    "graph": { "label": "Open Circle 局部數學知識圖" },
+    "legend": { "center": "中心", "dependency": "前置依賴", "application": "後續應用" },
+    "state": { "loading": "正在載入數學知識網路…", "error": "無法載入數學知識資料。", "loadingVisualization": "正在載入互動圖解…", "select": "選擇一個節點開始探索。" },
+    "actions": { "expand": "展開詳細內容", "collapse": "收合詳細內容" },
+    "details": { "definition": "完整定義", "formula": "數學定義", "symbols": "符號說明", "visualization": "互動圖解" }
   },
   "formBuilder": {
     "hero": { "kicker": "管理員工具 / JSONB", "title": "表單建立器", "lead": "建立安全、可重複編輯的結構化表單。", "newForm": "建立新表單" },

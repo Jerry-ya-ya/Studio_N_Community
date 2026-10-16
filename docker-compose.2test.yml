@@ -1,4 +1,4 @@
-name: cmenstudio-test
+name: studioNcommunity-test
 services:
   frontend:
     container_name: angular-test
