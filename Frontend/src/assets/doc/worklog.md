@@ -848,3 +848,5 @@
 ## 2026/10/23
 
 - Preserve KaTeX layout metrics in mathematical formulas and add rendering regression coverage.
+
+- Add an environment-controlled Redis switch with in-memory Flask and Celery fallbacks, guarded task dispatch, and regression coverage.

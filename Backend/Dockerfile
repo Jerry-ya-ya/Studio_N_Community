@@ -3,7 +3,9 @@ FROM python:3.11-slim
 
 # 基本環境
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
 
 # ==== 安裝 MS ODBC Driver（新版做法，無 apt-key）====
 # 這段適用 Debian 12（bookworm）；若你的基底是 11，將 12/bookworm 改為 11/bullseye
@@ -18,7 +20,13 @@ RUN set -eux; \
     apt-get update; \
     # 建議用 msodbcsql18；若你確定需要 17 再改回 msodbcsql17
     ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 unixodbc; \
+    update-ca-certificates; \
     rm -rf /var/lib/apt/lists/*
+
+# Bootstrap pip from the hash-verified wheel published in the Python security
+# advisory for the eMudhra/emSign CA incident.
+RUN python -m pip install \
+    "pip @ https://files.pythonhosted.org/packages/3f/06/3e4420302363fbb71be3c7f35ce042f54bfca330e3e66b3a2e3c4cca579f/pip-26.2.2-py3-none-any.whl#sha256=fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70"
 
 # ==== 建置期工具（若需要編譯某些 pip 套件，如 pyodbc、psycopg等）====
 # 先裝 build 依賴，pip 完成後再移除，縮小體積
@@ -37,7 +45,7 @@ WORKDIR /app
 COPY requirements.txt ./
 
 # 安裝 Python 套件（例如 Flask、gunicorn、pyodbc、psycopg、SQLAlchemy 等）
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install -r requirements.txt
 
 # 複製專案原始碼
 COPY . .
