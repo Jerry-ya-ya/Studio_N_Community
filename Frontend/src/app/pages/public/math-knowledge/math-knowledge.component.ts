@@ -4,7 +4,6 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  SecurityContext,
   ViewChild,
   ViewContainerRef,
   ElementRef,
@@ -159,8 +158,12 @@ export class MathKnowledgeComponent implements OnInit, AfterViewInit, OnDestroy 
       strict: false,
       trust: false,
     });
-    const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, rendered) || '';
-    const safeFormula = this.sanitizer.bypassSecurityTrustHtml(sanitized);
+    // KaTeX uses inline top/height styles to position fraction rows and
+    // operator limits. Angular's HTML sanitizer removes those metrics and
+    // collapses the numerator, denominator, and limit subscript together.
+    // KaTeX still parses untrusted LaTeX with `trust: false`, so trust only
+    // the HTML produced by KaTeX itself instead of sanitizing it a second time.
+    const safeFormula = this.sanitizer.bypassSecurityTrustHtml(rendered);
     this.formulaCache.set(cacheKey, safeFormula);
     return safeFormula;
   }
