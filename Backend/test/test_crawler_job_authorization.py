@@ -59,3 +59,22 @@ def test_crawler_test_get_cannot_enqueue_work(app, client):
         response = client.get("/api/crawler/test", headers=headers)
         assert response.status_code == 405
         delay.assert_not_called()
+
+
+def test_crawler_task_dispatch_is_unavailable_when_redis_is_disabled(
+    app,
+    client,
+    monkeypatch,
+):
+    headers = auth_header(token_for_role(app, "admin"))
+    monkeypatch.setitem(app.config, "REDIS_ENABLED", False)
+
+    with patch("routes.crawler.crawler.hello.delay") as delay:
+        response = client.post("/api/crawler/test", headers=headers)
+
+    assert response.status_code == 503
+    assert response.get_json() == {
+        "error": "Redis-backed background tasks are disabled",
+        "code": "redis_disabled",
+    }
+    delay.assert_not_called()

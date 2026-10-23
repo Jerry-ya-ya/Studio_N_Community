@@ -163,13 +163,16 @@ def create_app(config_name="none"):
     print(f"前端 URL: {frontend_url}")
     print(f"API URL: {api_url}")
 
-    # 顯示 Redis/Celery 連線資訊
-    redis_url_env = os.getenv('REDIS_URL', '')
+    # 顯示可選背景服務的啟用狀態，不輸出可能含有憑證的 URL。
+    redis_enabled = app.config.get('REDIS_ENABLED', True)
     celery_broker_url = app.config.get('CELERY_BROKER_URL')
     celery_result_backend = app.config.get('CELERY_RESULT_BACKEND')
-    print(f"REDIS_URL (env): {redis_url_env or '(not set)'}")
+    print(f"Redis Enabled: {redis_enabled}")
+    print(f"Rate Limit Storage: {app.config.get('RATELIMIT_STORAGE_URI')}")
     print(f"Celery Broker URL: {celery_broker_url}")
     print(f"Celery Result Backend: {celery_result_backend}")
+    if not redis_enabled:
+        print("Redis 已停用：API 限流使用程序內記憶體，背景任務派送不可用")
     
     # 初始化資料庫
     setup_database(app, create_schema=env != 'production')

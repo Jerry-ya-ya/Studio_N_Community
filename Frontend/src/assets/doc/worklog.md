@@ -844,3 +844,7 @@
 - Improve KaTeX formula spacing for limits, fractions, and responsive symbol definitions.
 
 - Establish field and order axioms and their properties as the explorable foundations of the real-function knowledge graph.
+
+## 2026/10/23
+
+- Preserve KaTeX layout metrics in mathematical formulas and add rendering regression coverage.

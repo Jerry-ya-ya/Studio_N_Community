@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, current_app, jsonify
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -42,5 +42,11 @@ def get_schedule_info():
 @crawler_bp.route('/crawler/test', methods=['POST'])
 @admin_required
 def test_crawler():
+    if not current_app.config.get('REDIS_ENABLED', True):
+        return jsonify({
+            'error': 'Redis-backed background tasks are disabled',
+            'code': 'redis_disabled',
+        }), 503
+
     hello.delay()
     return jsonify({'message': 'Crawler is working!'})

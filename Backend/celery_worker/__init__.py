@@ -28,7 +28,7 @@ celery.conf.update(
     task_serializer='json',
     accept_content=['json'],
     result_serializer='json',
-    # Beat 排程設定
+    # Redis 停用時不建立無法跨程序派送的排程。
     beat_schedule={
         'hello-every-10-mins': {
             'task': 'celery_worker.task.hello',
@@ -42,7 +42,7 @@ celery.conf.update(
             'task': 'celery_worker.task.deactivate_inactive_accounts_task',
             'schedule': crontab(hour=0, minute=5),
         },
-    }
+    } if Config.REDIS_ENABLED else {}
 )
 
 # 綁定 Flask context 給 Celery 任務使用

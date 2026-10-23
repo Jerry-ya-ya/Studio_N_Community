@@ -3,6 +3,45 @@ import os
 from datetime import timedelta
 
 
+TRUE_ENV_VALUES = frozenset({'1', 'true', 'yes', 'on'})
+FALSE_ENV_VALUES = frozenset({'0', 'false', 'no', 'off'})
+
+
+def env_flag(name, default=False):
+    raw_value = os.environ.get(name)
+    if raw_value is None:
+        return default
+
+    value = raw_value.strip().lower()
+    if value in TRUE_ENV_VALUES:
+        return True
+    if value in FALSE_ENV_VALUES:
+        return False
+    raise RuntimeError(
+        f"Invalid boolean value for {name}: {raw_value!r}. "
+        "Use true/false, 1/0, yes/no, or on/off."
+    )
+
+
+def redis_service_settings(enabled, redis_url):
+    if enabled:
+        return {
+            'celery_broker_url': redis_url,
+            'celery_result_backend': redis_url,
+            'ratelimit_storage_uri': redis_url,
+        }
+    return {
+        'celery_broker_url': 'memory://',
+        'celery_result_backend': 'cache+memory://',
+        'ratelimit_storage_uri': 'memory://',
+    }
+
+
+REDIS_ENABLED = env_flag('REDIS_ENABLED', True)
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
+REDIS_SERVICE_SETTINGS = redis_service_settings(REDIS_ENABLED, REDIS_URL)
+
+
 class BaseConfig:
     DEBUG = False
     TESTING = False
@@ -29,10 +68,15 @@ class BaseConfig:
     FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:4200")
     API_URL = os.environ.get("API_URL", "http://localhost:5000")
 
-    CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://redis:6379/0")
-    CELERY_RESULT_BACKEND = os.environ.get("REDIS_URL", "redis://redis:6379/0")
+    REDIS_ENABLED = REDIS_ENABLED
+    REDIS_URL = REDIS_URL
 
-    RATELIMIT_STORAGE_URI = os.environ.get("REDIS_URL", "memory://")
+    CELERY_BROKER_URL = REDIS_SERVICE_SETTINGS['celery_broker_url']
+    CELERY_RESULT_BACKEND = REDIS_SERVICE_SETTINGS['celery_result_backend']
+
+    # Keep request limits active without requiring Redis. In-memory counters
+    # are process-local and are intended only for reduced deployments.
+    RATELIMIT_STORAGE_URI = REDIS_SERVICE_SETTINGS['ratelimit_storage_uri']
     RATELIMIT_STRATEGY = "fixed-window"
     RATELIMIT_HEADERS_ENABLED = True
 

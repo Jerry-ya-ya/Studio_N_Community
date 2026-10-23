@@ -1,9 +1,19 @@
 from celery import Celery
 import os
 
-# 從環境變數或使用預設值
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://redis:6379/0')
+
+REDIS_ENABLED = os.getenv('REDIS_ENABLED', 'true').strip().lower() in {
+    '1', 'true', 'yes', 'on',
+}
+REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379/0')
+CELERY_BROKER_URL = os.getenv(
+    'CELERY_BROKER_URL',
+    REDIS_URL if REDIS_ENABLED else 'memory://',
+)
+CELERY_RESULT_BACKEND = os.getenv(
+    'CELERY_RESULT_BACKEND',
+    REDIS_URL if REDIS_ENABLED else 'cache+memory://',
+)
 
 celery = Celery(
     'jackandbeanstalks',
