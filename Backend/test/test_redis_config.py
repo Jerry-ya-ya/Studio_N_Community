@@ -48,3 +48,24 @@ def test_disabled_redis_services_use_in_process_backends():
         'celery_result_backend': 'cache+memory://',
         'ratelimit_storage_uri': 'memory://',
     }
+
+
+def test_app_startup_does_not_log_redis_credentials(monkeypatch, capsys):
+    import app as app_module
+    from config import TestingConfig
+
+    redis_url = 'redis://:startup-log-canary@cache:6379/0'
+    monkeypatch.setattr(TestingConfig, 'REDIS_ENABLED', True)
+    monkeypatch.setattr(TestingConfig, 'REDIS_URL', redis_url)
+    monkeypatch.setattr(TestingConfig, 'CELERY_BROKER_URL', redis_url)
+    monkeypatch.setattr(TestingConfig, 'CELERY_RESULT_BACKEND', redis_url)
+    monkeypatch.setattr(TestingConfig, 'RATELIMIT_STORAGE_URI', redis_url)
+    monkeypatch.setattr(app_module, 'setup_database', lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(app_module.limiter, 'init_app', lambda *_args, **_kwargs: None)
+
+    app_module.create_app('testing')
+
+    output = capsys.readouterr()
+    assert redis_url not in output.out + output.err
+    assert 'startup-log-canary' not in output.out + output.err
+    assert 'Redis Enabled: True' in output.out

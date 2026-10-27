@@ -850,3 +850,7 @@
 - Preserve KaTeX layout metrics in mathematical formulas and add rendering regression coverage.
 
 - Add an environment-controlled Redis switch with in-memory Flask and Celery fallbacks, guarded task dispatch, and regression coverage.
+
+## 2026/10/24
+
+- Upgrade frontend and backend dependencies and harden Docker builds against the eMudhra certificate authority incident.
