@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:4200/member');
+  await page.goto('/member');
   await expect(page.getByText('教授').first()).toBeVisible();
   await expect(page.getByText('團長').first()).toBeVisible();
   await expect(page.getByText('副團長').first()).toBeVisible();

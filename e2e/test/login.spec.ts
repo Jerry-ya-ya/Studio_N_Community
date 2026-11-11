@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:4200/login');
+  await page.goto('/login');
   await expect(page.getByRole('img')).toBeVisible();
   await expect(page.getByRole('heading', { name: '登入' })).toBeVisible();
   await expect(page.getByRole('textbox', { name: '帳號' })).toBeVisible();

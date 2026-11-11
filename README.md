@@ -139,6 +139,10 @@ rebuild.sh   # Rebuild containers</code></pre>
 
 <pre><code>./scripts/1dev/up.sh</code></pre>
 
+<p>Before running Playwright, generate a dedicated test API token and put it in the root <code>.env</code> as <code>E2E_TEST_TOKEN</code>.</p>
+<pre><code>node -p "require('node:crypto').randomBytes(32).toString('hex')"</code></pre>
+<p>The test API is disabled without this token. The test Compose backend uses a separate SQLite database by default. If you set <code>TEST_DATABASE_URL</code>, use a disposable test database because Playwright clears its user records during setup.</p>
+
 <hr>
 
 <h2>▶️ Angular Kit Update</h2>

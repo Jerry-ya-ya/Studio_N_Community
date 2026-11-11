@@ -58,7 +58,7 @@ import { test, expect } from '@playwright/test';
 //   });
 // });
 test('page', async ({ page }) => {
-  await page.goto('http://localhost:4200');
+  await page.goto('/');
   await page.getByRole('link', { name: 'Profile' }).click();
   await page.getByRole('link', { name: 'Login' }).click();
   await page.getByRole('textbox', { name: '帳號' }).click();

@@ -111,6 +111,7 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     DEBUG = False
     TESTING = True
+    E2E_TEST_TOKEN = os.environ.get("E2E_TEST_TOKEN", "")
 
     # 測試建議用獨立 sqlite
     SQLALCHEMY_DATABASE_URI = os.environ.get(

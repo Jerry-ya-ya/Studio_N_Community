@@ -16,7 +16,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { outputFolder: './test/test-results/playwright-report' }]],
   globalSetup: './test/global-setup.ts',
   use: {
-    baseURL: 'http://localhost:4200/', // ⚠️ 根據你的 Angular 前端調整
+    baseURL: process.env['E2E_BASE_URL'] || 'http://localhost:4200/',
     trace: 'on-first-retry',
     video: 'retain-on-failure',
     screenshot: 'on',

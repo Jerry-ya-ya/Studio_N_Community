@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:4200/home');
+  await page.goto('/home');
   await expect(page.getByRole('heading', { name: '蘇建華資訊數學人才培育團' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Let us make the Department of Mathematics great again.' })).toBeVisible();
   

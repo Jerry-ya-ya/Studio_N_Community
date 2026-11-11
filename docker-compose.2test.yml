@@ -9,7 +9,7 @@ services:
       - ./Frontend:/app
       - /app/.angular/cache
     ports:
-      - "4200:4200"
+      - "127.0.0.1:4200:80"
     environment:
       - CHOKIDAR_USEPOLLING=true
     networks:
@@ -23,11 +23,12 @@ services:
     volumes:
       - ./Backend:/app
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     env_file:
       - .env
     environment:
       FLASK_ENV: testing
+      TEST_DATABASE_URL: ${TEST_DATABASE_URL:-sqlite:////tmp/studio-n-e2e.sqlite}
     networks:
       - mynet
 
@@ -44,6 +45,8 @@ services:
       - /app/node_modules
     env_file:
       - .env
+    environment:
+      E2E_BASE_URL: http://frontend
     ports:
       - "4100:4100"
     networks:

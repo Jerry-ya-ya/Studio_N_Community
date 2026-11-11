@@ -862,3 +862,5 @@
 ## 2026/11/11
 
 - Add a skippable daily homepage animation that zooms into nested mathematics sets as student points move across ℝ², with localStorage playback tracking and reduced-motion support.
+
+- Play the daily intro on all routes with student points converging from all directions, remove the CMENStudio switch and cycle controls, and hide the EDEN wordmark when the sidebar is collapsed.

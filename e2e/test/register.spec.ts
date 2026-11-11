@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:4200/register');
+  await page.goto('/register');
   await expect(page.getByRole('heading', { name: '註冊帳號' })).toBeVisible();
 
   await expect(page.getByText('帳號：')).toBeVisible();
