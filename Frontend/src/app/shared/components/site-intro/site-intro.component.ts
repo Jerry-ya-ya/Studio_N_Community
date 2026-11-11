@@ -1,5 +1,8 @@
 import { afterNextRender, Component, DestroyRef, ElementRef, inject, NgZone, signal, viewChild } from '@angular/core';
-import { drawIntro, INTRO_DURATION, stageAt } from './home-intro-plot';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { drawIntro, INTRO_DURATION, stageAt } from './site-intro-plot';
 
 const STORAGE_KEY = 'studio.homeIntro.lastPlayedDate';
 
@@ -21,14 +24,15 @@ function claimToday(): boolean {
 }
 
 @Component({
-  selector: 'app-home-intro',
-  templateUrl: './home-intro.component.html',
-  styleUrl: './home-intro.component.css'
+  selector: 'app-site-intro',
+  templateUrl: './site-intro.component.html',
+  styleUrl: './site-intro.component.css'
 })
-export class HomeIntroComponent {
+export class SiteIntroComponent {
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
   private readonly plot = viewChild.required<ElementRef<HTMLCanvasElement>>('plot');
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
   private readonly zone = inject(NgZone);
   private frame = 0;
   private motionPreference?: MediaQueryList;
@@ -49,9 +53,6 @@ export class HomeIntroComponent {
   constructor() {
     afterNextRender(() => {
       this.motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if (this.motionPreference.matches) {
-        return;
-      }
 
       const canvas = this.plot().nativeElement;
       const context = canvas.getContext('2d');
@@ -61,18 +62,29 @@ export class HomeIntroComponent {
       }
 
       const start = () => {
-        if (!this.destroyRef.destroyed && !this.motionPreference?.matches && claimToday()) {
+        if (!this.destroyRef.destroyed && !dialog.open && !this.motionPreference?.matches && claimToday()) {
           dialog.showModal();
           this.motionPreference?.addEventListener('change', this.closeForReducedMotion);
           this.play(context);
         }
       };
 
-      // Serialize the read and write when multiple tabs open the homepage together.
-      if (navigator.locks) {
-        void navigator.locks.request(STORAGE_KEY, start).catch(() => start());
-      } else {
-        start();
+      const playIfDue = () => {
+        // Serialize the read and write when multiple tabs open the site together.
+        if (navigator.locks) {
+          void navigator.locks.request(STORAGE_KEY, start).catch(() => start());
+        } else {
+          start();
+        }
+      };
+
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe(playIfDue);
+
+      if (this.router.navigated) {
+        playIfDue();
       }
     });
     this.destroyRef.onDestroy(() => this.stop());

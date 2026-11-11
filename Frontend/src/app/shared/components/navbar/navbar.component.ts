@@ -1,8 +1,7 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Injector, OnInit, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { appPath } from '../../../path/app-path-const';
-import { ThemeService } from '../../../core/services/theme.service';
 import { ApiService } from '../../../core/services/api.service';
 import { AuthSessionService } from '../../../core/services/auth-session.service';
 
@@ -29,10 +28,8 @@ interface NavSection {
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   path = appPath; // 將 appPath 物件賦值給 path 屬性
-
-  @Output() collapsedChange = new EventEmitter<boolean>();
 
   collapsed = localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) !== 'false';
   readonly sections: NavSection[] = [
@@ -103,19 +100,13 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private injector: Injector,
     private translate: TranslateService,
-    public theme: ThemeService,
     private apiService: ApiService,
     private authSession: AuthSessionService
   ) {}
 
-  ngOnInit() {
-    this.collapsedChange.emit(this.collapsed);
-  }
-
   toggleSidebar() {
     this.collapsed = !this.collapsed;
     this.saveCollapsedState();
-    this.collapsedChange.emit(this.collapsed);
   }
 
   isSectionVisible(section: NavSection) {
@@ -132,10 +123,6 @@ export class NavbarComponent implements OnInit {
     return true;
   }
 
-  get brandName() {
-    return this.theme.isNightMode ? 'EDEN' : 'CMENStudio';
-  }
-
   get homeEntryPath() {
     return this.isLoggedIn() ? appPath.userhome : appPath.home;
   }
@@ -145,7 +132,6 @@ export class NavbarComponent implements OnInit {
     this.authSession.clear();
     this.collapsed = true;
     this.saveCollapsedState();
-    this.collapsedChange.emit(this.collapsed);
     this.openLogoutSnack();
     this.router.navigate([appPath.login]);
   }

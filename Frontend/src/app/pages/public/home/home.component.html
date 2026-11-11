@@ -1,6 +1,4 @@
-<app-home-intro />
-
-<main class="cmen-home" [class.day-mode]="!isNightMode">
+<main class="studio-home">
   <section class="hero-shell" [attr.aria-label]="'home.aria.homepage' | translate:{ studioName: studioName }">
     <div class="hero-grid" aria-hidden="true">
       <span></span>
@@ -16,7 +14,7 @@
         <img [src]="studioLogo" [alt]="'home.logoAlt' | translate:{ studioName: studioName }">
       </div>
 
-      <p class="studio-kicker">{{ studioKickerKey | translate }}</p>
+      <p class="studio-kicker">{{ 'home.hero.eden.kicker' | translate }}</p>
       <h1>{{ studioName }}</h1>
 
       <p class="studio-subtitle">
@@ -28,15 +26,15 @@
 
     <div class="hero-status" aria-hidden="true">
       <span>BUILD 00.01</span>
-      <span>{{ heroStatusKey | translate }}</span>
+      <span>{{ 'home.hero.eden.status' | translate }}</span>
     </div>
   </section>
 
-  <section class="community-news" [attr.aria-label]="communityNewsTitleKey | translate">
+  <section class="community-news" [attr.aria-label]="'home.news.edenTitle' | translate">
     <div class="community-news__header">
       <p class="studio-kicker">{{ 'home.news.kicker' | translate }}</p>
-      <h2>{{ communityNewsTitleKey | translate }}</h2>
-      <p>{{ communityNewsIntroKey | translate }}</p>
+      <h2>{{ 'home.news.edenTitle' | translate }}</h2>
+      <p>{{ 'home.news.edenIntro' | translate }}</p>
     </div>
 
     <div class="news-grid">

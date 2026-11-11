@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommunityNewsItem, HomeContentService } from '../../../core/services/home-content.service';
-import { ThemeService } from '../../../core/services/theme.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -13,13 +12,9 @@ import { environment } from '../../../../environments/environment';
 export class HomeComponent implements OnInit {
   private readonly assetBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
 
-  readonly cmenSubtitleKeys = [
-    'home.hero.cmen.subtitle.computing',
-    'home.hero.cmen.subtitle.mathematics',
-    'home.hero.cmen.subtitle.engineering',
-    'home.hero.cmen.subtitle.network'
-  ];
-  readonly edenSubtitleKeys = [
+  readonly studioName = 'EDEN';
+  readonly studioLogo = 'icons/eden.png';
+  readonly studioSubtitleKeys = [
     'home.hero.eden.subtitle.encode',
     'home.hero.eden.subtitle.develop',
     'home.hero.eden.subtitle.enlighten',
@@ -27,7 +22,6 @@ export class HomeComponent implements OnInit {
   ];
 
   constructor(
-    public theme: ThemeService,
     private homeContent: HomeContentService
   ) {}
 
@@ -37,40 +31,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  get isNightMode() {
-    return this.theme.isNightMode;
-  }
-
-  get studioName() {
-    return this.isNightMode ? 'EDEN' : 'CMENStudio';
-  }
-
-  get studioKickerKey() {
-    return this.isNightMode ? 'home.hero.eden.kicker' : 'home.hero.cmen.kicker';
-  }
-
-  get studioSubtitleKeys() {
-    return this.isNightMode ? this.edenSubtitleKeys : this.cmenSubtitleKeys;
-  }
-
-  get studioLogo() {
-    return this.isNightMode ? 'icons/eden.png' : 'icons/cmenstudio.png';
-  }
-
-  get heroStatusKey() {
-    return this.isNightMode ? 'home.hero.eden.status' : 'home.hero.cmen.status';
-  }
-
   get communityNews() {
-    return this.homeContent.getNews(this.isNightMode ? 'eden' : 'cmen');
-  }
-
-  get communityNewsTitleKey() {
-    return this.isNightMode ? 'home.news.edenTitle' : 'home.news.cmenTitle';
-  }
-
-  get communityNewsIntroKey() {
-    return this.isNightMode ? 'home.news.edenIntro' : 'home.news.cmenIntro';
+    return this.homeContent.getNews('eden');
   }
 
   getNewsBackgroundUrl(item: CommunityNewsItem) {

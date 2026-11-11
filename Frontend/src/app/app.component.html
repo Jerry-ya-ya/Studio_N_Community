@@ -1,42 +1,11 @@
-<div class="view" [class.day-mode]="!theme.isNightMode" [class.sidebar-collapsed]="navCollapsed">
+<app-site-intro />
+
+<div class="view">
   <div class="navbar">
-    <app-navbar (collapsedChange)="navCollapsed = $event">
-      <!--  -->
-    </app-navbar>
+    <app-navbar />
   </div>
 
   <main class="app-main">
-    <div class="world-actions" [class.world-actions--night]="theme.isNightMode" [class.world-actions--cycle-on]="!theme.isWorldLocked">
-      <button
-        class="world-logo-toggle"
-        type="button"
-        (click)="theme.toggleWorldMode()"
-        [attr.aria-label]="worldLogoAriaKey | translate"
-      >
-        <span class="world-logo-toggle__glow"></span>
-        <img [src]="worldLogoSrc" [alt]="worldLogoName + ' logo'">
-        <span>{{ worldLogoName }}</span>
-      </button>
-
-      <button
-        class="world-cycle-switch"
-        type="button"
-        role="switch"
-        (click)="theme.toggleWorldLock()"
-        [class.world-cycle-switch--active]="!theme.isWorldLocked"
-        [attr.aria-checked]="!theme.isWorldLocked"
-        [attr.aria-label]="worldCycleAriaKey | translate"
-      >
-        <span class="world-cycle-switch__icon">
-          <mat-icon>autorenew</mat-icon>
-        </span>
-        <span class="world-cycle-switch__meta">
-          <span>{{ 'world.cycle.label' | translate }} {{ worldCycleStateKey | translate }}</span>
-          <span>{{ theme.isWorldLocked ? ('world.status.locked' | translate) : theme.countdownLabel }}</span>
-        </span>
-      </button>
-    </div>
-
     <div class="global-actions">
       <div class="language-switcher" [class.language-switcher--open]="languageMenuOpen">
         <button

@@ -858,3 +858,7 @@
 ## 2026/10/27
 
 - Prevent Redis credentials from appearing in backend startup logs and add regression coverage.
+
+## 2026/11/11
+
+- Add a skippable daily homepage animation that zooms into nested mathematics sets as student points move across ℝ², with localStorage playback tracking and reduced-motion support.

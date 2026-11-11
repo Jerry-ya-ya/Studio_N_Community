@@ -1,9 +1,9 @@
 export const INTRO_DURATION = 6900;
 
-const STAGE_STARTS = [0, 1410, 2940, 4530];
+const STAGE_STARTS = [0, 1630, 3240, 4770];
 const CAMERAS = [
-  { x: 13, span: 156 },
-  { x: 34, span: 106 },
+  { x: 36, span: 176 },
+  { x: 36, span: 106 },
   { x: 48, span: 60 },
   { x: 54, span: 31 }
 ];
@@ -14,11 +14,14 @@ const SETS = [
   { symbol: 'C', x: 54, radiusX: 12, radiusY: 8, color: '#d7ff9e', fill: 'rgba(160, 222, 104, .13)' }
 ];
 
-const STUDENTS = [-1, -22, 16, -11, 26, 8, -31, 32, -6, 22, -17, 12];
+const STUDENT_DIRECTIONS = [180, 225, 270, 315, 0, 45, 90, 135, 205, 340, 65, 155].map(degrees => {
+  const radians = degrees * Math.PI / 180;
+  return { x: Math.cos(radians), y: Math.sin(radians) };
+});
 const MOVES = [
-  { start: 540, duration: 1380, x: 9, yScale: .68 },
-  { start: 2300, duration: 1180, x: 34, yScale: .39 },
-  { start: 3930, duration: 1280, x: 57, yScale: .16 }
+  { start: 540, duration: 1380, radiusFraction: .94 },
+  { start: 2300, duration: 1180, radiusFraction: .87 },
+  { start: 3930, duration: 1280, radiusFraction: .50 }
 ];
 
 function ease(progress: number): number {
@@ -36,15 +39,16 @@ export function stageAt(elapsed: number): number {
 
 function studentPosition(index: number, elapsed: number) {
   const time = elapsed - index * 55;
-  const lane = STUDENTS[index];
-  const spread = index % 4;
-  let x = -44 - spread * 4;
-  let y = lane;
+  const direction = STUDENT_DIRECTIONS[index];
+  const outer = SETS[0];
+  let x = outer.x + direction.x * outer.radiusX * 1.5;
+  let y = direction.y * outer.radiusY * 1.5;
 
-  for (const move of MOVES) {
+  for (const [stage, move] of MOVES.entries()) {
+    const set = SETS[stage];
     const progress = ease((time - move.start) / move.duration);
-    x = interpolate(x, move.x - spread * 1.55, progress);
-    y = interpolate(y, lane * move.yScale, progress);
+    x = interpolate(x, set.x + direction.x * set.radiusX * move.radiusFraction, progress);
+    y = interpolate(y, direction.y * set.radiusY * move.radiusFraction, progress);
   }
   return { x, y };
 }
@@ -96,7 +100,7 @@ export function drawIntro(context: CanvasRenderingContext2D, elapsed: number, st
   context.globalAlpha = 1;
 
   // Draw X₁ last so it stays readable as the points converge.
-  for (let index = STUDENTS.length - 1; index >= 0; index--) {
+  for (let index = STUDENT_DIRECTIONS.length - 1; index >= 0; index--) {
     const lead = index === 0;
     const { x, y } = studentPosition(index, elapsed);
     const px = projectX(x);
@@ -118,7 +122,7 @@ export function drawIntro(context: CanvasRenderingContext2D, elapsed: number, st
     context.fill();
     context.shadowBlur = 0;
 
-    if (lead || (stage === 0 && (index === 1 || index === STUDENTS.length - 1))) {
+    if (lead || (stage === 0 && (index === 1 || index === STUDENT_DIRECTIONS.length - 1))) {
       const label = lead ? 'X₁' : index === 1 ? 'X₂' : 'Xₙ';
       context.font = '600 14px ui-monospace, monospace';
       context.fillText(label, px + 9, py - 8);

@@ -1,4 +1,4 @@
-import { NgModule, isDevMode } from '@angular/core';
+import { inject, NgModule, isDevMode, provideAppInitializer } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './path/app-routing.module';
@@ -12,6 +12,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { MatIconModule } from '@angular/material/icon';
 
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { SiteIntroComponent } from './shared/components/site-intro/site-intro.component';
+import { ThemeService } from './core/services/theme.service';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,7 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
     HttpClientModule,
     TranslatePipe,
     MatIconModule,
+    SiteIntroComponent,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(), // 只在生產模式下啟用 Service Worker
@@ -33,6 +36,9 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
     })
   ],
   providers: [
+    provideAppInitializer(() => {
+      inject(ThemeService);
+    }),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

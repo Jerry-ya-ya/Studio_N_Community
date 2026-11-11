@@ -1,6 +1,6 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
-:root:has(app-home-intro dialog[open]) {
+:root:has(app-site-intro dialog[open]) {
   overflow: hidden;
 }
 

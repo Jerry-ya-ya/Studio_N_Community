@@ -1,10 +1,4 @@
 @font-face {
-  font-family: "StudioGlitchGoblin";
-  src: url("/assets/font/GlitchGoblin.woff2") format("woff2");
-  font-display: swap;
-}
-
-@font-face {
   font-family: "StudioCiberGotica";
   src: url("/assets/font/CiberGotica.woff2") format("woff2");
   font-display: swap;
@@ -89,13 +83,11 @@
   cursor: pointer;
   text-align: left;
   overflow: hidden;
-  opacity: 1;
-  transition: opacity 0.16s ease, transform 0.18s ease, color 0.18s ease;
+  transition: transform 0.18s ease, color 0.18s ease;
 }
 
 .sidebar--collapsed .brand-wordmark {
-  pointer-events: none;
-  opacity: 0;
+  display: none;
 }
 
 .brand-wordmark:hover {
@@ -120,31 +112,13 @@
   display: flex;
   align-items: center;
   color: currentColor;
+  font-family: "StudioCiberGotica", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 1.76rem;
   letter-spacing: 0;
   white-space: nowrap;
   text-shadow:
     1px 1px 0 color-mix(in srgb, var(--studio-danger) 64%, transparent),
     0 10px 24px rgba(0, 0, 0, 0.28);
-}
-
-.brand-wordmark__text--cmen {
-  font-family: "StudioGlitchGoblin", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: 1.52rem;
-}
-
-.brand-wordmark__text--eden {
-  font-family: "StudioCiberGotica", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: 1.76rem;
-}
-
-:host-context(.eden-night-theme) .brand-wordmark__text--cmen,
-:host-context(.cmen-day-theme) .brand-wordmark__text--eden {
-  opacity: 0;
-}
-
-:host-context(.cmen-day-theme) .brand-wordmark__text--cmen,
-:host-context(.eden-night-theme) .brand-wordmark__text--eden {
-  opacity: 1;
 }
 
 .sidebar-toggle:hover {
@@ -323,11 +297,7 @@
     height: var(--rail-item-size);
   }
 
-  .brand-wordmark__text--cmen {
-    font-size: 1.22rem;
-  }
-
-  .brand-wordmark__text--eden {
+  .brand-wordmark__text {
     font-size: 1.48rem;
   }
 

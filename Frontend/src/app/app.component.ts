@@ -1,10 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { appPath } from './path/app-path-const';
-import { ThemeService } from './core/services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthSessionService } from './core/services/auth-session.service';
-
-const NAV_COLLAPSED_STORAGE_KEY = 'navbarCollapsed';
 
 @Component({
   selector: 'app-root',
@@ -24,10 +21,8 @@ export class AppComponent {
   ];
   currentLanguage = localStorage.getItem('language') || 'zh-TW';
   languageMenuOpen = false;
-  navCollapsed = localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) !== 'false';
 
   constructor(
-    public theme: ThemeService,
     private translate: TranslateService,
     private authSession: AuthSessionService
   ) {
@@ -61,23 +56,4 @@ export class AppComponent {
     return this.isLoggedIn ? 'nav.private.todo' : 'nav.public.login';
   }
 
-  get worldLogoSrc() {
-    return this.theme.isNightMode ? 'icons/eden.png' : 'icons/cmenstudio.png';
-  }
-
-  get worldLogoName() {
-    return this.theme.isNightMode ? 'EDEN' : 'CMEN';
-  }
-
-  get worldLogoAriaKey() {
-    return this.theme.isNightMode ? 'world.aria.switchToDay' : 'world.aria.switchToNight';
-  }
-
-  get worldCycleAriaKey() {
-    return this.theme.isWorldLocked ? 'world.cycle.aria.enable' : 'world.cycle.aria.disable';
-  }
-
-  get worldCycleStateKey() {
-    return this.theme.isWorldLocked ? 'world.lock.off' : 'world.lock.on';
-  }
 }

@@ -1,10 +1,4 @@
 @font-face {
-  font-family: "StudioGlitchGoblin";
-  src: url("/assets/font/GlitchGoblin.woff2") format("woff2");
-  font-display: swap;
-}
-
-@font-face {
   font-family: "StudioCiberGotica";
   src: url("/assets/font/CiberGotica.woff2") format("woff2");
   font-display: swap;
@@ -14,16 +8,12 @@
   display: block;
 }
 
-.cmen-home {
+.studio-home {
   min-height: 100vh;
   padding: 104px 20px 20px;
   color: var(--studio-text);
   background: var(--studio-page-bg);
   overflow: hidden;
-}
-
-.cmen-home.day-mode {
-  background: var(--studio-page-bg);
 }
 
 .hero-shell {
@@ -127,20 +117,6 @@ h1 {
   line-height: 1.16;
   letter-spacing: 0;
   text-transform: uppercase;
-  text-shadow:
-    3px 3px 0 var(--studio-danger),
-    -3px -3px 0 color-mix(in srgb, var(--studio-accent) 44%, transparent),
-    0 20px 50px rgba(0, 0, 0, 0.38);
-}
-
-.day-mode h1 {
-  margin: 0;
-  font-family: "StudioGlitchGoblin", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  font-size: clamp(54px, 12vw, 168px);
-  line-height: 0.9;
-}
-
-.day-mode h1 {
   text-shadow:
     3px 3px 0 var(--studio-danger),
     -3px -3px 0 color-mix(in srgb, var(--studio-accent) 44%, transparent),
@@ -317,7 +293,7 @@ h1 {
 }
 
 @media (max-width: 760px) {
-  .cmen-home {
+  .studio-home {
     padding: 84px 10px 10px;
   }
 
