@@ -1,0 +1,32 @@
+<dialog
+  #dialog
+  class="intro"
+  aria-label="從學生到輔仁大學資訊數學"
+  lang="zh-Hant"
+  (cancel)="$event.preventDefault(); finish()"
+>
+  <div class="intro-layout">
+    <header class="intro-header">
+      <div class="intro-title" aria-live="polite">
+        <p>{{ stages[stageIndex()].notation }}</p>
+        <h2>{{ stages[stageIndex()].name }}</h2>
+      </div>
+      <button class="intro-skip" type="button" autofocus (click)="finish()">
+        跳過動畫 <span aria-hidden="true">→</span>
+      </button>
+    </header>
+
+    <div class="intro-chart" aria-hidden="true">
+      <canvas #plot></canvas>
+    </div>
+
+    <ol class="intro-stages" aria-label="集合路徑">
+      @for (stage of stages; track stage.symbol; let index = $index) {
+        <li [class.reached]="index <= stageIndex()" [attr.aria-current]="index === stageIndex() ? 'step' : null">
+          <span class="stage-symbol">{{ stage.symbol }}</span>
+          {{ stage.shortName }}
+        </li>
+      }
+    </ol>
+  </div>
+</dialog>

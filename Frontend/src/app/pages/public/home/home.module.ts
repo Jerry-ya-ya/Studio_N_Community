@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
+import { HomeIntroComponent } from './home-intro/home-intro.component';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { HomeComponent } from './home.component';
   imports: [
     CommonModule,
     TranslatePipe,
+    HomeIntroComponent,
     HomeRoutingModule
   ]
 })

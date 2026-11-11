@@ -854,3 +854,7 @@
 ## 2026/10/24
 
 - Upgrade frontend and backend dependencies and harden Docker builds against the eMudhra certificate authority incident.
+
+## 2026/10/27
+
+- Prevent Redis credentials from appearing in backend startup logs and add regression coverage.

@@ -1,0 +1,156 @@
+.intro {
+  box-sizing: border-box;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: clamp(16px, 4vw, 48px);
+  border: 0;
+  color: #effbf5;
+  background:
+    radial-gradient(ellipse at 75% 20%, #10261e 0%, transparent 62%),
+    #06100e;
+  color-scheme: dark;
+}
+
+.intro[open] {
+  display: flex;
+}
+
+.intro::backdrop {
+  background: #06100e;
+}
+
+.intro-layout {
+  width: min(100%, 1080px);
+  margin: auto;
+  display: grid;
+  gap: clamp(12px, 2.2vw, 24px);
+}
+
+.intro-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.intro-title {
+  display: grid;
+  gap: 6px;
+}
+
+.intro-title p {
+  margin: 0;
+  color: #8fe8bd;
+  font: 600 clamp(.72rem, 1.6vw, .9rem)/1.4 ui-monospace, monospace;
+  letter-spacing: .05em;
+}
+
+.intro-title h2 {
+  margin: 0;
+  color: inherit;
+  font-size: clamp(1.35rem, 4.4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.intro-skip {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #41685a;
+  border-radius: 8px;
+  background: #12251e;
+  color: inherit;
+  font: inherit;
+  font-size: .82rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.intro-skip:hover,
+.intro-skip:focus-visible {
+  border-color: #9df7c7;
+}
+
+.intro-skip span {
+  margin-inline-start: 4px;
+  color: #9df7c7;
+}
+
+.intro-chart {
+  height: clamp(210px, 54dvh, 490px);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #2d4f41;
+  border-radius: 14px;
+  background: radial-gradient(ellipse at center, #10251d, #080f0e 80%);
+}
+
+.intro-chart canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.intro-stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intro-stages li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 0;
+  border-top: 1px solid #2d4f41;
+  color: #a3b5ad;
+  font-size: .82rem;
+}
+
+.intro-stages .reached {
+  border-color: #70c8a3;
+}
+
+.intro-stages [aria-current] {
+  color: #effbf5;
+  border-color: #d7ff9e;
+}
+
+.stage-symbol {
+  color: #8fe8bd;
+  font: 600 1rem/1 ui-monospace, monospace;
+}
+
+.intro-stages [aria-current] .stage-symbol {
+  color: #d7ff9e;
+}
+
+@media (max-width: 540px) {
+  .intro-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .intro-skip {
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .intro-chart {
+    height: clamp(210px, 70vw, 360px);
+  }
+
+  .intro-stages li {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-inline: 0;
+    font-size: .73rem;
+  }
+}
