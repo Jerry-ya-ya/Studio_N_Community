@@ -139,6 +139,10 @@ rebuild.sh   # Rebuild containers</code></pre>
 
 <pre><code>./scripts/1dev/up.sh</code></pre>
 
+<p>In the development and test stacks, containers connect to PostgreSQL at <code>db:5432</code> and Redis at <code>redis:6379</code> over the Compose network. To administer either service from the host, use <code>docker compose exec</code> with the environment's Compose file.</p>
+<pre><code>docker compose -f docker-compose.1dev.yml exec db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+docker compose -f docker-compose.1dev.yml exec redis redis-cli</code></pre>
+
 <p>Before running Playwright, generate a dedicated test API token and put it in the root <code>.env</code> as <code>E2E_TEST_TOKEN</code>.</p>
 <pre><code>node -p "require('node:crypto').randomBytes(32).toString('hex')"</code></pre>
 <p>The test API is disabled without this token. The test Compose backend uses a separate SQLite database by default. If you set <code>TEST_DATABASE_URL</code>, use a disposable test database because Playwright clears its user records during setup.</p>

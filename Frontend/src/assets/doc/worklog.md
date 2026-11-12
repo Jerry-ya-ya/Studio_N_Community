@@ -864,3 +864,5 @@
 - Add a skippable daily homepage animation that zooms into nested mathematics sets as student points move across ℝ², with localStorage playback tracking and reduced-motion support.
 
 - Play the daily intro on all routes with student points converging from all directions, remove the CMENStudio switch and cycle controls, and hide the EDEN wordmark when the sidebar is collapsed.
+
+- Require a dedicated token for test API mutations, bind test Compose web ports to loopback, and route Playwright through the Compose frontend with an isolated SQLite database by default.

@@ -31,8 +31,6 @@ services:
   db:
     container_name: pg-dev
     image: postgres:16
-    ports:
-      - "5433:5432"
     env_file:
       - .env
     volumes:
@@ -41,8 +39,6 @@ services:
   redis:
     container_name: redis-dev
     image: redis:latest
-    ports:
-      - "6379:6379"
 
   celery_worker:
     container_name: celery-worker-dev

@@ -65,22 +65,24 @@ services:
       - .:/app
     working_dir: /app
     command: ["pytest", "Backend/test"]
+    networks:
+      - mynet
 
   db:
     container_name: pg-test
     image: postgres:16
-    ports:
-      - "5433:5432"
     env_file:
       - .env
     volumes:
       - ./database/postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynet
 
   redis:
     container_name: redis-test
     image: redis:latest
-    ports:
-      - "6379:6379"
+    networks:
+      - mynet
 
   celery_worker:
     build:
@@ -96,6 +98,8 @@ services:
     depends_on:
       - redis
     container_name: celery-worker-test
+    networks:
+      - mynet
 
   celery_beat:
     build:
@@ -112,6 +116,8 @@ services:
       - redis
       - celery_worker
     container_name: celery-beat-test
+    networks:
+      - mynet
     
 networks:
   mynet:
